@@ -34,13 +34,6 @@
 		</complexContent>
 	</complexType>
 
-	<complexType name="importStatementType">
-		<complexContent>
-			<extension base="tns:describedObjectType">
-				<attribute name="location" use="required" type="anyURI"></attribute>
-			</extension>
-		</complexContent>
-	</complexType>
 
 
 	<!-- Contact information -->
@@ -66,14 +59,6 @@
 					<element name="issuer" minOccurs="0" maxOccurs="1"
 						type="tns:contactInfoType"></element>
 					<element name="location" minOccurs="0" maxOccurs="1" type="anyURI"></element>
-					<element name="version-info" minOccurs="1" maxOccurs="1">
-						<complexType>
-							<attribute name="start-date" type="dateTime" use="required"></attribute>
-							<attribute name="revision-number" type="string" use="required"></attribute>
-							<attribute name="last-modified" type="dateTime" use="required"></attribute>
-							<attribute name="end-date" type="dateTime" use="optional"></attribute>
-						</complexType>
-					</element>
 				</sequence>
 			</extension>
 		</complexContent>
@@ -87,12 +72,11 @@
 	</complexType>
 
 	<complexType name="actionType">
-		<choice>
+		<choice maxOccurs="unbounded">
 			<element name="all"></element>
 			<element name="select"></element>
 			<element name="test"></element>
 			<element name="equal-test"></element>
-			<element name="inequal-test"></element>
 			<element name="range-test"></element>
 			<element name="bounded-range-test"></element>
 			<element name="unbounded-range-test"></element>
@@ -134,10 +118,6 @@
 		</complexContent>
 	</complexType>
 
-
-
-
-
 	<complexType name="dataAssociationType">
 		<sequence>
 			<element name="data-category" type="tns:referringObjectType"
@@ -153,7 +133,7 @@
 						minOccurs="1" maxOccurs="unbounded"></element>
 
 					<element name="action" type="tns:actionType" minOccurs="1"
-						maxOccurs="unbounded"></element>
+						maxOccurs="1"></element>
 
 				</sequence>
 			</extension>
@@ -167,7 +147,7 @@
 			<extension base="tns:baseRulingType">
 				<sequence>
 					<element name="data-category" type="tns:referringObjectType"
-						maxOccurs="unbounded"></element>
+						minOccurs="0" maxOccurs="unbounded"></element>
 					<element name="data-association" type="tns:dataAssociationType"
 						maxOccurs="unbounded"></element>
 				</sequence>
@@ -179,7 +159,6 @@
 		<sequence>
 			<element name="data-category" type="tns:referringObjectType"
 				maxOccurs="unbounded"></element>
-
 		</sequence>
 	</complexType>
 
@@ -204,41 +183,30 @@
 		</complexContent>
 	</complexType>
 
-
 	<element name="vocabulary">
 		<complexType>
 			<sequence>
 				<element name="vocabulary-information" minOccurs="1"
 					maxOccurs="1" type="tns:infoType"></element>
 				<element name="user-categories" type="tns:userCategoriesType"
-					minOccurs="0" maxOccurs="unbounded"></element>
+					minOccurs="0" maxOccurs="unbounded">
+
+					<key name="user-category-identifier">
+						<selector xpath="tns:user-category"></selector>
+						<field xpath="@id"></field>
+					</key>
+				</element>
 				<element name="data-categories" type="tns:dataCategoriesType"
-					minOccurs="0" maxOccurs="unbounded"></element>
+					minOccurs="0" maxOccurs="unbounded">
+
+					<key name="data-category-identifier">
+						<selector xpath="tns:data-category"></selector>
+						<field xpath="@id"></field>
+					</key>
+				</element>
 			</sequence>
-			<attribute name="refer" use="optional" type="anyURI"></attribute>
-
+			<attribute name="base" use="optional" type="anyURI"></attribute>
 		</complexType>
-
-
-		<!-- Key and References for user-category/@id -->
-		<key name="user-category-identifier">
-			<selector xpath=".//user-category"></selector>
-			<field xpath="@id"></field>
-		</key>
-
-		<!-- <keyref name="user-category-reference" refer="tns:user-category-identifier"> 
-			<selector xpath=".//tns:user-category"></selector> <field xpath="@parent"></field> 
-			</keyref> -->
-
-		<!-- Key and References for data-category/@id -->
-		<key name="data-category-identifier">
-			<selector xpath=".//tns:data-category"></selector>
-			<field xpath="@id"></field>
-		</key>
-
-		<!-- <keyref name="data-category-reference" refer="tns:data-category-identifier"> 
-			<selector xpath=".//tns:data-category"></selector> <field xpath="@parent"></field> 
-			</keyref> -->
 	</element>
 
 
@@ -251,17 +219,18 @@
 				<element name="vocabulary-ref">
 					<complexType>
 						<sequence>
-							<element name="user-categories" type="tns:userCategoriesType"></element>
-							<element name="data-categories" type="tns:dataCategoriesType"></element>
+							<element name="user-categories" type="tns:referringObjectType"></element>
+							<element name="data-categories" type="tns:referringObjectType"></element>
 						</sequence>
-						<attribute name="refer" type="anyURI"></attribute>
+						<attribute name="location" type="anyURI"></attribute>
 					</complexType>
 				</element>
 				<element name="rules">
 					<complexType>
 						<sequence>
 							<choice minOccurs="1" maxOccurs="unbounded">
-								<element name="allow" type="tns:rulingType"></element>
+								<element name="allow" type="tns:rulingType">
+								</element>
 								<element name="deny" type="tns:rulingType"></element>
 								<element name="restrict" type="tns:restrictType"></element>
 							</choice>
