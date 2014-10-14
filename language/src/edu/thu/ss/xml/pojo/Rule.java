@@ -11,34 +11,23 @@ import org.w3c.dom.NodeList;
 import edu.thu.ss.xml.parser.ParserConstant;
 
 public class Rule extends DescribedObject {
+
 	public enum Ruling {
 		allow, deny, restrict
 	};
 
 	protected Ruling ruling;
 
-	protected Set<ReferringObject> userRefs;
-	protected Set<ReferringObject> dataRefs;
-	protected Set<Action> actions;
+	protected Set<ReferringObject> userRefs = new HashSet<>();
+	protected Set<ReferringObject> dataRefs = new HashSet<>();
+	protected Set<Action> actions = new HashSet<>();
 
-	protected List<UserCategory> users;
-	protected List<DataCategory> datas;
+	protected List<UserCategory> users = new ArrayList<>();
+	protected List<DataCategory> datas = new ArrayList<>();
 
-	protected List<DataAssociation> associations;
+	protected List<DataAssociation> associations = new ArrayList<>();
 
 	protected Restriction restriction;
-
-	public Rule() {
-		userRefs = new HashSet<>();
-		dataRefs = new HashSet<>();
-		actions = new HashSet<>();
-
-		users = new ArrayList<>();
-		datas = new ArrayList<>();
-
-		associations = new ArrayList<>();
-
-	}
 
 	@Override
 	public void parse(Node ruleNode) {
@@ -83,4 +72,82 @@ public class Rule extends DescribedObject {
 			}
 		}
 	}
+
+	public Set<ReferringObject> getUserRefs() {
+		return userRefs;
+	}
+
+	public Set<ReferringObject> getDataRefs() {
+		return dataRefs;
+	}
+
+	public Set<Action> getActions() {
+		return actions;
+	}
+
+	public List<UserCategory> getUsers() {
+		return users;
+	}
+
+	public List<DataCategory> getDatas() {
+		return datas;
+	}
+
+	public List<DataAssociation> getAssociations() {
+		return associations;
+	}
+
+	public Restriction getRestriction() {
+		return restriction;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Rule: ");
+		sb.append(id);
+		sb.append("\n");
+
+		sb.append("\tRuling: ");
+		sb.append(ruling);
+		sb.append("\n");
+
+		sb.append("\tUser Categories: ");
+		for (UserCategory user : users) {
+			sb.append(user.id);
+			sb.append(" ");
+		}
+		sb.append("\n");
+
+		sb.append("\tActions: ");
+		for (Action action : actions) {
+			sb.append(action);
+			sb.append(" ");
+		}
+		sb.append("\n");
+
+		if (dataRefs.size() > 0) {
+			sb.append("\tData Categories: ");
+			for (DataCategory data : datas) {
+				sb.append(data.id);
+				sb.append(" ");
+			}
+			sb.append("\n");
+		}
+		if (associations.size() > 0) {
+			sb.append("\tData Associations: ");
+			for (DataAssociation obj : associations) {
+				sb.append(obj);
+				sb.append(" ");
+			}
+			sb.append("\n");
+		}
+
+		if (restriction != null) {
+			sb.append('\t');
+			sb.append(restriction);
+		}
+		return sb.toString();
+	}
+
 }

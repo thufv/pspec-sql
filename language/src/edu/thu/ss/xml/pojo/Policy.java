@@ -12,8 +12,9 @@ public class Policy {
 	protected String userRef;
 	protected String dataRef;
 
-	protected CategoryContainer<UserCategory> users;
-	protected CategoryContainer<DataCategory> datas;
+	protected UserCategoryContainer users;
+
+	protected DataCategoryContainer datas;
 
 	protected List<Rule> rules;
 
@@ -67,4 +68,52 @@ public class Policy {
 		this.rules = rules;
 	}
 
+	public UserCategoryContainer getUsers() {
+		return users;
+	}
+
+	public void setUsers(UserCategoryContainer users) {
+		this.users = users;
+	}
+
+	public DataCategoryContainer getDatas() {
+		return datas;
+	}
+
+	public void setDatas(DataCategoryContainer datas) {
+		this.datas = datas;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Policy Info: \n");
+		sb.append(info);
+
+		sb.append("\n");
+
+		sb.append("User Categories: ");
+		sb.append(userRef);
+		sb.append("\n");
+		sb.append(users.toString());
+		sb.append("\n");
+
+		sb.append("Data Categories: ");
+		sb.append(dataRef);
+		sb.append("\n");
+		sb.append(datas.toString());
+		sb.append("\n");
+
+		sb.append("Default Ruling: ");
+		sb.append(defaultRuling);
+		sb.append("\n");
+
+		sb.append("Rules:\n");
+		for (Rule rule : rules) {
+			sb.append(rule);
+			sb.append("\n");
+		}
+		return sb.toString();
+
+	}
 }

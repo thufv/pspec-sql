@@ -3,7 +3,7 @@ package edu.thu.ss.xml.pojo;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 public class Vocabulary {
 
@@ -15,14 +15,14 @@ public class Vocabulary {
 
 	protected Map<String, DataCategoryContainer> dataContainers = new HashMap<>();
 
-	protected Document document;
+	protected Node rootNode;
 
-	public Document getDocument() {
-		return document;
+	public void setRootNode(Node rootNode) {
+		this.rootNode = rootNode;
 	}
 
-	public void setDocument(Document document) {
-		this.document = document;
+	public Node getRootNode() {
+		return rootNode;
 	}
 
 	public Info getInfo() {
@@ -47,5 +47,13 @@ public class Vocabulary {
 
 	public void addDataCategories(String id, DataCategoryContainer categories) {
 		dataContainers.put(id, categories);
+	}
+
+	public UserCategoryContainer getUserCategories(String id) {
+		return userContainers.get(id);
+	}
+
+	public DataCategoryContainer getDataCategories(String id) {
+		return dataContainers.get(id);
 	}
 }

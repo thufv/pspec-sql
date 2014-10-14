@@ -1,6 +1,5 @@
 package edu.thu.ss.xml.pojo;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +15,7 @@ public class Action extends HierarchicalObject {
 	public static final String Action_Equal_Test = "equal-test";
 	public static final String Action_Range_Test = "range-test";
 	public static final String Action_Bounded_Range_Test = "bounded-range-test";
-	public static final String Action_Unbounded_Range_Test = "all";
+	public static final String Action_Unbounded_Range_Test = "unbounded-range-test";
 
 	static {
 		root = new Action(Action_All);
@@ -41,11 +40,13 @@ public class Action extends HierarchicalObject {
 		actions.put(Action_Unbounded_Range_Test, unbounded_range_test);
 	}
 
-	protected String name;
+	protected Action(String id) {
+		this.id = id;
+	}
 
-	protected Action(String name) {
-		this.name = name;
-		this.children = new ArrayList<>();
+	@Override
+	public String toString() {
+		return id;
 	}
 
 }

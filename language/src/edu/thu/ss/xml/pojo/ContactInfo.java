@@ -33,4 +33,29 @@ public class ContactInfo {
 
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("\tname: ");
+		sb.append(name);
+		sb.append("\n");
+		sb.append("\temail: ");
+		sb.append(email);
+		sb.append("\n");
+
+		sb.append("\taddress: ");
+		sb.append(address);
+		sb.append("\n");
+
+		sb.append("\torganization: ");
+		sb.append(organization);
+		sb.append("\n");
+
+		sb.append("\tcountry: ");
+		sb.append(country);
+		sb.append("\n");
+
+		return sb.toString();
+	}
+
 }

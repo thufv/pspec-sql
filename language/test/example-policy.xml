@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<privacy-policy default-ruling="allow"
+	xmlns="http://www.example.org/privacy"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.example.org/privacy ../src/privacy.xsd">
+	<policy-information id="school-policy">
+		<issuer>
+			<name>luochen</name>
+			<organization>Tsinghua</organization>
+			<e-mail>luochen01@vip.qq.com</e-mail>
+			<address>Tsinghua</address>
+			<country>China</country>
+		</issuer>
+	</policy-information>
+	
+	<vocabulary-ref location="test/example-vocabulary.xml">
+		<user-categories refid="school-users"/>
+		<data-categories refid="school-data" />
+	</vocabulary-ref>
+	<rules>
+		<allow id="allow-teacher-gpa">
+			<user-category refid="ceo"/>
+			<user-category refid="manager"/>
+			<user-category refid="manager"/>
+			
+			<user-category refid="student"/>
+			<action>
+				<all/>
+			</action>
+			<data-association>
+				<data-category refid="student-id"/>
+				<data-category refid="gpa"/>
+			</data-association>
+		</allow>
+		
+		<restrict id="restrict-gpa">
+			<user-category refid="employee"/>
+			<action>
+				<select/>
+				<range-test>
+				</range-test>
+				<bounded-range-test>
+				</bounded-range-test>
+			</action>
+			<data-association>
+				<data-category refid="student-id"/>
+				<data-category refid="gpa"/>
+			</data-association>
+			<restriction>
+				<desensitize>
+					<data-category refid="gpa"/>
+				</desensitize>
+			</restriction>
+		</restrict>
+	</rules>
+	
+	
+</privacy-policy>
+	

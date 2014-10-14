@@ -40,4 +40,5 @@ public class DescribedObject extends IdentifiedObject {
 
 		}
 	}
+
 }

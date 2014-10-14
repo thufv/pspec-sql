@@ -41,4 +41,18 @@ public class Info extends DescribedObject {
 		}
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("\tContact: \n");
+		sb.append(contact);
+		sb.append("\n");
+		if (location != null) {
+			sb.append("location: ");
+			sb.append("location");
+		}
+		return sb.toString();
+
+	}
+
 }

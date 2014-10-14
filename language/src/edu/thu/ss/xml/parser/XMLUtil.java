@@ -1,6 +1,7 @@
 package edu.thu.ss.xml.parser;
 
 import java.io.File;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,21 +21,31 @@ public class XMLUtil {
 
 	private static Map<String, Schema> schemas = new HashMap<>();
 
-	public static Document parse(String path, String xsdPath) throws Exception {
+	public static Document parseDocument(String path, String xsdPath) throws Exception {
 
-		Validator validator = getValidator(xsdPath);
-
-		File docFile = new File(path);
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
 		DocumentBuilder builder = factory.newDocumentBuilder();
-		Document doc = builder.parse(docFile);
 
-		validator.validate(new DOMSource(doc));
+		Document doc = null;
+		URI uri = validateURI(path);
+		if (uri != null) {
+			doc = builder.parse(path);
+		} else {
+			File docFile = new File(path);
+			doc = builder.parse(docFile);
+		}
+		Validator validator = getValidator(xsdPath);
+		if (validator != null) {
+			validator.validate(new DOMSource(doc));
+		}
 		return doc;
 	}
 
 	public static Validator getValidator(String xsdPath) throws Exception {
+		if (xsdPath == null) {
+			return null;
+		}
 		Schema schema = schemas.get(xsdPath);
 		if (schema != null) {
 			return schema.newValidator();
@@ -43,6 +54,15 @@ public class XMLUtil {
 		schema = schemaFactory.newSchema(new File(xsdPath));
 		schemas.put(xsdPath, schema);
 		return schema.newValidator();
+	}
+
+	public static URI validateURI(String path) {
+		try {
+			URI uri = URI.create(path);
+			return uri;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	public static String getAttrValue(Node node, String attr) {

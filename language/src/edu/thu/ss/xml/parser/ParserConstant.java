@@ -15,6 +15,7 @@ public interface ParserConstant {
 	public static final String Ele_Contact_Organization = "organization";
 	public static final String Ele_Long_Description = "long-description";
 
+	public static final String Ele_Vocabulary = "vocabulary";
 	public static final String Ele_Vocabulary_Info = "vocabulary-information";
 	public static final String Ele_Vocabulary_User_Categories = "user-categories";
 	public static final String Ele_Vocabulary_User_Category = "user-category";
@@ -25,6 +26,7 @@ public interface ParserConstant {
 	public static final String Ele_Vocabulary_Desensitize_UDF = "udf";
 	public static final String Ele_Vocabulary_Desensitize_Class = "class";
 
+	public static final String Ele_Policy = "privacy-policy";
 	public static final String Ele_Policy_Info = "policy-information";
 	public static final String Ele_Policy_Issuer = "issuer";
 	public static final String Ele_Policy_Location = "location";

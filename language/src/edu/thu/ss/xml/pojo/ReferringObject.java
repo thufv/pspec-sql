@@ -9,8 +9,11 @@ public class ReferringObject {
 	protected String refid;
 
 	public void parse(Node node) {
-
 		this.refid = XMLUtil.getAttrValue(node, ParserConstant.Ele_Policy_Refid);
+	}
+
+	public String getRefid() {
+		return refid;
 	}
 
 	@Override

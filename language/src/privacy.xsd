@@ -64,6 +64,12 @@
 		</complexContent>
 	</complexType>
 
+	<simpleType name="javaClassType">
+		<restriction base="string">
+			<pattern value="([a-zA-Z_$][a-zA-Z\d_$]*\.)*[a-zA-Z_$][a-zA-Z\d_$]*"></pattern>
+		</restriction>
+	</simpleType>
+
 	<complexType name="desensitizeOpType">
 		<sequence>
 			<element name="UDF" type="NCName"></element>
@@ -121,7 +127,7 @@
 	<complexType name="dataAssociationType">
 		<sequence>
 			<element name="data-category" type="tns:referringObjectType"
-				minOccurs="1" maxOccurs="unbounded"></element>
+				minOccurs="2" maxOccurs="unbounded"></element>
 		</sequence>
 	</complexType>
 
@@ -208,6 +214,8 @@
 			<attribute name="base" use="optional" type="anyURI"></attribute>
 		</complexType>
 	</element>
+
+
 
 
 	<element name="privacy-policy">
