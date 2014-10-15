@@ -17,9 +17,9 @@ public interface ParserConstant {
 
 	public static final String Ele_Vocabulary = "vocabulary";
 	public static final String Ele_Vocabulary_Info = "vocabulary-information";
-	public static final String Ele_Vocabulary_User_Categories = "user-categories";
+	public static final String Ele_Vocabulary_User_Category_Container = "user-category-container";
 	public static final String Ele_Vocabulary_User_Category = "user-category";
-	public static final String Ele_Vocabulary_Data_Categories = "data-categories";
+	public static final String Ele_Vocabulary_Data_Category_Container = "data-category-container";
 	public static final String Ele_Vocabulary_Data_Category = "data-category";
 
 	public static final String Ele_Vocabulary_Desensitize_Op = "desensitize-operation";
@@ -33,16 +33,16 @@ public interface ParserConstant {
 	public static final String Ele_Policy_Rule_Allow = "allow";
 	public static final String Ele_Policy_Rule_Deny = "deny";
 	public static final String Ele_Policy_Rule_Restrict = "restrict";
-	public static final String Ele_Policy_Rule_UserRef = "user-category";
-	public static final String Ele_Policy_Rule_DataRef = "data-category";
+	public static final String Ele_Policy_Rule_UserRef = "user-category-ref";
+	public static final String Ele_Policy_Rule_DataRef = "data-category-ref";
 	public static final String Ele_Policy_Rule_DataAsscoation = "data-association";
 	public static final String Ele_Policy_Rule_Action = "action";
 	public static final String Ele_Policy_Rule_Restriction = "restriction";
 	public static final String Ele_Policy_Rule_Desensitize = "desensitize";
 	public static final String Ele_Policy_Rule_Aggregate = "aggregate";
 	public static final String Attr_Policy_Vocabulary_location = "location";
-	public static final String Ele_Policy_Vocabulary_User = "user-categories";
-	public static final String Ele_Policy_Vocabulary_Data = "data-categories";
+	public static final String Ele_Policy_Vocabulary_User = "user-category-container";
+	public static final String Ele_Policy_Vocabulary_Data = "data-category-container";
 	public static final String Ele_Policy_Refid = "refid";
 	public static final String Ele_Policy_Rules = "rules";
 	public static final String Ele_Policy_Vocabulary_Ref = "vocabulary-ref";

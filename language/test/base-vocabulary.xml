@@ -12,14 +12,14 @@
 			<country>China</country>
 		</issuer>
 	</vocabulary-information>
-	<user-categories id="default-users" >
+	<user-category-container id="default-users" >
 		<user-category id="employee"/>
 		<user-category id="manager" parent="employee"/>
 		<user-category id="ceo" parent="manager"/>
-	</user-categories>
+	</user-category-container>
 	
-	<data-categories id="default-data">
+	<data-category-container id="default-data">
 		<data-category id="pii"/>
-	</data-categories>
+	</data-category-container>
 	
 </vocabulary>

@@ -15,41 +15,35 @@
 	</policy-information>
 	
 	<vocabulary-ref location="test/example-vocabulary.xml">
-		<user-categories refid="school-users"/>
-		<data-categories refid="school-data" />
+		<user-category-container refid="school-users"/>
+		<data-category-container refid="school-data" />
 	</vocabulary-ref>
 	<rules>
 		<allow id="allow-teacher-gpa">
-			<user-category refid="ceo"/>
-			<user-category refid="manager"/>
-			<user-category refid="manager"/>
-			
-			<user-category refid="student"/>
-			<action>
-				<all/>
-			</action>
+			<user-category-ref refid="teacher"/>
 			<data-association>
-				<data-category refid="student-id"/>
-				<data-category refid="gpa"/>
+				<data-category-ref refid="student-id">
+					<all/>
+				</data-category-ref>
+				<data-category-ref refid="gpa">
+					<all/>
+				</data-category-ref>
 			</data-association>
 		</allow>
 		
 		<restrict id="restrict-gpa">
-			<user-category refid="employee"/>
-			<action>
-				<select/>
-				<range-test>
-				</range-test>
-				<bounded-range-test>
-				</bounded-range-test>
-			</action>
+			<user-category-ref refid="employee"/>
 			<data-association>
-				<data-category refid="student-id"/>
-				<data-category refid="gpa"/>
+				<data-category-ref refid="student-id">
+					<all/>
+				</data-category-ref>
+				<data-category-ref refid="gpa">
+					<select/>
+				</data-category-ref>
 			</data-association>
 			<restriction>
 				<desensitize>
-					<data-category refid="gpa"/>
+					<data-category-ref refid="gpa"/>
 				</desensitize>
 			</restriction>
 		</restrict>

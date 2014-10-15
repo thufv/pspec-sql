@@ -1,8 +1,6 @@
 package edu.thu.ss.xml.pojo;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.w3c.dom.Node;
@@ -11,16 +9,10 @@ import org.w3c.dom.NodeList;
 import edu.thu.ss.xml.parser.ParserConstant;
 
 public abstract class DataCategoryGroup {
-	protected Set<ReferringObject> dataRefs = new HashSet<>();
+	protected Set<DataCategoryRef> dataRefs = new HashSet<>();
 
-	protected List<DataCategory> datas = new ArrayList<>();
-
-	public Set<ReferringObject> getDataRefs() {
+	public Set<DataCategoryRef> getDataRefs() {
 		return dataRefs;
-	}
-
-	public List<DataCategory> getDatas() {
-		return datas;
 	}
 
 	public void parse(Node refNode) {
@@ -29,7 +21,7 @@ public abstract class DataCategoryGroup {
 			Node node = list.item(i);
 			String name = node.getLocalName();
 			if (ParserConstant.Ele_Policy_Rule_DataRef.equals(name)) {
-				ReferringObject obj = new ReferringObject();
+				DataCategoryRef obj = new DataCategoryRef();
 				obj.parse(node);
 				dataRefs.add(obj);
 			}
@@ -40,10 +32,10 @@ public abstract class DataCategoryGroup {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		int count = 0;
-		for (ReferringObject ref : dataRefs) {
-			sb.append(ref.refid);
+		for (DataCategoryRef ref : dataRefs) {
+			sb.append(ref);
 			if (count++ < dataRefs.size() - 1) {
-				sb.append(',');
+				sb.append('\t');
 			}
 		}
 		return sb.toString();

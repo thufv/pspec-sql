@@ -84,8 +84,8 @@ public class VocabularyParser implements ParserConstant {
 	}
 
 	private void uniqueCategoriesIdCheck() throws ParsingException {
-		uniqueIdCheck(Ele_Vocabulary_User_Categories);
-		uniqueIdCheck(Ele_Vocabulary_Data_Categories);
+		uniqueIdCheck(Ele_Vocabulary_User_Category_Container);
+		uniqueIdCheck(Ele_Vocabulary_Data_Category_Container);
 	}
 
 	private void uniqueIdCheck(String element) throws ParsingException {
@@ -169,7 +169,7 @@ public class VocabularyParser implements ParserConstant {
 		for (int i = 0; i < list.getLength(); i++) {
 			Node node = list.item(i);
 			String name = node.getLocalName();
-			if (Ele_Vocabulary_User_Categories.equals(name)) {
+			if (Ele_Vocabulary_User_Category_Container.equals(name)) {
 				String id = XMLUtil.getAttrValue(node, Attr_Id);
 				if (id.equals(user)) {
 					UserCategoryContainer container = new UserCategoryContainer();
@@ -187,7 +187,7 @@ public class VocabularyParser implements ParserConstant {
 		for (int i = 0; i < list.getLength(); i++) {
 			Node node = list.item(i);
 			String name = node.getLocalName();
-			if (Ele_Vocabulary_Data_Categories.equals(name)) {
+			if (Ele_Vocabulary_Data_Category_Container.equals(name)) {
 				String id = XMLUtil.getAttrValue(node, Attr_Id);
 				if (id.equals(data)) {
 					DataCategoryContainer container = new DataCategoryContainer();

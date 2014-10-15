@@ -5,7 +5,7 @@ import org.w3c.dom.Node;
 import edu.thu.ss.xml.parser.ParserConstant;
 import edu.thu.ss.xml.parser.XMLUtil;
 
-public class ReferringObject {
+public class ObjectRef {
 	protected String refid;
 
 	public void parse(Node node) {
@@ -32,7 +32,7 @@ public class ReferringObject {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ReferringObject other = (ReferringObject) obj;
+		ObjectRef other = (ObjectRef) obj;
 		if (refid == null) {
 			if (other.refid != null)
 				return false;

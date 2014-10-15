@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class Action extends HierarchicalObject {
 
-	protected static Map<String, Action> actions;
+	protected static Map<String, Action> actions = new HashMap<>();
 
 	protected static Action root;
 
@@ -30,7 +30,6 @@ public class Action extends HierarchicalObject {
 		test.buildRelation(equal_test, range_test);
 		range_test.buildRelation(bounded_range_test, unbounded_range_test);
 
-		actions = new HashMap<>();
 		actions.put(Action_All, root);
 		actions.put(Action_Select, select);
 		actions.put(Action_Test, test);
