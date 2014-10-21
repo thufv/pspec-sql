@@ -15,7 +15,6 @@ public class PolicyParserTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 }

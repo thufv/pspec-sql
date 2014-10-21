@@ -21,34 +21,23 @@
 	<rules>
 		<allow id="allow-teacher-gpa">
 			<user-category-ref refid="teacher"/>
-			<data-association>
-				<data-category-ref refid="student-id">
-					<all/>
-				</data-category-ref>
-				<data-category-ref refid="gpa">
-					<all/>
-				</data-category-ref>
-			</data-association>
+			<data-category-ref refid="student-id"/>
+			<data-category-ref refid="gpa"/>
 		</allow>
 		
 		<restrict id="restrict-gpa">
 			<user-category-ref refid="employee"/>
 			<data-association>
-				<data-category-ref refid="student-id">
-					<all/>
-				</data-category-ref>
-				<data-category-ref refid="gpa">
-					<select/>
-				</data-category-ref>
+				<data-category-ref refid="gpa" action="project"/>
+				<data-category-ref refid="student-id"/>
 			</data-association>
 			<restriction>
 				<desensitize>
 					<data-category-ref refid="gpa"/>
+					<UDF>mapToRange</UDF>
 				</desensitize>
 			</restriction>
 		</restrict>
 	</rules>
-	
-	
 </privacy-policy>
 	

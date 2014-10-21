@@ -27,7 +27,6 @@
 		<data-category id="gpa" parent="pii">
 			<desensitize-operation>
 				<UDF>mapToRange</UDF>
-				<class>mapToRange</class>
 			</desensitize-operation>
 		</data-category>
 	</data-category-container>

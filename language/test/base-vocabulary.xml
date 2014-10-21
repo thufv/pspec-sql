@@ -17,9 +17,11 @@
 		<user-category id="manager" parent="employee"/>
 		<user-category id="ceo" parent="manager"/>
 	</user-category-container>
-	
 	<data-category-container id="default-data">
-		<data-category id="pii"/>
+		<data-category id="pii">
+			<desensitize-operation>
+				<UDF>anonymize</UDF>
+			</desensitize-operation>
+		</data-category>
 	</data-category-container>
-	
 </vocabulary>

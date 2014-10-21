@@ -15,6 +15,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.xml.pojo.CategoryContainer;
+import edu.thu.ss.xml.pojo.DataCategory;
 import edu.thu.ss.xml.pojo.DataCategoryContainer;
 import edu.thu.ss.xml.pojo.HierarchicalObject;
 import edu.thu.ss.xml.pojo.Info;
@@ -49,6 +50,8 @@ public class VocabularyParser implements ParserConstant {
 		// semantic analysis
 		analyzeReference(userContainers, userContainer);
 		analyzeReference(dataContainers, dataContainer);
+
+		propogateDesensitizaOperation(dataContainer);
 		if (error) {
 			throw new ParsingException("Fail to parse vocabularies, see error messages above");
 		}
@@ -197,6 +200,13 @@ public class VocabularyParser implements ParserConstant {
 			}
 		}
 		return null;
+	}
+
+	private void propogateDesensitizaOperation(DataCategoryContainer data) {
+		List<DataCategory> roots = data.getRoot();
+		for (DataCategory category : roots) {
+			category.inheritDesensitizeOperation();
+		}
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

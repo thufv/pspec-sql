@@ -7,6 +7,8 @@ public interface ParserConstant {
 	public static final String Attr_Parent = "parent";
 	public static final String Attr_Policy_Default_Ruling = "default-ruling";
 	public static final String Attr_Vocabulary_Base = "base";
+	public static final String Attr_Restriction_Type = "type";
+	public static final String Attr_Policy_Data_Action = "action";
 
 	public static final String Ele_Contact_Address = "address";
 	public static final String Ele_Contact_Country = "country";
@@ -23,7 +25,7 @@ public interface ParserConstant {
 	public static final String Ele_Vocabulary_Data_Category = "data-category";
 
 	public static final String Ele_Vocabulary_Desensitize_Op = "desensitize-operation";
-	public static final String Ele_Vocabulary_Desensitize_UDF = "udf";
+	public static final String Ele_Vocabulary_Desensitize_UDF = "UDF";
 	public static final String Ele_Vocabulary_Desensitize_Class = "class";
 
 	public static final String Ele_Policy = "privacy-policy";
@@ -40,6 +42,8 @@ public interface ParserConstant {
 	public static final String Ele_Policy_Rule_Restriction = "restriction";
 	public static final String Ele_Policy_Rule_Desensitize = "desensitize";
 	public static final String Ele_Policy_Rule_Aggregate = "aggregate";
+	public static final Object Ele_Policy_Rule_Desensitize_UDF = "UDF";
+
 	public static final String Attr_Policy_Vocabulary_location = "location";
 	public static final String Ele_Policy_Vocabulary_User = "user-category-container";
 	public static final String Ele_Policy_Vocabulary_Data = "data-category-container";

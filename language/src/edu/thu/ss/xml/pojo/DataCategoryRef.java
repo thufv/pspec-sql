@@ -1,14 +1,13 @@
 package edu.thu.ss.xml.pojo;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+
+import edu.thu.ss.xml.parser.ParserConstant;
+import edu.thu.ss.xml.parser.XMLUtil;
 
 public class DataCategoryRef extends ObjectRef {
 	protected DataCategory data;
-	protected Set<Action> actions = new HashSet<>();
+	protected Action action = Action.root;
 
 	public void setData(DataCategory data) {
 		this.data = data;
@@ -18,34 +17,12 @@ public class DataCategoryRef extends ObjectRef {
 		return data;
 	}
 
-	public Set<Action> getActions() {
-		return actions;
-	}
-
 	@Override
 	public void parse(Node refNode) {
 		super.parse(refNode);
-
-		NodeList list = refNode.getChildNodes();
-		for (int i = 0; i < list.getLength(); i++) {
-			Node node = list.item(i);
-			String name = node.getLocalName();
-			Action action = Action.actions.get(name);
-			if (action != null) {
-				actions.add(action);
-			}
-		}
-	}
-
-	public void parseActions(Node actionNode) {
-		NodeList list = actionNode.getChildNodes();
-		for (int i = 0; i < list.getLength(); i++) {
-			Node node = list.item(i);
-			String name = node.getLocalName();
-			Action action = Action.actions.get(name);
-			if (action != null) {
-				actions.add(action);
-			}
+		String actionValue = XMLUtil.getAttrValue(refNode, ParserConstant.Attr_Policy_Data_Action);
+		if (actionValue != null) {
+			this.action = Action.actions.get(actionValue);
 		}
 	}
 
@@ -53,20 +30,21 @@ public class DataCategoryRef extends ObjectRef {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(refid);
-		if (actions.size() > 0) {
-			sb.append('(');
-			int count = 0;
-			for (Action action : actions) {
-				sb.append(action);
-				if (count++ < actions.size() - 1) {
-					sb.append(", ");
-				}
-			}
-			sb.append(')');
-		}
+		sb.append('(');
+		sb.append(action);
+		sb.append(')');
 
 		return sb.toString();
 
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		return super.equals(obj);
+	}
+
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 }

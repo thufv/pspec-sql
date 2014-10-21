@@ -46,4 +46,12 @@ public class IdentifiedObject {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("id: ");
+		sb.append(id);
+		return sb.toString();
+	}
+
 }

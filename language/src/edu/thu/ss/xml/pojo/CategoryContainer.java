@@ -10,8 +10,7 @@ import org.w3c.dom.Node;
 import edu.thu.ss.xml.parser.ParserConstant;
 import edu.thu.ss.xml.parser.XMLUtil;
 
-public abstract class CategoryContainer<T extends HierarchicalObject> extends DescribedObject {
-
+public abstract class CategoryContainer<T extends HierarchicalObject<T>> extends DescribedObject {
 
 	protected String base;
 
@@ -59,22 +58,10 @@ public abstract class CategoryContainer<T extends HierarchicalObject> extends De
 		return sb.toString();
 	}
 
-	private void toString(HierarchicalObject node, StringBuilder sb) {
-		sb.append("id: ");
-		sb.append(node.id);
-		if (node.parentId != null) {
-			sb.append("\tparentId: ");
-			sb.append(node.parentId);
-		}
-		if (node.children.size() > 0) {
-			sb.append("\tchildIds: ");
-			for (HierarchicalObject child : node.children) {
-				sb.append(child.id);
-				sb.append(' ');
-			}
-		}
+	private void toString(T node, StringBuilder sb) {
+		sb.append(node.toString());
 		sb.append("\n");
-		for (HierarchicalObject child : node.children) {
+		for (T child : node.children) {
 			toString(child, sb);
 		}
 	}

@@ -64,19 +64,6 @@
 		</complexContent>
 	</complexType>
 
-	<complexType name="desensitizeOpType">
-		<sequence>
-			<element name="UDF" type="NCName"></element>
-			<element name="class" type="string"></element>
-		</sequence>
-	</complexType>
-
-	<simpleType name="javaClassType">
-		<restriction base="string">
-			<pattern value="([a-zA-Z_$][a-zA-Z\d_$]*\.)*[a-zA-Z_$][a-zA-Z\d_$]*"></pattern>
-		</restriction>
-	</simpleType>
-
 
 	<complexType name="userCategoryContainerType">
 		<complexContent>
@@ -94,17 +81,31 @@
 		<complexContent>
 			<extension base="tns:describedObjectType">
 				<sequence>
+
 					<element name="data-category" minOccurs="0" maxOccurs="unbounded">
 						<complexType>
 							<complexContent>
 								<extension base="tns:hierarchicalType">
 									<sequence>
-										<element name="desensitize-operation" type="tns:desensitizeOpType"
-											minOccurs="0"></element>
+										<element name="desensitize-operation" minOccurs="0"
+											maxOccurs="1">
+											<complexType>
+												<sequence>
+													<element name="UDF" type="NCName" minOccurs="1"
+														maxOccurs="unbounded"></element>
+												</sequence>
+											</complexType>
+										</element>
 									</sequence>
 								</extension>
 							</complexContent>
 						</complexType>
+
+						<unique name="uniqueDesensitizeOperation">
+							<selector xpath="tns:desensitize-operation"></selector>
+							<field xpath="tns:UDF"></field>
+						</unique>
+
 					</element>
 				</sequence>
 				<attribute name="base" type="NCName"></attribute>
@@ -115,15 +116,15 @@
 	<complexType name="dataCategoryRefType">
 		<complexContent>
 			<extension base="tns:objectRefType">
-				<choice maxOccurs="unbounded">
-					<element name="all"></element>
-					<element name="select"></element>
-					<element name="test"></element>
-					<element name="equal-test"></element>
-					<element name="range-test"></element>
-					<element name="bounded-range-test"></element>
-					<element name="unbounded-range-test"></element>
-				</choice>
+				<attribute name="action" default="all">
+					<simpleType>
+						<restriction base="string">
+							<enumeration value="all"></enumeration>
+							<enumeration value="project"></enumeration>
+							<enumeration value="test"></enumeration>
+						</restriction>
+					</simpleType>
+				</attribute>
 			</extension>
 		</complexContent>
 	</complexType>
@@ -155,40 +156,62 @@
 					<element name="data-category-ref" type="tns:dataCategoryRefType"
 						minOccurs="0" maxOccurs="unbounded"></element>
 					<element name="data-association" type="tns:dataAssociationType"
-						maxOccurs="unbounded"></element>
+						minOccurs="0" maxOccurs="unbounded"></element>
 				</sequence>
 			</extension>
 		</complexContent>
 	</complexType>
 
-	<complexType name="restrictOpType">
-		<sequence>
-			<element name="data-category-ref" type="tns:objectRefType"
-				maxOccurs="unbounded"></element>
-		</sequence>
-	</complexType>
 
 	<complexType name="restrictType">
+		<annotation>
+			<documentation>
+				If only data-category-ref appears in the rule, then
+				restriction should not contain data-category-ref.
+				Otherwise
+				data-association appears in the rule, then restriction must
+				explicitly specify which data-category is restricted.
+			</documentation>
+		</annotation>
 		<complexContent>
 			<extension base="tns:baseRulingType">
 				<sequence>
 					<choice>
-						<element name="data-category-ref" type="tns:dataCategoryRefType"></element>
+						<element name="data-category-ref" type="tns:dataCategoryRefType"
+							minOccurs="1" maxOccurs="unbounded"></element>
 						<element name="data-association" type="tns:dataAssociationType"></element>
 					</choice>
 					<element name="restriction">
 						<complexType>
-							<choice>
-								<element name="desensitize" type="tns:restrictOpType"></element>
-								<element name="aggregate" type="tns:restrictOpType"></element>
-							</choice>
+							<sequence>
+								<element name="desensitize" minOccurs="1" maxOccurs="unbounded">
+									<complexType>
+										<sequence>
+											<element name="data-category-ref" type="tns:objectRefType"
+												minOccurs="0">
+											</element>
+											<element name="UDF" type="NCName" minOccurs="0"
+												maxOccurs="unbounded"></element>
+										</sequence>
+									</complexType>
+									<unique name="uniqueDesensitizeUDF">
+										<selector xpath=".">
+										</selector>
+										<field xpath="tns:UDF"></field>
+									</unique>
+								</element>
+							</sequence>
 						</complexType>
+
+						<unique name="uniqueRestrictedDataCategory">
+							<selector xpath="tns:desensitize/tns:data-category-ref"></selector>
+							<field xpath="@refid"></field>
+						</unique>
 					</element>
 				</sequence>
 			</extension>
 		</complexContent>
 	</complexType>
-
 	<element name="vocabulary">
 		<complexType>
 			<sequence>
@@ -196,7 +219,6 @@
 					maxOccurs="1" type="tns:infoType"></element>
 				<element name="user-category-container" type="tns:userCategoryContainerType"
 					minOccurs="0" maxOccurs="unbounded">
-
 					<key name="user-category-identifier">
 						<selector xpath="tns:user-category"></selector>
 						<field xpath="@id"></field>
@@ -237,9 +259,41 @@
 						<sequence>
 							<choice minOccurs="1" maxOccurs="unbounded">
 								<element name="allow" type="tns:rulingType">
+									<unique name="uniqueAllowUserCategory">
+										<selector xpath="tns:user-category-ref">
+										</selector>
+										<field xpath="@refid"></field>
+									</unique>
+									<unique name="uniqueAllowDataCategory">
+										<selector xpath="tns:data-category-ref">
+										</selector>
+										<field xpath="@refid"></field>
+									</unique>
 								</element>
-								<element name="deny" type="tns:rulingType"></element>
-								<element name="restrict" type="tns:restrictType"></element>
+								<element name="deny" type="tns:rulingType">
+									<unique name="uniqueDenyUserCategory">
+										<selector xpath="tns:user-category-ref">
+										</selector>
+										<field xpath="@refid"></field>
+									</unique>
+									<unique name="uniqueDenyDataCategory">
+										<selector xpath="tns:data-category-ref">
+										</selector>
+										<field xpath="@refid"></field>
+									</unique>
+								</element>
+								<element name="restrict" type="tns:restrictType">
+									<unique name="uniqueRestrictUserCategory">
+										<selector xpath="tns:user-category-ref">
+										</selector>
+										<field xpath="@refid"></field>
+									</unique>
+									<unique name="uniqueRestrictwDataCategory">
+										<selector xpath="tns:data-category-ref">
+										</selector>
+										<field xpath="@refid"></field>
+									</unique>
+								</element>
 							</choice>
 						</sequence>
 					</complexType>

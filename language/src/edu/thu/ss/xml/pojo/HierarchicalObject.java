@@ -8,21 +8,22 @@ import org.w3c.dom.Node;
 import edu.thu.ss.xml.parser.ParserConstant;
 import edu.thu.ss.xml.parser.XMLUtil;
 
-public class HierarchicalObject extends DescribedObject {
+public class HierarchicalObject<T extends HierarchicalObject<T>> extends DescribedObject {
 	protected String parentId;
 
-	protected HierarchicalObject parent;
-	protected List<HierarchicalObject> children = new ArrayList<>();
+	protected T parent;
+	protected List<T> children = new ArrayList<>();
 
-	public void buildRelation(HierarchicalObject... children) {
-		for (HierarchicalObject child : children) {
+	@SuppressWarnings("unchecked")
+	public void buildRelation(T... children) {
+		for (T child : children) {
 			this.children.add(child);
-			child.parent = this;
+			child.parent = (T) this;
 		}
 	}
 
-	public boolean ancestorOf(HierarchicalObject obj) {
-		HierarchicalObject p = obj.parent;
+	public boolean ancestorOf(T obj) {
+		T p = obj.parent;
 		while (p != null) {
 			if (this.id.equals(p.id)) {
 				return true;
@@ -32,8 +33,9 @@ public class HierarchicalObject extends DescribedObject {
 		return false;
 	}
 
-	public boolean descedantOf(HierarchicalObject obj) {
-		return obj.ancestorOf(this);
+	@SuppressWarnings("unchecked")
+	public boolean descedantOf(T obj) {
+		return obj.ancestorOf((T) this);
 	}
 
 	public String getParentId() {
@@ -48,6 +50,7 @@ public class HierarchicalObject extends DescribedObject {
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -56,13 +59,32 @@ public class HierarchicalObject extends DescribedObject {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		HierarchicalObject other = (HierarchicalObject) obj;
+		T other = (T) obj;
 		if (parentId == null) {
 			if (other.parentId != null)
 				return false;
 		} else if (!parentId.equals(other.parentId))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(super.toString());
+		if (parentId != null) {
+			sb.append("\tparentId: ");
+			sb.append(parentId);
+		}
+		if (children.size() > 0) {
+			sb.append("\tchildIds: ");
+			for (T child : children) {
+				sb.append(child.id);
+				sb.append(' ');
+			}
+		}
+		sb.append('\t');
+		return sb.toString();
 	}
 
 	@Override

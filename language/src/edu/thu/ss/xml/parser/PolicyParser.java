@@ -9,27 +9,31 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import edu.thu.ss.xml.pojo.DataCategoryContainer;
+import edu.thu.ss.xml.analyzer.PolicyAnalyzer;
+import edu.thu.ss.xml.analyzer.RuleResolver;
+import edu.thu.ss.xml.analyzer.RuleSimplifier;
+import edu.thu.ss.xml.analyzer.SyntacticConsistencyChecker;
 import edu.thu.ss.xml.pojo.Info;
 import edu.thu.ss.xml.pojo.Policy;
 import edu.thu.ss.xml.pojo.Rule;
-import edu.thu.ss.xml.pojo.UserCategoryContainer;
 import edu.thu.ss.xml.pojo.Vocabulary;
 
 public class PolicyParser implements ParserConstant {
 
+	@SuppressWarnings("unused")
 	private static Logger logger = LoggerFactory.getLogger(PolicyParser.class);
 
-	private RuleAnalyzer analyzer;
-	private VocabularyParser vocabParser;
+	private List<PolicyAnalyzer> analyzers;
 
 	protected void init() {
-		analyzer = new RuleAnalyzer();
-		vocabParser = new VocabularyParser();
+		analyzers = new ArrayList<>();
+		analyzers.add(new RuleResolver());
+		analyzers.add(new SyntacticConsistencyChecker());
+		analyzers.add(new RuleSimplifier());
+
 	}
 
 	protected void cleanup() {
-
 	}
 
 	public Policy parse(String path) throws ParsingException {
@@ -61,8 +65,8 @@ public class PolicyParser implements ParserConstant {
 					parseRules(node, policy);
 				}
 			}
-			analyzeReferences(policy);
 
+			analyzePolicy(policy);
 		} catch (ParsingException e) {
 			throw e;
 		} catch (Exception e) {
@@ -112,36 +116,21 @@ public class PolicyParser implements ParserConstant {
 		policy.setVocabularyLocation(location);
 		policy.setUserRef(userRef);
 		policy.setDataRef(dataRef);
-
+		VocabularyParser vocabParser = new VocabularyParser();
 		Vocabulary vocabulary = vocabParser.parse(location, userRef, dataRef);
 		policy.setUsers(vocabulary.getUserCategories(userRef));
 		policy.setDatas(vocabulary.getDataCategories(dataRef));
 
 	}
 
-	private void analyzeReferences(Policy policy) throws ParsingException {
-		List<Rule> rules = policy.getRules();
-		UserCategoryContainer userContainer = policy.getUsers();
-		DataCategoryContainer dataContainer = policy.getDatas();
-		boolean error = false;
-		for (Rule rule : rules) {
-			error = error || analyzer.subsitute(rule, userContainer, dataContainer);
-		}
-		if (error) {
-			throw new ParsingException(
-					"Error detected when analyzing category references in rule, see error messages above.");
+	private void analyzePolicy(Policy policy) throws ParsingException {
+		for (PolicyAnalyzer analyzer : analyzers) {
+			boolean error = analyzer.analyze(policy);
+			if (error && analyzer.stopOnError()) {
+				throw new ParsingException(analyzer.errorMsg());
+			}
 		}
 
-		for (Rule rule : rules) {
-			error = error || analyzer.consistencyCheck(rule);
-		}
-		if (error) {
-			throw new ParsingException(
-					"Error detected when checking consistency of restricted data categories, see error messages above");
-		}
-		for (Rule rule : rules) {
-			analyzer.simplify(rule);
-		}
 	}
 
 }

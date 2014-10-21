@@ -93,7 +93,7 @@ public class Rule extends DescribedObject {
 			sb.append("\tData Categories: ");
 			for (DataCategoryRef data : dataRefs) {
 				sb.append(data);
-				sb.append("\n");
+				sb.append(" ");
 			}
 			sb.append("\n");
 		}
