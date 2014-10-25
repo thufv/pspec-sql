@@ -5,16 +5,19 @@ import org.w3c.dom.Node;
 import edu.thu.ss.xml.parser.ParserConstant;
 import edu.thu.ss.xml.parser.XMLUtil;
 
-public class DataCategoryRef extends ObjectRef {
-	protected DataCategory data;
+public class DataCategoryRef extends CategoryRef<DataCategory> {
 	protected Action action = Action.root;
 
 	public void setData(DataCategory data) {
-		this.data = data;
+		this.category = data;
 	}
 
 	public DataCategory getData() {
-		return data;
+		return category;
+	}
+
+	public Action getAction() {
+		return action;
 	}
 
 	@Override
@@ -29,6 +32,8 @@ public class DataCategoryRef extends ObjectRef {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
+
+		sb.append("Data Category: ");
 		sb.append(refid);
 		sb.append('(');
 		sb.append(action);

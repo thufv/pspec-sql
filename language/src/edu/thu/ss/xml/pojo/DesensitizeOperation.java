@@ -2,7 +2,7 @@ package edu.thu.ss.xml.pojo;
 
 import org.w3c.dom.Node;
 
-public class DesensitizeOperation {
+public class DesensitizeOperation implements Parsable {
 	/**
 	 * loaded implicitly from metastore
 	 */

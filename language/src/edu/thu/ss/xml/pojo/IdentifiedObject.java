@@ -5,7 +5,7 @@ import org.w3c.dom.Node;
 import edu.thu.ss.xml.parser.ParserConstant;
 import edu.thu.ss.xml.parser.XMLUtil;
 
-public class IdentifiedObject {
+public class IdentifiedObject implements Parsable {
 
 	protected String id;
 

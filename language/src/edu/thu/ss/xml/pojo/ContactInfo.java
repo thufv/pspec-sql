@@ -5,7 +5,7 @@ import org.w3c.dom.NodeList;
 
 import edu.thu.ss.xml.parser.ParserConstant;
 
-public class ContactInfo {
+public class ContactInfo implements Parsable {
 
 	protected String name;
 	protected String email;

@@ -5,7 +5,7 @@ import org.w3c.dom.Node;
 import edu.thu.ss.xml.parser.ParserConstant;
 import edu.thu.ss.xml.parser.XMLUtil;
 
-public class ObjectRef {
+public class ObjectRef implements Parsable {
 	protected String refid;
 
 	public void parse(Node node) {

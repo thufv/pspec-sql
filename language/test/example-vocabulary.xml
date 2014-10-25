@@ -21,13 +21,20 @@
 	</user-category-container>
 	
 	
-	<data-category-container id="school-data" base="default-data">
-		<data-category id="student-id" parent="pii">
-		</data-category>
-		<data-category id="gpa" parent="pii">
-			<desensitize-operation>
-				<UDF>mapToRange</UDF>
-			</desensitize-operation>
-		</data-category>
+	<data-category-container id="school-data">
+		<data-category id="all"/>
+		<data-category id="pii" parent="all"/>
+		<data-category id="health" parent="all"/>
+		<data-category id="financial" parent="all"/>
+		<data-category id="name" parent="pii"/>
+		<data-category id="ssn" parent="pii"/>
+		<data-category id="contact" parent="pii"/>
+		<data-category id="phone" parent="contact"/>
+		<data-category id="email" parent="contact"/>
+		<data-category id="disease" parent="health"/>
+		<data-category id="health-test" parent="health"/>
+		<data-category id="income" parent="financial"/>
+		<data-category id="tax" parent="financial"/>
+		<data-category id="salary" parent="tax"/>
 	</data-category-container>
 </vocabulary>

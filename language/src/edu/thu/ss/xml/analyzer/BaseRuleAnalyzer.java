@@ -5,7 +5,7 @@ import edu.thu.ss.xml.pojo.Policy;
 import edu.thu.ss.xml.pojo.Rule;
 import edu.thu.ss.xml.pojo.UserCategoryContainer;
 
-public abstract class BaseRuleAnalyzer implements PolicyAnalyzer {
+public abstract class BaseRuleAnalyzer extends BasePolicyAnalyzer {
 
 	@Override
 	public boolean analyze(Policy policy) {

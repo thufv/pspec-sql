@@ -3,50 +3,39 @@ package edu.thu.ss.xml.analyzer;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import edu.thu.ss.xml.pojo.CategoryRef;
 import edu.thu.ss.xml.pojo.DataCategoryContainer;
-import edu.thu.ss.xml.pojo.DataCategoryRef;
 import edu.thu.ss.xml.pojo.Rule;
 import edu.thu.ss.xml.pojo.UserCategoryContainer;
-import edu.thu.ss.xml.pojo.UserCategoryRef;
 
 public class RuleSimplifier extends BaseRuleAnalyzer {
+	private static Logger logger = LoggerFactory.getLogger(RuleSimplifier.class);
+
 	@Override
 	protected boolean analyzeRule(Rule rule, UserCategoryContainer users, DataCategoryContainer datas) {
-		simplifyUserCategories(rule.getUserRefs());
-		simplifyDataCategories(rule.getDataRefs());
+		simplifyCategories(rule.getUserRefs(), rule.getId());
+		simplifyCategories(rule.getDataRefs(), rule.getId());
 		return false;
 	}
 
-	private void simplifyUserCategories(Set<UserCategoryRef> users) {
-		Iterator<UserCategoryRef> it = users.iterator();
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private <T extends CategoryRef> void simplifyCategories(Set<T> categories, String id) {
+		Iterator<T> it = categories.iterator();
 		while (it.hasNext()) {
-			UserCategoryRef ref = it.next();
+			T ref1 = it.next();
 			boolean removable = false;
-			for (UserCategoryRef ref2 : users) {
-				if (ref.getUser().descedantOf(ref2.getUser())) {
+			for (T ref2 : categories) {
+				if (ref1.getCategory().descedantOf(ref2.getCategory()) && ref1 != ref2) {
 					removable = true;
 					break;
 				}
 			}
 			if (removable) {
 				it.remove();
-			}
-		}
-	}
-
-	private void simplifyDataCategories(Set<DataCategoryRef> datas) {
-		Iterator<DataCategoryRef> it = datas.iterator();
-		while (it.hasNext()) {
-			DataCategoryRef ref = it.next();
-			boolean removable = false;
-			for (DataCategoryRef ref2 : datas) {
-				if (ref.getData().descedantOf(ref2.getData())) {
-					removable = true;
-					break;
-				}
-			}
-			if (removable) {
-				it.remove();
+				logger.warn("{} is removed from rule: {} since it is redundant.", ref1, id);
 			}
 		}
 	}

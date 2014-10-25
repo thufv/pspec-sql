@@ -1,8 +1,6 @@
 package edu.thu.ss.xml.pojo;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.w3c.dom.Node;
@@ -21,9 +19,29 @@ public class Rule extends DescribedObject {
 	protected Set<UserCategoryRef> userRefs = new HashSet<>();
 	protected Set<DataCategoryRef> dataRefs = new HashSet<>();
 
-	protected List<DataAssociation> associations = new ArrayList<>();
+	protected Set<DataAssociation> associations = new HashSet<>();
 
 	protected Restriction restriction;
+
+	public Set<UserCategoryRef> getUserRefs() {
+		return userRefs;
+	}
+
+	public Set<DataCategoryRef> getDataRefs() {
+		return dataRefs;
+	}
+
+	public Set<DataAssociation> getAssociations() {
+		return associations;
+	}
+
+	public Restriction getRestriction() {
+		return restriction;
+	}
+
+	public Ruling getRuling() {
+		return ruling;
+	}
 
 	@Override
 	public void parse(Node ruleNode) {
@@ -55,22 +73,6 @@ public class Rule extends DescribedObject {
 		}
 	}
 
-	public Set<UserCategoryRef> getUserRefs() {
-		return userRefs;
-	}
-
-	public Set<DataCategoryRef> getDataRefs() {
-		return dataRefs;
-	}
-
-	public List<DataAssociation> getAssociations() {
-		return associations;
-	}
-
-	public Restriction getRestriction() {
-		return restriction;
-	}
-
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -82,27 +84,21 @@ public class Rule extends DescribedObject {
 		sb.append(ruling);
 		sb.append("\n");
 
-		sb.append("\tUser Categories: ");
 		for (UserCategoryRef user : userRefs) {
-			sb.append(user.refid);
-			sb.append(" ");
-		}
-		sb.append("\n");
-
-		if (dataRefs.size() > 0) {
-			sb.append("\tData Categories: ");
-			for (DataCategoryRef data : dataRefs) {
-				sb.append(data);
-				sb.append(" ");
-			}
+			sb.append('\t');
+			sb.append(user);
 			sb.append("\n");
 		}
-		if (associations.size() > 0) {
-			sb.append("\tData Associations: ");
-			for (DataAssociation obj : associations) {
-				sb.append(obj);
-				sb.append("\n");
-			}
+
+		for (DataCategoryRef data : dataRefs) {
+			sb.append('\t');
+			sb.append(data);
+			sb.append("\n");
+		}
+
+		for (DataAssociation obj : associations) {
+			sb.append('\t');
+			sb.append(obj);
 			sb.append("\n");
 		}
 

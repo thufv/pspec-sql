@@ -8,7 +8,7 @@ import org.w3c.dom.NodeList;
 
 import edu.thu.ss.xml.parser.ParserConstant;
 
-public class Restriction {
+public class Restriction implements Parsable {
 
 	private Set<Desensitization> desensitizations = new HashSet<Desensitization>();
 

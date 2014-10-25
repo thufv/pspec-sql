@@ -74,7 +74,7 @@ public class SyntacticConsistencyChecker extends BaseRuleAnalyzer {
 						+ rule.getId());
 				return true;
 			}
-			DataAssociation association = rule.getAssociations().get(0);
+			DataAssociation association = rule.getAssociations().iterator().next();
 			for (DataCategoryRef dataRef : de.getDataRefs()) {
 				if (!association.getDataRefs().contains(dataRef)) {
 					logger.error("Restricted data category: " + dataRef.getRefid()

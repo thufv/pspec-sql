@@ -18,7 +18,17 @@ public class Policy {
 
 	protected List<Rule> rules;
 
+	protected List<ExpandedRule> expandedRules;
+
 	protected Ruling defaultRuling;
+
+	public void setExpandedRules(List<ExpandedRule> expandedRules) {
+		this.expandedRules = expandedRules;
+	}
+
+	public List<ExpandedRule> getExpandedRules() {
+		return expandedRules;
+	}
 
 	public String getVocabularyLocation() {
 		return vocabularyLocation;
@@ -108,11 +118,18 @@ public class Policy {
 		sb.append(defaultRuling);
 		sb.append("\n");
 
-		sb.append("Rules:\n");
+		/*
+		 * sb.append("Rules:\n");
 		for (Rule rule : rules) {
 			sb.append(rule);
 			sb.append("\n");
+		}*/
+		sb.append("Expanded Rules:\n");
+		for (ExpandedRule rule : expandedRules) {
+			sb.append(rule);
+			sb.append("\n");
 		}
+
 		return sb.toString();
 
 	}

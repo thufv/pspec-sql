@@ -23,7 +23,7 @@ public class HierarchicalObject<T extends HierarchicalObject<T>> extends Describ
 	}
 
 	public boolean ancestorOf(T obj) {
-		T p = obj.parent;
+		T p = obj;
 		while (p != null) {
 			if (this.id.equals(p.id)) {
 				return true;

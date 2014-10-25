@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <privacy-policy default-ruling="allow"
 	xmlns="http://www.example.org/privacy"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -19,25 +18,20 @@
 		<data-category-container refid="school-data" />
 	</vocabulary-ref>
 	<rules>
-		<allow id="allow-teacher-gpa">
-			<user-category-ref refid="teacher"/>
-			<data-category-ref refid="student-id"/>
-			<data-category-ref refid="gpa"/>
+		<allow id="allow-all">
+			<user-category-ref refid="employee"/>
+			<data-category-ref refid="pii" action="all"/>
 		</allow>
-		
-		<restrict id="restrict-gpa">
+		<deny id="deny-name-phone">
+			<user-category-ref refid="employee"/>
+			<data-category-ref refid="contact"/>
+		</deny>
+		<deny id="deny-disease">
 			<user-category-ref refid="employee"/>
 			<data-association>
-				<data-category-ref refid="gpa" action="project"/>
-				<data-category-ref refid="student-id"/>
+				<data-category-ref refid="phone"/>
+				<data-category-ref refid="disease"/>
 			</data-association>
-			<restriction>
-				<desensitize>
-					<data-category-ref refid="gpa"/>
-					<UDF>mapToRange</UDF>
-				</desensitize>
-			</restriction>
-		</restrict>
+		</deny>
 	</rules>
 </privacy-policy>
-	

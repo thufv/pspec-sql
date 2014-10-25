@@ -9,7 +9,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import edu.thu.ss.xml.analyzer.ExpandedRedundancyAnalyzer;
 import edu.thu.ss.xml.analyzer.PolicyAnalyzer;
+import edu.thu.ss.xml.analyzer.PolicyExpander;
 import edu.thu.ss.xml.analyzer.RuleResolver;
 import edu.thu.ss.xml.analyzer.RuleSimplifier;
 import edu.thu.ss.xml.analyzer.SyntacticConsistencyChecker;
@@ -30,7 +32,9 @@ public class PolicyParser implements ParserConstant {
 		analyzers.add(new RuleResolver());
 		analyzers.add(new SyntacticConsistencyChecker());
 		analyzers.add(new RuleSimplifier());
-
+		// analyzers.add(new RedundancyAnalyzer());
+		analyzers.add(new PolicyExpander());
+		analyzers.add(new ExpandedRedundancyAnalyzer());
 	}
 
 	protected void cleanup() {

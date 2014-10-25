@@ -8,7 +8,7 @@ import org.w3c.dom.NodeList;
 
 import edu.thu.ss.xml.parser.ParserConstant;
 
-public class DataAssociation {
+public class DataAssociation implements Parsable {
 	protected Set<DataCategoryRef> dataRefs = new HashSet<>();
 
 	public Set<DataCategoryRef> getDataRefs() {
@@ -31,14 +31,15 @@ public class DataAssociation {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
+		sb.append("Data Association: {");
 		int count = 0;
 		for (DataCategoryRef ref : dataRefs) {
 			sb.append(ref);
 			if (count++ < dataRefs.size() - 1) {
-				sb.append('\t');
+				sb.append(", ");
 			}
 		}
+		sb.append("}");
 		return sb.toString();
 	}
-
 }
