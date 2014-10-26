@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<privacy-policy xmlns="http://www.example.org/privacy"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.example.org/privacy privacy.xsd">
+	<policy-information id="school-policy">
+		<issuer>
+			<name>luochen</name>
+			<organization>Tsinghua</organization>
+			<e-mail>luochen01@vip.qq.com</e-mail>
+			<address>Tsinghua</address>
+			<country>China</country>
+		</issuer>
+	</policy-information>
+	
+	<vocabulary-ref location="res/example-vocabulary.xml">
+		<user-category-container refid="social-users"/>
+		<data-category-container refid="social-data" />
+	</vocabulary-ref>
+	<rules>
+		<rule id="forbid">
+			<user-category-ref refid="employee"/>
+			<user-category-ref refid="ceo"/>
+			<data-category-ref refid="pii" action="all">
+				<exclude>
+					<data-category-ref refid="ip"/>
+				</exclude>
+			</data-category-ref>
+			<data-category-ref refid="ip" action="all"/>
+			<restriction>
+				<forbid/>
+			</restriction>
+		</rule>
+		<rule id="ip">
+			<user-category-ref refid="employee">
+			</user-category-ref>
+			<data-category-ref refid="ip" action="all">
+			</data-category-ref>
+			<restriction>
+				<desensitize>
+					<UDF>truncate</UDF>
+				</desensitize>
+			</restriction>
+		</rule>
+		
+		<rule id="pii-disease">
+			<user-category-ref refid="employee">
+			</user-category-ref>
+			<data-association>
+				<data-category-ref refid="pii"/>
+				<data-category-ref refid="disease"/>
+			</data-association>
+			<restriction>
+				<forbid>
+				</forbid>
+			</restriction>
+		</rule>
+		
+		<rule id="pii-salary">
+			<user-category-ref refid="employee"/>
+			<data-association>
+				<data-category-ref refid="pii"/>
+				<data-category-ref refid="salary"/>
+			</data-association>
+			<restriction>
+				<desensitize>
+					<data-category-ref  refid="salary"/>
+					<UDF>range</UDF>
+				</desensitize>
+			</restriction>
+			<restriction>
+				<forbid>
+				</forbid>
+			</restriction>
+		</rule>
+		
+		<rule id="ip-salary">
+			<user-category-ref refid="employee"/>
+			<data-association>
+				<data-category-ref refid="ip"/>
+				<data-category-ref refid="salary"/>
+			</data-association>
+			<restriction>
+				<desensitize>
+					<data-category-ref  refid="ip"/>
+					<UDF>truncate</UDF>
+				</desensitize>
+				<desensitize>
+					<data-category-ref  refid="salary"/>
+					<UDF>range</UDF>
+				</desensitize>
+			</restriction>
+			<restriction>
+				<desensitize>
+					<data-category-ref  refid="ip"/>
+					<UDF>truncate</UDF>
+				</desensitize>
+			</restriction>
+		</rule>
+	</rules>
+</privacy-policy>
