@@ -20,25 +20,18 @@
 		<rule id="forbid">
 			<user-category-ref refid="employee"/>
 			<user-category-ref refid="ceo"/>
-			<data-category-ref refid="pii" action="all">
-				<exclude>
-					<data-category-ref refid="ip"/>
-				</exclude>
-			</data-category-ref>
-			<data-category-ref refid="ip" action="all"/>
+			<data-category-ref refid="pii" action="all"/>
 			<restriction>
 				<forbid/>
 			</restriction>
 		</rule>
 		<rule id="ip">
-			<user-category-ref refid="employee">
-			</user-category-ref>
-			<data-category-ref refid="ip" action="all">
-			</data-category-ref>
+			<user-category-ref refid="ceo"/>
+			<data-category-ref refid="pii" action="all"/>
+			<data-category-ref refid="health" action="all"/>
 			<restriction>
-				<desensitize>
-					<UDF>truncate</UDF>
-				</desensitize>
+				<forbid>
+				</forbid>
 			</restriction>
 		</rule>
 		

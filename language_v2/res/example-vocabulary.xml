@@ -23,9 +23,9 @@
 	
 	<data-category-container id="social-data">
 		<data-category id="all"/>
-		<data-category id="pii" parent="all"/>
-		<data-category id="health" parent="all"/>
-		<data-category id="financial" parent="all"/>
+		<data-category id="pii"/>
+		<data-category id="health"/>
+		<data-category id="financial" />
 		<data-category id="name" parent="pii"/>
 		<data-category id="ip" parent="pii">
 			<desensitize-operation>

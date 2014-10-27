@@ -2,7 +2,8 @@ package edu.thu.ss.xml.parser;
 
 import org.junit.Test;
 
-import edu.thu.ss.xml.pojo.Policy;
+import edu.thu.ss.lang.parser.PolicyParser;
+import edu.thu.ss.lang.pojo.Policy;
 
 public class PolicyParserTest {
 
