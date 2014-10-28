@@ -17,9 +17,9 @@ import edu.thu.ss.lang.analyzer.RuleSimplifier;
 import edu.thu.ss.lang.analyzer.SimpleRedundancyAnalyzer;
 import edu.thu.ss.lang.pojo.Info;
 import edu.thu.ss.lang.pojo.Policy;
-import edu.thu.ss.lang.pojo.Rule;
-import edu.thu.ss.lang.pojo.Vocabulary;
 import edu.thu.ss.lang.util.XMLUtil;
+import edu.thu.ss.lang.xml.XMLRule;
+import edu.thu.ss.lang.xml.XMLVocabulary;
 
 public class PolicyParser implements ParserConstant {
 
@@ -87,13 +87,13 @@ public class PolicyParser implements ParserConstant {
 	}
 
 	private void parseRules(Node rulesNode, Policy policy) {
-		List<Rule> rules = new ArrayList<>();
+		List<XMLRule> rules = new ArrayList<>();
 		NodeList list = rulesNode.getChildNodes();
 		for (int i = 0; i < list.getLength(); i++) {
 			Node node = list.item(i);
 			String name = node.getLocalName();
 			if (Ele_Policy_Rule.equals(name)) {
-				Rule rule = new Rule();
+				XMLRule rule = new XMLRule();
 				rule.parse(node);
 				rules.add(rule);
 			}
@@ -119,7 +119,7 @@ public class PolicyParser implements ParserConstant {
 		policy.setUserRef(userRef);
 		policy.setDataRef(dataRef);
 		VocabularyParser vocabParser = new VocabularyParser();
-		Vocabulary vocabulary = vocabParser.parse(location, userRef, dataRef);
+		XMLVocabulary vocabulary = vocabParser.parse(location, userRef, dataRef);
 		policy.setUsers(vocabulary.getUserCategories(userRef));
 		policy.setDatas(vocabulary.getDataCategories(dataRef));
 

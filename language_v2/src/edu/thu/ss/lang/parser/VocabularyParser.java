@@ -15,31 +15,31 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.lang.analyzer.VocabularyAnalyzer;
-import edu.thu.ss.lang.pojo.CategoryContainer;
-import edu.thu.ss.lang.pojo.DataCategoryContainer;
-import edu.thu.ss.lang.pojo.HierarchicalObject;
 import edu.thu.ss.lang.pojo.Info;
-import edu.thu.ss.lang.pojo.UserCategoryContainer;
-import edu.thu.ss.lang.pojo.Vocabulary;
 import edu.thu.ss.lang.util.XMLUtil;
+import edu.thu.ss.lang.xml.XMLCategoryContainer;
+import edu.thu.ss.lang.xml.XMLDataCategoryContainer;
+import edu.thu.ss.lang.xml.XMLHierarchicalObject;
+import edu.thu.ss.lang.xml.XMLUserCategoryContainer;
+import edu.thu.ss.lang.xml.XMLVocabulary;
 
 public class VocabularyParser implements ParserConstant {
 
-	protected Map<URI, Vocabulary> vocabularies;
+	protected Map<URI, XMLVocabulary> vocabularies;
 
-	protected List<UserCategoryContainer> userContainers;
+	protected List<XMLUserCategoryContainer> userContainers;
 
-	protected List<DataCategoryContainer> dataContainers;
+	protected List<XMLDataCategoryContainer> dataContainers;
 
-	protected UserCategoryContainer userContainer;
+	protected XMLUserCategoryContainer userContainer;
 
-	protected DataCategoryContainer dataContainer;
+	protected XMLDataCategoryContainer dataContainer;
 
 	protected boolean error = false;
 
 	private static Logger logger = LoggerFactory.getLogger(VocabularyParser.class);
 
-	public Vocabulary parse(String path, String user, String data) throws Exception {
+	public XMLVocabulary parse(String path, String user, String data) throws Exception {
 		init();
 		loadVocabularies(path);
 
@@ -59,7 +59,7 @@ public class VocabularyParser implements ParserConstant {
 			throw new ParsingException("Fail to parse vocabularies, see error messages above");
 		}
 
-		Vocabulary vocabulary = new Vocabulary();
+		XMLVocabulary vocabulary = new XMLVocabulary();
 		vocabulary.addDataCategories(data, dataContainer);
 		vocabulary.addUserCategories(user, userContainer);
 		return vocabulary;
@@ -69,14 +69,14 @@ public class VocabularyParser implements ParserConstant {
 		this.vocabularies = new HashMap<>();
 		this.userContainers = new ArrayList<>();
 		this.dataContainers = new ArrayList<>();
-		this.userContainer = new UserCategoryContainer();
-		this.dataContainer = new DataCategoryContainer();
+		this.userContainer = new XMLUserCategoryContainer();
+		this.dataContainer = new XMLDataCategoryContainer();
 		this.error = false;
 	}
 
 	private void loadVocabularies(String path) throws Exception {
 		while (path != null) {
-			Vocabulary vocabulary = new Vocabulary();
+			XMLVocabulary vocabulary = new XMLVocabulary();
 			Document document = XMLUtil.parseDocument(path, Schema_Location);
 			Node rootNode = document.getElementsByTagName(ParserConstant.Ele_Vocabulary).item(0);
 			vocabulary.setRootNode(rootNode);
@@ -96,7 +96,7 @@ public class VocabularyParser implements ParserConstant {
 
 	private void uniqueIdCheck(String element) throws ParsingException {
 		Set<String> ids = new HashSet<>();
-		for (Vocabulary vocabulary : vocabularies.values()) {
+		for (XMLVocabulary vocabulary : vocabularies.values()) {
 			Node rootNode = vocabulary.getRootNode();
 			NodeList list = rootNode.getChildNodes();
 			for (int i = 0; i < list.getLength(); i++) {
@@ -115,10 +115,10 @@ public class VocabularyParser implements ParserConstant {
 	}
 
 	private void parseUser(String path, String user) throws Exception {
-		Vocabulary vocabulary = getVocabulary(path);
+		XMLVocabulary vocabulary = getVocabulary(path);
 		String base = vocabulary.getBase();
 		while (user != null) {
-			UserCategoryContainer container = parseUserCategories(vocabulary, user);
+			XMLUserCategoryContainer container = parseUserCategories(vocabulary, user);
 			if (container == null) {
 				if (base != null) {
 					vocabulary = getVocabulary(base);
@@ -134,10 +134,10 @@ public class VocabularyParser implements ParserConstant {
 	}
 
 	private void parseData(String path, String data) throws Exception {
-		Vocabulary vocabulary = getVocabulary(path);
+		XMLVocabulary vocabulary = getVocabulary(path);
 		String base = vocabulary.getBase();
 		while (data != null) {
-			DataCategoryContainer container = parseDataCategories(vocabulary, data);
+			XMLDataCategoryContainer container = parseDataCategories(vocabulary, data);
 			if (container == null) {
 				if (base != null) {
 					vocabulary = getVocabulary(base);
@@ -152,7 +152,7 @@ public class VocabularyParser implements ParserConstant {
 		}
 	}
 
-	private void parseBase(Vocabulary vocabulary) {
+	private void parseBase(XMLVocabulary vocabulary) {
 		Node root = vocabulary.getRootNode();
 		NodeList list = root.getChildNodes();
 		String base = XMLUtil.getAttrValue(root, Attr_Vocabulary_Base);
@@ -169,7 +169,7 @@ public class VocabularyParser implements ParserConstant {
 		}
 	}
 
-	private UserCategoryContainer parseUserCategories(Vocabulary vocabulary, String user) {
+	private XMLUserCategoryContainer parseUserCategories(XMLVocabulary vocabulary, String user) {
 		Node root = vocabulary.getRootNode();
 		NodeList list = root.getChildNodes();
 		for (int i = 0; i < list.getLength(); i++) {
@@ -178,7 +178,7 @@ public class VocabularyParser implements ParserConstant {
 			if (Ele_Vocabulary_User_Category_Container.equals(name)) {
 				String id = XMLUtil.getAttrValue(node, Attr_Id);
 				if (id.equals(user)) {
-					UserCategoryContainer container = new UserCategoryContainer();
+					XMLUserCategoryContainer container = new XMLUserCategoryContainer();
 					container.parse(node);
 					return container;
 				}
@@ -187,7 +187,7 @@ public class VocabularyParser implements ParserConstant {
 		return null;
 	}
 
-	private DataCategoryContainer parseDataCategories(Vocabulary vocabulary, String data) {
+	private XMLDataCategoryContainer parseDataCategories(XMLVocabulary vocabulary, String data) {
 		Node root = vocabulary.getRootNode();
 		NodeList list = root.getChildNodes();
 		for (int i = 0; i < list.getLength(); i++) {
@@ -196,7 +196,7 @@ public class VocabularyParser implements ParserConstant {
 			if (Ele_Vocabulary_Data_Category_Container.equals(name)) {
 				String id = XMLUtil.getAttrValue(node, Attr_Id);
 				if (id.equals(data)) {
-					DataCategoryContainer container = new DataCategoryContainer();
+					XMLDataCategoryContainer container = new XMLDataCategoryContainer();
 					container.parse(node);
 					return container;
 				}
@@ -206,30 +206,30 @@ public class VocabularyParser implements ParserConstant {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void analyzeReference(List list, CategoryContainer result) {
+	private void analyzeReference(List list, XMLCategoryContainer result) {
 		for (int i = 0; i < list.size(); i++) {
-			CategoryContainer container = (CategoryContainer) list.get(i);
+			XMLCategoryContainer container = (XMLCategoryContainer) list.get(i);
 			List<Object> categories = container.getCategories();
 			Map<String, Object> map = container.getIndex();
 			for (Object o : categories) {
-				HierarchicalObject obj = (HierarchicalObject) o;
+				XMLHierarchicalObject obj = (XMLHierarchicalObject) o;
 				String id = obj.getId();
 				if (result.getIndex().containsKey(id)) {
 					logger.error("Duplicate category id detected: " + id);
 					error = true;
 				}
-				result.set(id, (HierarchicalObject) map.get(id));
+				result.set(id, (XMLHierarchicalObject) map.get(id));
 			}
 		}
 		List categories = result.getCategories();
 		Map<String, Object> map = result.getIndex();
 		for (Object o : categories) {
-			HierarchicalObject obj = (HierarchicalObject) o;
+			XMLHierarchicalObject obj = (XMLHierarchicalObject) o;
 			String parentId = obj.getParentId();
 			if (parentId == null) {
 				result.getRoot().add(obj);
 			} else {
-				HierarchicalObject parent = (HierarchicalObject) map.get(parentId);
+				XMLHierarchicalObject parent = (XMLHierarchicalObject) map.get(parentId);
 				if (parent == null) {
 					logger.error("Fail to find parent for category: {} parentId: {}", obj.getId(), obj.getParentId());
 					error = true;
@@ -243,14 +243,14 @@ public class VocabularyParser implements ParserConstant {
 		}
 	}
 
-	private Vocabulary getVocabulary(String path) throws Exception {
+	private XMLVocabulary getVocabulary(String path) throws Exception {
 		URI uri = URI.create(path);
 		uri = uri.normalize();
-		Vocabulary vocabulary = vocabularies.get(uri);
+		XMLVocabulary vocabulary = vocabularies.get(uri);
 		return vocabulary;
 	}
 
-	private void putVocabulary(String path, Vocabulary vocabulary) {
+	private void putVocabulary(String path, XMLVocabulary vocabulary) {
 		URI uri = URI.create(path);
 		uri = uri.normalize();
 		vocabularies.put(uri, vocabulary);

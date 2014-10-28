@@ -1,4 +1,4 @@
-package edu.thu.ss.lang.pojo;
+package edu.thu.ss.lang.xml;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import org.w3c.dom.Node;
 import edu.thu.ss.lang.parser.ParserConstant;
 import edu.thu.ss.lang.util.XMLUtil;
 
-public class HierarchicalObject<T extends HierarchicalObject<T>> extends DescribedObject {
+public class XMLHierarchicalObject<T extends XMLHierarchicalObject<T>> extends XMLDescribedObject {
 	protected String parentId;
 
 	protected T parent;

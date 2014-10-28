@@ -6,23 +6,23 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.thu.ss.lang.pojo.DataAssociation;
 import edu.thu.ss.lang.pojo.DataCategory;
-import edu.thu.ss.lang.pojo.DataCategoryContainer;
-import edu.thu.ss.lang.pojo.DataCategoryRef;
-import edu.thu.ss.lang.pojo.Desensitization;
 import edu.thu.ss.lang.pojo.DesensitizeOperation;
-import edu.thu.ss.lang.pojo.Restriction;
-import edu.thu.ss.lang.pojo.Rule;
-import edu.thu.ss.lang.pojo.UserCategoryContainer;
 import edu.thu.ss.lang.util.SetUtil;
+import edu.thu.ss.lang.xml.XMLDataAssociation;
+import edu.thu.ss.lang.xml.XMLDataCategoryContainer;
+import edu.thu.ss.lang.xml.XMLDataCategoryRef;
+import edu.thu.ss.lang.xml.XMLDesensitization;
+import edu.thu.ss.lang.xml.XMLRestriction;
+import edu.thu.ss.lang.xml.XMLRule;
+import edu.thu.ss.lang.xml.XMLUserCategoryContainer;
 
 public class ConstraintChecker extends BaseRuleAnalyzer {
 	private static Logger logger = LoggerFactory.getLogger(ConstraintChecker.class);
 	private String ruleId;
 
 	@Override
-	public boolean analyzeRule(Rule rule, UserCategoryContainer users, DataCategoryContainer datas) {
+	public boolean analyzeRule(XMLRule rule, XMLUserCategoryContainer users, XMLDataCategoryContainer datas) {
 		if (rule.getDataRefs().size() == 0 && rule.getAssociations().size() == 0) {
 			logger.error("At least one data-category-ref or data-association should appear in rule: {}", rule.getId());
 			return true;
@@ -57,24 +57,24 @@ public class ConstraintChecker extends BaseRuleAnalyzer {
 	 * @param rule
 	 * @return
 	 */
-	private boolean checkAssociations(Rule rule) {
+	private boolean checkAssociations(XMLRule rule) {
 		boolean error = false;
-		Set<DataAssociation> associations = rule.getAssociations();
-		for (DataAssociation association : associations) {
+		Set<XMLDataAssociation> associations = rule.getAssociations();
+		for (XMLDataAssociation association : associations) {
 			error |= checkAssociaiton(association);
 		}
 		return error;
 	}
 
-	private boolean checkAssociaiton(DataAssociation association) {
+	private boolean checkAssociaiton(XMLDataAssociation association) {
 		boolean error = false;
-		Set<DataCategoryRef> set = association.getDataRefs();
+		Set<XMLDataCategoryRef> set = association.getDataRefs();
 
-		DataCategoryRef[] refs = set.toArray(new DataCategoryRef[set.size()]);
+		XMLDataCategoryRef[] refs = set.toArray(new XMLDataCategoryRef[set.size()]);
 		for (int i = 0; i < refs.length; i++) {
-			DataCategoryRef ref1 = refs[i];
+			XMLDataCategoryRef ref1 = refs[i];
 			for (int j = i + 1; j < refs.length; j++) {
-				DataCategoryRef ref2 = refs[j];
+				XMLDataCategoryRef ref2 = refs[j];
 				if (SetUtil.intersects(ref1.getMaterialized(), ref2.getMaterialized())) {
 					logger.error("Overlap of data category: {} and {} detected in data association in rule: {}.",
 							ref1.getRefid(), ref2.getRefid(), ruleId);
@@ -85,19 +85,19 @@ public class ConstraintChecker extends BaseRuleAnalyzer {
 		return error;
 	}
 
-	private boolean checkDataRestriction(Rule rule) {
-		List<Restriction> restrictions = rule.getRestrictions();
+	private boolean checkDataRestriction(XMLRule rule) {
+		List<XMLRestriction> restrictions = rule.getRestrictions();
 		if (restrictions.size() > 1) {
 			logger.error(
 					"Only one restriction should appear in rule when only data categories are referenced by rule: {}",
 					rule.getId());
 			return true;
 		}
-		Restriction restriction = restrictions.get(0);
+		XMLRestriction restriction = restrictions.get(0);
 		if (restriction.isForbid()) {
 			return false;
 		}
-		Set<Desensitization> desensitizations = restriction.getDesensitizations();
+		Set<XMLDesensitization> desensitizations = restriction.getDesensitizations();
 		if (desensitizations.size() > 1) {
 			logger.error(
 					"Only one desensitize should appear in rule when only data categories are referenced by rule: {}",
@@ -105,22 +105,22 @@ public class ConstraintChecker extends BaseRuleAnalyzer {
 			return true;
 		}
 		boolean error = false;
-		Desensitization de = desensitizations.iterator().next();
-		for (DataCategoryRef ref : rule.getDataRefs()) {
+		XMLDesensitization de = desensitizations.iterator().next();
+		for (XMLDataCategoryRef ref : rule.getDataRefs()) {
 			error |= checkInclusion(ref.getData(), de.getOperations());
 		}
 		return error;
 	}
 
-	private boolean checkAssociationRestriction(Rule rule) {
+	private boolean checkAssociationRestriction(XMLRule rule) {
 		boolean error = false;
-		List<Restriction> restrictions = rule.getRestrictions();
-		for (Restriction restriction : restrictions) {
+		List<XMLRestriction> restrictions = rule.getRestrictions();
+		for (XMLRestriction restriction : restrictions) {
 			if (restriction.isForbid()) {
 				continue;
 			}
-			for (Desensitization de : restriction.getDesensitizations()) {
-				for (DataCategoryRef ref : de.getDataRefs()) {
+			for (XMLDesensitization de : restriction.getDesensitizations()) {
+				for (XMLDataCategoryRef ref : de.getDataRefs()) {
 					error |= checkInclusion(ref.getCategory(), de.getOperations());
 				}
 			}
@@ -130,6 +130,9 @@ public class ConstraintChecker extends BaseRuleAnalyzer {
 
 	private boolean checkInclusion(DataCategory data, Set<DesensitizeOperation> operations) {
 		boolean error = false;
+		if (operations == null) {
+			return error;
+		}
 		for (DesensitizeOperation op : operations) {
 			if (!data.getOperations().contains(op)) {
 				logger.error("Desensitize operation: {} is not supported by data category: {} in rule: {}",

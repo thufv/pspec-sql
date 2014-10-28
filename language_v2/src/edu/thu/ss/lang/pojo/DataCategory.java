@@ -7,13 +7,19 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.lang.parser.ParserConstant;
+import edu.thu.ss.lang.xml.XMLHierarchicalObject;
 
-public class DataCategory extends HierarchicalObject<DataCategory> {
+public class DataCategory extends XMLHierarchicalObject<DataCategory> implements Comparable<DataCategory> {
 
 	protected Set<DesensitizeOperation> ops = new HashSet<>();
 
 	public Set<DesensitizeOperation> getOperations() {
 		return ops;
+	}
+
+	@Override
+	public int compareTo(DataCategory o) {
+		return Integer.compare(this.label, o.label);
 	}
 
 	@Override

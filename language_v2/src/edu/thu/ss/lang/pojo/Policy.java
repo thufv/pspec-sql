@@ -2,6 +2,10 @@ package edu.thu.ss.lang.pojo;
 
 import java.util.List;
 
+import edu.thu.ss.lang.xml.XMLDataCategoryContainer;
+import edu.thu.ss.lang.xml.XMLRule;
+import edu.thu.ss.lang.xml.XMLUserCategoryContainer;
+
 public class Policy {
 	protected Info info;
 
@@ -10,11 +14,11 @@ public class Policy {
 	protected String userRef;
 	protected String dataRef;
 
-	protected UserCategoryContainer users;
+	protected XMLUserCategoryContainer users;
 
-	protected DataCategoryContainer datas;
+	protected XMLDataCategoryContainer datas;
 
-	protected List<Rule> rules;
+	protected List<XMLRule> rules;
 
 	protected List<ExpandedRule> expandedRules;
 
@@ -58,27 +62,27 @@ public class Policy {
 		this.info = info;
 	}
 
-	public List<Rule> getRules() {
+	public List<XMLRule> getRules() {
 		return rules;
 	}
 
-	public void setRules(List<Rule> rules) {
+	public void setRules(List<XMLRule> rules) {
 		this.rules = rules;
 	}
 
-	public UserCategoryContainer getUsers() {
+	public XMLUserCategoryContainer getUsers() {
 		return users;
 	}
 
-	public void setUsers(UserCategoryContainer users) {
+	public void setUsers(XMLUserCategoryContainer users) {
 		this.users = users;
 	}
 
-	public DataCategoryContainer getDatas() {
+	public XMLDataCategoryContainer getDatas() {
 		return datas;
 	}
 
-	public void setDatas(DataCategoryContainer datas) {
+	public void setDatas(XMLDataCategoryContainer datas) {
 		this.datas = datas;
 	}
 

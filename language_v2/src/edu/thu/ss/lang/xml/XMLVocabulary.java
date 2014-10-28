@@ -1,19 +1,21 @@
-package edu.thu.ss.lang.pojo;
+package edu.thu.ss.lang.xml;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.w3c.dom.Node;
 
-public class Vocabulary {
+import edu.thu.ss.lang.pojo.Info;
+
+public class XMLVocabulary {
 
 	protected Info info;
 
 	protected String base;
 
-	protected Map<String, UserCategoryContainer> userContainers = new HashMap<>();
+	protected Map<String, XMLUserCategoryContainer> userContainers = new HashMap<>();
 
-	protected Map<String, DataCategoryContainer> dataContainers = new HashMap<>();
+	protected Map<String, XMLDataCategoryContainer> dataContainers = new HashMap<>();
 
 	protected Node rootNode;
 
@@ -41,19 +43,19 @@ public class Vocabulary {
 		this.base = base;
 	}
 
-	public void addUserCategories(String id, UserCategoryContainer categories) {
+	public void addUserCategories(String id, XMLUserCategoryContainer categories) {
 		userContainers.put(id, categories);
 	}
 
-	public void addDataCategories(String id, DataCategoryContainer categories) {
+	public void addDataCategories(String id, XMLDataCategoryContainer categories) {
 		dataContainers.put(id, categories);
 	}
 
-	public UserCategoryContainer getUserCategories(String id) {
+	public XMLUserCategoryContainer getUserCategories(String id) {
 		return userContainers.get(id);
 	}
 
-	public DataCategoryContainer getDataCategories(String id) {
+	public XMLDataCategoryContainer getDataCategories(String id) {
 		return dataContainers.get(id);
 	}
 }

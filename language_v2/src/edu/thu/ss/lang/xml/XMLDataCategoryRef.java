@@ -1,12 +1,14 @@
-package edu.thu.ss.lang.pojo;
+package edu.thu.ss.lang.xml;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.lang.parser.ParserConstant;
+import edu.thu.ss.lang.pojo.Action;
+import edu.thu.ss.lang.pojo.DataCategory;
 import edu.thu.ss.lang.util.XMLUtil;
 
-public class DataCategoryRef extends CategoryRef<DataCategory> {
+public class XMLDataCategoryRef extends XMLCategoryRef<DataCategory> implements Comparable<XMLDataCategoryRef> {
 	protected Action action = Action.root;
 
 	public void setData(DataCategory data) {
@@ -19,6 +21,15 @@ public class DataCategoryRef extends CategoryRef<DataCategory> {
 
 	public Action getAction() {
 		return action;
+	}
+
+	public int getLabel() {
+		return category.getLabel();
+	}
+
+	@Override
+	public int compareTo(XMLDataCategoryRef o) {
+		return Integer.compare(getLabel(), o.getLabel());
 	}
 
 	@Override
@@ -37,7 +48,7 @@ public class DataCategoryRef extends CategoryRef<DataCategory> {
 			Node node = list.item(i);
 			String name = node.getLocalName();
 			if (ParserConstant.Ele_Policy_Rule_DataRef.equals(name)) {
-				ObjectRef ref = new ObjectRef();
+				XMLObjectRef ref = new XMLObjectRef();
 				ref.parse(node);
 				excludeRefs.add(ref);
 			}
@@ -55,7 +66,7 @@ public class DataCategoryRef extends CategoryRef<DataCategory> {
 		sb.append(')');
 		if (excludeRefs.size() > 0) {
 			sb.append("\tExclude:");
-			for (ObjectRef ref : excludeRefs) {
+			for (XMLObjectRef ref : excludeRefs) {
 				sb.append(ref.refid);
 				sb.append(' ');
 			}
@@ -73,4 +84,5 @@ public class DataCategoryRef extends CategoryRef<DataCategory> {
 	public int hashCode() {
 		return super.hashCode();
 	}
+
 }

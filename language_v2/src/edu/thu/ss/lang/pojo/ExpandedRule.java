@@ -1,7 +1,12 @@
 package edu.thu.ss.lang.pojo;
 
-import java.util.List;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Set;
+
+import edu.thu.ss.lang.xml.XMLDataAssociation;
+import edu.thu.ss.lang.xml.XMLDataCategoryRef;
+import edu.thu.ss.lang.xml.XMLRule;
 
 public class ExpandedRule {
 
@@ -9,64 +14,64 @@ public class ExpandedRule {
 
 	protected Set<UserCategory> users;
 
-	protected Set<DataCategory> datas;
-	protected Action action;
+	protected DataActionPair[] datas;
 
-	protected DataAssociation association;
+	protected Restriction[] restrictions;
 
-	protected List<Restriction> restrictions;
-
-	private ExpandedRule(Rule rule, Set<UserCategory> users) {
+	private ExpandedRule(XMLRule rule, Set<UserCategory> users) {
 		this.ruleId = rule.getId();
-		this.restrictions = rule.getRestrictions();
 		this.users = users;
 	}
 
-	public ExpandedRule(Rule rule, Set<UserCategory> users, Action action, Set<DataCategory> datas) {
+	public ExpandedRule(XMLRule rule, Set<UserCategory> users, Action action, Set<DataCategory> datas) {
 		this(rule, users);
-		this.action = action;
-		this.datas = datas;
+
+		this.datas = new DataActionPair[1];
+		this.datas[0] = new DataActionPair(datas, action, Collections.min(datas).getLabel());
+		this.restrictions = new Restriction[1];
+		this.restrictions[0] = rule.getRestriction().toRestriction();
+		Desensitization de = this.restrictions[0].getDesensitization();
+		de.setDatas(datas);
 	}
 
-	public ExpandedRule(Rule rule, Set<UserCategory> users, DataAssociation association) {
+	public ExpandedRule(XMLRule rule, Set<UserCategory> users, XMLDataAssociation association) {
 		this(rule, users);
-		this.association = association;
+		this.datas = new DataActionPair[association.getDataRefs().size()];
+		int i = 0;
+		for (XMLDataCategoryRef ref : association.getDataRefs()) {
+			this.datas[i] = new DataActionPair(ref.getMaterialized(), ref.getAction(), ref.getLabel());
+			i++;
+		}
+		Arrays.sort(this.datas);
+
+		this.restrictions = new Restriction[rule.getRestrictions().size()];
+		for (i = 0; i < restrictions.length; i++) {
+			this.restrictions[i] = rule.getRestrictions().get(i).toRestriction();
+		}
 	}
 
 	public boolean isSingle() {
-		return datas != null;
+		return datas.length == 1;
 	}
 
 	public boolean isAssociation() {
-		return association != null;
+		return datas.length > 1;
 	}
 
 	public String getRuleId() {
 		return ruleId;
 	}
 
-	public DataAssociation getAssociation() {
-		return association;
-	}
-
 	public Set<UserCategory> getUsers() {
 		return users;
 	}
 
-	public Set<DataCategory> getDatas() {
+	public DataActionPair[] getDatas() {
 		return datas;
 	}
 
-	public List<Restriction> getRestrictions() {
+	public Restriction[] getRestrictions() {
 		return restrictions;
-	}
-
-	public List<Restriction> getRestriction() {
-		return restrictions;
-	}
-
-	public Action getAction() {
-		return action;
 	}
 
 	@Override
@@ -82,18 +87,16 @@ public class ExpandedRule {
 			sb.append(' ');
 		}
 		sb.append("\n\t");
-		if (datas != null) {
+		for (DataActionPair pair : datas) {
 			sb.append("Action: ");
-			sb.append(action.getId());
+			sb.append(pair.action);
 			sb.append("\n\t");
 			sb.append("Datas: ");
-			for (DataCategory data : datas) {
+			for (DataCategory data : pair.datas) {
 				sb.append(data.getId());
 				sb.append(' ');
 			}
 			sb.append("\n\t");
-		} else {
-			sb.append(association);
 		}
 		for (Restriction restriction : restrictions) {
 			sb.append(restriction);

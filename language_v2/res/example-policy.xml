@@ -11,52 +11,52 @@
 			<country>China</country>
 		</issuer>
 	</policy-information>
-	
+
 	<vocabulary-ref location="res/example-vocabulary.xml">
-		<user-category-container refid="social-users"/>
+		<user-category-container refid="social-users" />
 		<data-category-container refid="social-data" />
 	</vocabulary-ref>
 	<rules>
-		<rule id="forbid">
-			<user-category-ref refid="employee"/>
-			<user-category-ref refid="ceo"/>
-			<data-category-ref refid="pii" action="all"/>
-			<restriction>
-				<forbid/>
-			</restriction>
-		</rule>
-		<rule id="ip">
-			<user-category-ref refid="ceo"/>
-			<data-category-ref refid="pii" action="all"/>
-			<data-category-ref refid="health" action="all"/>
-			<restriction>
-				<forbid>
-				</forbid>
-			</restriction>
-		</rule>
-		
+		<!--<rule id="forbid"> <user-category-ref refid="employee"/> <user-category-ref 
+			refid="ceo"/> <data-category-ref refid="pii" action="all"/> <restriction> 
+			<forbid/> </restriction> </rule>! -->
 		<rule id="pii-disease">
+			<user-category-ref refid="employee" />
+			<data-association>
+				<data-category-ref refid="pii" action="all" />
+				<data-category-ref refid="disease" action="all" />
+			</data-association>
+			<restriction>
+				<desensitize>
+					<data-category-ref refid="pii" />
+				</desensitize>
+			</restriction>
+		</rule>
+
+		<rule id="ip-disease">
 			<user-category-ref refid="employee">
 			</user-category-ref>
 			<data-association>
-				<data-category-ref refid="pii"/>
-				<data-category-ref refid="disease"/>
-			</data-association>
-			<restriction>
-				<forbid>
-				</forbid>
-			</restriction>
-		</rule>
-		
-		<rule id="pii-salary">
-			<user-category-ref refid="employee"/>
-			<data-association>
-				<data-category-ref refid="pii"/>
-				<data-category-ref refid="salary"/>
+				<data-category-ref refid="ip" />
+				<data-category-ref refid="disease" />
 			</data-association>
 			<restriction>
 				<desensitize>
-					<data-category-ref  refid="salary"/>
+					<data-category-ref refid="ip" />
+					<UDF>truncate</UDF>
+				</desensitize>
+			</restriction>
+		</rule>
+
+		<rule id="pii-salary">
+			<user-category-ref refid="employee" />
+			<data-association>
+				<data-category-ref refid="pii" />
+				<data-category-ref refid="salary" />
+			</data-association>
+			<restriction>
+				<desensitize>
+					<data-category-ref refid="salary" />
 					<UDF>range</UDF>
 				</desensitize>
 			</restriction>
@@ -65,26 +65,26 @@
 				</forbid>
 			</restriction>
 		</rule>
-		
+
 		<rule id="ip-salary">
-			<user-category-ref refid="employee"/>
+			<user-category-ref refid="employee" />
 			<data-association>
-				<data-category-ref refid="ip"/>
-				<data-category-ref refid="salary"/>
+				<data-category-ref refid="ip" />
+				<data-category-ref refid="salary" />
 			</data-association>
 			<restriction>
 				<desensitize>
-					<data-category-ref  refid="ip"/>
+					<data-category-ref refid="ip" />
 					<UDF>truncate</UDF>
 				</desensitize>
 				<desensitize>
-					<data-category-ref  refid="salary"/>
+					<data-category-ref refid="salary" />
 					<UDF>range</UDF>
 				</desensitize>
 			</restriction>
 			<restriction>
 				<desensitize>
-					<data-category-ref  refid="ip"/>
+					<data-category-ref refid="ip" />
 					<UDF>truncate</UDF>
 				</desensitize>
 			</restriction>

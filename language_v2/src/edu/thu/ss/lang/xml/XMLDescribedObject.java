@@ -1,11 +1,11 @@
-package edu.thu.ss.lang.pojo;
+package edu.thu.ss.lang.xml;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.lang.parser.ParserConstant;
 
-public class DescribedObject extends IdentifiedObject {
+public class XMLDescribedObject extends XMLIdentifiedObject {
 	protected String shortDescription;
 	protected String longDescription;
 

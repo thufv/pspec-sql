@@ -5,18 +5,18 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.thu.ss.lang.pojo.DataAssociation;
 import edu.thu.ss.lang.pojo.DataCategory;
-import edu.thu.ss.lang.pojo.DataCategoryContainer;
-import edu.thu.ss.lang.pojo.DataCategoryRef;
-import edu.thu.ss.lang.pojo.Desensitization;
-import edu.thu.ss.lang.pojo.HierarchicalObject;
-import edu.thu.ss.lang.pojo.ObjectRef;
-import edu.thu.ss.lang.pojo.Restriction;
-import edu.thu.ss.lang.pojo.Rule;
 import edu.thu.ss.lang.pojo.UserCategory;
-import edu.thu.ss.lang.pojo.UserCategoryContainer;
-import edu.thu.ss.lang.pojo.UserCategoryRef;
+import edu.thu.ss.lang.xml.XMLDataAssociation;
+import edu.thu.ss.lang.xml.XMLDataCategoryContainer;
+import edu.thu.ss.lang.xml.XMLDataCategoryRef;
+import edu.thu.ss.lang.xml.XMLDesensitization;
+import edu.thu.ss.lang.xml.XMLHierarchicalObject;
+import edu.thu.ss.lang.xml.XMLObjectRef;
+import edu.thu.ss.lang.xml.XMLRestriction;
+import edu.thu.ss.lang.xml.XMLRule;
+import edu.thu.ss.lang.xml.XMLUserCategoryContainer;
+import edu.thu.ss.lang.xml.XMLUserCategoryRef;
 
 /**
  * Resolve reference elements into concrete elements.
@@ -30,18 +30,18 @@ public class RuleResolver extends BaseRuleAnalyzer {
 	private static Logger logger = LoggerFactory.getLogger(RuleResolver.class);
 
 	@Override
-	public boolean analyzeRule(Rule rule, UserCategoryContainer users, DataCategoryContainer datas) {
+	public boolean analyzeRule(XMLRule rule, XMLUserCategoryContainer users, XMLDataCategoryContainer datas) {
 		boolean error = false;
 		error = error || resolveUsers(rule.getUserRefs(), users);
 		error = error || resolveDatas(rule.getDataRefs(), datas);
-		for (DataAssociation association : rule.getAssociations()) {
+		for (XMLDataAssociation association : rule.getAssociations()) {
 			error = error || resolveDatas(association.getDataRefs(), datas);
 		}
-		for (Restriction restriction : rule.getRestrictions()) {
+		for (XMLRestriction restriction : rule.getRestrictions()) {
 			if (restriction.isForbid()) {
 				continue;
 			}
-			for (Desensitization de : restriction.getDesensitizations()) {
+			for (XMLDesensitization de : restriction.getDesensitizations()) {
 				error = error || resolveDesensitization(de, rule);
 			}
 		}
@@ -58,17 +58,17 @@ public class RuleResolver extends BaseRuleAnalyzer {
 		return "Error detected when resolving category references in rules, see error messages above.";
 	}
 
-	private boolean resolveUsers(Set<UserCategoryRef> refs, UserCategoryContainer users) {
+	private boolean resolveUsers(Set<XMLUserCategoryRef> refs, XMLUserCategoryContainer users) {
 		boolean error = false;
 		UserCategory user = null;
-		for (UserCategoryRef ref : refs) {
+		for (XMLUserCategoryRef ref : refs) {
 			user = resolveUser(ref, users, ruleId);
 			if (user != null) {
 				ref.setUser(user);
 			} else {
 				error = true;
 			}
-			for (ObjectRef excludeRef : ref.getExcludeRefs()) {
+			for (XMLObjectRef excludeRef : ref.getExcludeRefs()) {
 				user = resolveUser(excludeRef, users, ruleId);
 				if (user != null && !checkExclusion(ref.getUser(), user)) {
 					ref.getExcludes().add(user);
@@ -83,8 +83,8 @@ public class RuleResolver extends BaseRuleAnalyzer {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T extends HierarchicalObject<T>> boolean checkExclusion(HierarchicalObject<T> category,
-			HierarchicalObject<T> exclude) {
+	private <T extends XMLHierarchicalObject<T>> boolean checkExclusion(XMLHierarchicalObject<T> category,
+			XMLHierarchicalObject<T> exclude) {
 		if (category == null) {
 			return true;
 		}
@@ -96,7 +96,7 @@ public class RuleResolver extends BaseRuleAnalyzer {
 		return false;
 	}
 
-	private UserCategory resolveUser(ObjectRef ref, UserCategoryContainer container, String ruleId) {
+	private UserCategory resolveUser(XMLObjectRef ref, XMLUserCategoryContainer container, String ruleId) {
 		UserCategory user = container.get(ref.getRefid());
 		if (user == null) {
 			logger.error("Fail to location user category: " + ref.getRefid() + ", referenced in rule: " + ruleId);
@@ -104,16 +104,16 @@ public class RuleResolver extends BaseRuleAnalyzer {
 		return user;
 	}
 
-	private boolean resolveDatas(Set<DataCategoryRef> refs, DataCategoryContainer datas) {
+	private boolean resolveDatas(Set<XMLDataCategoryRef> refs, XMLDataCategoryContainer datas) {
 		boolean error = false;
-		for (DataCategoryRef ref : refs) {
+		for (XMLDataCategoryRef ref : refs) {
 			DataCategory data = resolveData(ref, datas);
 			if (data != null) {
 				ref.setData(data);
 			} else {
 				error = true;
 			}
-			for (ObjectRef excludeRef : ref.getExcludeRefs()) {
+			for (XMLObjectRef excludeRef : ref.getExcludeRefs()) {
 				data = resolveData(excludeRef, datas);
 				if (data != null && !checkExclusion(ref.getData(), data)) {
 					ref.getExcludes().add(data);
@@ -126,7 +126,7 @@ public class RuleResolver extends BaseRuleAnalyzer {
 		return error;
 	}
 
-	private DataCategory resolveData(ObjectRef ref, DataCategoryContainer container) {
+	private DataCategory resolveData(XMLObjectRef ref, XMLDataCategoryContainer container) {
 		DataCategory data = container.get(ref.getRefid());
 		if (data == null) {
 			logger.error("Fail to location data category: " + ref.getRefid() + ", referenced in rule: " + ruleId);
@@ -134,7 +134,7 @@ public class RuleResolver extends BaseRuleAnalyzer {
 		return data;
 	}
 
-	private boolean resolveDesensitization(Desensitization de, Rule rule) {
+	private boolean resolveDesensitization(XMLDesensitization de, XMLRule rule) {
 		if (rule.getAssociations().size() > 0 && rule.getDataRefs().size() > 0) {
 			logger.error(
 					"Data-category-ref and data-association should not appear together when restriction contains desensitize element in rule: {}",
@@ -156,9 +156,9 @@ public class RuleResolver extends BaseRuleAnalyzer {
 			}
 		}
 		boolean error = false;
-		for (ObjectRef ref : de.getObjRefs()) {
-			DataCategoryRef data = null;
-			for (DataAssociation association : rule.getAssociations()) {
+		for (XMLObjectRef ref : de.getObjRefs()) {
+			XMLDataCategoryRef data = null;
+			for (XMLDataAssociation association : rule.getAssociations()) {
 				data = association.get(ref.getRefid());
 				if (data == null) {
 					logger.error("Restricted data category: {} must be contained in all data associations in rule: {}",
@@ -170,6 +170,8 @@ public class RuleResolver extends BaseRuleAnalyzer {
 				de.getDataRefs().add(data);
 			}
 		}
+		de.materialize();
+
 		return error;
 	}
 }

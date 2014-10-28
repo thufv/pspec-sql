@@ -1,4 +1,4 @@
-package edu.thu.ss.lang.pojo;
+package edu.thu.ss.lang.xml;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -10,29 +10,33 @@ import org.w3c.dom.NodeList;
 
 import edu.thu.ss.lang.parser.ParserConstant;
 
-public class Rule extends DescribedObject {
+public class XMLRule extends XMLDescribedObject {
 
-	protected Set<UserCategoryRef> userRefs = new HashSet<>();
-	protected Set<DataCategoryRef> dataRefs = new HashSet<>();
+	protected Set<XMLUserCategoryRef> userRefs = new HashSet<>();
+	protected Set<XMLDataCategoryRef> dataRefs = new HashSet<>();
 
-	protected Set<DataAssociation> associations = new HashSet<>();
+	protected Set<XMLDataAssociation> associations = new HashSet<>();
 
-	protected List<Restriction> restrictions = new ArrayList<>();
+	protected List<XMLRestriction> restrictions = new ArrayList<>();
 
-	public Set<UserCategoryRef> getUserRefs() {
+	public Set<XMLUserCategoryRef> getUserRefs() {
 		return userRefs;
 	}
 
-	public Set<DataCategoryRef> getDataRefs() {
+	public Set<XMLDataCategoryRef> getDataRefs() {
 		return dataRefs;
 	}
 
-	public Set<DataAssociation> getAssociations() {
+	public Set<XMLDataAssociation> getAssociations() {
 		return associations;
 	}
 
-	public List<Restriction> getRestrictions() {
+	public List<XMLRestriction> getRestrictions() {
 		return restrictions;
+	}
+
+	public XMLRestriction getRestriction() {
+		return restrictions.get(0);
 	}
 
 	@Override
@@ -46,19 +50,19 @@ public class Rule extends DescribedObject {
 			Node node = list.item(i);
 			name = node.getLocalName();
 			if (ParserConstant.Ele_Policy_Rule_UserRef.equals(name)) {
-				UserCategoryRef obj = new UserCategoryRef();
+				XMLUserCategoryRef obj = new XMLUserCategoryRef();
 				obj.parse(node);
 				userRefs.add(obj);
 			} else if (ParserConstant.Ele_Policy_Rule_DataRef.equals(name)) {
-				DataCategoryRef obj = new DataCategoryRef();
+				XMLDataCategoryRef obj = new XMLDataCategoryRef();
 				obj.parse(node);
 				dataRefs.add(obj);
 			} else if (ParserConstant.Ele_Policy_Rule_DataAsscoation.equals(name)) {
-				DataAssociation association = new DataAssociation();
+				XMLDataAssociation association = new XMLDataAssociation();
 				association.parse(node);
 				associations.add(association);
 			} else if (ParserConstant.Ele_Policy_Rule_Restriction.equals(name)) {
-				Restriction restriction = new Restriction();
+				XMLRestriction restriction = new XMLRestriction();
 				restriction.parse(node);
 				this.restrictions.add(restriction);
 			}
@@ -72,25 +76,25 @@ public class Rule extends DescribedObject {
 		sb.append(id);
 		sb.append("\n");
 
-		for (UserCategoryRef user : userRefs) {
+		for (XMLUserCategoryRef user : userRefs) {
 			sb.append('\t');
 			sb.append(user);
 			sb.append("\n");
 		}
 
-		for (DataCategoryRef data : dataRefs) {
+		for (XMLDataCategoryRef data : dataRefs) {
 			sb.append('\t');
 			sb.append(data);
 			sb.append("\n");
 		}
 
-		for (DataAssociation obj : associations) {
+		for (XMLDataAssociation obj : associations) {
 			sb.append('\t');
 			sb.append(obj);
 			sb.append("\n");
 		}
 
-		for (Restriction res : restrictions) {
+		for (XMLRestriction res : restrictions) {
 			sb.append('\t');
 			sb.append(res);
 		}

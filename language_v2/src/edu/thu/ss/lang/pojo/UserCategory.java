@@ -1,5 +1,7 @@
 package edu.thu.ss.lang.pojo;
 
-public class UserCategory extends HierarchicalObject<UserCategory> {
+import edu.thu.ss.lang.xml.XMLHierarchicalObject;
+
+public class UserCategory extends XMLHierarchicalObject<UserCategory> {
 
 }

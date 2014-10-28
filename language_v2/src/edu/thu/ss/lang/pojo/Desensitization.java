@@ -3,65 +3,42 @@ package edu.thu.ss.lang.pojo;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import edu.thu.ss.lang.xml.XMLDataCategoryRef;
 
-import edu.thu.ss.lang.parser.ParserConstant;
+public class Desensitization {
+	protected Set<DataCategory> datas;
+	protected Set<DesensitizeOperation> operations;
 
-public class Desensitization implements Parsable {
-	protected Set<ObjectRef> objRefs = new HashSet<>();
-	protected Set<DataCategoryRef> dataRefs = new HashSet<>();
-	protected Set<DesensitizeOperation> operations = new HashSet<>();
-
-	public Set<ObjectRef> getObjRefs() {
-		return objRefs;
-	}
-
-	public Set<DataCategoryRef> getDataRefs() {
-		return dataRefs;
+	public boolean isDefaultOperation() {
+		return operations == null;
 	}
 
 	public Set<DesensitizeOperation> getOperations() {
 		return operations;
 	}
 
-	public boolean isDefaultOperation() {
-		return operations.size() == 0;
+	public void setOperations(Set<DesensitizeOperation> operations) {
+		this.operations = operations;
 	}
 
-	public boolean isForAllDataCategory() {
-		return dataRefs.size() == 0;
+	public void setDatas(Set<DataCategory> data) {
+		this.datas = data;
 	}
 
-	public void parse(Node deNode) {
-		NodeList list = deNode.getChildNodes();
-		for (int i = 0; i < list.getLength(); i++) {
-			Node node = list.item(i);
-			String name = node.getLocalName();
-			if (ParserConstant.Ele_Policy_Rule_DataRef.equals(name)) {
-				ObjectRef ref = new ObjectRef();
-				ref.parse(node);
-				objRefs.add(ref);
-			} else if (ParserConstant.Ele_Policy_Rule_Desensitize_UDF.equals(name)) {
-				DesensitizeOperation op = new DesensitizeOperation();
-				op.parse(node);
-				operations.add(op);
-			}
-		}
+	public Set<DataCategory> getDatas() {
+		return datas;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		if (dataRefs.size() > 0) {
-			sb.append("data category: ");
-			for (DataCategoryRef ref : dataRefs) {
-				sb.append(ref.getRefid());
-				sb.append(' ');
-			}
-			sb.append('\t');
+		sb.append("data category: ");
+		for (DataCategory data : datas) {
+			sb.append(data.getId());
+			sb.append(' ');
 		}
-		if (operations.size() > 0) {
+		sb.append('\t');
+		if (operations != null) {
 			sb.append("operation: ");
 			for (DesensitizeOperation op : operations) {
 				sb.append(op.udf);
@@ -70,4 +47,5 @@ public class Desensitization implements Parsable {
 		}
 		return sb.toString();
 	}
+
 }

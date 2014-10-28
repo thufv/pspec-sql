@@ -1,11 +1,12 @@
-package edu.thu.ss.lang.pojo;
+package edu.thu.ss.lang.xml;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.lang.parser.ParserConstant;
+import edu.thu.ss.lang.pojo.DataCategory;
 
-public class DataCategoryContainer extends CategoryContainer<DataCategory> {
+public class XMLDataCategoryContainer extends XMLCategoryContainer<DataCategory> {
 
 	@Override
 	public void parse(Node categoryNode) {

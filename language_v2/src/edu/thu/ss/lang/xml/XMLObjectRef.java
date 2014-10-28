@@ -1,11 +1,12 @@
-package edu.thu.ss.lang.pojo;
+package edu.thu.ss.lang.xml;
 
 import org.w3c.dom.Node;
 
 import edu.thu.ss.lang.parser.ParserConstant;
+import edu.thu.ss.lang.pojo.Parsable;
 import edu.thu.ss.lang.util.XMLUtil;
 
-public class ObjectRef implements Parsable {
+public class XMLObjectRef implements Parsable {
 	protected String refid;
 
 	public void parse(Node node) {
@@ -32,7 +33,7 @@ public class ObjectRef implements Parsable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ObjectRef other = (ObjectRef) obj;
+		XMLObjectRef other = (XMLObjectRef) obj;
 		if (refid == null) {
 			if (other.refid != null)
 				return false;

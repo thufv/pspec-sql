@@ -1,4 +1,4 @@
-package edu.thu.ss.lang.pojo;
+package edu.thu.ss.lang.xml;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +12,7 @@ import edu.thu.ss.lang.analyzer.CategoryVisitor;
 import edu.thu.ss.lang.parser.ParserConstant;
 import edu.thu.ss.lang.util.XMLUtil;
 
-public abstract class CategoryContainer<T extends HierarchicalObject<T>> extends DescribedObject {
+public abstract class XMLCategoryContainer<T extends XMLHierarchicalObject<T>> extends XMLDescribedObject {
 
 	protected String base;
 

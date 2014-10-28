@@ -1,4 +1,4 @@
-package edu.thu.ss.lang.pojo;
+package edu.thu.ss.lang.xml;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -8,16 +8,16 @@ import org.w3c.dom.NodeList;
 
 import edu.thu.ss.lang.parser.ParserConstant;
 
-public abstract class CategoryRef<T extends HierarchicalObject<T>> extends ObjectRef {
+public abstract class XMLCategoryRef<T extends XMLHierarchicalObject<T>> extends XMLObjectRef {
 	protected T category;
 
-	protected Set<ObjectRef> excludeRefs = new HashSet<>();
+	protected Set<XMLObjectRef> excludeRefs = new HashSet<>();
 
 	protected Set<T> excludes = new HashSet<>();
 
 	protected Set<T> materialized;
 
-	public Set<ObjectRef> getExcludeRefs() {
+	public Set<XMLObjectRef> getExcludeRefs() {
 		return excludeRefs;
 	}
 

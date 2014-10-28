@@ -3,11 +3,13 @@ package edu.thu.ss.lang.pojo;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Action extends HierarchicalObject<Action> {
+import edu.thu.ss.lang.xml.XMLHierarchicalObject;
 
-	protected static Map<String, Action> actions = new HashMap<>();
+public class Action extends XMLHierarchicalObject<Action> {
 
-	protected static Action root;
+	public static Map<String, Action> actions = new HashMap<>();
+
+	public static Action root;
 
 	public static final String Action_All = "all";
 	public static final String Action_Project = "project";

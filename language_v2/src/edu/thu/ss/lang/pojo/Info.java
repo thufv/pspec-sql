@@ -4,8 +4,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.lang.parser.ParserConstant;
+import edu.thu.ss.lang.xml.XMLDescribedObject;
 
-public class Info extends DescribedObject {
+public class Info extends XMLDescribedObject {
 	protected ContactInfo contact;
 	protected String location;
 

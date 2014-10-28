@@ -17,6 +17,10 @@ public class SetUtil {
 		return false;
 	}
 
+	public static <T> boolean contains(Set<T> set1, Set<T> set2) {
+		return set1.containsAll(set2);
+	}
+
 	public static <T> SetRelation relation(Set<T> set1, Set<T> set2) {
 		boolean match = false;
 		for (T t2 : set2) {
