@@ -32,7 +32,24 @@
 				</desensitize>
 			</restriction>
 		</rule>
-
+		<rule id="pii">
+			<user-category-ref refid="employee" />
+			<data-category-ref refid="pii" action="project" />
+			<restriction>
+				<desensitize>
+					<UDF>anonymize</UDF>
+				</desensitize>
+			</restriction>
+		</rule>
+		<rule id="ip">
+			<user-category-ref refid="employee" />
+			<data-category-ref refid="ip" action="test" />
+			<restriction>
+				<desensitize>
+					<UDF>truncate</UDF>
+				</desensitize>
+			</restriction>
+		</rule>
 		<rule id="ip-disease">
 			<user-category-ref refid="employee">
 			</user-category-ref>

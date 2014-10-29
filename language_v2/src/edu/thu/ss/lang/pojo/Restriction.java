@@ -1,5 +1,6 @@
 package edu.thu.ss.lang.pojo;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class Restriction {
@@ -14,6 +15,11 @@ public class Restriction {
 
 	public Restriction(Set<Desensitization> des) {
 		this.desensitizations = des;
+	}
+
+	public Restriction(Desensitization de) {
+		this.desensitizations = new HashSet<>();
+		this.desensitizations.add(de);
 	}
 
 	public Set<Desensitization> getDesensitizations() {

@@ -4,9 +4,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import edu.thu.ss.lang.pojo.DataCategory;
+import edu.thu.ss.lang.pojo.HierarchicalObject;
 import edu.thu.ss.lang.pojo.UserCategory;
 import edu.thu.ss.lang.xml.XMLDataCategoryContainer;
-import edu.thu.ss.lang.xml.XMLHierarchicalObject;
 import edu.thu.ss.lang.xml.XMLUserCategoryContainer;
 
 public class VocabularyAnalyzer {
@@ -35,7 +35,7 @@ public class VocabularyAnalyzer {
 		}
 	}
 
-	private class MaterializeVisitor<T extends XMLHierarchicalObject<T>> implements CategoryVisitor<T> {
+	private class MaterializeVisitor<T extends HierarchicalObject<T>> implements CategoryVisitor<T> {
 		@Override
 		public void visit(T category) {
 			Set<T> decesdants = new HashSet<>();
@@ -50,7 +50,7 @@ public class VocabularyAnalyzer {
 		}
 	}
 
-	private class LabelVisitor<T extends XMLHierarchicalObject<T>> implements CategoryVisitor<T> {
+	private class LabelVisitor<T extends HierarchicalObject<T>> implements CategoryVisitor<T> {
 		private int used = 0;
 
 		@Override

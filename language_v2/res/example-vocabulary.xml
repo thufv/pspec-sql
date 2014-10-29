@@ -23,7 +23,11 @@
 	
 	<data-category-container id="social-data">
 		<data-category id="all"/>
-		<data-category id="pii"/>
+		<data-category id="pii">
+			<desensitize-operation>
+				<UDF>anonymize</UDF>
+			</desensitize-operation>
+		</data-category>
 		<data-category id="health"/>
 		<data-category id="financial" />
 		<data-category id="name" parent="pii"/>

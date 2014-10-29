@@ -1,10 +1,8 @@
 package edu.thu.ss.lang.analyzer;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 class SearchKey {
 	int[] rules;
@@ -94,24 +92,23 @@ class SearchKey {
  * @author luochen
  * 
  */
-public abstract class LevelwiseSearcher<T> {
+public abstract class LevelwiseSearcher {
 
 	protected int maxLevel = Integer.MAX_VALUE;
 
 	protected int defaultSize = 10;
 
+	protected SearchKey[] keys = new SearchKey[0];
+
 	public void search() {
 		int level = 1;
-		List<SearchKey> currentLevel = new ArrayList<>(defaultSize);
-		Map<SearchKey, T> currentIndex = new HashMap<>(defaultSize);
-		initLevel(currentLevel, currentIndex);
+		Set<SearchKey> currentLevel = new LinkedHashSet<>(defaultSize);
+		initLevel(currentLevel);
 		while (currentLevel.size() > 0 && level < maxLevel) {
-			List<SearchKey> nextLevel = new ArrayList<>(defaultSize);
-			Map<SearchKey, T> nextIndex = new HashMap<>(defaultSize);
-			generateNextLevel(currentLevel, currentIndex, nextLevel, nextIndex, level);
+			Set<SearchKey> nextLevel = new LinkedHashSet<>(defaultSize);
+			generateNextLevel(currentLevel, nextLevel, level);
 			level++;
 			currentLevel = nextLevel;
-			currentIndex = nextIndex;
 		}
 	}
 
@@ -122,42 +119,39 @@ public abstract class LevelwiseSearcher<T> {
 	 * @param currentIndex
 	 * @return true/false decides whether key should be kept.
 	 */
-	protected abstract T process(SearchKey key, Map<SearchKey, T> currentIndex);
+	protected abstract boolean process(SearchKey key);
 
-	protected abstract void initLevel(List<SearchKey> currentLevel, Map<SearchKey, T> currentIndex);
+	protected abstract void initLevel(Set<SearchKey> currentLevel);
 
-	private void generateNextLevel(List<SearchKey> currentLevel, Map<SearchKey, T> currentIndex,
-			List<SearchKey> nextLevel, Map<SearchKey, T> nextIndex, int level) {
+	private void generateNextLevel(Set<SearchKey> currentLevel, Set<SearchKey> nextLevel, int level) {
 		int size = currentLevel.size();
+		keys = currentLevel.toArray(keys);
+
 		for (int i = 0; i < size; i++) {
-			SearchKey key1 = currentLevel.get(i);
+			SearchKey key1 = keys[i];
 			for (int j = i + 1; j < size; j++) {
-				SearchKey key2 = currentLevel.get(j);
+				SearchKey key2 = keys[j];
 				if (!key1.prefixEquals(key2)) {
 					break;
 				}
 				SearchKey key = key1.combine(key2);
-				if (!isValidKey(key, currentIndex)) {
+				if (!isValidKey(key, currentLevel)) {
 					continue;
 				}
-
-				T t = process(key, currentIndex);
-				if (t == null) {
+				if (!process(key)) {
 					continue;
 				}
 				nextLevel.add(key);
-				nextIndex.put(key, t);
-
 			}
 
 		}
 	}
 
-	private boolean isValidKey(SearchKey key, Map<SearchKey, T> currentIndex) {
+	private boolean isValidKey(SearchKey key, Set<SearchKey> currentIndex) {
 		for (int i = 0; i < key.rules.length - 2; i++) {
 			int tmp = key.rules[i];
 			key.rules[i] = -1;
-			if (!currentIndex.containsKey(key)) {
+			if (!currentIndex.contains(key)) {
 				return false;
 			}
 			key.rules[i] = tmp;

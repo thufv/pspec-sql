@@ -9,7 +9,7 @@ import edu.thu.ss.lang.pojo.DataCategory;
 import edu.thu.ss.lang.util.XMLUtil;
 
 public class XMLDataCategoryRef extends XMLCategoryRef<DataCategory> implements Comparable<XMLDataCategoryRef> {
-	protected Action action = Action.root;
+	protected Action action = Action.all;
 
 	public void setData(DataCategory data) {
 		this.category = data;

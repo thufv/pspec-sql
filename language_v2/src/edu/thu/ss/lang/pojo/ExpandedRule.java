@@ -70,8 +70,16 @@ public class ExpandedRule {
 		return datas;
 	}
 
+	public DataActionPair getData() {
+		return datas[0];
+	}
+
 	public Restriction[] getRestrictions() {
 		return restrictions;
+	}
+
+	public Restriction getRestriction() {
+		return restrictions[0];
 	}
 
 	@Override

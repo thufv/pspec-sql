@@ -10,9 +10,10 @@ import org.w3c.dom.Node;
 
 import edu.thu.ss.lang.analyzer.CategoryVisitor;
 import edu.thu.ss.lang.parser.ParserConstant;
+import edu.thu.ss.lang.pojo.HierarchicalObject;
 import edu.thu.ss.lang.util.XMLUtil;
 
-public abstract class XMLCategoryContainer<T extends XMLHierarchicalObject<T>> extends XMLDescribedObject {
+public abstract class XMLCategoryContainer<T extends HierarchicalObject<T>> extends XMLDescribedObject {
 
 	protected String base;
 
@@ -75,8 +76,8 @@ public abstract class XMLCategoryContainer<T extends XMLHierarchicalObject<T>> e
 	private void toString(T node, StringBuilder sb) {
 		sb.append(node.toString());
 		sb.append("\n");
-		if (node.children != null) {
-			for (T child : node.children) {
+		if (node.getChildren() != null) {
+			for (T child : node.getChildren()) {
 				toString(child, sb);
 			}
 		}

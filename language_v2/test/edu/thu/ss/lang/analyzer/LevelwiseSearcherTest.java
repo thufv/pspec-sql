@@ -1,11 +1,11 @@
 package edu.thu.ss.lang.analyzer;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -32,11 +32,11 @@ public class LevelwiseSearcherTest {
 
 	@Test
 	public void testAnalyzer() {
-		PrintSearcher print = new PrintSearcher(500, 3);
+		PrintSearcher print = new PrintSearcher(5, Integer.MAX_VALUE);
 		print.search();
 	}
 
-	class PrintSearcher extends LevelwiseSearcher<Integer> {
+	class PrintSearcher extends LevelwiseSearcher {
 		private int num;
 		private int[] exclude = new int[] { 1, 2 };
 
@@ -46,21 +46,20 @@ public class LevelwiseSearcherTest {
 		}
 
 		@Override
-		protected void initLevel(List<SearchKey> currentLevel, Map<SearchKey, Integer> currentIndex) {
+		protected void initLevel(Set<SearchKey> currentLevel) {
 			for (int i = 1; i <= num; i++) {
 				SearchKey key = new SearchKey(i);
 				currentLevel.add(key);
-				currentIndex.put(key, 0);
 			}
 		}
 
 		@Override
-		protected Integer process(SearchKey key, Map<SearchKey, Integer> currentIndex) {
+		protected boolean process(SearchKey key) {
 			if (Arrays.equals(key.rules, exclude)) {
-				return null;
+				//	return true;
 			}
-			//System.out.println(key);
-			return 0;
+			System.out.println(key);
+			return true;
 		}
 
 	}

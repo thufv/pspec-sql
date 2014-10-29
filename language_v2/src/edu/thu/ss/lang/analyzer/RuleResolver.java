@@ -6,12 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.thu.ss.lang.pojo.DataCategory;
+import edu.thu.ss.lang.pojo.HierarchicalObject;
 import edu.thu.ss.lang.pojo.UserCategory;
 import edu.thu.ss.lang.xml.XMLDataAssociation;
 import edu.thu.ss.lang.xml.XMLDataCategoryContainer;
 import edu.thu.ss.lang.xml.XMLDataCategoryRef;
 import edu.thu.ss.lang.xml.XMLDesensitization;
-import edu.thu.ss.lang.xml.XMLHierarchicalObject;
 import edu.thu.ss.lang.xml.XMLObjectRef;
 import edu.thu.ss.lang.xml.XMLRestriction;
 import edu.thu.ss.lang.xml.XMLRule;
@@ -83,8 +83,8 @@ public class RuleResolver extends BaseRuleAnalyzer {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T extends XMLHierarchicalObject<T>> boolean checkExclusion(XMLHierarchicalObject<T> category,
-			XMLHierarchicalObject<T> exclude) {
+	private <T extends HierarchicalObject<T>> boolean checkExclusion(HierarchicalObject<T> category,
+			HierarchicalObject<T> exclude) {
 		if (category == null) {
 			return true;
 		}

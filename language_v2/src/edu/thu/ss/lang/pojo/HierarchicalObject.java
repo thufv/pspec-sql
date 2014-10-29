@@ -1,4 +1,4 @@
-package edu.thu.ss.lang.xml;
+package edu.thu.ss.lang.pojo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,8 +8,9 @@ import org.w3c.dom.Node;
 
 import edu.thu.ss.lang.parser.ParserConstant;
 import edu.thu.ss.lang.util.XMLUtil;
+import edu.thu.ss.lang.xml.XMLDescribedObject;
 
-public class XMLHierarchicalObject<T extends XMLHierarchicalObject<T>> extends XMLDescribedObject {
+public class HierarchicalObject<T extends HierarchicalObject<T>> extends XMLDescribedObject {
 	protected String parentId;
 
 	protected T parent;
@@ -21,6 +22,17 @@ public class XMLHierarchicalObject<T extends XMLHierarchicalObject<T>> extends X
 
 	public T getParent() {
 		return parent;
+	}
+
+	@SuppressWarnings("unchecked")
+	public T bottom(T other) {
+		if (this.ancestorOf(other)) {
+			return other;
+		} else if (other.ancestorOf((T) this)) {
+			return (T) this;
+		} else {
+			return null;
+		}
 	}
 
 	public List<T> getChildren() {

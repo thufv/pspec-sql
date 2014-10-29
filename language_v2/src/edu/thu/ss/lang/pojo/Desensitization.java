@@ -1,13 +1,18 @@
 package edu.thu.ss.lang.pojo;
 
-import java.util.HashSet;
 import java.util.Set;
-
-import edu.thu.ss.lang.xml.XMLDataCategoryRef;
 
 public class Desensitization {
 	protected Set<DataCategory> datas;
 	protected Set<DesensitizeOperation> operations;
+
+	public Desensitization() {
+	}
+
+	public Desensitization(Set<DataCategory> datas, Set<DesensitizeOperation> operations) {
+		this.datas = datas;
+		this.operations = operations;
+	}
 
 	public boolean isDefaultOperation() {
 		return operations == null;

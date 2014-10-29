@@ -15,11 +15,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.lang.analyzer.VocabularyAnalyzer;
+import edu.thu.ss.lang.pojo.HierarchicalObject;
 import edu.thu.ss.lang.pojo.Info;
 import edu.thu.ss.lang.util.XMLUtil;
 import edu.thu.ss.lang.xml.XMLCategoryContainer;
 import edu.thu.ss.lang.xml.XMLDataCategoryContainer;
-import edu.thu.ss.lang.xml.XMLHierarchicalObject;
 import edu.thu.ss.lang.xml.XMLUserCategoryContainer;
 import edu.thu.ss.lang.xml.XMLVocabulary;
 
@@ -212,24 +212,24 @@ public class VocabularyParser implements ParserConstant {
 			List<Object> categories = container.getCategories();
 			Map<String, Object> map = container.getIndex();
 			for (Object o : categories) {
-				XMLHierarchicalObject obj = (XMLHierarchicalObject) o;
+				HierarchicalObject obj = (HierarchicalObject) o;
 				String id = obj.getId();
 				if (result.getIndex().containsKey(id)) {
 					logger.error("Duplicate category id detected: " + id);
 					error = true;
 				}
-				result.set(id, (XMLHierarchicalObject) map.get(id));
+				result.set(id, (HierarchicalObject) map.get(id));
 			}
 		}
 		List categories = result.getCategories();
 		Map<String, Object> map = result.getIndex();
 		for (Object o : categories) {
-			XMLHierarchicalObject obj = (XMLHierarchicalObject) o;
+			HierarchicalObject obj = (HierarchicalObject) o;
 			String parentId = obj.getParentId();
 			if (parentId == null) {
 				result.getRoot().add(obj);
 			} else {
-				XMLHierarchicalObject parent = (XMLHierarchicalObject) map.get(parentId);
+				HierarchicalObject parent = (HierarchicalObject) map.get(parentId);
 				if (parent == null) {
 					logger.error("Fail to find parent for category: {} parentId: {}", obj.getId(), obj.getParentId());
 					error = true;

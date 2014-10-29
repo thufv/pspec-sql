@@ -7,8 +7,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.lang.parser.ParserConstant;
+import edu.thu.ss.lang.pojo.HierarchicalObject;
 
-public abstract class XMLCategoryRef<T extends XMLHierarchicalObject<T>> extends XMLObjectRef {
+public abstract class XMLCategoryRef<T extends HierarchicalObject<T>> extends XMLObjectRef {
 	protected T category;
 
 	protected Set<XMLObjectRef> excludeRefs = new HashSet<>();
@@ -30,11 +31,11 @@ public abstract class XMLCategoryRef<T extends XMLHierarchicalObject<T>> extends
 	}
 
 	public void materialize() {
-		materialized = new HashSet<>(category.decesdants.size());
-		for (T t : category.decesdants) {
+		materialized = new HashSet<>(category.getDecesdants().size());
+		for (T t : category.getDecesdants()) {
 			boolean include = true;
 			for (T excluded : excludes) {
-				if (excluded.decesdants.contains(t)) {
+				if (excluded.getDecesdants().contains(t)) {
 					include = false;
 					break;
 				}

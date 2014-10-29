@@ -14,6 +14,10 @@ public class DataActionPair implements Comparable<DataActionPair> {
 		this.label = label;
 	}
 
+	public void setAction(Action action) {
+		this.action = action;
+	}
+
 	public Action getAction() {
 		return action;
 	}

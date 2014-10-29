@@ -3,13 +3,11 @@ package edu.thu.ss.lang.pojo;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.thu.ss.lang.xml.XMLHierarchicalObject;
-
-public class Action extends XMLHierarchicalObject<Action> {
+public class Action extends HierarchicalObject<Action> {
 
 	public static Map<String, Action> actions = new HashMap<>();
 
-	public static Action root;
+	public static Action all;
 
 	public static final String Action_All = "all";
 	public static final String Action_Project = "project";
@@ -24,11 +22,11 @@ public class Action extends XMLHierarchicalObject<Action> {
 	public static final String Action_Unbounded_Range_Test = "unbounded-range-test";
 
 	static {
-		root = new Action(Action_All);
+		all = new Action(Action_All);
 		Action project = new Action(Action_Project);
 		Action test = new Action(Action_Test);
-		root.buildRelation(project, test);
-		actions.put(Action_All, root);
+		all.buildRelation(project, test);
+		actions.put(Action_All, all);
 		actions.put(Action_Project, project);
 		actions.put(Action_Test, test);
 		/*
