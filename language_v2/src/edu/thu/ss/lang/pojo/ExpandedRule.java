@@ -30,8 +30,11 @@ public class ExpandedRule {
 		this.datas[0] = new DataActionPair(datas, action, Collections.min(datas).getLabel());
 		this.restrictions = new Restriction[1];
 		this.restrictions[0] = rule.getRestriction().toRestriction();
-		Desensitization de = this.restrictions[0].getDesensitization();
-		de.setDatas(datas);
+		if(!this.restrictions[0].isForbid()){
+			Desensitization de = this.restrictions[0].getDesensitization();
+			de.setDatas(datas);
+		}
+		
 	}
 
 	public ExpandedRule(XMLRule rule, Set<UserCategory> users, XMLDataAssociation association) {
@@ -80,6 +83,10 @@ public class ExpandedRule {
 
 	public Restriction getRestriction() {
 		return restrictions[0];
+	}
+
+	public int getDimension() {
+		return datas.length;
 	}
 
 	@Override

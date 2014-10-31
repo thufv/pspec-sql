@@ -5,7 +5,9 @@ import java.util.Map;
 
 import org.w3c.dom.Node;
 
+import edu.thu.ss.lang.pojo.DataCategoryContainer;
 import edu.thu.ss.lang.pojo.Info;
+import edu.thu.ss.lang.pojo.UserCategoryContainer;
 
 public class XMLVocabulary {
 
@@ -13,9 +15,9 @@ public class XMLVocabulary {
 
 	protected String base;
 
-	protected Map<String, XMLUserCategoryContainer> userContainers = new HashMap<>();
+	protected Map<String, UserCategoryContainer> userContainers = new HashMap<>();
 
-	protected Map<String, XMLDataCategoryContainer> dataContainers = new HashMap<>();
+	protected Map<String, DataCategoryContainer> dataContainers = new HashMap<>();
 
 	protected Node rootNode;
 
@@ -43,19 +45,19 @@ public class XMLVocabulary {
 		this.base = base;
 	}
 
-	public void addUserCategories(String id, XMLUserCategoryContainer categories) {
+	public void addUserCategories(String id, UserCategoryContainer categories) {
 		userContainers.put(id, categories);
 	}
 
-	public void addDataCategories(String id, XMLDataCategoryContainer categories) {
+	public void addDataCategories(String id, DataCategoryContainer categories) {
 		dataContainers.put(id, categories);
 	}
 
-	public XMLUserCategoryContainer getUserCategories(String id) {
+	public UserCategoryContainer getUserCategories(String id) {
 		return userContainers.get(id);
 	}
 
-	public XMLDataCategoryContainer getDataCategories(String id) {
+	public DataCategoryContainer getDataCategories(String id) {
 		return dataContainers.get(id);
 	}
 }

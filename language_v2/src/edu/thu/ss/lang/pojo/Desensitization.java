@@ -43,14 +43,15 @@ public class Desensitization {
 			sb.append(' ');
 		}
 		sb.append('\t');
+		sb.append("operation: ");
 		if (operations != null) {
-			sb.append("operation: ");
 			for (DesensitizeOperation op : operations) {
 				sb.append(op.udf);
 				sb.append(' ');
 			}
+		} else {
+			sb.append("default");
 		}
 		return sb.toString();
 	}
-
 }

@@ -1,9 +1,10 @@
-package edu.thu.ss.lang.analyzer;
+package edu.thu.ss.lang.analyzer.rule;
 
+import edu.thu.ss.lang.analyzer.BasePolicyAnalyzer;
+import edu.thu.ss.lang.pojo.DataCategoryContainer;
 import edu.thu.ss.lang.pojo.Policy;
-import edu.thu.ss.lang.xml.XMLDataCategoryContainer;
+import edu.thu.ss.lang.pojo.UserCategoryContainer;
 import edu.thu.ss.lang.xml.XMLRule;
-import edu.thu.ss.lang.xml.XMLUserCategoryContainer;
 
 public abstract class BaseRuleAnalyzer extends BasePolicyAnalyzer {
 
@@ -21,6 +22,6 @@ public abstract class BaseRuleAnalyzer extends BasePolicyAnalyzer {
 		return error;
 	}
 
-	protected abstract boolean analyzeRule(XMLRule rule, XMLUserCategoryContainer users, XMLDataCategoryContainer datas);
+	protected abstract boolean analyzeRule(XMLRule rule, UserCategoryContainer users, DataCategoryContainer datas);
 
 }

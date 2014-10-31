@@ -4,20 +4,25 @@ import java.util.HashSet;
 import java.util.Set;
 
 import edu.thu.ss.lang.pojo.DataCategory;
+import edu.thu.ss.lang.pojo.DataCategoryContainer;
 import edu.thu.ss.lang.pojo.HierarchicalObject;
 import edu.thu.ss.lang.pojo.UserCategory;
-import edu.thu.ss.lang.xml.XMLDataCategoryContainer;
-import edu.thu.ss.lang.xml.XMLUserCategoryContainer;
+import edu.thu.ss.lang.pojo.UserCategoryContainer;
+import edu.thu.ss.lang.util.CategoryManager;
 
 public class VocabularyAnalyzer {
 
-	public void analyze(XMLUserCategoryContainer userContainer, XMLDataCategoryContainer dataContainer) {
+	public void analyze(UserCategoryContainer userContainer, DataCategoryContainer dataContainer) {
 		userContainer.accept(new MaterializeVisitor<UserCategory>());
 		userContainer.accept(new LabelVisitor<UserCategory>());
+		userContainer.buildLabels();
 
 		dataContainer.accept(new MaterializeVisitor<DataCategory>());
 		dataContainer.accept(new LabelVisitor<DataCategory>());
 		dataContainer.accept(new PropagationVisitor());
+		dataContainer.buildLabels();
+
+		CategoryManager.init(userContainer, dataContainer);
 	}
 
 	private class PropagationVisitor implements CategoryVisitor<DataCategory> {

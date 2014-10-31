@@ -10,12 +10,12 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.lang.analyzer.ConsistencyAnalyzer;
-import edu.thu.ss.lang.analyzer.ConstraintChecker;
 import edu.thu.ss.lang.analyzer.PolicyAnalyzer;
 import edu.thu.ss.lang.analyzer.PolicyExpander;
-import edu.thu.ss.lang.analyzer.RuleResolver;
-import edu.thu.ss.lang.analyzer.RuleSimplifier;
 import edu.thu.ss.lang.analyzer.SimpleRedundancyAnalyzer;
+import edu.thu.ss.lang.analyzer.rule.RuleConstraintAnalyzer;
+import edu.thu.ss.lang.analyzer.rule.RuleResolver;
+import edu.thu.ss.lang.analyzer.rule.RuleSimplifier;
 import edu.thu.ss.lang.pojo.Info;
 import edu.thu.ss.lang.pojo.Policy;
 import edu.thu.ss.lang.util.XMLUtil;
@@ -32,7 +32,7 @@ public class PolicyParser implements ParserConstant {
 	protected void init() {
 		analyzers = new ArrayList<>();
 		analyzers.add(new RuleResolver());
-		analyzers.add(new ConstraintChecker());
+		analyzers.add(new RuleConstraintAnalyzer());
 		analyzers.add(new RuleSimplifier());
 		analyzers.add(new PolicyExpander());
 		analyzers.add(new SimpleRedundancyAnalyzer());

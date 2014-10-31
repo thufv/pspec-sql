@@ -24,17 +24,6 @@ public class HierarchicalObject<T extends HierarchicalObject<T>> extends XMLDesc
 		return parent;
 	}
 
-	@SuppressWarnings("unchecked")
-	public T bottom(T other) {
-		if (this.ancestorOf(other)) {
-			return other;
-		} else if (other.ancestorOf((T) this)) {
-			return (T) this;
-		} else {
-			return null;
-		}
-	}
-
 	public List<T> getChildren() {
 		return children;
 	}

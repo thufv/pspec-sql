@@ -142,7 +142,7 @@ public class InclusionUtil {
 		for (Desensitization de2 : res2.getDesensitizations()) {
 			for (Desensitization de1 : res1.getDesensitizations()) {
 				if (SetUtil.intersects(de1.getDatas(), de2.getDatas())) {
-					if (!includes(de1, de2)) {
+					if (!includes(de2, de1)) {
 						return false;
 					}
 				}

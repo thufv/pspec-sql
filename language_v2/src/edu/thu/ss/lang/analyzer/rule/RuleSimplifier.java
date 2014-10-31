@@ -1,4 +1,4 @@
-package edu.thu.ss.lang.analyzer;
+package edu.thu.ss.lang.analyzer.rule;
 
 import java.util.Iterator;
 import java.util.List;
@@ -7,20 +7,20 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.thu.ss.lang.pojo.DataCategoryContainer;
+import edu.thu.ss.lang.pojo.UserCategoryContainer;
 import edu.thu.ss.lang.util.InclusionUtil;
 import edu.thu.ss.lang.xml.XMLDataAssociation;
-import edu.thu.ss.lang.xml.XMLDataCategoryContainer;
 import edu.thu.ss.lang.xml.XMLDataCategoryRef;
 import edu.thu.ss.lang.xml.XMLRestriction;
 import edu.thu.ss.lang.xml.XMLRule;
-import edu.thu.ss.lang.xml.XMLUserCategoryContainer;
 import edu.thu.ss.lang.xml.XMLUserCategoryRef;
 
 public class RuleSimplifier extends BaseRuleAnalyzer {
 	private static Logger logger = LoggerFactory.getLogger(RuleSimplifier.class);
 
 	@Override
-	protected boolean analyzeRule(XMLRule rule, XMLUserCategoryContainer users, XMLDataCategoryContainer datas) {
+	protected boolean analyzeRule(XMLRule rule, UserCategoryContainer users, DataCategoryContainer datas) {
 		/**
 		 * simplification of users/datas in a rule is no longer needed, since
 		 * all users/datas are expanded into a single set.

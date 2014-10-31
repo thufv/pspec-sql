@@ -1,4 +1,4 @@
-package edu.thu.ss.lang.analyzer;
+package edu.thu.ss.lang.analyzer.rule;
 
 import java.util.List;
 import java.util.Set;
@@ -7,22 +7,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.thu.ss.lang.pojo.DataCategory;
+import edu.thu.ss.lang.pojo.DataCategoryContainer;
 import edu.thu.ss.lang.pojo.DesensitizeOperation;
+import edu.thu.ss.lang.pojo.UserCategoryContainer;
 import edu.thu.ss.lang.util.SetUtil;
 import edu.thu.ss.lang.xml.XMLDataAssociation;
-import edu.thu.ss.lang.xml.XMLDataCategoryContainer;
 import edu.thu.ss.lang.xml.XMLDataCategoryRef;
 import edu.thu.ss.lang.xml.XMLDesensitization;
 import edu.thu.ss.lang.xml.XMLRestriction;
 import edu.thu.ss.lang.xml.XMLRule;
-import edu.thu.ss.lang.xml.XMLUserCategoryContainer;
 
-public class ConstraintChecker extends BaseRuleAnalyzer {
-	private static Logger logger = LoggerFactory.getLogger(ConstraintChecker.class);
+public class RuleConstraintAnalyzer extends BaseRuleAnalyzer {
+	private static Logger logger = LoggerFactory.getLogger(RuleConstraintAnalyzer.class);
 	private String ruleId;
 
 	@Override
-	public boolean analyzeRule(XMLRule rule, XMLUserCategoryContainer users, XMLDataCategoryContainer datas) {
+	public boolean analyzeRule(XMLRule rule, UserCategoryContainer users, DataCategoryContainer datas) {
 		if (rule.getDataRefs().size() == 0 && rule.getAssociations().size() == 0) {
 			logger.error("At least one data-category-ref or data-association should appear in rule: {}", rule.getId());
 			return true;

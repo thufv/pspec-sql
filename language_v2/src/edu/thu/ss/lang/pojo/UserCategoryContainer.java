@@ -1,12 +1,12 @@
-package edu.thu.ss.lang.xml;
+package edu.thu.ss.lang.pojo;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.lang.parser.ParserConstant;
-import edu.thu.ss.lang.pojo.DataCategory;
+import edu.thu.ss.lang.xml.XMLCategoryContainer;
 
-public class XMLDataCategoryContainer extends XMLCategoryContainer<DataCategory> {
+public class UserCategoryContainer extends XMLCategoryContainer<UserCategory> {
 
 	@Override
 	public void parse(Node categoryNode) {
@@ -16,10 +16,10 @@ public class XMLDataCategoryContainer extends XMLCategoryContainer<DataCategory>
 		for (int i = 0; i < list.getLength(); i++) {
 			Node node = list.item(i);
 			String name = node.getLocalName();
-			if (ParserConstant.Ele_Vocabulary_Data_Category.equals(name)) {
-				DataCategory data = new DataCategory();
-				data.parse(node);
-				set(data.id, data);
+			if (ParserConstant.Ele_Vocabulary_User_Category.equals(name)) {
+				UserCategory user = new UserCategory();
+				user.parse(node);
+				set(user.getId(), user);
 			}
 		}
 	}

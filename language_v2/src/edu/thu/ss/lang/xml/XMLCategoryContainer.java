@@ -20,11 +20,23 @@ public abstract class XMLCategoryContainer<T extends HierarchicalObject<T>> exte
 	protected List<T> categories = new LinkedList<>();
 	protected Map<String, T> index = new HashMap<>();
 	protected List<T> root = new ArrayList<>();
+	protected Object[] labelIndex;
 
 	public void accept(CategoryVisitor<T> visitor) {
 		for (T t : root) {
 			visitor.visit(t);
 		}
+	}
+
+	public void buildLabels() {
+		labelIndex = new Object[categories.size()];
+		for (T t : categories) {
+			labelIndex[t.getLabel()] = t;
+		}
+	}
+
+	public T getCategory(int label) {
+		return (T) labelIndex[label];
 	}
 
 	public T get(String id) {

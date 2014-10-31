@@ -22,14 +22,22 @@
 	
 	
 	<data-category-container id="social-data">
-		<data-category id="all"/>
-		<data-category id="pii">
+		<data-category id="all">
+			<desensitize-operation>
+				<UDF>op1</UDF>
+				<UDF>op2</UDF>
+				<UDF>op3</UDF>
+				<UDF>op4</UDF>
+				<UDF>op5</UDF>
+			</desensitize-operation>
+		</data-category>
+		<data-category id="pii" parent="all">
 			<desensitize-operation>
 				<UDF>anonymize</UDF>
 			</desensitize-operation>
 		</data-category>
-		<data-category id="health"/>
-		<data-category id="financial" />
+		<data-category id="health" parent="all"/>
+		<data-category id="financial" parent="all" />
 		<data-category id="name" parent="pii"/>
 		<data-category id="ip" parent="pii">
 			<desensitize-operation>

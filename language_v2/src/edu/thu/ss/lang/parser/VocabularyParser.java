@@ -15,25 +15,25 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.lang.analyzer.VocabularyAnalyzer;
+import edu.thu.ss.lang.pojo.DataCategoryContainer;
 import edu.thu.ss.lang.pojo.HierarchicalObject;
 import edu.thu.ss.lang.pojo.Info;
+import edu.thu.ss.lang.pojo.UserCategoryContainer;
 import edu.thu.ss.lang.util.XMLUtil;
 import edu.thu.ss.lang.xml.XMLCategoryContainer;
-import edu.thu.ss.lang.xml.XMLDataCategoryContainer;
-import edu.thu.ss.lang.xml.XMLUserCategoryContainer;
 import edu.thu.ss.lang.xml.XMLVocabulary;
 
 public class VocabularyParser implements ParserConstant {
 
 	protected Map<URI, XMLVocabulary> vocabularies;
 
-	protected List<XMLUserCategoryContainer> userContainers;
+	protected List<UserCategoryContainer> userContainers;
 
-	protected List<XMLDataCategoryContainer> dataContainers;
+	protected List<DataCategoryContainer> dataContainers;
 
-	protected XMLUserCategoryContainer userContainer;
+	protected UserCategoryContainer userContainer;
 
-	protected XMLDataCategoryContainer dataContainer;
+	protected DataCategoryContainer dataContainer;
 
 	protected boolean error = false;
 
@@ -69,8 +69,8 @@ public class VocabularyParser implements ParserConstant {
 		this.vocabularies = new HashMap<>();
 		this.userContainers = new ArrayList<>();
 		this.dataContainers = new ArrayList<>();
-		this.userContainer = new XMLUserCategoryContainer();
-		this.dataContainer = new XMLDataCategoryContainer();
+		this.userContainer = new UserCategoryContainer();
+		this.dataContainer = new DataCategoryContainer();
 		this.error = false;
 	}
 
@@ -118,7 +118,7 @@ public class VocabularyParser implements ParserConstant {
 		XMLVocabulary vocabulary = getVocabulary(path);
 		String base = vocabulary.getBase();
 		while (user != null) {
-			XMLUserCategoryContainer container = parseUserCategories(vocabulary, user);
+			UserCategoryContainer container = parseUserCategories(vocabulary, user);
 			if (container == null) {
 				if (base != null) {
 					vocabulary = getVocabulary(base);
@@ -137,7 +137,7 @@ public class VocabularyParser implements ParserConstant {
 		XMLVocabulary vocabulary = getVocabulary(path);
 		String base = vocabulary.getBase();
 		while (data != null) {
-			XMLDataCategoryContainer container = parseDataCategories(vocabulary, data);
+			DataCategoryContainer container = parseDataCategories(vocabulary, data);
 			if (container == null) {
 				if (base != null) {
 					vocabulary = getVocabulary(base);
@@ -169,7 +169,7 @@ public class VocabularyParser implements ParserConstant {
 		}
 	}
 
-	private XMLUserCategoryContainer parseUserCategories(XMLVocabulary vocabulary, String user) {
+	private UserCategoryContainer parseUserCategories(XMLVocabulary vocabulary, String user) {
 		Node root = vocabulary.getRootNode();
 		NodeList list = root.getChildNodes();
 		for (int i = 0; i < list.getLength(); i++) {
@@ -178,7 +178,7 @@ public class VocabularyParser implements ParserConstant {
 			if (Ele_Vocabulary_User_Category_Container.equals(name)) {
 				String id = XMLUtil.getAttrValue(node, Attr_Id);
 				if (id.equals(user)) {
-					XMLUserCategoryContainer container = new XMLUserCategoryContainer();
+					UserCategoryContainer container = new UserCategoryContainer();
 					container.parse(node);
 					return container;
 				}
@@ -187,7 +187,7 @@ public class VocabularyParser implements ParserConstant {
 		return null;
 	}
 
-	private XMLDataCategoryContainer parseDataCategories(XMLVocabulary vocabulary, String data) {
+	private DataCategoryContainer parseDataCategories(XMLVocabulary vocabulary, String data) {
 		Node root = vocabulary.getRootNode();
 		NodeList list = root.getChildNodes();
 		for (int i = 0; i < list.getLength(); i++) {
@@ -196,7 +196,7 @@ public class VocabularyParser implements ParserConstant {
 			if (Ele_Vocabulary_Data_Category_Container.equals(name)) {
 				String id = XMLUtil.getAttrValue(node, Attr_Id);
 				if (id.equals(data)) {
-					XMLDataCategoryContainer container = new XMLDataCategoryContainer();
+					DataCategoryContainer container = new DataCategoryContainer();
 					container.parse(node);
 					return container;
 				}

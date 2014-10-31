@@ -31,7 +31,7 @@ public class SimpleRedundancyAnalyzer extends BasePolicyAnalyzer {
 			boolean removable = checkRedundancy(erule1, rules);
 			if (removable) {
 				it.remove();
-				//logger.warn("The #{} restriction is removed from rule: {} since it is redundant.", i, ruleId);
+				logger.warn("The rule: {} is removed since it is redundant.", erule1.getRuleId());
 			}
 		}
 

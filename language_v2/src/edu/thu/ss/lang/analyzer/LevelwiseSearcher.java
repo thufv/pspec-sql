@@ -105,10 +105,12 @@ public abstract class LevelwiseSearcher {
 		Set<SearchKey> currentLevel = new LinkedHashSet<>(defaultSize);
 		initLevel(currentLevel);
 		while (currentLevel.size() > 0 && level < maxLevel) {
+			beginLevel(level + 1);
 			Set<SearchKey> nextLevel = new LinkedHashSet<>(defaultSize);
-			generateNextLevel(currentLevel, nextLevel, level);
+			processNextLevel(currentLevel, nextLevel, level);
 			level++;
 			currentLevel = nextLevel;
+			endLevel(level);
 		}
 	}
 
@@ -123,7 +125,15 @@ public abstract class LevelwiseSearcher {
 
 	protected abstract void initLevel(Set<SearchKey> currentLevel);
 
-	private void generateNextLevel(Set<SearchKey> currentLevel, Set<SearchKey> nextLevel, int level) {
+	protected void beginLevel(int level) {
+
+	}
+
+	protected void endLevel(int level) {
+
+	}
+
+	private void processNextLevel(Set<SearchKey> currentLevel, Set<SearchKey> nextLevel, int level) {
 		int size = currentLevel.size();
 		keys = currentLevel.toArray(keys);
 

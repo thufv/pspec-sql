@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<privacy-policy xmlns="http://www.example.org/privacy"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.example.org/privacy privacy.xsd">
+	<policy-information id="school-policy">
+		<issuer>
+			<name>luochen</name>
+			<organization>Tsinghua</organization>
+			<e-mail>luochen01@vip.qq.com</e-mail>
+			<address>Tsinghua</address>
+			<country>China</country>
+		</issuer>
+	</policy-information>
+
+	<vocabulary-ref location="res/example-vocabulary.xml">
+		<user-category-container refid="social-users" />
+		<data-category-container refid="social-data" />
+	</vocabulary-ref>
+	<rules>
+		<rule id="rule1">
+			<user-category-ref refid="teacher" />
+			<data-category-ref refid="phone">
+			</data-category-ref>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+		<rule id="rule2">
+			<user-category-ref refid="teacher" />
+			<data-category-ref refid="contact">
+				<exclude>
+					<data-category-ref refid="email" />
+				</exclude>
+			</data-category-ref>
+			<restriction>
+				<desensitize>
+					<UDF>op1</UDF>
+				</desensitize>
+			</restriction>
+		</rule>
+		<rule id="rule3">
+			<user-category-ref refid="teacher" />
+			<data-category-ref refid="phone" />
+			<restriction>
+				<desensitize>
+					<UDF>op2</UDF>
+					<UDF>op3</UDF>
+				</desensitize>
+			</restriction>
+		</rule>
+		<rule id="rule4">
+			<user-category-ref refid="teacher" />
+			<data-association>
+				<data-category-ref refid="phone"></data-category-ref>
+				<data-category-ref refid="disease"></data-category-ref>
+			</data-association>
+			<restriction>
+				<desensitize>
+					<data-category-ref refid="phone" />
+					<UDF>op3</UDF>
+					<UDF>op4</UDF>
+				</desensitize>
+			</restriction>
+		</rule>
+
+		<rule id="rule6">
+			<user-category-ref refid="teacher" />
+			<data-association>
+				<data-category-ref refid="contact"></data-category-ref>
+				<data-category-ref refid="disease"></data-category-ref>
+			</data-association>
+			<restriction>
+				<desensitize>
+					<data-category-ref refid="disease" />
+					<UDF>op1</UDF>
+					<UDF>op2</UDF>
+				</desensitize>
+			</restriction>
+			<restriction>
+				<desensitize>
+					<data-category-ref refid="contact" />
+					<UDF>op3</UDF>
+				</desensitize>
+			</restriction>
+		</rule>
+		<rule id="rule7">
+			<user-category-ref refid="teacher" />
+			<data-association>
+				<data-category-ref refid="phone"></data-category-ref>
+				<data-category-ref refid="disease"></data-category-ref>
+			</data-association>
+			<restriction>
+				<desensitize>
+					<data-category-ref refid="disease" />
+					<UDF>op2</UDF>
+					<UDF>op3</UDF>
+				</desensitize>
+			</restriction>
+		</rule>
+		<rule id="rule8">
+			<user-category-ref refid="teacher" />
+			<data-association>
+				<data-category-ref refid="email"></data-category-ref>
+				<data-category-ref refid="disease"></data-category-ref>
+			</data-association>
+			<restriction>
+				<desensitize>
+					<data-category-ref refid="disease" />
+					<UDF>op1</UDF>
+					<UDF>op3</UDF>
+				</desensitize>
+			</restriction>
+		</rule>
+	</rules>
+</privacy-policy>

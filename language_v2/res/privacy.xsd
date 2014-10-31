@@ -100,8 +100,8 @@
 							</complexContent>
 						</complexType>
 						<unique name="uniqueDesensitizeOperation">
-							<selector xpath="tns:desensitize-operation"></selector>
-							<field xpath="tns:UDF"></field>
+							<selector xpath="tns:desensitize-operation/tns:UDF"></selector>
+							<field xpath="."></field>
 						</unique>
 					</element>
 				</sequence>
@@ -185,16 +185,14 @@
 						<element name="UDF" type="NCName" minOccurs="0" maxOccurs="unbounded"></element>
 					</sequence>
 				</complexType>
-				<unique name="uniqueDesensitizeUDF">
-					<selector xpath=".">
-					</selector>
-					<field xpath="tns:UDF"></field>
+				<unique name="uniqueDesensitizeOp">
+					<selector xpath="tns:UDF"></selector>
+					<field xpath="."></field>
 				</unique>
 			</element>
 			<element name="forbid"></element>
 		</choice>
 	</complexType>
-
 
 
 	<complexType name="ruleType">
@@ -212,7 +210,8 @@
 							<field xpath="@refid"></field>
 						</unique>
 					</element>
-					<element name="restriction" type="tns:restrictionType" maxOccurs="unbounded">
+					<element name="restriction" type="tns:restrictionType"
+						maxOccurs="unbounded">
 						<unique name="uniqueRestrictedDataCategory">
 							<selector xpath="tns:desensitize/tns:data-category-ref"></selector>
 							<field xpath="@refid"></field>
@@ -287,7 +286,7 @@
 
 		<!-- Rule id's must be unique within a policy -->
 		<unique name="uniqueRuleId">
-			<selector xpath="./tns:rule" />
+			<selector xpath="tns:rules/tns:rule" />
 			<field xpath="@id" />
 		</unique>
 	</element>
