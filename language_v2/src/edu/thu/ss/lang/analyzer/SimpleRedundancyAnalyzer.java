@@ -31,7 +31,6 @@ public class SimpleRedundancyAnalyzer extends BasePolicyAnalyzer {
 			boolean removable = checkRedundancy(erule1, rules);
 			if (removable) {
 				it.remove();
-				logger.warn("The rule: {} is removed since it is redundant.", erule1.getRuleId());
 			}
 		}
 
@@ -50,6 +49,8 @@ public class SimpleRedundancyAnalyzer extends BasePolicyAnalyzer {
 				redundant = checkAssociation(erule, target);
 			}
 			if (redundant) {
+				logger.warn("The rule: {} is removed since it is redundant by rule: {}.", target.getRuleId(),
+						erule.getRuleId());
 				return true;
 			}
 		}
@@ -81,7 +82,7 @@ public class SimpleRedundancyAnalyzer extends BasePolicyAnalyzer {
 		//only 1 restriction each
 		Restriction[] res1 = rule1.getRestrictions();
 		Restriction[] res2 = rule2.getRestrictions();
-		if (!InclusionUtil.stricterThan(res1, res2)) {
+		if (!InclusionUtil.singleStricterThan(res1[0], res2[0])) {
 			return false;
 		}
 		Set<UserCategory> user1 = rule1.getUsers();

@@ -180,7 +180,7 @@
 				<complexType>
 					<sequence>
 						<element name="data-category-ref" type="tns:objectRefType"
-							minOccurs="0">
+							maxOccurs="unbounded" minOccurs="0">
 						</element>
 						<element name="UDF" type="NCName" minOccurs="0" maxOccurs="unbounded"></element>
 					</sequence>
@@ -188,6 +188,10 @@
 				<unique name="uniqueDesensitizeOp">
 					<selector xpath="tns:UDF"></selector>
 					<field xpath="."></field>
+				</unique>
+				<unique name="uniqueDesensitizeData">
+					<selector xpath="tns:data-category-ref"></selector>
+					<field xpath="@refid"></field>
 				</unique>
 			</element>
 			<element name="forbid"></element>

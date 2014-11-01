@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<privacy-policy xmlns="http://www.example.org/privacy"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.example.org/privacy privacy.xsd">
+	<policy-information id="school-policy">
+		<issuer>
+			<name>luochen</name>
+			<organization>Tsinghua</organization>
+			<e-mail>luochen01@vip.qq.com</e-mail>
+			<address>Tsinghua</address>
+			<country>China</country>
+		</issuer>
+	</policy-information>
+
+	<vocabulary-ref location="res/example-vocabulary.xml">
+		<user-category-container refid="social-users" />
+		<data-category-container refid="social-data" />
+	</vocabulary-ref>
+	<rules>
+		<!--<rule id="forbid"> <user-category-ref refid="employee"/> <user-category-ref 
+			refid="ceo"/> <data-category-ref refid="pii" action="all"/> <restriction> 
+			<forbid/> </restriction> </rule>! -->
+		<rule id="rule1">
+			<user-category-ref refid="student"></user-category-ref>
+			<data-category-ref refid="pii"></data-category-ref>
+			<restriction>
+				<desensitize>
+					<UDF>op1</UDF>
+					<UDF>op2</UDF>
+				</desensitize>
+			</restriction>
+		</rule>
+		<rule id="rule2">
+			<user-category-ref refid="employee"></user-category-ref>
+			<data-category-ref refid="ssn"></data-category-ref>
+			<restriction>
+				<desensitize>
+					<UDF>op1</UDF>
+				</desensitize>
+			</restriction>
+		</rule>
+		<rule id="rule4">
+			<user-category-ref refid="student"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="ssn"></data-category-ref>
+				<data-category-ref refid="disease"></data-category-ref>
+			</data-association>
+			<restriction>
+				<desensitize>
+					<data-category-ref refid="ssn" />
+					<UDF>op1</UDF>
+					<UDF>op2</UDF>
+					<UDF>op3</UDF>
+				</desensitize>
+			</restriction>
+		</rule>
+	</rules>
+</privacy-policy>

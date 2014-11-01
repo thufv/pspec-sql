@@ -124,6 +124,18 @@ public class InclusionUtil {
 		return true;
 	}
 
+	public static boolean singleStricterThan(Restriction res1, Restriction res2) {
+		if (res1.isForbid()) {
+			return true;
+		}
+		if (res2.isForbid()) {
+			return false;
+		}
+		Desensitization de1 = res1.getDesensitization();
+		Desensitization de2 = res2.getDesensitization();
+		return includes(de2, de1);
+	}
+
 	/**
 	 * test whether res1 is stricter than res2, i.e., every restricted data
 	 * category in res2 must be more restricted in res1
