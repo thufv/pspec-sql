@@ -17,14 +17,9 @@
 		<data-category-container refid="social-data" />
 	</vocabulary-ref>
 	<rules>
-		<rule id="rule1">
-			<user-category-ref refid="teacher" />
-			<data-category-ref refid="phone">
-			</data-category-ref>
-			<restriction>
-				<forbid></forbid>
-			</restriction>
-		</rule>
+		<!-- <rule id="rule1"> <user-category-ref refid="teacher" /> <data-category-ref 
+			refid="phone"> </data-category-ref> <restriction> <forbid></forbid> </restriction> 
+			</rule> -->
 		<rule id="rule2">
 			<user-category-ref refid="teacher" />
 			<data-category-ref refid="contact">

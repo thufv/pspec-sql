@@ -11,6 +11,22 @@ class SearchKey {
 		this.rules = rules;
 	}
 
+	public int getFirst() {
+		return rules[0];
+	}
+
+	public void setFirst(int value) {
+		rules[0] = value;
+	}
+
+	public int getLast() {
+		return rules[rules.length - 1];
+	}
+
+	public void setLast(int value) {
+		rules[rules.length - 1] = value;
+	}
+
 	@Override
 	public int hashCode() {
 		if (rules == null)

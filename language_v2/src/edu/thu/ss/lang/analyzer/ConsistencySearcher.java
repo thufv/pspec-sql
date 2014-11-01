@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -26,9 +27,6 @@ import edu.thu.ss.lang.util.SetUtil.SetRelation;
 class ConsistencySearcher extends LevelwiseSearcher {
 	private static Logger logger = LoggerFactory.getLogger(ConsistencySearcher.class);
 
-	protected Policy policy;
-	protected List<ExpandedRule> rules;
-
 	protected class Triple {
 		Set<DataCategory> datas;
 		Action action;
@@ -41,6 +39,12 @@ class ConsistencySearcher extends LevelwiseSearcher {
 		public Triple(DataActionPair pair, List<Set<DesensitizeOperation>> list) {
 			this.action = pair.getAction();
 			this.datas = pair.getDatas();
+			this.list = list;
+		}
+
+		public Triple(Action action, Set<DataCategory> datas, List<Set<DesensitizeOperation>> list) {
+			this.action = action;
+			this.datas = datas;
 			this.list = list;
 		}
 	}
@@ -59,9 +63,11 @@ class ConsistencySearcher extends LevelwiseSearcher {
 		}
 	}
 
-	private RuleObject[] ruleObjects;
-	private List<ExpandedRule> sortedRules;
-	private int[] index;
+	protected Policy policy;
+	protected List<ExpandedRule> rules;
+	protected RuleObject[] ruleObjects;
+	protected List<ExpandedRule> sortedRules;
+	protected int[] index;
 
 	public ConsistencySearcher(Policy policy) {
 		this.policy = policy;
@@ -209,19 +215,19 @@ class ConsistencySearcher extends LevelwiseSearcher {
 					}
 				}
 			} else {
-				List<Set<DesensitizeOperation>> tmp = new ArrayList<>(joins.size() * list.size());
+				List<Set<DesensitizeOperation>> tmp = new LinkedList<>();
 				for (Set<DesensitizeOperation> ops1 : joins) {
 					for (Set<DesensitizeOperation> ops2 : list) {
 						if (ops1 == null) {
-							tmp.add(ops2);
+							SetUtil.mergeOperations(tmp, ops2);
 						} else if (ops2 == null) {
-							tmp.add(ops1);
+							SetUtil.mergeOperations(tmp, ops1);
 						} else {
 							Set<DesensitizeOperation> ops = SetUtil.intersect(ops1, ops2);
 							if (ops.size() == 0) {
 								return RuleRelation.conflict;
 							}
-							tmp.add(ops);
+							SetUtil.mergeOperations(tmp, ops);
 						}
 					}
 				}

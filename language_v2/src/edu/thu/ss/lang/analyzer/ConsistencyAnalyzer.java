@@ -16,7 +16,7 @@ public class ConsistencyAnalyzer extends BasePolicyAnalyzer {
 	@Override
 	public boolean analyze(Policy policy) {
 
-		ConsistencySearcher searcher = new ConsistencySearcher(policy);
+		ConsistencySearcher searcher = new CachedConsistencySearcher(policy);
 		searcher.search();
 		return false;
 	}
