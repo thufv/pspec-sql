@@ -41,7 +41,7 @@ public class PolicyParserTest {
 		}
 	}
 
-	public static void main1(String[] args) {
+	public static void main(String[] args) {
 		String path = "/Users/luochen/Documents/Research/DSGen_v1.1.0/data/";
 		File dir = new File(path);
 		File[] files = dir.listFiles();

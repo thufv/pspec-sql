@@ -38,16 +38,18 @@ public class Action extends HierarchicalObject<Action> {
 		test.buildRelation(equal_test, range_test);
 		range_test.buildRelation(bounded_range_test, unbounded_range_test);
 		
-
+ 
 		actions.put(Action_Equal_Test, equal_test);
 		actions.put(Action_Range_Test, range_test);
 		actions.put(Action_Bounded_Range_Test, bounded_range_test);
 		actions.put(Action_Unbounded_Range_Test, unbounded_range_test);
 		*/
+		
 	}
 
 	protected Action(String id) {
 		this.id = id;
+		
 	}
 
 	@Override
