@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="5.0">
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/analysis/Analyzer.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/codegen/package.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/predicates.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/analysis/Catalog.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/commands.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/codegen/GeneratePredicate.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/codegen/GenerateProjection.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/sets.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/package.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/analysis/FunctionRegistry.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/planning/patterns.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/partitioning.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/stringOperations.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/dsl/package.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/optimizer/Optimizer.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/generators.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/AttributeSet.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/basicOperators.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/analysis/unresolved.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/trees/package.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/util/package.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/rules/RuleExecutor.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/analysis/HiveTypeCoercion.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/QueryPlan.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/physical/partitioning.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/codegen/GenerateMutableProjection.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/BoundAttribute.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/SpecificRow.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/planning/QueryPlanner.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/joinTypes.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/types/dataTypes.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/types/package.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/TestRelation.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/analysis/MultiInstanceRelation.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/Expression.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/errors/package.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/SortOrder.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/Cast.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/nullFunctions.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/ScalaReflection.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/namedExpressions.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/rules/package.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/codegen/CodeGenerator.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/literals.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/rules/Rule.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/WrapDynamic.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/arithmetic.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/trees/TreeNode.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/planning/package.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/codegen/GenerateOrdering.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/complexTypes.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/aggregates.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/Projection.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/Row.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/analysis/package.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/SqlParser.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/ScriptTransformation.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/ScalaUdf.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/Rand.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/package.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/package.scala">
+		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
+			message="Header does not match expected text">
+		</error>
+	</file>
+</checkstyle>

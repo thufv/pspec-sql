@@ -1,0 +1,269 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>optimizer - Spark Project Catalyst 1.1.0 API - org.apache.spark.sql.catalyst.optimizer</title>
+          <meta name="description" content="optimizer - Spark Project Catalyst 1.1.0 API - org.apache.spark.sql.catalyst.optimizer" />
+          <meta name="keywords" content="optimizer Spark Project Catalyst 1.1.0 API org.apache.spark.sql.catalyst.optimizer" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../../../index.html';
+            var hash = 'org.apache.spark.sql.catalyst.optimizer.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../../../../lib/package_big.png" />
+        <p id="owner"><a href="../../../../../package.html" class="extype" name="org">org</a>.<a href="../../../../package.html" class="extype" name="org.apache">apache</a>.<a href="../../../package.html" class="extype" name="org.apache.spark">spark</a>.<a href="../../package.html" class="extype" name="org.apache.spark.sql">sql</a>.<a href="../package.html" class="extype" name="org.apache.spark.sql.catalyst">catalyst</a></p>
+        <h1>optimizer</h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">optimizer</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="org.apache.spark.sql.catalyst.optimizer.BooleanSimplification" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BooleanSimplification"></a>
+      <a id="BooleanSimplification:BooleanSimplification"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="BooleanSimplification$.html"><span class="name">BooleanSimplification</span></a><span class="result"> extends <a href="../rules/Rule.html" class="extype" name="org.apache.spark.sql.catalyst.rules.Rule">Rule</a>[<a href="../plans/logical/LogicalPlan.html" class="extype" name="org.apache.spark.sql.catalyst.plans.logical.LogicalPlan">LogicalPlan</a>]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Simplifies boolean expressions where the answer can be determined without evaluating both sides.</p>
+    </li><li name="org.apache.spark.sql.catalyst.optimizer.ColumnPruning" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ColumnPruning"></a>
+      <a id="ColumnPruning:ColumnPruning"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ColumnPruning$.html"><span class="name">ColumnPruning</span></a><span class="result"> extends <a href="../rules/Rule.html" class="extype" name="org.apache.spark.sql.catalyst.rules.Rule">Rule</a>[<a href="../plans/logical/LogicalPlan.html" class="extype" name="org.apache.spark.sql.catalyst.plans.logical.LogicalPlan">LogicalPlan</a>]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Attempts to eliminate the reading of unneeded columns from the query plan using the following
+transformations:</p>
+    </li><li name="org.apache.spark.sql.catalyst.optimizer.CombineFilters" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CombineFilters"></a>
+      <a id="CombineFilters:CombineFilters"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CombineFilters$.html"><span class="name">CombineFilters</span></a><span class="result"> extends <a href="../rules/Rule.html" class="extype" name="org.apache.spark.sql.catalyst.rules.Rule">Rule</a>[<a href="../plans/logical/LogicalPlan.html" class="extype" name="org.apache.spark.sql.catalyst.plans.logical.LogicalPlan">LogicalPlan</a>]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Combines two adjacent <span class="extype" name="Filter">Filter</span> operators into one, merging the
+conditions into one conjunctive predicate.</p>
+    </li><li name="org.apache.spark.sql.catalyst.optimizer.CombineLimits" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CombineLimits"></a>
+      <a id="CombineLimits:CombineLimits"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CombineLimits$.html"><span class="name">CombineLimits</span></a><span class="result"> extends <a href="../rules/Rule.html" class="extype" name="org.apache.spark.sql.catalyst.rules.Rule">Rule</a>[<a href="../plans/logical/LogicalPlan.html" class="extype" name="org.apache.spark.sql.catalyst.plans.logical.LogicalPlan">LogicalPlan</a>]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Combines two adjacent <span class="extype" name="Limit">Limit</span> operators into one, merging the
+expressions into one single expression.</p>
+    </li><li name="org.apache.spark.sql.catalyst.optimizer.ConstantFolding" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ConstantFolding"></a>
+      <a id="ConstantFolding:ConstantFolding"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ConstantFolding$.html"><span class="name">ConstantFolding</span></a><span class="result"> extends <a href="../rules/Rule.html" class="extype" name="org.apache.spark.sql.catalyst.rules.Rule">Rule</a>[<a href="../plans/logical/LogicalPlan.html" class="extype" name="org.apache.spark.sql.catalyst.plans.logical.LogicalPlan">LogicalPlan</a>]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Replaces <span class="extype" name="Expression">Expressions</span> that can be statically evaluated with
+equivalent <span class="extype" name="Literal">Literal</span> values.</p>
+    </li><li name="org.apache.spark.sql.catalyst.optimizer.LikeSimplification" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LikeSimplification"></a>
+      <a id="LikeSimplification:LikeSimplification"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="LikeSimplification$.html"><span class="name">LikeSimplification</span></a><span class="result"> extends <a href="../rules/Rule.html" class="extype" name="org.apache.spark.sql.catalyst.rules.Rule">Rule</a>[<a href="../plans/logical/LogicalPlan.html" class="extype" name="org.apache.spark.sql.catalyst.plans.logical.LogicalPlan">LogicalPlan</a>]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Simplifies LIKE expressions that do not need full regular expressions to evaluate the condition.</p>
+    </li><li name="org.apache.spark.sql.catalyst.optimizer.NullPropagation" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="NullPropagation"></a>
+      <a id="NullPropagation:NullPropagation"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="NullPropagation$.html"><span class="name">NullPropagation</span></a><span class="result"> extends <a href="../rules/Rule.html" class="extype" name="org.apache.spark.sql.catalyst.rules.Rule">Rule</a>[<a href="../plans/logical/LogicalPlan.html" class="extype" name="org.apache.spark.sql.catalyst.plans.logical.LogicalPlan">LogicalPlan</a>]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Replaces <span class="extype" name="Expression">Expressions</span> that can be statically evaluated with
+equivalent <span class="extype" name="Literal">Literal</span> values.</p>
+    </li><li name="org.apache.spark.sql.catalyst.optimizer.Optimizer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Optimizer"></a>
+      <a id="Optimizer:Optimizer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Optimizer$.html"><span class="name">Optimizer</span></a><span class="result"> extends <a href="../rules/RuleExecutor.html" class="extype" name="org.apache.spark.sql.catalyst.rules.RuleExecutor">RuleExecutor</a>[<a href="../plans/logical/LogicalPlan.html" class="extype" name="org.apache.spark.sql.catalyst.plans.logical.LogicalPlan">LogicalPlan</a>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="org.apache.spark.sql.catalyst.optimizer.PushPredicateThroughJoin" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PushPredicateThroughJoin"></a>
+      <a id="PushPredicateThroughJoin:PushPredicateThroughJoin"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="PushPredicateThroughJoin$.html"><span class="name">PushPredicateThroughJoin</span></a><span class="result"> extends <a href="../rules/Rule.html" class="extype" name="org.apache.spark.sql.catalyst.rules.Rule">Rule</a>[<a href="../plans/logical/LogicalPlan.html" class="extype" name="org.apache.spark.sql.catalyst.plans.logical.LogicalPlan">LogicalPlan</a>] with <a href="../expressions/PredicateHelper.html" class="extype" name="org.apache.spark.sql.catalyst.expressions.PredicateHelper">PredicateHelper</a></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Pushes down <span class="extype" name="Filter">Filter</span> operators where the <code>condition</code> can be
+evaluated using only the attributes of the left or right side of a join.</p>
+    </li><li name="org.apache.spark.sql.catalyst.optimizer.PushPredicateThroughProject" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PushPredicateThroughProject"></a>
+      <a id="PushPredicateThroughProject:PushPredicateThroughProject"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="PushPredicateThroughProject$.html"><span class="name">PushPredicateThroughProject</span></a><span class="result"> extends <a href="../rules/Rule.html" class="extype" name="org.apache.spark.sql.catalyst.rules.Rule">Rule</a>[<a href="../plans/logical/LogicalPlan.html" class="extype" name="org.apache.spark.sql.catalyst.plans.logical.LogicalPlan">LogicalPlan</a>]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Pushes <span class="extype" name="Filter">Filter</span> operators through <span class="extype" name="Project">Project</span> operators, in-lining any <span class="extype" name="Alias">Aliases</span>
+that were defined in the projection.</p>
+    </li><li name="org.apache.spark.sql.catalyst.optimizer.SimplifyCaseConversionExpressions" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SimplifyCaseConversionExpressions"></a>
+      <a id="SimplifyCaseConversionExpressions:SimplifyCaseConversionExpressions"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="SimplifyCaseConversionExpressions$.html"><span class="name">SimplifyCaseConversionExpressions</span></a><span class="result"> extends <a href="../rules/Rule.html" class="extype" name="org.apache.spark.sql.catalyst.rules.Rule">Rule</a>[<a href="../plans/logical/LogicalPlan.html" class="extype" name="org.apache.spark.sql.catalyst.plans.logical.LogicalPlan">LogicalPlan</a>]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Removes the inner <span class="extype" name="CaseConversionExpression">CaseConversionExpression</span> that are unnecessary because
+the inner conversion is overwritten by the outer one.</p>
+    </li><li name="org.apache.spark.sql.catalyst.optimizer.SimplifyCasts" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SimplifyCasts"></a>
+      <a id="SimplifyCasts:SimplifyCasts"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="SimplifyCasts$.html"><span class="name">SimplifyCasts</span></a><span class="result"> extends <a href="../rules/Rule.html" class="extype" name="org.apache.spark.sql.catalyst.rules.Rule">Rule</a>[<a href="../plans/logical/LogicalPlan.html" class="extype" name="org.apache.spark.sql.catalyst.plans.logical.LogicalPlan">LogicalPlan</a>]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Removes <span class="extype" name="Cast">Casts</span> that are unnecessary because the input is already the correct type.</p>
+    </li><li name="org.apache.spark.sql.catalyst.optimizer.SimplifyFilters" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SimplifyFilters"></a>
+      <a id="SimplifyFilters:SimplifyFilters"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="SimplifyFilters$.html"><span class="name">SimplifyFilters</span></a><span class="result"> extends <a href="../rules/Rule.html" class="extype" name="org.apache.spark.sql.catalyst.rules.Rule">Rule</a>[<a href="../plans/logical/LogicalPlan.html" class="extype" name="org.apache.spark.sql.catalyst.plans.logical.LogicalPlan">LogicalPlan</a>]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Removes filters that can be evaluated trivially.</p>
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../../lib/template.js"></script>
+    </body>
+      </html>

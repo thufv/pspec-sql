@@ -147,8 +147,7 @@ WITH wscs AS (
 --end query 2 using template query2.tpl
 --start query 3 using template query3.tpl
 -- @public
-SELECT
-        top 100 dt.d_year
+SELECT dt.d_year
         ,item.i_brand_id brand_id
         ,item.i_brand brand
         ,SUM(ss_ext_discount_amt) sum_agg

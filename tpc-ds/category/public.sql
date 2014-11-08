@@ -171,6 +171,7 @@ SELECT
         dt.d_year
         ,sum_agg DESC
         ,brand_id;
+
 --end query 3 using template query3.tpl
 
 --start query 5 using template query5.tpl

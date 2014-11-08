@@ -17,6 +17,10 @@ public class DesensitizeOperation implements Parsable {
 		return udf;
 	}
 
+	public void setUdf(String udf) {
+		this.udf = udf;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

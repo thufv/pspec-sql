@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="5.0">
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/execution/DescribeHiveTableCommand.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/hiveUdfs.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/hive/src/main/scala/org/apache/spark/SparkHadoopWriter.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/TableReader.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveQl.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveInspectors.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveMetastoreCatalog.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveStrategies.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/execution/ScriptTransformation.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/parquet/FakeParquetSerDe.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/api/java/JavaHiveContext.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/execution/InsertIntoHiveTable.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveContext.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/TestHive.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/execution/NativeCommand.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/execution/commands.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/execution/HiveTableScan.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/hive/src/main/scala/org/apache/spark/sql/hive/package.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+</checkstyle>

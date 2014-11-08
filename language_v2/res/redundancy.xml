@@ -26,7 +26,6 @@
 			<restriction>
 				<desensitize>
 					<UDF>op1</UDF>
-					<UDF>op2</UDF>
 				</desensitize>
 			</restriction>
 		</rule>
@@ -36,6 +35,7 @@
 			<restriction>
 				<desensitize>
 					<UDF>op1</UDF>
+					<UDF>op2</UDF>
 				</desensitize>
 			</restriction>
 		</rule>

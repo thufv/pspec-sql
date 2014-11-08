@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="5.0">
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/external/flume-sink/src/main/scala/org/apache/spark/streaming/flume/sink/TransactionProcessor.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/external/flume-sink/src/main/scala/org/apache/spark/streaming/flume/sink/SparkAvroCallbackHandler.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/external/flume-sink/src/main/scala/org/apache/spark/streaming/flume/sink/SparkSinkUtils.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/external/flume-sink/src/main/scala/org/apache/spark/streaming/flume/sink/Logging.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/external/flume-sink/src/main/scala/org/apache/spark/streaming/flume/sink/SparkSink.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+</checkstyle>

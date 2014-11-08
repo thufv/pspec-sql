@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="5.0">
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/dstream/StateDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/receiver/RateLimiter.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/dstream/SocketInputDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/package.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/dstream/ReducedWindowedDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/StreamingSource.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/dstream/MappedDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/scheduler/BatchInfo.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/dstream/package.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/dstream/WindowedDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/scheduler/ReceiverTracker.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/dstream/ConstantInputDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/receiver/ReceiverSupervisor.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/scheduler/JobSet.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/scheduler/Job.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/receiver/Receiver.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/dstream/ShuffledDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/util/MasterFailureTest.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/scheduler/JobGenerator.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/dstream/FlatMappedDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/api/java/JavaInputDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/util/RecurringTimer.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/ContextWaiter.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/dstream/ForEachDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/ui/StreamingJobProgressListener.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/dstream/RawInputDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/dstream/ReceiverInputDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/StreamingContext.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/dstream/DStreamCheckpointData.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/dstream/PairDStreamFunctions.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/api/java/JavaPairInputDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/receiver/BlockGenerator.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/scheduler/StreamingListener.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/dstream/FileInputDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/api/java/JavaDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/dstream/FilteredDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/dstream/QueueInputDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/dstream/DStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/api/java/JavaPairDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/receiver/ReceiverMessage.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/Time.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/util/RawTextHelper.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/api/java/JavaPairReceiverInputDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/util/RateLimitedOutputStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/dstream/TransformedDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/DStreamGraph.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/dstream/FlatMapValuedDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/ui/StreamingPage.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/api/java/JavaReceiverInputDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/Duration.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/dstream/InputDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/util/Clock.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/scheduler/StreamingListenerBus.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/api/java/JavaStreamingContext.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/Interval.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/ui/StreamingTab.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/api/java/JavaDStreamLike.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/scheduler/ReceiverInfo.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/dstream/MapValuedDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/dstream/GlommedDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/scheduler/JobScheduler.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/dstream/MapPartitionedDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/api/java/package.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/receiver/ReceiverSupervisorImpl.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/util/RawTextSender.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/Checkpoint.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/dstream/PluggableInputDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/dstream/UnionDStream.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/spark-1.1.0/streaming/src/main/scala/org/apache/spark/streaming/receiver/ActorReceiver.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+</checkstyle>
