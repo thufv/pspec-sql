@@ -39,7 +39,7 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] {
 	def calculateLabels(): (Map[Attribute, Label], Set[Label]) = { (projections, tests) };
 
 	def childLabel(attr: Attribute): Label = {
-		children.map(_.projections.getOrElse(attr, null)).find(_ != null).get;
+		children.map(_.projections.getOrElse(attr, null)).find(_ != null).getOrElse(null);
 	}
 
 	/**

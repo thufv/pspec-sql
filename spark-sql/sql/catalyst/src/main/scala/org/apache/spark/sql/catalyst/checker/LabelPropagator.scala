@@ -49,32 +49,57 @@ import org.apache.spark.sql.catalyst.plans.logical.WriteToFile
 import org.apache.spark.sql.catalyst.expressions.In
 import org.apache.spark.sql.catalyst.expressions.ScalaUdf
 import org.apache.spark.sql.catalyst.expressions.Attribute
+import org.apache.spark.Logging
+import scala.collection.mutable.HashSet
+import scala.collection.mutable.Set
 
-class LabelPropagator {
+object LabelPropagator extends Logging {
 	val meta: MetaRegistry = MetaRegistry.get;
 
 	def apply(plan: LogicalPlan): Unit = {
+		val begin = System.currentTimeMillis();
+
+		propagate(plan);
+
+		val end = System.currentTimeMillis();
+		//TODO print
+		val time = end - begin;
+		println(s"label propagation finished in $time ms");
+		println("projections:");
+		plan.projections.foreach(t => {
+			println(s"$t");
+		});
+		println();
+		println("tests:")
+		plan.tests.foreach(t => {
+			println(t);
+		});
+	}
+
+	private def propagate(plan: LogicalPlan): Unit = {
 		plan match {
 			case leaf: LeafNode => leaf.calculateLabels;
 			case unary: UnaryNode => propagateUnary(unary);
 			case binary: BinaryNode => propagateBinary(binary);
+			case _ => logWarning(s"unknown logical plan:$plan");
 		}
 	}
 
-	def propagateUnary(unary: UnaryNode): Unit = {
-		apply(unary.child);
+	private def propagateUnary(unary: UnaryNode): Unit = {
+		propagate(unary.child);
 		val childProjs = unary.child.projections;
 		val childTests = unary.child.tests;
 
 		unary match {
 			case aggregate: Aggregate => {
 				//resolve aggregation list
-				aggregate.aggregateExpressions.foreach(resolveProjectExpression(_, unary));
+				aggregate.aggregateExpressions.foreach(resolveNamedExpression(_, unary));
 				aggregate.tests ++= childTests;
 			}
 			case filter: Filter => {
 				//add conditions
-				resolveConditionExpression(filter.condition, filter);
+				resolveExpression(filter.condition, filter);
+				filter.tests ++= childTests;
 				filter.projections ++= childProjs;
 			}
 			case generate: Generate => {
@@ -82,12 +107,12 @@ class LabelPropagator {
 			}
 			case project: Project => {
 				//resolve projection list
-				project.projectList.foreach(resolveProjectExpression(_, unary));
+				project.projectList.foreach(resolveNamedExpression(_, unary));
 				project.tests ++= childTests;
 			}
 			case subquery: Subquery => {
 				//TODO
-				childProjs.foreach(tuple => subquery.projections.put(tuple._1.withQualifiers(subquery.alias :: Nil), tuple._2));
+				childProjs.foreach(tuple => subquery.projections.put(tuple._1.withQualifiers(List(subquery.alias)), tuple._2));
 				subquery.tests ++ childTests;
 			}
 			case script: ScriptTransformation => {
@@ -95,7 +120,6 @@ class LabelPropagator {
 				propagateDefault(script);
 			}
 			case sort: Sort => {
-				//TODO
 				propagateDefault(sort);
 			}
 			case distinct: Distinct => {
@@ -126,8 +150,8 @@ class LabelPropagator {
 	}
 
 	private def propagateBinary(binary: BinaryNode): Unit = {
-		apply(binary.left);
-		apply(binary.right);
+		propagate(binary.left);
+		propagate(binary.right);
 
 		val leftProjs = binary.left.projections;
 		val rightProjs = binary.right.projections;
@@ -139,10 +163,10 @@ class LabelPropagator {
 				except.tests ++= leftTests;
 			}
 			case intersect: Intersect => {
-				propogateSetLabels(binary, "Intersect");
+				propogateSetOperations(binary, LabelConstants.Func_Intersect);
 			}
 			case union: Union => {
-				propogateSetLabels(binary, "Union");
+				propogateSetOperations(binary, LabelConstants.Func_Union);
 			}
 			case join: Join => {
 				//based on different join types
@@ -151,24 +175,28 @@ class LabelPropagator {
 						join.projections ++= leftProjs;
 					}
 					case _ => {
-						join.projections ++= leftProjs
-						join.projections ++= rightProjs;
+						join.projections ++= leftProjs ++= rightProjs;
 					}
 				}
-				//TODO Test
-				join.tests ++= leftTests;
-				join.tests ++= rightTests;
+				join.tests ++= leftTests ++= rightTests;
 				join.condition match {
-					case Some(condition) => resolveConditionExpression(condition, binary);
+					case Some(condition) => resolveExpression(condition, binary);
 					case None =>
 				}
 			}
 		}
 	}
 
-	private def resolveConditionExpression(expression: Expression, plan: LogicalPlan): Unit = {
+	/**
+	 * if expression is boolean expression, then add term expression into test sets.
+	 * otherwise, return the term formula.
+	 */
+	private def resolveExpression(expression: Expression, plan: LogicalPlan): Label = {
 		expression match {
-			case _: And | _: Or | _: Not => expression.children.foreach(resolveConditionExpression(_, plan));
+			case _: And | _: Or | _: Not => {
+				expression.children.foreach(resolveExpression(_, plan));
+				null;
+			};
 			case _: BinaryComparison => resolvePredicate(expression, plan);
 			case _: Contains => resolvePredicate(expression, plan);
 			case _: EndsWith => resolvePredicate(expression, plan);
@@ -176,41 +204,39 @@ class LabelPropagator {
 			case _: RLike => resolvePredicate(expression, plan);
 			case _: StartsWith => resolvePredicate(expression, plan);
 			case _: In => resolvePredicate(expression, plan);
-			case attr: AttributeReference => {
-				plan.tests.add(plan.childLabel(attr));
-			}
-			case _ => {
-				throw new UnsupportedPlanException(s"unknown condition expression: $expression");
-			}
+
+			case _ => resolveTerm(expression, plan);
 		}
 	}
 
-	private def resolveProjectExpression(expression: NamedExpression, unary: UnaryNode): Unit = {
+	private def resolveNamedExpression(expression: NamedExpression, unary: UnaryNode): Unit = {
 		val childProjs = unary.child.projections;
-		expression.foreach(expr => {
-			expr match {
-				case attr: AttributeReference => {
-					val label = childProjs.getOrElse(attr, null);
-					unary.projections.put(attr, label);
-				}
-				case alias: Alias => {
-					val label = resolveTerm(alias.child, unary);
+		expression match {
+			case attr: AttributeReference => {
+				val label = childProjs.getOrElse(attr, null);
+				unary.projections.put(attr, label);
+			}
+			case alias: Alias => {
+				val label = resolveExpression(alias.child, unary);
+				if (label != null) {
 					unary.projections.put(alias.toAttribute, label);
 				}
-				case _ => throw new UnsupportedPlanException(s"unknown attribute expression: $expr");
 			}
-		});
+			case _ => throw new UnsupportedPlanException(s"unknown named expression: $expression");
+		}
 	}
 
-	private def resolvePredicate(predicate: Expression, plan: LogicalPlan): Unit = {
+	private def resolvePredicate(predicate: Expression, plan: LogicalPlan): Label = {
 		val labels = predicate.children.map(resolveTerm(_, plan));
 		plan.tests.add(Predicate(labels, ExpressionRegistry.resolvePredicate(predicate)));
+		null;
 	}
 
 	private def resolveTerm(expression: Expression, plan: LogicalPlan): Label = {
 		expression match {
-			case attr: AttributeReference => plan.childLabel(attr);
-
+			case attr: AttributeReference => {
+				plan.childLabel(attr);
+			}
 			case leaf: LeafExpression => {
 				leaf match {
 					case l: Literal => Constant(l.value);
@@ -238,25 +264,22 @@ class LabelPropagator {
 				val labels = udf.children.map(resolveTerm(_, plan));
 				Function(labels, udf.name);
 			}
-			//TODO "if" and "case" may needs special treatment
 			case when: CaseWhen => {
-				when.predicates.foreach(resolveConditionExpression(_, plan));
-				val labels = when.branches.map(resolveTerm(_, plan));
+				when.predicates.foreach(resolveExpression(_, plan));
+				val labels = when.values.map(resolveTerm(_, plan));
 				when.elseValue match {
-					case some: Some[Expression] => {
-						Function(labels :+ resolveTerm(some.get, plan), ExpressionRegistry.resolveFunction(when));
-					}
+					case Some(expr) => Function(labels :+ (resolveTerm(expr, plan)), ExpressionRegistry.resolveFunction(when));
 					case None => Function(labels, ExpressionRegistry.resolveFunction(when));
 				}
 			}
 			case i: If => {
-				resolveConditionExpression(i.predicate, plan);
+				resolveExpression(i.predicate, plan);
 				val tLabel = resolveTerm(i.trueValue, plan);
 				val fLabel = resolveTerm(i.falseValue, plan);
-				Function(tLabel :: fLabel :: Nil, ExpressionRegistry.resolveFunction(i));
+				Function(List(tLabel, fLabel), ExpressionRegistry.resolveFunction(i));
 			}
 
-			case _ => throw new UnsupportedPlanException(s"unknown term expression: $expression");
+			case _ => Function(expression.children.map(resolveExpression(_, plan)), expression.getName);
 		}
 	}
 
@@ -265,14 +288,13 @@ class LabelPropagator {
 		Function(labels, ExpressionRegistry.resolveFunction(expression));
 	}
 
-	private def propogateSetLabels(binary: BinaryNode, name: String): Unit = {
-		for (i <- 0 to binary.output.length) {
+	private def propogateSetOperations(binary: BinaryNode, name: String): Unit = {
+		for (i <- 0 to binary.output.length - 1) {
 			val leftLabel = binary.left.projections.getOrElse(binary.left.output(i), null);
 			val rightLabel = binary.right.projections.getOrElse(binary.right.output(i), null);
-			binary.projections.put(binary.output(i), Function(leftLabel :: rightLabel :: Nil, name));
+			binary.projections.put(binary.output(i), Function(List(leftLabel, rightLabel), name));
 		}
-		binary.tests ++= binary.left.tests;
-		binary.tests ++= binary.right.tests;
+		binary.tests ++= binary.left.tests ++= binary.right.tests;
 	}
 
 	/**

@@ -15,18 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.spark.sql.hive
+$(document).ready(function(){
+   $("[data-toggle=tooltip]").tooltip({container: 'body'});
+});
 
-import org.scalatest.FunSuite
-
-import org.apache.spark.sql.catalyst.types.{ DataType, StructType }
-
-class HiveMetastoreCatalogSuite extends FunSuite {
-
-	test("struct field should accept underscore in sub-column name") {
-		val metastr = "struct<a: int, b_1: string, c: string>"
-
-		val datatype = HiveMetastoreTypes.toDataType(metastr)
-		assert(datatype.isInstanceOf[StructType])
-	}
-}

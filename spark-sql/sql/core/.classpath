@@ -96,7 +96,6 @@
 	<classpathentry kind="lib" path="../../lib_managed/bundles/metrics-json-3.0.0.jar"/>
 	<classpathentry kind="lib" path="../../lib_managed/bundles/metrics-graphite-3.0.0.jar"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/tachyon-client-0.5.0.jar"/>
-	<classpathentry kind="lib" path="../../lib_managed/jars/tachyon-0.5.0.jar"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/pyrolite-2.0.1.jar"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/py4j-0.8.2.1.jar"/>
@@ -125,5 +124,6 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/spark-catalyst"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/language_v2"/>
+	<classpathentry kind="lib" path="/Users/luochen/Documents/Research/privacy/spark-sql/lib_managed/jars/tachyon-0.5.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

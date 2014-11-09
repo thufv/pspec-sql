@@ -23,6 +23,7 @@ import org.apache.spark.sql.catalyst.types._
 import org.apache.spark.sql.catalyst.trees
 import org.apache.spark.sql.catalyst.errors.TreeNodeException
 import org.apache.spark.util.collection.OpenHashSet
+import org.apache.spark.sql.catalyst.checker.UnsupportedPlanException
 
 abstract class AggregateExpression extends Expression {
   self: Product =>
@@ -32,7 +33,7 @@ abstract class AggregateExpression extends Expression {
    * of input rows/
    */
   def newInstance(): AggregateFunction
-
+  
   /**
    * [[AggregateExpression.eval]] should never be invoked because [[AggregateExpression]]'s are
    * replaced with a physical aggregate operator at runtime.

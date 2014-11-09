@@ -73,7 +73,7 @@ CREATE
     TABLE date_dim(
         d_date_sk INT
         ,d_date_id VARCHAR(16)
-        ,d_date DATE
+        ,d_date TIMESTAMP
         ,d_month_seq INT
         ,d_week_seq INT
         ,d_quarter_seq INT

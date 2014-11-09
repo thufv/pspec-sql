@@ -312,8 +312,7 @@ case class MetastoreRelation(databaseName: String, tableName: String, alias: Opt
 
 	val output = attributes ++ partitionKeys
 
-	@Override
-	def calculateLabel(): (mutable.Map[Attribute, Label], mutable.Set[Label]) = {
+	override def calculateLabels(): (mutable.Map[Attribute, Label], mutable.Set[Label]) = {
 		val meta: MetaRegistry = MetaRegistry.get;
 		output.foreach(attr => {
 			val data: DataLabel = meta.lookup(databaseName, tableName, attr.name);

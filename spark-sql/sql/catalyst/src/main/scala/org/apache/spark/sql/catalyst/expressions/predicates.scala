@@ -248,9 +248,9 @@ case class CaseWhen(branches: Seq[Expression]) extends Expression {
 
 	@transient private[this] lazy val branchesArr = branches.toArray
 	@transient lazy val predicates =
-		branches.sliding(2, 2).collect { case Seq(cond, _) => cond }.toSeq
+		branches.sliding(2, 2).collect { case Seq(cond, _) => cond }.toSeq.toList
 	@transient lazy val values =
-		branches.sliding(2, 2).collect { case Seq(_, value) => value }.toSeq
+		branches.sliding(2, 2).collect { case Seq(_, value) => value }.toSeq.toList
 	@transient lazy val elseValue =
 		if (branches.length % 2 == 0) None else Option(branches.last)
 

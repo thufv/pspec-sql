@@ -105,8 +105,6 @@ public class HierarchicalObject<T extends HierarchicalObject<T>> extends XMLDesc
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(super.toString());
-		sb.append("\tlabel: ");
-		sb.append(label);
 		if (parentId != null) {
 			sb.append("\tparentId: ");
 			sb.append(parentId);
@@ -118,7 +116,6 @@ public class HierarchicalObject<T extends HierarchicalObject<T>> extends XMLDesc
 				sb.append(' ');
 			}
 		}
-		sb.append('\t');
 		return sb.toString();
 	}
 

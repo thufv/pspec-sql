@@ -19,11 +19,20 @@ package org.apache.spark.sql.catalyst.expressions
 
 import org.apache.spark.sql.catalyst.errors.TreeNodeException
 import org.apache.spark.sql.catalyst.trees
+import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
 import org.apache.spark.sql.catalyst.trees.TreeNode
 import org.apache.spark.sql.catalyst.types.{ DataType, FractionalType, IntegralType, NumericType, NativeType }
+import org.apache.spark.sql.catalyst.checker.Label
+import org.apache.spark.sql.catalyst.checker.UnsupportedPlanException
 
 abstract class Expression extends TreeNode[Expression] {
 	self: Product =>
+
+	def getName: String = throw new UnsupportedPlanException(s"unknown aggregate expression $this")
+
+	def toLabel(child: Seq[Label]): Label = {
+		throw new UnsupportedPlanException(s"unknown expression $this");
+	}
 
 	/** The narrowest possible type that is produced when this expression is evaluated. */
 	type EvaluatedType <: Any

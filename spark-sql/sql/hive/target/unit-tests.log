@@ -1,0 +1,154 @@
+19:47:48.535 INFO SecurityManager: Changing view acls to: luochen,
+19:47:48.536 INFO SecurityManager: Changing modify acls to: luochen,
+19:47:48.537 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users with view permissions: Set(luochen, ); users with modify permissions: Set(luochen, )
+19:47:48.867 INFO Slf4jLogger: Slf4jLogger started
+19:47:48.910 INFO Remoting: Starting remoting
+19:47:49.065 INFO Remoting: Remoting started; listening on addresses :[akka.tcp://sparkDriver@101.5.216.200:55469]
+19:47:49.067 INFO Remoting: Remoting now listens on addresses: [akka.tcp://sparkDriver@101.5.216.200:55469]
+19:47:49.074 INFO Utils: Successfully started service 'sparkDriver' on port 55469.
+19:47:49.090 INFO SparkEnv: Registering MapOutputTracker
+19:47:49.098 INFO SparkEnv: Registering BlockManagerMaster
+19:47:49.116 INFO DiskBlockManager: Created local directory at /var/folders/hk/c9v5rwl1747524k_yslgpn8h0000gq/T/spark-local-20141109194749-ff67
+19:47:49.137 INFO Utils: Successfully started service 'Connection manager for block manager' on port 55470.
+19:47:49.138 INFO ConnectionManager: Bound socket to port 55470 with id = ConnectionManagerId(101.5.216.200,55470)
+19:47:49.141 INFO MemoryStore: MemoryStore started with capacity 112.8 MB
+19:47:49.146 INFO BlockManagerMaster: Trying to register BlockManager
+19:47:49.150 INFO BlockManagerMasterActor: Registering block manager 101.5.216.200:55470 with 112.8 MB RAM
+19:47:49.152 INFO BlockManagerMaster: Registered BlockManager
+19:47:49.168 INFO HttpFileServer: HTTP File server directory is /var/folders/hk/c9v5rwl1747524k_yslgpn8h0000gq/T/spark-80cd8ef4-f366-4d09-8bac-15e775f7f3d3
+19:47:49.174 INFO HttpServer: Starting HTTP Server
+19:47:49.273 INFO Server: jetty-8.1.14.v20131031
+19:47:49.286 INFO AbstractConnector: Started SocketConnector@0.0.0.0:55471
+19:47:49.286 INFO Utils: Successfully started service 'HTTP file server' on port 55471.
+19:47:49.582 INFO Server: jetty-8.1.14.v20131031
+19:47:49.594 INFO AbstractConnector: Started SelectChannelConnector@0.0.0.0:4040
+19:47:49.595 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+19:47:49.596 INFO SparkUI: Started SparkUI at http://101.5.216.200:4040
+19:47:49.876 INFO AkkaUtils: Connecting to HeartbeatReceiver: akka.tcp://sparkDriver@101.5.216.200:55469/user/HeartbeatReceiver
+19:47:50.635 INFO ParseDriver: Parsing command: select i_item_id from item
+19:47:50.931 INFO ParseDriver: Parse Completed
+19:47:51.599 INFO HiveMetaStore: 0: Opening raw store with implemenation class:org.apache.hadoop.hive.metastore.ObjectStore
+19:47:51.621 INFO ObjectStore: ObjectStore, initialize called
+19:47:51.797 INFO Persistence: Property datanucleus.cache.level2 unknown - will be ignored
+19:47:51.952 WARN BoneCPConfig: Max Connections < 1. Setting to 20
+19:47:52.515 INFO ObjectStore: Setting MetaStore object pin classes with hive.metastore.cache.pinobjtypes="Table,StorageDescriptor,SerDeInfo,Partition,Database,Type,FieldSchema,Order"
+19:47:52.553 INFO ObjectStore: Initialized ObjectStore
+19:47:53.571 WARN BoneCPConfig: Max Connections < 1. Setting to 20
+19:47:53.768 INFO HiveMetaStore: 0: get_table : db=default tbl=item
+19:47:53.768 INFO audit: ugi=luochen	ip=unknown-ip-addr	cmd=get_table : db=default tbl=item	
+19:47:53.772 INFO Datastore: The class "org.apache.hadoop.hive.metastore.model.MFieldSchema" is tagged as "embedded-only" so does not have its own datastore table.
+19:47:53.773 INFO Datastore: The class "org.apache.hadoop.hive.metastore.model.MOrder" is tagged as "embedded-only" so does not have its own datastore table.
+19:47:54.135 INFO ParseDriver: Parsing command:  
+		  SELECT i_item_id,
+         AVG(ss_quantity) agg1,
+         AVG(ss_list_price) agg2,
+         AVG(ss_coupon_amt) agg3,
+         AVG(ss_sales_price) agg4
+    FROM store_sales
+         JOIN customer_demographics JOIN date_dim JOIN item JOIN promotion
+   WHERE     ss_sold_date_sk = d_date_sk
+         AND ss_item_sk = i_item_sk
+         AND ss_cdemo_sk = cd_demo_sk
+         AND ss_promo_sk = p_promo_sk
+         AND cd_gender = 'M'
+         AND cd_marital_status = 'M'
+         AND cd_education_status = '4 yr Degree'
+         AND (p_channel_email = 'N' OR p_channel_event = 'N')
+         AND d_year = 2001
+				GROUP BY i_item_id
+		
+19:47:54.145 INFO ParseDriver: Parse Completed
+19:47:54.181 INFO HiveMetaStore: 0: get_table : db=default tbl=store_sales
+19:47:54.181 INFO audit: ugi=luochen	ip=unknown-ip-addr	cmd=get_table : db=default tbl=store_sales	
+19:47:54.211 INFO HiveMetaStore: 0: get_table : db=default tbl=customer_demographics
+19:47:54.211 INFO audit: ugi=luochen	ip=unknown-ip-addr	cmd=get_table : db=default tbl=customer_demographics	
+19:47:54.237 INFO HiveMetaStore: 0: get_table : db=default tbl=date_dim
+19:47:54.237 INFO audit: ugi=luochen	ip=unknown-ip-addr	cmd=get_table : db=default tbl=date_dim	
+19:47:54.271 INFO HiveMetaStore: 0: get_table : db=default tbl=item
+19:47:54.271 INFO audit: ugi=luochen	ip=unknown-ip-addr	cmd=get_table : db=default tbl=item	
+19:47:54.304 INFO HiveMetaStore: 0: get_table : db=default tbl=promotion
+19:47:54.304 INFO audit: ugi=luochen	ip=unknown-ip-addr	cmd=get_table : db=default tbl=promotion	
+19:47:54.656 INFO ParseDriver: Parsing command: 
+				SELECT
+        i_brand_id brand_id
+        ,i_brand brand
+        ,t_hour
+        ,t_minute
+        ,SUM(ext_price) ext_price
+    FROM
+        item
+        JOIN (
+            SELECT
+                    ws_ext_sales_price AS ext_price
+                    ,ws_sold_date_sk AS sold_date_sk
+                    ,ws_item_sk AS sold_item_sk
+                    ,ws_sold_time_sk AS time_sk
+                FROM
+                    web_sales
+                    JOIN date_dim
+                WHERE
+                    d_date_sk = ws_sold_date_sk
+                    AND d_moy = 12
+                    AND d_year = 2002
+            UNION ALL
+            SELECT
+                    cs_ext_sales_price AS ext_price
+                    ,cs_sold_date_sk AS sold_date_sk
+                    ,cs_item_sk AS sold_item_sk
+                    ,cs_sold_time_sk AS time_sk
+                FROM
+                    catalog_sales
+                    JOIN date_dim
+                WHERE
+                    d_date_sk = cs_sold_date_sk
+                    AND d_moy = 12
+                    AND d_year = 2002
+            UNION ALL
+            SELECT
+                    ss_ext_sales_price AS ext_price
+                    ,ss_sold_date_sk AS sold_date_sk
+                    ,ss_item_sk AS sold_item_sk
+                    ,ss_sold_time_sk AS time_sk
+                FROM
+                    store_sales
+                    JOIN date_dim
+                WHERE
+                    d_date_sk = ss_sold_date_sk
+                    AND d_moy = 12
+                    AND d_year = 2002
+        ) tmp
+        JOIN time_dim
+    WHERE
+        sold_item_sk = i_item_sk
+        AND i_manager_id = 1
+        AND time_sk = t_time_sk
+        AND (
+            t_meal_time = 'breakfast'
+            OR t_meal_time = 'dinner'
+        )
+    GROUP BY
+        i_brand
+        ,i_brand_id
+        ,t_hour
+        ,t_minute
+    ORDER BY
+        ext_price DESC
+        ,i_brand_id
+		
+19:47:54.671 INFO ParseDriver: Parse Completed
+19:47:54.690 INFO HiveMetaStore: 0: get_table : db=default tbl=item
+19:47:54.690 INFO audit: ugi=luochen	ip=unknown-ip-addr	cmd=get_table : db=default tbl=item	
+19:47:54.719 INFO HiveMetaStore: 0: get_table : db=default tbl=web_sales
+19:47:54.720 INFO audit: ugi=luochen	ip=unknown-ip-addr	cmd=get_table : db=default tbl=web_sales	
+19:47:54.753 INFO HiveMetaStore: 0: get_table : db=default tbl=date_dim
+19:47:54.753 INFO audit: ugi=luochen	ip=unknown-ip-addr	cmd=get_table : db=default tbl=date_dim	
+19:47:54.782 INFO HiveMetaStore: 0: get_table : db=default tbl=catalog_sales
+19:47:54.782 INFO audit: ugi=luochen	ip=unknown-ip-addr	cmd=get_table : db=default tbl=catalog_sales	
+19:47:54.814 INFO HiveMetaStore: 0: get_table : db=default tbl=date_dim
+19:47:54.814 INFO audit: ugi=luochen	ip=unknown-ip-addr	cmd=get_table : db=default tbl=date_dim	
+19:47:54.843 INFO HiveMetaStore: 0: get_table : db=default tbl=store_sales
+19:47:54.843 INFO audit: ugi=luochen	ip=unknown-ip-addr	cmd=get_table : db=default tbl=store_sales	
+19:47:54.868 INFO HiveMetaStore: 0: get_table : db=default tbl=date_dim
+19:47:54.869 INFO audit: ugi=luochen	ip=unknown-ip-addr	cmd=get_table : db=default tbl=date_dim	
+19:47:54.901 INFO HiveMetaStore: 0: get_table : db=default tbl=time_dim
+19:47:54.901 INFO audit: ugi=luochen	ip=unknown-ip-addr	cmd=get_table : db=default tbl=time_dim	

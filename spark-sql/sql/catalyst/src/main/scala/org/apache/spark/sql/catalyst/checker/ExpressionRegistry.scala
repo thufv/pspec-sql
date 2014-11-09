@@ -10,6 +10,7 @@ object ExpressionRegistry extends LabelConstants {
 			case _: EqualTo => Pred_Equal;
 			case _: GreaterThan => Pred_Greater;
 			case _: GreaterThanOrEqual => Pred_GreaterEqual;
+			case _: LessThan => Pred_Less;
 			case _: LessThanOrEqual => Pred_LessEqual;
 			case _: Contains => Pred_Contains;
 			case _: Like => Pred_Like;
@@ -44,7 +45,7 @@ object ExpressionRegistry extends LabelConstants {
 
 	private def resolve(unary: UnaryExpression): String = {
 		unary match {
-			case _: Cast => null;
+			case _: Cast => Func_Cast;
 			case _: CountSet => null;
 			case _: GetField => null;
 			case _: Lower => Func_Lower;
@@ -69,7 +70,7 @@ object ExpressionRegistry extends LabelConstants {
 			case _: Max => Func_Max;
 			case _: Min => Func_Min;
 			case _: Sum => Func_Sum;
-			case _ => throw new UnsupportedPlanException(s"unknown aggregate expression: $aggregate");
+			case _ => aggregate.getName;
 		}
 	}
 }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data-sources>
+	<data-source id="mysql3-1415525366517-776994132" provider="generic" driver="mysql3" name="MySQL 3.x - tpc" create-date="1415525366517" save-password="true" show-system-objects="true" read-only="false">
+		<connection host="localhost" port="3306" server="" database="tpc" url="jdbc:mysql://localhost:3306/tpc" user="root" password="AQsJNCGi" type="dev">
+			<network-handler type="PROXY" id="socks_proxy" enabled="false" user="" save-password="false">
+				<property name="socks-port" value="1080"/>
+				<property name="socks-host" value=""/>
+			</network-handler>
+			<network-handler type="TUNNEL" id="ssh_tunnel" enabled="false" user="" save-password="false">
+				<property name="host" value=""/>
+				<property name="authType" value="PASSWORD"/>
+				<property name="port" value="22"/>
+				<property name="keyPath" value=""/>
+			</network-handler>
+		</connection>
+	</data-source>
+</data-sources>

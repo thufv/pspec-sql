@@ -1092,7 +1092,7 @@ private[hive] object HiveQl {
         Explode(attributes, nodeToExpr(child))
 
       case Token("TOK_FUNCTION", Token(functionName, Nil) :: children) =>
-        HiveGenericUdtf(functionName, attributes, children.map(nodeToExpr))
+        HiveGenericUdtf(function.getName(), functionName, attributes, children.map(nodeToExpr))
 
       case a: ASTNode =>
         throw new NotImplementedError(

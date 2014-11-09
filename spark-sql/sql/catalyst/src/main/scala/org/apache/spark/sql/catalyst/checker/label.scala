@@ -5,7 +5,7 @@ import org.apache.spark.sql.catalyst.expressions.Attribute
 
 sealed abstract class Label;
 
-case class DataLabel(val data: DataCategory) extends Label;
+case class DataLabel(val data: DataCategory, val table:String, val column:String) extends Label;
 
 case class Function(val children: Seq[Label], val udf: String) extends Label;
 

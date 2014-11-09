@@ -1,5 +1,9 @@
 package org.apache.spark.sql.catalyst.checker
 
+object LabelConstants extends LabelConstants{
+	
+}
+
 trait LabelConstants {
 	val Arithmetic_Add = "+";
 	val Arithmetic_Divide = "/";
@@ -24,6 +28,10 @@ trait LabelConstants {
 	val Func_Substr = "SUBSTR";
 	val Func_Case = "CASE";
 	val Func_If = "IF";
+	val Func_Cast = "CAST";
+
+	val Func_Intersect = "INTERSECT";
+	val Func_Union = "UNION";
 
 	val Pred_Equal = "=";
 	val Pred_Greater = ">";
