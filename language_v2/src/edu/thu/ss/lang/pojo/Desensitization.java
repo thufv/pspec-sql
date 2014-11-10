@@ -5,13 +5,23 @@ import java.util.Set;
 public class Desensitization {
 	protected Set<DataCategory> datas;
 	protected Set<DesensitizeOperation> operations;
+	protected int[] dataIndex;
 
 	public Desensitization() {
 	}
 
-	public Desensitization(Set<DataCategory> datas, Set<DesensitizeOperation> operations) {
+	public Desensitization(Set<DataCategory> datas, Set<DesensitizeOperation> operations, int[] dataRefs) {
 		this.datas = datas;
 		this.operations = operations;
+		this.dataIndex = dataRefs;
+	}
+
+	public int[] getDataIndex() {
+		return dataIndex;
+	}
+
+	public void setDataIndex(int[] dataIndex) {
+		this.dataIndex = dataIndex;
 	}
 
 	public boolean isDefaultOperation() {
@@ -37,9 +47,9 @@ public class Desensitization {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("data category: ");
-		for (DataCategory data : datas) {
-			sb.append(data.getId());
+		sb.append("data category ref: ");
+		for (int i : dataIndex) {
+			sb.append(i);
 			sb.append(' ');
 		}
 		sb.append('\t');

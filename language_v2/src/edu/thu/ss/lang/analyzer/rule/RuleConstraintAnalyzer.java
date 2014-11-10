@@ -48,7 +48,7 @@ public class RuleConstraintAnalyzer extends BaseRuleAnalyzer {
 
 	@Override
 	public String errorMsg() {
-		return "Error detected when checking consistency of restricted data categories, see error messages above.";
+		return "Error detected when checking constraints of restricted data categories, see error messages above.";
 	}
 
 	/**
@@ -88,8 +88,7 @@ public class RuleConstraintAnalyzer extends BaseRuleAnalyzer {
 	private boolean checkDataRestriction(XMLRule rule) {
 		List<XMLRestriction> restrictions = rule.getRestrictions();
 		if (restrictions.size() > 1) {
-			logger.error(
-					"Only one restriction should appear in rule when only data categories are referenced by rule: {}",
+			logger.error("Only one restriction should appear in rule when only data categories are referenced by rule: {}",
 					rule.getId());
 			return true;
 		}
@@ -99,8 +98,7 @@ public class RuleConstraintAnalyzer extends BaseRuleAnalyzer {
 		}
 		Set<XMLDesensitization> desensitizations = restriction.getDesensitizations();
 		if (desensitizations.size() > 1) {
-			logger.error(
-					"Only one desensitize should appear in rule when only data categories are referenced by rule: {}",
+			logger.error("Only one desensitize should appear in rule when only data categories are referenced by rule: {}",
 					rule.getId());
 			return true;
 		}
@@ -135,8 +133,8 @@ public class RuleConstraintAnalyzer extends BaseRuleAnalyzer {
 		}
 		for (DesensitizeOperation op : operations) {
 			if (!data.getOperations().contains(op)) {
-				logger.error("Desensitize operation: {} is not supported by data category: {} in rule: {}",
-						op.getUdf(), data.getId(), ruleId);
+				logger.error("Desensitize operation: {} is not supported by data category: {} in rule: {}", op.getUdf(),
+						data.getId(), ruleId);
 				error = true;
 			}
 		}

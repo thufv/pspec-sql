@@ -49,8 +49,8 @@ public class SimpleRedundancyAnalyzer extends BasePolicyAnalyzer {
 				redundant = checkAssociation(erule, target);
 			}
 			if (redundant) {
-				logger.warn("The rule: {} is removed since it is redundant by rule: {}.", target.getRuleId(),
-						erule.getRuleId());
+				logger
+						.warn("The rule: {} is removed since it is covered by rule: {}.", target.getRuleId(), erule.getRuleId());
 				return true;
 			}
 		}
@@ -179,7 +179,7 @@ public class SimpleRedundancyAnalyzer extends BasePolicyAnalyzer {
 	 */
 	private boolean checkBothAssociation(ExpandedRule rule1, ExpandedRule rule2) {
 		DataActionPair[] pairs1 = rule1.getDatas();
-		DataActionPair[] pairs2 = rule1.getDatas();
+		DataActionPair[] pairs2 = rule2.getDatas();
 		if (pairs1.length > pairs2.length) {
 			return false;
 		}

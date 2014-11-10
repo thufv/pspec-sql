@@ -29,12 +29,13 @@ public class ExpandedRule {
 		this.datas = new DataActionPair[1];
 		this.datas[0] = new DataActionPair(datas, action, Collections.min(datas).getLabel());
 		this.restrictions = new Restriction[1];
-		this.restrictions[0] = rule.getRestriction().toRestriction();
-		if(!this.restrictions[0].isForbid()){
+		this.restrictions[0] = rule.getRestriction().toRestriction(this.datas);
+		if (!this.restrictions[0].isForbid()) {
 			Desensitization de = this.restrictions[0].getDesensitization();
 			de.setDatas(datas);
+			de.setDataIndex(new int[] { 0 });
 		}
-		
+
 	}
 
 	public ExpandedRule(XMLRule rule, Set<UserCategory> users, XMLDataAssociation association) {
@@ -49,7 +50,7 @@ public class ExpandedRule {
 
 		this.restrictions = new Restriction[rule.getRestrictions().size()];
 		for (i = 0; i < restrictions.length; i++) {
-			this.restrictions[i] = rule.getRestrictions().get(i).toRestriction();
+			this.restrictions[i] = rule.getRestrictions().get(i).toRestriction(this.datas);
 		}
 	}
 

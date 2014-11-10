@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<privacy-policy xmlns="http://www.example.org/privacy"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.example.org/privacy privacy.xsd">
+	<policy-information id="school-policy">
+		<issuer>
+			<name>luochen</name>
+			<organization>Tsinghua</organization>
+			<e-mail>luochen01@vip.qq.com</e-mail>
+			<address>Tsinghua</address>
+			<country>China</country>
+		</issuer>
+	</policy-information>
+
+	<vocabulary-ref location="res/spark-vocabulary.xml">
+		<user-category-container refid="social-users" />
+		<data-category-container refid="social-data" />
+	</vocabulary-ref>
+	<rules>
+		<rule id="forbid-item-id-sk">
+			<user-category-ref refid="employee"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="i_item_sk"></data-category-ref>
+				<data-category-ref refid="i_item_id"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+		<rule id="format-color">
+			<user-category-ref refid="employee"></user-category-ref>
+			<data-category-ref refid="i_item_color"></data-category-ref>
+			<restriction>
+				<desensitize>
+					<UDF>lower</UDF>
+					<UDF>upper</UDF>
+				</desensitize>
+			</restriction>
+		</rule>
+		<rule id="item-id-class">
+			<user-category-ref refid="employee"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="i_item_id"></data-category-ref>
+				<data-category-ref refid="i_class"></data-category-ref>
+			</data-association>
+			<restriction>
+				<desensitize>
+					<data-category-ref refid="i_item_id" />
+					<UDF>count</UDF>
+				</desensitize>
+			</restriction>
+			<restriction>
+				<desensitize>
+					<data-category-ref refid="i_class" />
+					<UDF>count</UDF>
+				</desensitize>
+			</restriction>
+		</rule>
+	</rules>
+</privacy-policy>

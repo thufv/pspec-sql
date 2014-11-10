@@ -29,23 +29,28 @@ public class PolicyParser implements ParserConstant {
 
 	private List<PolicyAnalyzer> analyzers;
 
-	protected void init() {
+	protected void init(boolean consistency) {
 		analyzers = new ArrayList<>();
 		analyzers.add(new RuleResolver());
 		analyzers.add(new RuleConstraintAnalyzer());
 		analyzers.add(new RuleSimplifier());
 		analyzers.add(new PolicyExpander());
 		analyzers.add(new SimpleRedundancyAnalyzer());
-		analyzers.add(new ConsistencyAnalyzer());
-
+		if (consistency) {
+			analyzers.add(new ConsistencyAnalyzer());
+		}
 	}
 
 	protected void cleanup() {
 	}
 
 	public Policy parse(String path) throws ParsingException {
+		return parse(path, true);
+	}
 
-		init();
+	public Policy parse(String path, boolean consistency) throws ParsingException {
+
+		init(consistency);
 		Policy policy = new Policy();
 		Document policyDoc = null;
 		try {

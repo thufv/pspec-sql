@@ -7,9 +7,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.lang.parser.ParserConstant;
+import edu.thu.ss.lang.pojo.DataActionPair;
 import edu.thu.ss.lang.pojo.Desensitization;
 import edu.thu.ss.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.lang.pojo.Parsable;
+import edu.thu.ss.lang.util.SetUtil;
 
 public class XMLDesensitization extends Desensitization implements Parsable {
 	protected Set<XMLObjectRef> objRefs = new HashSet<>();
@@ -23,14 +25,24 @@ public class XMLDesensitization extends Desensitization implements Parsable {
 		return dataRefs;
 	}
 
-	public Desensitization toDesensitization() {
+	public Desensitization toDesensitization(DataActionPair[] pairs) {
 		Desensitization de = new Desensitization();
 		if (operations != null) {
 			de.setOperations(new HashSet<>(operations));
 		}
 		if (this.datas != null) {
 			de.setDatas(new HashSet<>(datas));
+			this.dataIndex = new int[dataRefs.size()];
+			int index = 0;
+			for (int i = 0; i < pairs.length; i++) {
+				DataActionPair pair = pairs[i];
+				if (SetUtil.intersects(pair.getDatas(), this.datas)) {
+					this.dataIndex[index++] = i;
+				}
+			}
+			de.setDataIndex(dataIndex);
 		}
+
 		return de;
 	}
 

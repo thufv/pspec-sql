@@ -17,93 +17,11 @@
 		<data-category-container refid="social-data" />
 	</vocabulary-ref>
 	<rules>
-		<!--<rule id="forbid"> <user-category-ref refid="employee"/> <user-category-ref 
-			refid="ceo"/> <data-category-ref refid="pii" action="all"/> <restriction> 
-			<forbid/> </restriction> </rule>! -->
-		<rule id="pii-disease">
-			<user-category-ref refid="employee" />
-			<data-association>
-				<data-category-ref refid="pii" action="all" />
-				<data-category-ref refid="disease" action="all" />
-			</data-association>
+		<rule id="forbid_item_sk">
+			<user-category-ref refid="employee"></user-category-ref>
+			<data-category-ref refid="i_item_sk"></data-category-ref>
 			<restriction>
-				<desensitize>
-					<data-category-ref refid="pii" />
-				</desensitize>
-			</restriction>
-		</rule>
-		<rule id="pii">
-			<user-category-ref refid="employee" />
-			<data-category-ref refid="pii" action="project" />
-			<restriction>
-				<desensitize>
-					<UDF>anonymize</UDF>
-				</desensitize>
-			</restriction>
-		</rule>
-		<rule id="ip">
-			<user-category-ref refid="employee" />
-			<data-category-ref refid="ip" action="test" />
-			<restriction>
-				<desensitize>
-					<UDF>truncate</UDF>
-				</desensitize>
-			</restriction>
-		</rule>
-		<rule id="ip-disease">
-			<user-category-ref refid="employee">
-			</user-category-ref>
-			<data-association>
-				<data-category-ref refid="ip" />
-				<data-category-ref refid="disease" />
-			</data-association>
-			<restriction>
-				<desensitize>
-					<data-category-ref refid="ip" />
-					<UDF>truncate</UDF>
-				</desensitize>
-			</restriction>
-		</rule>
-
-		<rule id="pii-salary">
-			<user-category-ref refid="employee" />
-			<data-association>
-				<data-category-ref refid="pii" />
-				<data-category-ref refid="salary" />
-			</data-association>
-			<restriction>
-				<desensitize>
-					<data-category-ref refid="salary" />
-					<UDF>range</UDF>
-				</desensitize>
-			</restriction>
-			<restriction>
-				<forbid>
-				</forbid>
-			</restriction>
-		</rule>
-
-		<rule id="ip-salary">
-			<user-category-ref refid="employee" />
-			<data-association>
-				<data-category-ref refid="ip" />
-				<data-category-ref refid="salary" />
-			</data-association>
-			<restriction>
-				<desensitize>
-					<data-category-ref refid="ip" />
-					<UDF>truncate</UDF>
-				</desensitize>
-				<desensitize>
-					<data-category-ref refid="salary" />
-					<UDF>range</UDF>
-				</desensitize>
-			</restriction>
-			<restriction>
-				<desensitize>
-					<data-category-ref refid="ip" />
-					<UDF>truncate</UDF>
-				</desensitize>
+				<forbid></forbid>
 			</restriction>
 		</rule>
 	</rules>

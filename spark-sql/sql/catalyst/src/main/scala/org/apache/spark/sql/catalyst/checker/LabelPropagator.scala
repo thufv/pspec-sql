@@ -57,14 +57,9 @@ object LabelPropagator extends Logging {
 	val meta: MetaRegistry = MetaRegistry.get;
 
 	def apply(plan: LogicalPlan): Unit = {
-		val begin = System.currentTimeMillis();
 
 		propagate(plan);
 
-		val end = System.currentTimeMillis();
-		//TODO print
-		val time = end - begin;
-		println(s"label propagation finished in $time ms");
 		println("projections:");
 		plan.projections.foreach(t => {
 			println(s"$t");

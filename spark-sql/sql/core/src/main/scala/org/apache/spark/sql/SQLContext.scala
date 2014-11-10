@@ -37,6 +37,7 @@ import org.apache.spark.sql.parquet.ParquetRelation
 import org.apache.spark.{ Logging, SparkContext }
 import org.apache.spark.sql.catalyst.checker.LabelPropagator
 import org.apache.spark.sql.execution.AddExchange
+import org.apache.spark.sql.catalyst.checker.SparkChecker
 
 /**
  * :: AlphaComponent ::
@@ -55,6 +56,8 @@ class SQLContext(@transient val sparkContext: SparkContext)
 	with Serializable {
 
 	self =>
+
+	SparkChecker.init;
 
 	@transient
 	protected[sql] lazy val catalog: Catalog = new SimpleCatalog(true)
@@ -397,7 +400,7 @@ class SQLContext(@transient val sparkContext: SparkContext)
 		lazy val optimizedPlan = optimizer(analyzed)
 		// TODO: Don't just pick the first one...
 		lazy val sparkPlan = {
-			LabelPropagator(optimizedPlan);
+			SparkChecker(optimizedPlan);
 			SparkPlan.currentContext.set(self)
 			planner(optimizedPlan).next()
 		}

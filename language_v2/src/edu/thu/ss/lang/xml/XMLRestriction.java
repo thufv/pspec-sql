@@ -7,6 +7,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.lang.parser.ParserConstant;
+import edu.thu.ss.lang.pojo.DataActionPair;
 import edu.thu.ss.lang.pojo.Desensitization;
 import edu.thu.ss.lang.pojo.Parsable;
 import edu.thu.ss.lang.pojo.Restriction;
@@ -35,14 +36,14 @@ public class XMLRestriction implements Parsable {
 		}
 	}
 
-	public Restriction toRestriction() {
+	public Restriction toRestriction(DataActionPair[] pairs) {
 		Restriction res = null;
 		if (forbid) {
 			res = new Restriction(true);
 		} else {
 			Set<Desensitization> set = new HashSet<>();
 			for (XMLDesensitization de : desensitizations) {
-				set.add(de.toDesensitization());
+				set.add(de.toDesensitization(pairs));
 			}
 			res = new Restriction(set);
 		}

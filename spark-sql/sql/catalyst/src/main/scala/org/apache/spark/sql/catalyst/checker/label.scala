@@ -9,7 +9,7 @@ case class DataLabel(val data: DataCategory, val table:String, val column:String
 
 case class Function(val children: Seq[Label], val udf: String) extends Label;
 
-case class Insensitive(val ref: Attribute) extends Label;
+case class Insensitive(val attr:Attribute) extends Label;
 
 case class Constant(val value: Any) extends Label;
 

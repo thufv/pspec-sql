@@ -136,22 +136,25 @@ public class RuleResolver extends BaseRuleAnalyzer {
 
 	private boolean resolveDesensitization(XMLDesensitization de, XMLRule rule) {
 		if (rule.getAssociations().size() > 0 && rule.getDataRefs().size() > 0) {
-			logger.error(
-					"Data-category-ref and data-association should not appear together when restriction contains desensitize element in rule: {}",
-					ruleId);
+			logger
+					.error(
+							"Data-category-ref and data-association should not appear together when restriction contains desensitize element in rule: {}",
+							ruleId);
 			return true;
 		}
 		if (rule.getDataRefs().size() > 0) {
 			if (de.getObjRefs().size() > 0) {
-				logger.error("No data-category-ref element should appear in desensitize element when only data category is referenced in rule: "
-						+ ruleId);
+				logger
+						.error("No data-category-ref element should appear in desensitize element when only data category is referenced in rule: "
+								+ ruleId);
 				return true;
 			}
 			return false;
 		} else if (rule.getAssociations().size() > 0) {
 			if (de.getObjRefs().size() == 0) {
-				logger.error("Restricted data category must be specified explicitly when data association is referenced by rule: "
-						+ ruleId);
+				logger
+						.error("Restricted data category must be specified explicitly when data association is referenced by rule: "
+								+ ruleId);
 				return true;
 			}
 		}
@@ -161,8 +164,7 @@ public class RuleResolver extends BaseRuleAnalyzer {
 			for (XMLDataAssociation association : rule.getAssociations()) {
 				data = association.get(ref.getRefid());
 				if (data == null) {
-					logger.error(
-							"Restricted data category: {} must be contained in referenced data association in rule: {}",
+					logger.error("Restricted data category: {} must be contained in referenced data association in rule: {}",
 							ref.getRefid(), ruleId);
 					error = true;
 				}
@@ -171,7 +173,9 @@ public class RuleResolver extends BaseRuleAnalyzer {
 				de.getDataRefs().add(data);
 			}
 		}
-		de.materialize();
+		if (!error) {
+			de.materialize();
+		}
 
 		return error;
 	}

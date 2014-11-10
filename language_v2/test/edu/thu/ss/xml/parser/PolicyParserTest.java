@@ -1,7 +1,6 @@
 package edu.thu.ss.xml.parser;
 
 import java.io.File;
-import java.text.MessageFormat;
 
 import org.junit.Test;
 
@@ -20,6 +19,17 @@ public class PolicyParserTest {
 		}
 	}
 
+	@Test
+	public void testSpark() {
+		try {
+			PolicyParser parser = new PolicyParser();
+			Policy policy = parser.parse("res/spark-policy.xml");
+			System.out.println(policy);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void testConflict() {
 		try {
 			PolicyParser parser = new PolicyParser();
@@ -30,7 +40,6 @@ public class PolicyParserTest {
 		}
 	}
 
-	@Test
 	public void testRedundancy() {
 		try {
 			PolicyParser parser = new PolicyParser();
@@ -41,7 +50,7 @@ public class PolicyParserTest {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void main1(String[] args) {
 		String path = "/Users/luochen/Documents/Research/DSGen_v1.1.0/data/";
 		File dir = new File(path);
 		File[] files = dir.listFiles();
