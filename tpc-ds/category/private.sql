@@ -130,10 +130,14 @@ WITH year_total AS (
         END
     ORDER BY
         t_s_secyear.customer_login;
+
+
 --end query 4 using template query4.tpl
 
 --start query 6 using template query6.tpl
 -- @private, @projection(customer_address)
+
+
 SELECT
         top 100 a.ca_state state
         ,COUNT(*) cnt
@@ -171,10 +175,14 @@ SELECT
         COUNT(*) >= 10
     ORDER BY
         cnt;
+
+
 --end query 6 using template query6.tpl
 
 --start query 7 using template query7.tpl
 -- @private, @condition(demographics)
+
+
 SELECT
         top 100 i_item_id
         ,AVG(ss_quantity) agg1
@@ -204,10 +212,14 @@ SELECT
         i_item_id
     ORDER BY
         i_item_id;
+
+
 --end query 7 using template query7.tpl
 
 --start query 8 using template query8.tpl
 --@private, @condition(customer_address)
+
+
 SELECT
         top 100 s_store_name
         ,SUM(ss_net_profit)
@@ -664,10 +676,14 @@ SELECT
         s_store_name
     ORDER BY
         s_store_name;
+
+
 --end query 8 using template query8.tpl
 
 --start query 10 using template query10.tpl
 -- @private, @projection(demographics), @condition(customer_address)
+
+
 SELECT
         top 100 cd_gender
         ,cd_marital_status
@@ -753,87 +769,62 @@ SELECT
         ,cd_dep_count
         ,cd_dep_employed_count
         ,cd_dep_college_count;
+
+
 --end query 10 using template query10.tpl
 
 --start query 13 using template query13.tpl
 -- @private, @condition(demographics)
-SELECT
-        AVG(ss_quantity)
-        ,AVG(ss_ext_sales_price)
-        ,AVG(ss_ext_wholesale_cost)
-        ,SUM(ss_ext_wholesale_cost)
-    FROM
-        store_sales
-        ,store
-        ,customer_demographics
-        ,household_demographics
-        ,customer_address
-        ,date_dim
-    WHERE
-        s_store_sk = ss_store_sk
-        AND ss_sold_date_sk = d_date_sk
-        AND d_year = 2001
-        AND (
-            (
-                ss_hdemo_sk = hd_demo_sk
+
+SELECT AVG(ss_quantity),
+       AVG(ss_ext_sales_price),
+       AVG(ss_ext_wholesale_cost),
+       SUM(ss_ext_wholesale_cost)
+  FROM store_sales,
+       store,
+       customer_demographics,
+       household_demographics,
+       customer_address,
+       date_dim
+ WHERE     s_store_sk = ss_store_sk
+       AND ss_sold_date_sk = d_date_sk
+       AND d_year = 2001
+       AND (   (    ss_hdemo_sk = hd_demo_sk
                 AND cd_demo_sk = ss_cdemo_sk
                 AND cd_marital_status = 'M'
                 AND cd_education_status = '2 yr Degree'
                 AND ss_sales_price BETWEEN 100.00 AND 150.00
-                AND hd_dep_count = 3
-            )
-            OR (
-                ss_hdemo_sk = hd_demo_sk
+                AND hd_dep_count = 3)
+            OR (    ss_hdemo_sk = hd_demo_sk
                 AND cd_demo_sk = ss_cdemo_sk
                 AND cd_marital_status = 'U'
                 AND cd_education_status = '4 yr Degree'
                 AND ss_sales_price BETWEEN 50.00 AND 100.00
-                AND hd_dep_count = 1
-            )
-            OR (
-                ss_hdemo_sk = hd_demo_sk
+                AND hd_dep_count = 1)
+            OR (    ss_hdemo_sk = hd_demo_sk
                 AND cd_demo_sk = ss_cdemo_sk
                 AND cd_marital_status = 'D'
                 AND cd_education_status = 'Advanced Degree'
                 AND ss_sales_price BETWEEN 150.00 AND 200.00
-                AND hd_dep_count = 1
-            )
-        )
-        AND (
-            (
-                ss_addr_sk = ca_address_sk
+                AND hd_dep_count = 1))
+       AND (   (    ss_addr_sk = ca_address_sk
                 AND ca_country = 'United States'
-                AND ca_state IN (
-                    'ND'
-                    ,'IL'
-                    ,'AL'
-                )
-                AND ss_net_profit BETWEEN 100 AND 200
-            )
-            OR (
-                ss_addr_sk = ca_address_sk
+                AND ca_state IN ('ND', 'IL', 'AL')
+                AND ss_net_profit BETWEEN 100 AND 200)
+            OR (    ss_addr_sk = ca_address_sk
                 AND ca_country = 'United States'
-                AND ca_state IN (
-                    'MS'
-                    ,'OH'
-                    ,'NV'
-                )
-                AND ss_net_profit BETWEEN 150 AND 300
-            )
-            OR (
-                ss_addr_sk = ca_address_sk
+                AND ca_state IN ('MS', 'OH', 'NV')
+                AND ss_net_profit BETWEEN 150 AND 300)
+            OR (    ss_addr_sk = ca_address_sk
                 AND ca_country = 'United States'
-                AND ca_state IN (
-                    'MN'
-                    ,'IA'
-                    ,'OK'
-                )
-                AND ss_net_profit BETWEEN 50 AND 250
-            )
-        );
+                AND ca_state IN ('MN', 'IA', 'OK')
+                AND ss_net_profit BETWEEN 50 AND 250));
+
 --end query 13 using template query13.tpl
 
 --start query 14 using template query14.tpl
+
+
 WITH cross_items AS (
         SELECT
                 i_item_sk ss_item_sk
@@ -1042,6 +1033,7 @@ WITH cross_items AS (
         ,i_brand_id
         ,i_class_id
         ,i_category_id;
+
 WITH cross_items AS (
         SELECT
                 i_item_sk ss_item_sk
@@ -1225,10 +1217,14 @@ WITH cross_items AS (
         ,this_year.i_brand_id
         ,this_year.i_class_id
         ,this_year.i_category_id;
+
+
 --end query 14 using template query14.tpl
 
 --start query 15 using template query15.tpl
 -- @private, @project(customer_address), @condition(customer_address)
+
+
 SELECT
         top 100 ca_zip
         ,SUM(cs_sales_price)
@@ -1266,10 +1262,14 @@ SELECT
         ca_zip
     ORDER BY
         ca_zip;
+
+
 --end query 15 using template query15.tpl
 
 --start query 16 using template query16.tpl
 -- @private, @condition(customer_address)
+
+
 SELECT
         top 100 COUNT(DISTINCT cs_order_number) AS "order count"
         ,SUM(cs_ext_ship_cost) AS "total shipping cost"
@@ -1315,10 +1315,14 @@ SELECT
         )
     ORDER BY
         COUNT(DISTINCT cs_order_number);
+
+
 --end query 16 using template query16.tpl
 
 --start query 18 using template query18.tpl
 -- @private, @projection(customer_address, customer), @condition(demographics)
+
+
 SELECT
         top 100 i_item_id
         ,ca_country
@@ -1392,10 +1396,14 @@ SELECT
         ,ca_state
         ,ca_county
         ,i_item_id;
+
+
 --end query 18 using template query18.tpl
 
 --start query 23 using template query23.tpl
 -- @private, @projection(name)
+
+
 WITH frequent_ss_items AS (
         SELECT
                 SUBSTR(i_item_desc, 1, 30) itemdesc
@@ -1517,6 +1525,7 @@ WITH frequent_ss_items AS (
                 )
     )
         ) y;
+
 WITH frequent_ss_items AS (
         SELECT
                 SUBSTR(i_item_desc, 1, 30) itemdesc
@@ -1658,10 +1667,14 @@ WITH frequent_ss_items AS (
         c_last_name
         ,c_first_name
         ,sales;
+
+
 --end query 23 using template query23.tpl
 
 --start query 24 using template query24.tpl
 -- @private, @projection(name), @condition(customer_address)
+
+
 WITH ssales AS (
         SELECT
                 c_last_name
@@ -1722,6 +1735,7 @@ WITH ssales AS (
                 FROM
                     ssales
         );
+
 WITH ssales AS (
         SELECT
                 c_last_name
@@ -1782,10 +1796,14 @@ WITH ssales AS (
                 FROM
                     ssales
         );
+
+
 --end query 24 using template query24.tpl
 
 --start query 26 using template query26.tpl
 --@private, @condition(demographics)
+
+
 SELECT
         top 100 i_item_id
         ,AVG(cs_quantity) agg1
@@ -1815,10 +1833,14 @@ SELECT
         i_item_id
     ORDER BY
         i_item_id;
+
+
 --end query 26 using template query26.tpl
 
 --start query 27 using template query27.tpl
 -- @private, @condition(demographics)
+
+
 SELECT
         top 100 i_item_id
         ,s_state
@@ -1858,10 +1880,14 @@ SELECT
     ORDER BY
         i_item_id
         ,s_state;
+
+
 --end query 27 using template query27.tpl
 
 --start query 30 using template query30.tpl
 --@private, @projection(customer)
+
+
 WITH customer_total_return AS (
         SELECT
                 wr_returning_customer_sk AS ctr_customer_sk
@@ -1922,10 +1948,14 @@ WITH customer_total_return AS (
         ,c_email_address
         ,c_last_review_date
         ,ctr_total_return;
+
+
 --end query 30 using template query30.tpl
 
 --start query 31 using template query31.tpl
 -- @private, @condition(customer_address)
+
+
 WITH ss AS (
         SELECT
                 ca_county
@@ -2010,79 +2040,64 @@ WITH ss AS (
         END
     ORDER BY
         web_q2_q3_increase;
+
+
 --end query 31 using template query31.tpl
 
 --start query 34 using template query34.tpl
 -- @private, @projection(name), @condition(demographics)
-SELECT
-        c_last_name
-        ,c_first_name
-        ,c_salutation
-        ,c_preferred_cust_flag
-        ,ss_ticket_number
-        ,cnt
-    FROM
-        (
-            SELECT
-                    ss_ticket_number
-                    ,ss_customer_sk
-                    ,COUNT(*) cnt
-                FROM
-                    store_sales
-                    ,date_dim
-                    ,store
-                    ,household_demographics
-                WHERE
-                    store_sales.ss_sold_date_sk = date_dim.d_date_sk
-                    AND store_sales.ss_store_sk = store.s_store_sk
-                    AND store_sales.ss_hdemo_sk = household_demographics.hd_demo_sk
-                    AND (
-                        date_dim.d_dom BETWEEN 1 AND 3
-                        OR date_dim.d_dom BETWEEN 25 AND 28
-                    )
-                    AND (
-                        household_demographics.hd_buy_potential = '501-1000'
-                        OR household_demographics.hd_buy_potential = '0-500'
-                    )
-                    AND household_demographics.hd_vehicle_count > 0
-                    AND (
-                        CASE
-                            WHEN household_demographics.hd_vehicle_count > 0 THEN household_demographics.hd_dep_count / household_demographics.hd_vehicle_count
-                            ELSE null
-                        END
-                    ) > 1.2
-                    AND date_dim.d_year IN (
-                        1998
-                        ,1998+1
-                        ,1998+2
-                    )
-                    AND store.s_county IN (
-                        'Williamson County'
-                        ,'Williamson County'
-                        ,'Williamson County'
-                        ,'Williamson County'
-                        ,'Williamson County'
-                        ,'Williamson County'
-                        ,'Williamson County'
-                        ,'Williamson County'
-                    )
-                GROUP BY
-                    ss_ticket_number
-                    ,ss_customer_sk
-        ) dn
-        ,customer
-    WHERE
-        ss_customer_sk = c_customer_sk
-        AND cnt BETWEEN 15 AND 20
-    ORDER BY
-        c_last_name
-        ,c_first_name
-        ,c_salutation
-        ,c_preferred_cust_flag DESC;
+
+  SELECT c_last_name,
+         c_first_name,
+         c_salutation,
+         c_preferred_cust_flag,
+         ss_ticket_number,
+         cnt
+    FROM (  SELECT ss_ticket_number, ss_customer_sk, COUNT(*) cnt
+              FROM store_sales,
+                   date_dim,
+                   store,
+                   household_demographics
+             WHERE     store_sales.ss_sold_date_sk = date_dim.d_date_sk
+                   AND store_sales.ss_store_sk = store.s_store_sk
+                   AND store_sales.ss_hdemo_sk =
+                          household_demographics.hd_demo_sk
+                   AND (   date_dim.d_dom BETWEEN 1 AND 3
+                        OR date_dim.d_dom BETWEEN 25 AND 28)
+                   AND (   household_demographics.hd_buy_potential = '501-1000'
+                        OR household_demographics.hd_buy_potential = '0-500')
+                   AND household_demographics.hd_vehicle_count > 0
+                   AND (CASE
+                           WHEN household_demographics.hd_vehicle_count > 0
+                           THEN
+                                household_demographics.hd_dep_count
+                              / household_demographics.hd_vehicle_count
+                           ELSE
+                              NULL
+                        END) > 1.2
+                   AND date_dim.d_year IN (1998, 1998 + 1, 1998 + 2)
+                   AND store.s_county IN ('Williamson County',
+                                          'Williamson County',
+                                          'Williamson County',
+                                          'Williamson County',
+                                          'Williamson County',
+                                          'Williamson County',
+                                          'Williamson County',
+                                          'Williamson County')
+          GROUP BY ss_ticket_number, ss_customer_sk) dn,
+         customer
+   WHERE ss_customer_sk = c_customer_sk AND cnt BETWEEN 15 AND 20
+ORDER BY c_last_name,
+         c_first_name,
+         c_salutation,
+         c_preferred_cust_flag DESC;
+
 --end query 34 using template query34.tpl
 
 --start query 35 using template query35.tpl
 -- @private, @projection(demographics)
+
+
 SELECT
         top 100 ca_state
         ,cd_gender
@@ -2160,10 +2175,14 @@ SELECT
         ,cd_dep_count
         ,cd_dep_employed_count
         ,cd_dep_college_count;
+
+
 --end query 35 using template query35.tpl
 
 --start query 38 using template query38.tpl
 -- @private, @projection(name)
+
+
 SELECT
         top 100 COUNT(*)
     FROM
@@ -2207,10 +2226,14 @@ SELECT
                     AND web_sales.ws_bill_customer_sk = customer.c_customer_sk
                     AND d_month_seq BETWEEN 1191 AND 1191 + 11
         ) hot_cust;
+
+
 --end query 38 using template query38.tpl
 
 --start query 45 using template query45.tpl
 -- @private, @projection(customer_address)
+
+
 SELECT
         top 100 ca_zip
         ,ca_state
@@ -2266,10 +2289,14 @@ SELECT
     ORDER BY
         ca_zip
         ,ca_state;
+
+
 --end query 45 using template query45.tpl
 
 --start query 46 using template query46.tpl
 -- @private, @projection(name,customer_address), @condition(demographic)
+
+
 SELECT
         top 100 c_last_name
         ,c_first_name
@@ -2335,78 +2362,53 @@ SELECT
         ,ca_city
         ,bought_city
         ,ss_ticket_number;
+
+
 --end query 46 using template query46.tpl
 
 --start query 48 using template query48.tpl
 --@private, @condition(demographics, customer_address)
-SELECT
-        SUM(ss_quantity)
-    FROM
-        store_sales
-        ,store
-        ,customer_demographics
-        ,customer_address
-        ,date_dim
-    WHERE
-        s_store_sk = ss_store_sk
-        AND ss_sold_date_sk = d_date_sk
-        AND d_year = 1998
-        AND (
-            (
-                cd_demo_sk = ss_cdemo_sk
+
+SELECT SUM(ss_quantity)
+  FROM store_sales,
+       store,
+       customer_demographics,
+       customer_address,
+       date_dim
+ WHERE     s_store_sk = ss_store_sk
+       AND ss_sold_date_sk = d_date_sk
+       AND d_year = 1998
+       AND (   (    cd_demo_sk = ss_cdemo_sk
                 AND cd_marital_status = 'S'
                 AND cd_education_status = '4 yr Degree'
-                AND ss_sales_price BETWEEN 100.00 AND 150.00
-            )
-            OR (
-                cd_demo_sk = ss_cdemo_sk
+                AND ss_sales_price BETWEEN 100.00 AND 150.00)
+            OR (    cd_demo_sk = ss_cdemo_sk
                 AND cd_marital_status = 'S'
                 AND cd_education_status = '4 yr Degree'
-                AND ss_sales_price BETWEEN 50.00 AND 100.00
-            )
-            OR (
-                cd_demo_sk = ss_cdemo_sk
+                AND ss_sales_price BETWEEN 50.00 AND 100.00)
+            OR (    cd_demo_sk = ss_cdemo_sk
                 AND cd_marital_status = 'S'
                 AND cd_education_status = '4 yr Degree'
-                AND ss_sales_price BETWEEN 150.00 AND 200.00
-            )
-        )
-        AND (
-            (
-                ss_addr_sk = ca_address_sk
+                AND ss_sales_price BETWEEN 150.00 AND 200.00))
+       AND (   (    ss_addr_sk = ca_address_sk
                 AND ca_country = 'United States'
-                AND ca_state IN (
-                    'AK'
-                    ,'IA'
-                    ,'NE'
-                )
-                AND ss_net_profit BETWEEN 0 AND 2000
-            )
-            OR (
-                ss_addr_sk = ca_address_sk
+                AND ca_state IN ('AK', 'IA', 'NE')
+                AND ss_net_profit BETWEEN 0 AND 2000)
+            OR (    ss_addr_sk = ca_address_sk
                 AND ca_country = 'United States'
-                AND ca_state IN (
-                    'NY'
-                    ,'VA'
-                    ,'AR'
-                )
-                AND ss_net_profit BETWEEN 150 AND 3000
-            )
-            OR (
-                ss_addr_sk = ca_address_sk
+                AND ca_state IN ('NY', 'VA', 'AR')
+                AND ss_net_profit BETWEEN 150 AND 3000)
+            OR (    ss_addr_sk = ca_address_sk
                 AND ca_country = 'United States'
-                AND ca_state IN (
-                    'AZ'
-                    ,'MI'
-                    ,'NC'
-                )
-                AND ss_net_profit BETWEEN 50 AND 25000
-            )
-        );
+                AND ca_state IN ('AZ', 'MI', 'NC')
+                AND ss_net_profit BETWEEN 50 AND 25000));
+
 --end query 48 using template query48.tpl
 
 --start query 49 using template query49.tpl
 --@
+
+
 SELECT
         top 100 'web' AS channel
         ,web.item
@@ -2602,10 +2604,14 @@ SELECT
         1
         ,4
         ,5;
+
+
 --end query 49 using template query49.tpl
 
 --start query 54 using template query54.tpl
 --@private, @condition(customer, customer_address)
+
+
 WITH my_customers AS (
         SELECT
                 DISTINCT c_customer_sk
@@ -2692,10 +2698,14 @@ WITH my_customers AS (
     ORDER BY
         segment
         ,num_customers;
+
+
 --end query 54 using template query54.tpl
 
 --start query 56 using template query56.tpl
 --@private, @condition(customer_address)
+
+
 WITH ss AS (
         SELECT
                 i_item_id
@@ -2812,10 +2822,14 @@ WITH ss AS (
         i_item_id
     ORDER BY
         total_sales;
+
+
 --end query 56 using template query56.tpl
 
 --start query 60 using template query60.tpl
 --@private, @condition(customer_address)
+
+
 WITH ss AS (
         SELECT
                 i_item_id
@@ -2921,10 +2935,14 @@ WITH ss AS (
     ORDER BY
         i_item_id
         ,total_sales;
+
+
 --end query 60 using template query60.tpl
 
 --start query 61 using template query61.tpl
 --@private, @condition(customer_address)
+
+
 SELECT
         top 100 promotions
         ,total
@@ -2988,10 +3006,14 @@ SELECT
     ORDER BY
         promotions
         ,total;
+
+
 --end query 61 using template query61.tpl
 
 --start query 64 using template query64.tpl
 -- @private, @projection(customer_address)
+
+
 WITH cs_ui AS (
         SELECT
                 cs_item_sk
@@ -3130,10 +3152,14 @@ WITH cs_ui AS (
         cs1.product_name
         ,cs1.store_name
         ,cs2.cnt;
+
+
 --end query 64 using template query64.tpl
 
 --start query 68 using template query68.tpl
 --@private, @projection(customer), @condition(demographics)
+
+
 SELECT
         top 100 c_last_name
         ,c_first_name
@@ -3192,10 +3218,14 @@ SELECT
     ORDER BY
         c_last_name
         ,ss_ticket_number;
+
+
 --end query 68 using template query68.tpl
 
 --start query 69 using template query69.tpl
 --@private, @projection(demographics), @condition(customer_address)
+
+
 SELECT
         top 100 cd_gender
         ,cd_marital_status
@@ -3267,10 +3297,14 @@ SELECT
         ,cd_education_status
         ,cd_purchase_estimate
         ,cd_credit_rating;
+
+
 --end query 69 using template query69.tpl
 
 --start query 72 using template query72.tpl
 --@private, @condition(demographics)
+
+
 SELECT
         top 100 i_item_desc
         ,w_warehouse_name
@@ -3327,67 +3361,56 @@ SELECT
         ,i_item_desc
         ,w_warehouse_name
         ,d_week_seq;
+
+
 --end query 72 using template query72.tpl
 
 --start query 73 using template query73.tpl
 --@private, @projection(customer), @condition(demographics)
-SELECT
-        c_last_name
-        ,c_first_name
-        ,c_salutation
-        ,c_preferred_cust_flag
-        ,ss_ticket_number
-        ,cnt
-    FROM
-        (
-            SELECT
-                    ss_ticket_number
-                    ,ss_customer_sk
-                    ,COUNT(*) cnt
-                FROM
-                    store_sales
-                    ,date_dim
-                    ,store
-                    ,household_demographics
-                WHERE
-                    store_sales.ss_sold_date_sk = date_dim.d_date_sk
-                    AND store_sales.ss_store_sk = store.s_store_sk
-                    AND store_sales.ss_hdemo_sk = household_demographics.hd_demo_sk
-                    AND date_dim.d_dom BETWEEN 1 AND 2
-                    AND (
-                        household_demographics.hd_buy_potential = '>10000'
-                        OR household_demographics.hd_buy_potential = '5001-10000'
-                    )
-                    AND household_demographics.hd_vehicle_count > 0
-                    AND CASE
-                        WHEN household_demographics.hd_vehicle_count > 0 THEN household_demographics.hd_dep_count / household_demographics.hd_vehicle_count
-                        ELSE null
-                    END > 1
-                    AND date_dim.d_year IN (
-                        1998
-                        ,1998+1
-                        ,1998+2
-                    )
-                    AND store.s_county IN (
-                        'Williamson County'
-                        ,'Williamson County'
-                        ,'Williamson County'
-                        ,'Williamson County'
-                    )
-                GROUP BY
-                    ss_ticket_number
-                    ,ss_customer_sk
-        ) dj
-        ,customer
-    WHERE
-        ss_customer_sk = c_customer_sk
-        AND cnt BETWEEN 1 AND 5
-    ORDER BY
-        cnt DESC;
+
+  SELECT c_last_name,
+         c_first_name,
+         c_salutation,
+         c_preferred_cust_flag,
+         ss_ticket_number,
+         cnt
+    FROM (  SELECT ss_ticket_number, ss_customer_sk, COUNT(*) cnt
+              FROM store_sales,
+                   date_dim,
+                   store,
+                   household_demographics
+             WHERE     store_sales.ss_sold_date_sk = date_dim.d_date_sk
+                   AND store_sales.ss_store_sk = store.s_store_sk
+                   AND store_sales.ss_hdemo_sk =
+                          household_demographics.hd_demo_sk
+                   AND date_dim.d_dom BETWEEN 1 AND 2
+                   AND (   household_demographics.hd_buy_potential = '>10000'
+                        OR household_demographics.hd_buy_potential = '5001-10000')
+                   AND household_demographics.hd_vehicle_count > 0
+                   AND CASE
+                          WHEN household_demographics.hd_vehicle_count > 0
+                          THEN
+                               household_demographics.hd_dep_count
+                             / household_demographics.hd_vehicle_count
+                          ELSE
+                             NULL
+                       END > 1
+                   AND date_dim.d_year IN (1998, 1998 + 1, 1998 + 2)
+                   AND store.s_county IN ('Williamson County',
+                                          'Williamson County',
+                                          'Williamson County',
+                                          'Williamson County')
+          GROUP BY ss_ticket_number, ss_customer_sk) dj,
+         customer
+   WHERE ss_customer_sk = c_customer_sk AND cnt BETWEEN 1 AND 5
+ORDER BY cnt DESC;
+
 --end query 73 using template query73.tpl
 
 --start query 74 using template query74.tpl
 --@private, @projection(customer)
+
+
 WITH year_total AS (
         SELECT
                 c_customer_id customer_id
@@ -3470,10 +3493,14 @@ WITH year_total AS (
         1
         ,2
         ,3;
+
+
 --end query 74 using template query74.tpl
 
 --start query 78 using template query78.tpl
 --@private, @projection(customer)
+
+
 WITH ws AS (
         SELECT
                 d_year AS ws_sold_year
@@ -3579,10 +3606,14 @@ WITH ws AS (
         ,ROUND(ss_qty / (
             COALESCE(ws_qty + cs_qty, 1)
         ), 2);
+
+
 --end query 78 using template query78.tpl
 
 --start query 79 using template query79.tpl
 --@private, @projection(customer), @condition(demographics)
+
+
 SELECT
         top 100 c_last_name
         ,c_first_name
@@ -3632,10 +3663,14 @@ SELECT
         ,c_first_name
         ,SUBSTR(s_city, 1, 30)
         ,profit;
+
+
 --end query 79 using template query79.tpl
 
 --end query 80 using template query80.tpl--start query 81 using template query81.tpl
 --@private, @projection(customer, customer_address)
+
+
 WITH customer_total_return AS (
         SELECT
                 cr_returning_customer_sk AS ctr_customer_sk
@@ -3702,10 +3737,14 @@ WITH customer_total_return AS (
         ,ca_gmt_offset
         ,ca_location_type
         ,ctr_total_return;
+
+
 --end query 81 using template query81.tpl
 
 --start query 84 using template query84.tpl
 -- @private, @projection(customer), @condition(demographics, customer_address)
+
+
 SELECT
         top 100 c_customer_id AS customer_id
         ,c_last_name || ', ' || c_first_name AS customername
@@ -3727,10 +3766,14 @@ SELECT
         AND sr_cdemo_sk = cd_demo_sk
     ORDER BY
         c_customer_id;
+
+
 --end query 84 using template query84.tpl
 
 --start query 85 using template query85.tpl
 --@private, @condition(customer_address, demographics)
+
+
 SELECT
         top 100 SUBSTR(r_reason_desc, 1, 20)
         ,AVG(ws_quantity)
@@ -3814,257 +3857,157 @@ SELECT
         ,AVG(ws_quantity)
         ,AVG(wr_refunded_cash)
         ,AVG(wr_fee);
+
+
 --end query 85 using template query85.tpl
 
 --start query 88 using template query88.tpl
 --@private, @condition(demographics)
-SELECT
-        *
-    FROM
-        (
-            SELECT
-                    COUNT(*) h8_30_to_9
-                FROM
-                    store_sales
-                    ,household_demographics
-                    ,time_dim
-                    ,store
-                WHERE
-                    ss_sold_time_sk = time_dim.t_time_sk
-                    AND ss_hdemo_sk = household_demographics.hd_demo_sk
-                    AND ss_store_sk = s_store_sk
-                    AND time_dim.t_hour = 8
-                    AND time_dim.t_minute >= 30
-                    AND (
-                        (
-                            household_demographics.hd_dep_count = 4
-                            AND household_demographics.hd_vehicle_count <= 4+2
-                        )
-                        OR (
-                            household_demographics.hd_dep_count = -1
-                            AND household_demographics.hd_vehicle_count <= -1+2
-                        )
-                        OR (
-                            household_demographics.hd_dep_count = 0
-                            AND household_demographics.hd_vehicle_count <= 0+2
-                        )
-                    )
-                    AND store.s_store_name = 'ese'
-        ) s1
-        ,(
-            SELECT
-                    COUNT(*) h9_to_9_30
-                FROM
-                    store_sales
-                    ,household_demographics
-                    ,time_dim
-                    ,store
-                WHERE
-                    ss_sold_time_sk = time_dim.t_time_sk
-                    AND ss_hdemo_sk = household_demographics.hd_demo_sk
-                    AND ss_store_sk = s_store_sk
-                    AND time_dim.t_hour = 9
-                    AND time_dim.t_minute < 30
-                    AND (
-                        (
-                            household_demographics.hd_dep_count = 4
-                            AND household_demographics.hd_vehicle_count <= 4+2
-                        )
-                        OR (
-                            household_demographics.hd_dep_count = -1
-                            AND household_demographics.hd_vehicle_count <= -1+2
-                        )
-                        OR (
-                            household_demographics.hd_dep_count = 0
-                            AND household_demographics.hd_vehicle_count <= 0+2
-                        )
-                    )
-                    AND store.s_store_name = 'ese'
-        ) s2
-        ,(
-            SELECT
-                    COUNT(*) h9_30_to_10
-                FROM
-                    store_sales
-                    ,household_demographics
-                    ,time_dim
-                    ,store
-                WHERE
-                    ss_sold_time_sk = time_dim.t_time_sk
-                    AND ss_hdemo_sk = household_demographics.hd_demo_sk
-                    AND ss_store_sk = s_store_sk
-                    AND time_dim.t_hour = 9
-                    AND time_dim.t_minute >= 30
-                    AND (
-                        (
-                            household_demographics.hd_dep_count = 4
-                            AND household_demographics.hd_vehicle_count <= 4+2
-                        )
-                        OR (
-                            household_demographics.hd_dep_count = -1
-                            AND household_demographics.hd_vehicle_count <= -1+2
-                        )
-                        OR (
-                            household_demographics.hd_dep_count = 0
-                            AND household_demographics.hd_vehicle_count <= 0+2
-                        )
-                    )
-                    AND store.s_store_name = 'ese'
-        ) s3
-        ,(
-            SELECT
-                    COUNT(*) h10_to_10_30
-                FROM
-                    store_sales
-                    ,household_demographics
-                    ,time_dim
-                    ,store
-                WHERE
-                    ss_sold_time_sk = time_dim.t_time_sk
-                    AND ss_hdemo_sk = household_demographics.hd_demo_sk
-                    AND ss_store_sk = s_store_sk
-                    AND time_dim.t_hour = 10
-                    AND time_dim.t_minute < 30
-                    AND (
-                        (
-                            household_demographics.hd_dep_count = 4
-                            AND household_demographics.hd_vehicle_count <= 4+2
-                        )
-                        OR (
-                            household_demographics.hd_dep_count = -1
-                            AND household_demographics.hd_vehicle_count <= -1+2
-                        )
-                        OR (
-                            household_demographics.hd_dep_count = 0
-                            AND household_demographics.hd_vehicle_count <= 0+2
-                        )
-                    )
-                    AND store.s_store_name = 'ese'
-        ) s4
-        ,(
-            SELECT
-                    COUNT(*) h10_30_to_11
-                FROM
-                    store_sales
-                    ,household_demographics
-                    ,time_dim
-                    ,store
-                WHERE
-                    ss_sold_time_sk = time_dim.t_time_sk
-                    AND ss_hdemo_sk = household_demographics.hd_demo_sk
-                    AND ss_store_sk = s_store_sk
-                    AND time_dim.t_hour = 10
-                    AND time_dim.t_minute >= 30
-                    AND (
-                        (
-                            household_demographics.hd_dep_count = 4
-                            AND household_demographics.hd_vehicle_count <= 4+2
-                        )
-                        OR (
-                            household_demographics.hd_dep_count = -1
-                            AND household_demographics.hd_vehicle_count <= -1+2
-                        )
-                        OR (
-                            household_demographics.hd_dep_count = 0
-                            AND household_demographics.hd_vehicle_count <= 0+2
-                        )
-                    )
-                    AND store.s_store_name = 'ese'
-        ) s5
-        ,(
-            SELECT
-                    COUNT(*) h11_to_11_30
-                FROM
-                    store_sales
-                    ,household_demographics
-                    ,time_dim
-                    ,store
-                WHERE
-                    ss_sold_time_sk = time_dim.t_time_sk
-                    AND ss_hdemo_sk = household_demographics.hd_demo_sk
-                    AND ss_store_sk = s_store_sk
-                    AND time_dim.t_hour = 11
-                    AND time_dim.t_minute < 30
-                    AND (
-                        (
-                            household_demographics.hd_dep_count = 4
-                            AND household_demographics.hd_vehicle_count <= 4+2
-                        )
-                        OR (
-                            household_demographics.hd_dep_count = -1
-                            AND household_demographics.hd_vehicle_count <= -1+2
-                        )
-                        OR (
-                            household_demographics.hd_dep_count = 0
-                            AND household_demographics.hd_vehicle_count <= 0+2
-                        )
-                    )
-                    AND store.s_store_name = 'ese'
-        ) s6
-        ,(
-            SELECT
-                    COUNT(*) h11_30_to_12
-                FROM
-                    store_sales
-                    ,household_demographics
-                    ,time_dim
-                    ,store
-                WHERE
-                    ss_sold_time_sk = time_dim.t_time_sk
-                    AND ss_hdemo_sk = household_demographics.hd_demo_sk
-                    AND ss_store_sk = s_store_sk
-                    AND time_dim.t_hour = 11
-                    AND time_dim.t_minute >= 30
-                    AND (
-                        (
-                            household_demographics.hd_dep_count = 4
-                            AND household_demographics.hd_vehicle_count <= 4+2
-                        )
-                        OR (
-                            household_demographics.hd_dep_count = -1
-                            AND household_demographics.hd_vehicle_count <= -1+2
-                        )
-                        OR (
-                            household_demographics.hd_dep_count = 0
-                            AND household_demographics.hd_vehicle_count <= 0+2
-                        )
-                    )
-                    AND store.s_store_name = 'ese'
-        ) s7
-        ,(
-            SELECT
-                    COUNT(*) h12_to_12_30
-                FROM
-                    store_sales
-                    ,household_demographics
-                    ,time_dim
-                    ,store
-                WHERE
-                    ss_sold_time_sk = time_dim.t_time_sk
-                    AND ss_hdemo_sk = household_demographics.hd_demo_sk
-                    AND ss_store_sk = s_store_sk
-                    AND time_dim.t_hour = 12
-                    AND time_dim.t_minute < 30
-                    AND (
-                        (
-                            household_demographics.hd_dep_count = 4
-                            AND household_demographics.hd_vehicle_count <= 4+2
-                        )
-                        OR (
-                            household_demographics.hd_dep_count = -1
-                            AND household_demographics.hd_vehicle_count <= -1+2
-                        )
-                        OR (
-                            household_demographics.hd_dep_count = 0
-                            AND household_demographics.hd_vehicle_count <= 0+2
-                        )
-                    )
-                    AND store.s_store_name = 'ese'
-        ) s8;
+
+SELECT *
+  FROM (SELECT COUNT(*) h8_30_to_9
+          FROM store_sales,
+               household_demographics,
+               time_dim,
+               store
+         WHERE     ss_sold_time_sk = time_dim.t_time_sk
+               AND ss_hdemo_sk = household_demographics.hd_demo_sk
+               AND ss_store_sk = s_store_sk
+               AND time_dim.t_hour = 8
+               AND time_dim.t_minute >= 30
+               AND (   (    household_demographics.hd_dep_count = 4
+                        AND household_demographics.hd_vehicle_count <= 4 + 2)
+                    OR (    household_demographics.hd_dep_count = -1
+                        AND household_demographics.hd_vehicle_count <= -1 + 2)
+                    OR (    household_demographics.hd_dep_count = 0
+                        AND household_demographics.hd_vehicle_count <= 0 + 2))
+               AND store.s_store_name = 'ese') s1,
+       (SELECT COUNT(*) h9_to_9_30
+          FROM store_sales,
+               household_demographics,
+               time_dim,
+               store
+         WHERE     ss_sold_time_sk = time_dim.t_time_sk
+               AND ss_hdemo_sk = household_demographics.hd_demo_sk
+               AND ss_store_sk = s_store_sk
+               AND time_dim.t_hour = 9
+               AND time_dim.t_minute < 30
+               AND (   (    household_demographics.hd_dep_count = 4
+                        AND household_demographics.hd_vehicle_count <= 4 + 2)
+                    OR (    household_demographics.hd_dep_count = -1
+                        AND household_demographics.hd_vehicle_count <= -1 + 2)
+                    OR (    household_demographics.hd_dep_count = 0
+                        AND household_demographics.hd_vehicle_count <= 0 + 2))
+               AND store.s_store_name = 'ese') s2,
+       (SELECT COUNT(*) h9_30_to_10
+          FROM store_sales,
+               household_demographics,
+               time_dim,
+               store
+         WHERE     ss_sold_time_sk = time_dim.t_time_sk
+               AND ss_hdemo_sk = household_demographics.hd_demo_sk
+               AND ss_store_sk = s_store_sk
+               AND time_dim.t_hour = 9
+               AND time_dim.t_minute >= 30
+               AND (   (    household_demographics.hd_dep_count = 4
+                        AND household_demographics.hd_vehicle_count <= 4 + 2)
+                    OR (    household_demographics.hd_dep_count = -1
+                        AND household_demographics.hd_vehicle_count <= -1 + 2)
+                    OR (    household_demographics.hd_dep_count = 0
+                        AND household_demographics.hd_vehicle_count <= 0 + 2))
+               AND store.s_store_name = 'ese') s3,
+       (SELECT COUNT(*) h10_to_10_30
+          FROM store_sales,
+               household_demographics,
+               time_dim,
+               store
+         WHERE     ss_sold_time_sk = time_dim.t_time_sk
+               AND ss_hdemo_sk = household_demographics.hd_demo_sk
+               AND ss_store_sk = s_store_sk
+               AND time_dim.t_hour = 10
+               AND time_dim.t_minute < 30
+               AND (   (    household_demographics.hd_dep_count = 4
+                        AND household_demographics.hd_vehicle_count <= 4 + 2)
+                    OR (    household_demographics.hd_dep_count = -1
+                        AND household_demographics.hd_vehicle_count <= -1 + 2)
+                    OR (    household_demographics.hd_dep_count = 0
+                        AND household_demographics.hd_vehicle_count <= 0 + 2))
+               AND store.s_store_name = 'ese') s4,
+       (SELECT COUNT(*) h10_30_to_11
+          FROM store_sales,
+               household_demographics,
+               time_dim,
+               store
+         WHERE     ss_sold_time_sk = time_dim.t_time_sk
+               AND ss_hdemo_sk = household_demographics.hd_demo_sk
+               AND ss_store_sk = s_store_sk
+               AND time_dim.t_hour = 10
+               AND time_dim.t_minute >= 30
+               AND (   (    household_demographics.hd_dep_count = 4
+                        AND household_demographics.hd_vehicle_count <= 4 + 2)
+                    OR (    household_demographics.hd_dep_count = -1
+                        AND household_demographics.hd_vehicle_count <= -1 + 2)
+                    OR (    household_demographics.hd_dep_count = 0
+                        AND household_demographics.hd_vehicle_count <= 0 + 2))
+               AND store.s_store_name = 'ese') s5,
+       (SELECT COUNT(*) h11_to_11_30
+          FROM store_sales,
+               household_demographics,
+               time_dim,
+               store
+         WHERE     ss_sold_time_sk = time_dim.t_time_sk
+               AND ss_hdemo_sk = household_demographics.hd_demo_sk
+               AND ss_store_sk = s_store_sk
+               AND time_dim.t_hour = 11
+               AND time_dim.t_minute < 30
+               AND (   (    household_demographics.hd_dep_count = 4
+                        AND household_demographics.hd_vehicle_count <= 4 + 2)
+                    OR (    household_demographics.hd_dep_count = -1
+                        AND household_demographics.hd_vehicle_count <= -1 + 2)
+                    OR (    household_demographics.hd_dep_count = 0
+                        AND household_demographics.hd_vehicle_count <= 0 + 2))
+               AND store.s_store_name = 'ese') s6,
+       (SELECT COUNT(*) h11_30_to_12
+          FROM store_sales,
+               household_demographics,
+               time_dim,
+               store
+         WHERE     ss_sold_time_sk = time_dim.t_time_sk
+               AND ss_hdemo_sk = household_demographics.hd_demo_sk
+               AND ss_store_sk = s_store_sk
+               AND time_dim.t_hour = 11
+               AND time_dim.t_minute >= 30
+               AND (   (    household_demographics.hd_dep_count = 4
+                        AND household_demographics.hd_vehicle_count <= 4 + 2)
+                    OR (    household_demographics.hd_dep_count = -1
+                        AND household_demographics.hd_vehicle_count <= -1 + 2)
+                    OR (    household_demographics.hd_dep_count = 0
+                        AND household_demographics.hd_vehicle_count <= 0 + 2))
+               AND store.s_store_name = 'ese') s7,
+       (SELECT COUNT(*) h12_to_12_30
+          FROM store_sales,
+               household_demographics,
+               time_dim,
+               store
+         WHERE     ss_sold_time_sk = time_dim.t_time_sk
+               AND ss_hdemo_sk = household_demographics.hd_demo_sk
+               AND ss_store_sk = s_store_sk
+               AND time_dim.t_hour = 12
+               AND time_dim.t_minute < 30
+               AND (   (    household_demographics.hd_dep_count = 4
+                        AND household_demographics.hd_vehicle_count <= 4 + 2)
+                    OR (    household_demographics.hd_dep_count = -1
+                        AND household_demographics.hd_vehicle_count <= -1 + 2)
+                    OR (    household_demographics.hd_dep_count = 0
+                        AND household_demographics.hd_vehicle_count <= 0 + 2))
+               AND store.s_store_name = 'ese') s8;
+
 --end query 88 using template query88.tpl
 
 --start query 90 using template query90.tpl
 --@private, @condition(demographics)
+
+
 SELECT
         top 100 cast(
             amc AS DECIMAL(15, 4)
@@ -4106,56 +4049,50 @@ SELECT
         ) pt
     ORDER BY
         am_pm_ratio;
+
+
 --end query 90 using template query90.tpl
 
 --start query 91 using template query91.tpl
 --@private, @condition(demographics)
-SELECT
-        cc_call_center_id Call_Center
-        ,cc_name Call_Center_Name
-        ,cc_manager Manager
-        ,SUM(cr_net_loss) Returns_Loss
-    FROM
-        call_center
-        ,catalog_returns
-        ,date_dim
-        ,customer
-        ,customer_address
-        ,customer_demographics
-        ,household_demographics
-    WHERE
-        cr_call_center_sk = cc_call_center_sk
-        AND cr_returned_date_sk = d_date_sk
-        AND cr_returning_customer_sk = c_customer_sk
-        AND cd_demo_sk = c_current_cdemo_sk
-        AND hd_demo_sk = c_current_hdemo_sk
-        AND ca_address_sk = c_current_addr_sk
-        AND d_year = 2000
-        AND d_moy = 12
-        AND (
-            (
-                cd_marital_status = 'M'
-                AND cd_education_status = 'Unknown'
-            )
-            OR (
-                cd_marital_status = 'W'
-                AND cd_education_status = 'Advanced Degree'
-            )
-        )
-        AND hd_buy_potential LIKE '>10000%'
-        AND ca_gmt_offset = -6
-    GROUP BY
-        cc_call_center_id
-        ,cc_name
-        ,cc_manager
-        ,cd_marital_status
-        ,cd_education_status
-    ORDER BY
-        SUM(cr_net_loss) DESC;
+
+  SELECT cc_call_center_id Call_Center,
+         cc_name Call_Center_Name,
+         cc_manager Manager,
+         SUM(cr_net_loss) Returns_Loss
+    FROM call_center,
+         catalog_returns,
+         date_dim,
+         customer,
+         customer_address,
+         customer_demographics,
+         household_demographics
+   WHERE     cr_call_center_sk = cc_call_center_sk
+         AND cr_returned_date_sk = d_date_sk
+         AND cr_returning_customer_sk = c_customer_sk
+         AND cd_demo_sk = c_current_cdemo_sk
+         AND hd_demo_sk = c_current_hdemo_sk
+         AND ca_address_sk = c_current_addr_sk
+         AND d_year = 2000
+         AND d_moy = 12
+         AND (   (cd_marital_status = 'M' AND cd_education_status = 'Unknown')
+              OR (    cd_marital_status = 'W'
+                  AND cd_education_status = 'Advanced Degree'))
+         AND hd_buy_potential LIKE '>10000%'
+         AND ca_gmt_offset = -6
+GROUP BY cc_call_center_id,
+         cc_name,
+         cc_manager,
+         cd_marital_status,
+         cd_education_status
+ORDER BY SUM(cr_net_loss) DESC;
+
 --end query 91 using template query91.tpl
 
 --start query 93 using template query93.tpl
 --@private, @projection(customer)
+
+
 SELECT
         top 100 ss_customer_sk
         ,SUM(act_sales) sumsales
@@ -4186,10 +4123,14 @@ SELECT
     ORDER BY
         sumsales
         ,ss_customer_sk;
+
+
 --end query 93 using template query93.tpl
 
 --start query 95 using template query95.tpl
 --@private, @condition(customer_address)
+
+
 WITH ws_wh AS (
         SELECT
                 ws1.ws_order_number
@@ -4238,11 +4179,15 @@ WITH ws_wh AS (
         )
     ORDER BY
         COUNT(DISTINCT ws_order_number);
+
+
 --end query 95 using template query95.tpl
 
 --start query 96 using template query96.tpl
 -- todo why they attach an "top 100" before count(*)?
 --@private, @condition(demographics)
+
+
 SELECT
         top 100 COUNT(*)
     FROM
@@ -4260,5 +4205,6 @@ SELECT
         AND store.s_store_name = 'ese'
     ORDER BY
         COUNT(*);
---end query 96 using template query96.tpl
 
+
+--end query 96 using template query96.tpl
