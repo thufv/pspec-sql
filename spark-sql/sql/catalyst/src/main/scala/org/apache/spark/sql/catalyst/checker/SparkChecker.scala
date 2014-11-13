@@ -36,8 +36,8 @@ object SparkChecker extends Logging {
 			logWarning("Fail to initialize privacy checker. Privacy checker Disabled.");
 			return ;
 		}
-
 		val begin = System.currentTimeMillis();
+
 		LabelPropagator(plan);
 		val projections = new HashSet[Label];
 		plan.projections.foreach(t => projections.add(t._2))
@@ -51,34 +51,16 @@ object SparkChecker extends Logging {
 	}
 }
 
-class SparkChecker extends PrivacyChecker with Logging {
+class SparkChecker extends PrivacyChecker {
 
 	case class Path(val ops: Seq[DesensitizeOperation]);
 
-	var policy: Policy = null;
-
-	var rules: Seq[ExpandedRule] = null;
-
 	var projectionPaths: Map[DataCategory, Set[Path]] = null;
 	var testPaths: Map[DataCategory, Set[Path]] = null;
-	def init(path: String): Unit = {
-		val parser = new PolicyParser();
-		try {
-			policy = parser.parse(path, false);
-			rules = policy.getExpandedRules().asScala;
-			MetaRegistry.get.init(policy);
-			logWarning(s"Privacy Check successfully initialized with privacy policy: $path");
-		} catch {
-			case e: Exception => logError("PrivacyChecker disabled.", e);
-		}
-	}
-
-	def inited = policy != null;
 
 	def check(projections: Set[Label], tests: Set[Label]): Unit = {
 		projectionPaths = new HashMap[DataCategory, Set[Path]];
 		testPaths = new HashMap[DataCategory, Set[Path]];
-
 		projections.foreach(buildPath(_, projectionPaths));
 		tests.foreach(buildPath(_, testPaths));
 
@@ -89,11 +71,10 @@ class SparkChecker extends PrivacyChecker with Logging {
 
 	private def printPaths(projectionPaths: Map[DataCategory, Set[Path]], testPaths: Map[DataCategory, Set[Path]]) {
 		println("\nprojection paths:");
-		projectionPaths.foreach(t => t._2.foreach(path => println(s"$path")));
+		projectionPaths.foreach(t => t._2.foreach(path => println(s"${t._1}\t$path")));
 
 		println("\ntest paths:");
-		testPaths.foreach(t => t._2.foreach(path => println(s"$path")));
-
+		testPaths.foreach(t => t._2.foreach(path => println(s"${t._1}\t$path")));
 	}
 
 	private def checkRule(rule: ExpandedRule, user: UserCategory, projectionPaths: Map[DataCategory, Set[Path]], testPaths: Map[DataCategory, Set[Path]]): Unit = {
@@ -107,69 +88,86 @@ class SparkChecker extends PrivacyChecker with Logging {
 			val pair = pairs(i);
 			pair.getAction().getId() match {
 				case Action.Action_All => {
-					collectLabel(pair, projectionPaths, access(i));
-					collectLabel(pair, testPaths, access(i));
+					collectLabels(pair, projectionPaths, access(i));
+					collectLabels(pair, testPaths, access(i));
 				}
-				case Action.Action_Project => collectLabel(pair, projectionPaths, access(i));
-				case Action.Action_Test => collectLabel(pair, testPaths, access(i));
+				case Action.Action_Project => collectLabels(pair, projectionPaths, access(i));
+				case Action.Action_Test => collectLabels(pair, testPaths, access(i));
 			}
 		}
 		if (access.exists(_.size == 0)) {
 			return
 		}
 
-		if (!rule.getRestrictions().exists(checkRestriction(_, rule, access))) {
+		if (!checkRestrictions(rule, access)) {
 			throw new PrivacyException(s"The SQL query violates the rule: #${rule.getRuleId()}.");
 		}
 	}
 
-	private def collectLabel(pair: DataActionPair, paths: Map[DataCategory, Set[Path]], access: Set[DataCategory]): Unit = {
+	private def collectLabels(pair: DataActionPair, paths: Map[DataCategory, Set[Path]], access: Set[DataCategory]): Unit = {
 		pair.getDatas().asScala.foreach(data => if (paths.contains(data)) {
 			access.add(data);
 		});
 	}
 
-	private def checkRestriction(restriction: Restriction, rule: ExpandedRule, accesses: Array[HashSet[DataCategory]]): Boolean = {
-		if (restriction.isForbid()) {
+	private def checkRestrictions(rule: ExpandedRule, accesses: Array[HashSet[DataCategory]]): Boolean = {
+		if (rule.getRestriction().isForbid()) {
 			return false;
 		}
-		val pairs = rule.getDatas();
+		val array = new Array[DataCategory](accesses.length);
 
-		restriction.getDesensitizations().asScala.forall(de => {
-			for (index <- de.getDataIndex()) {
-				val pair = pairs(index);
-				val access = accesses(index);
-				pair.getAction().getId() match {
-					case Action.Action_All => if (!checkOperations(de, access, projectionPaths) || !checkOperations(de, access, testPaths)) {
-						return false
-					}
-					case Action.Action_Project => if (!checkOperations(de, access, projectionPaths)) {
-						return false
-					}
-					case Action.Action_Test => if (!checkOperations(de, access, testPaths)) {
-						return false
-					}
-				}
-			}
-			true;
-		});
-
+		return checkRestrictions(array, 0, rule, accesses);
 	}
 
-	private def checkOperations(de: Desensitization, access: HashSet[DataCategory], paths: Map[DataCategory, Set[Path]]): Boolean = {
-		access.forall(data => {
-			val set = paths.getOrElse(data, null);
-			if (set == null) {
-				return true;
+	private def checkRestrictions(array: Array[DataCategory], i: Int, rule: ExpandedRule, accesses: Array[HashSet[DataCategory]]): Boolean = {
+		if (i == accesses.length) {
+			val restrictions = rule.getRestrictions();
+			val pairs = rule.getDatas();
+			return restrictions.exists(res => {
+				if (res.isForbid()) {
+					return false;
+				}
+				res.getDesensitizations().asScala.forall(de => {
+					for (index <- de.getDataIndex()) {
+						val pair = pairs(index);
+						val data = array(index);
+						pair.getAction().getId() match {
+							case Action.Action_All => if (!checkOperations(de, data, projectionPaths) || !checkOperations(de, data, testPaths)) {
+								return false
+							}
+							case Action.Action_Project => if (!checkOperations(de, data, projectionPaths)) {
+								return false
+							}
+							case Action.Action_Test => if (!checkOperations(de, data, testPaths)) {
+								return false
+							}
+						}
+					}
+					return true;
+				});
+			});
+		}
+		val access = accesses(i);
+		for (data <- access) {
+			array(i) = data;
+			if (!checkRestrictions(array, i + 1, rule, accesses)) {
+				return false;
 			}
-			var ops = de.getOperations();
-			if (ops == null) {
-				//fall back to default desensitize operations
-				ops = data.getOperations();
-			}
-			val result = set.forall(path => path.ops.exists(ops.contains(_)));
-			result
-		});
+		}
+		return true;
+	}
+
+	private def checkOperations(de: Desensitization, data: DataCategory, paths: Map[DataCategory, Set[Path]]): Boolean = {
+		val set = paths.getOrElse(data, null);
+		if (set == null) {
+			return true;
+		}
+		var ops = de.getOperations();
+		if (ops == null) {
+			//fall back to default desensitize operations
+			ops = data.getOperations();
+		}
+		set.forall(path => path.ops.exists(ops.contains(_)));
 
 	}
 

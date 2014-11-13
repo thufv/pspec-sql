@@ -86,7 +86,7 @@ public abstract class XMLCategoryContainer<T extends HierarchicalObject<T>> exte
 	}
 
 	private void toString(T node, StringBuilder sb) {
-		sb.append(node.toString());
+		sb.append(node.toFullString());
 		sb.append("\n");
 		if (node.getChildren() != null) {
 			for (T child : node.getChildren()) {

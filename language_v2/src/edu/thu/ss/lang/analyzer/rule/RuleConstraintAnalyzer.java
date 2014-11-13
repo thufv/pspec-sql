@@ -75,7 +75,8 @@ public class RuleConstraintAnalyzer extends BaseRuleAnalyzer {
 			XMLDataCategoryRef ref1 = refs[i];
 			for (int j = i + 1; j < refs.length; j++) {
 				XMLDataCategoryRef ref2 = refs[j];
-				if (SetUtil.intersects(ref1.getMaterialized(), ref2.getMaterialized())) {
+				if (SetUtil.bottom(ref1.getAction(), ref2.getAction()) != null
+						&& SetUtil.intersects(ref1.getMaterialized(), ref2.getMaterialized())) {
 					logger.error("Overlap of data category: {} and {} detected in data association in rule: {}.",
 							ref1.getRefid(), ref2.getRefid(), ruleId);
 					error = true;

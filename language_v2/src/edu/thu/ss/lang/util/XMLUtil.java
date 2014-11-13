@@ -1,6 +1,7 @@
 package edu.thu.ss.lang.util;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,12 +29,19 @@ public class XMLUtil {
 		DocumentBuilder builder = factory.newDocumentBuilder();
 
 		Document doc = null;
-		URI uri = validateURI(path);
-		if (uri != null) {
+		//	URI uri = validateURI(path);
+
+		InputStream is = XMLUtil.class.getClassLoader().getResourceAsStream(path);
+		if (is != null) {
+			//load from class path
 			doc = builder.parse(path);
 		} else {
 			File docFile = new File(path);
-			doc = builder.parse(docFile);
+			if (docFile.exists()) {
+				doc = builder.parse(docFile);
+			} else {
+				doc = builder.parse(path);
+			}
 		}
 		Validator validator = getValidator(xsdPath);
 		if (validator != null) {

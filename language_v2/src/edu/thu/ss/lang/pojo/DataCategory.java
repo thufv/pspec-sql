@@ -59,12 +59,15 @@ public class DataCategory extends HierarchicalObject<DataCategory> implements Co
 		}
 	}
 
-	@Override
 	public String toString() {
+		return super.toString();
+	}
+
+	public String toFullString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(super.toString());
+		sb.append(super.toFullString());
 		if (ops.size() > 0) {
-			sb.append("desensitize UDF: ");
+			sb.append("\tdesensitize UDF: ");
 			for (DesensitizeOperation op : ops) {
 				sb.append(op.udf);
 				sb.append(' ');

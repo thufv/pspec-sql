@@ -101,8 +101,11 @@ public class HierarchicalObject<T extends HierarchicalObject<T>> extends XMLDesc
 		return true;
 	}
 
-	@Override
 	public String toString() {
+		return super.toString();
+	}
+
+	public String toFullString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(super.toString());
 		if (parentId != null) {
