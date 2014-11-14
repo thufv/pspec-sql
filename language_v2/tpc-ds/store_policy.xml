@@ -61,9 +61,9 @@
 		</rule>
 
 
-		<rule id="truncate_zip">
+		<rule id="truncate_customer_zip">
 			<user-category refid="app"></user-category>
-			<data-category refid="zip"></data-category>
+			<data-category refid="customer_zip"></data-category>
 			<restriction>
 				<desensitize>
 					<UDF>truncate</UDF>
@@ -71,6 +71,16 @@
 			</restriction>
 		</rule>
 
+		<rule id="substr_customer_suite">
+			<user-category refid="app"></user-category>
+			<data-category refid="customer_suite"></data-category>
+			<restriction>
+				<desensitize>
+					<UDF>substr</UDF>
+				</desensitize>
+			</restriction>
+		</rule>
+		
 		<rule id="agg_financial">
 			<user-category refid="app"></user-category>
 			<data-category refid="financial"></data-category>
