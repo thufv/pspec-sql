@@ -27,7 +27,11 @@
 
 		<data-category id="customer_address" parent="qi"></data-category>
 		<data-category id="customer_street" parent="customer_address"></data-category>
-		<data-category id="customer_suite" parent="customer_address"></data-category>
+		<data-category id="customer_suite" parent="customer_address">
+			<desensitize-operation>
+				<UDF>substr</UDF>
+			</desensitize-operation>
+		</data-category>
 		<data-category id="customer_region" parent="customer_address"></data-category>
 		<data-category id="customer_zip" parent="customer_address">
 			<desensitize-operation>
