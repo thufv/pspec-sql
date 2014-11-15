@@ -34,9 +34,9 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] {
 	self: Product =>
 
 	val projections: Map[Attribute, Label] = new HashMap;
-	val tests: Set[Label] = new HashSet;
+	val conditions: Set[Label] = new HashSet;
 
-	def calculateLabels(): (Map[Attribute, Label], Set[Label]) = { (projections, tests) };
+	def calculateLabels(): (Map[Attribute, Label], Set[Label]) = { (projections, conditions) };
 
 	def childLabel(attr: Attribute): Label = {
 		children.map(_.projections.getOrElse(attr, null)).find(_ != null).getOrElse(null);

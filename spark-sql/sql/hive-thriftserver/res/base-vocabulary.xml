@@ -19,9 +19,9 @@
 	</user-category-container>
 	<data-category-container id="default-data">
 		<data-category id="pii">
-			<desensitize-operation>
-				<UDF>anonymize</UDF>
-			</desensitize-operation>
+			<desensitize-operations>
+				<operation>anonymize</operation>
+			</desensitize-operations>
 		</data-category>
 	</data-category-container>
 </vocabulary>

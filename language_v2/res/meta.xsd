@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/privacy"
+	xmlns:tns="http://www.example.org/privacy" elementFormDefault="qualified"
+	attributeFormDefault="unqualified">
+
+	<complexType name="databaseType">
+		<sequence>
+			<element name="table" type="tns:tableType" maxOccurs="unbounded">
+				<unique name="uniqueColumn">
+					<selector xpath="tns:column"></selector>
+					<field xpath="@name"></field>
+				</unique>
+			</element>
+		</sequence>
+		<attribute name="name" use="required"></attribute>
+	</complexType>
+
+	<complexType name="tableType">
+		<sequence>
+			<element name="column" type="tns:columnType" maxOccurs="unbounded">
+				<unique name="uniqueOpName">
+					<selector xpath="tns:desensitize-operation"></selector>
+					<field xpath="@name"></field>
+				</unique>
+				<unique name="uniqueOpUDF">
+					<selector xpath="tns:desensitize-operation/tns:UDF"></selector>
+					<field xpath="."></field>
+				</unique>
+			</element>
+		</sequence>
+		<attribute name="name" use="required"></attribute>
+	</complexType>
+
+	<complexType name="columnType">
+		<sequence>
+			<element name="desensitize-operation" type="tns:operationType"
+				minOccurs="0" maxOccurs="unbounded"></element>
+		</sequence>
+		<attribute name="name" type="NCName" use="required"></attribute>
+		<attribute name="data-category" type="NCName" use="required"></attribute>
+	</complexType>
+
+	<complexType name="operationType">
+		<sequence>
+			<element name="UDF" type="NCName" maxOccurs="unbounded"></element>
+		</sequence>
+		<attribute name="name" type="NCName" use="required"></attribute>
+	</complexType>
+
+	<element name="meta-mapping">
+		<complexType>
+			<sequence>
+				<element name="database" type="tns:databaseType" maxOccurs="unbounded">
+					<unique name="uniqueTable">
+						<selector xpath="tns:table"></selector>
+						<field xpath="@name"></field>
+					</unique>
+				</element>
+			</sequence>
+			<attribute name="policy" use="required" type="anyURI"></attribute>
+		</complexType>
+
+		<unique name="uniqueDatabase">
+			<selector xpath="tns:database"></selector>
+			<field xpath="@name"></field>
+		</unique>
+	</element>
+
+
+</schema>

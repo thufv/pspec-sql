@@ -23,32 +23,32 @@
 
 	<data-category-container id="social-data">
 		<data-category id="all">
-			<desensitize-operation>
-				<UDF>op1</UDF>
-				<UDF>op2</UDF>
-				<UDF>op3</UDF>
-				<UDF>op4</UDF>
-				<UDF>op5</UDF>
-				<UDF>lower</UDF>
-				<UDF>upper</UDF>
-				<UDF>count</UDF>
-				<UDF>max</UDF>
-				<UDF>min</UDF>
-				<UDF>sum</UDF>
-			</desensitize-operation>
+			<desensitize-operations>
+				<operation>op1</operation>
+				<operation>op2</operation>
+				<operation>op3</operation>
+				<operation>op4</operation>
+				<operation>op5</operation>
+				<operation>lower</operation>
+				<operation>upper</operation>
+				<operation>count</operation>
+				<operation>max</operation>
+				<operation>min</operation>
+				<operation>sum</operation>
+			</desensitize-operations>
 		</data-category>
 		<data-category id="pii" parent="all">
-			<desensitize-operation>
-				<UDF>anonymize</UDF>
-			</desensitize-operation>
+			<desensitize-operations>
+				<operation>anonymize</operation>
+			</desensitize-operations>
 		</data-category>
 		<data-category id="health" parent="all" />
 		<data-category id="financial" parent="all" />
 		<data-category id="name" parent="pii" />
 		<data-category id="ip" parent="pii">
-			<desensitize-operation>
-				<UDF>truncate</UDF>
-			</desensitize-operation>
+			<desensitize-operations>
+				<operation>truncate</operation>
+			</desensitize-operations>
 		</data-category>
 		<data-category id="ssn" parent="pii" />
 		<data-category id="contact" parent="pii" />
@@ -59,9 +59,9 @@
 		<data-category id="income" parent="financial" />
 		<data-category id="tax" parent="financial" />
 		<data-category id="salary" parent="tax">
-			<desensitize-operation>
-				<UDF>range</UDF>
-			</desensitize-operation>
+			<desensitize-operations>
+				<operation>range</operation>
+			</desensitize-operations>
 		</data-category>
 	</data-category-container>
 </vocabulary>

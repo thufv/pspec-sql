@@ -40,10 +40,13 @@ import scala.collection.JavaConversions._
 import scala.collection.mutable
 import scala.collection.mutable.HashMap
 import org.apache.spark.sql.catalyst.checker.Label
-import org.apache.spark.sql.catalyst.checker.MetaRegistry
 import org.apache.spark.sql.catalyst.checker.DataLabel
 import scala.collection.immutable
 import org.apache.spark.sql.catalyst.checker.Insensitive
+import edu.thu.ss.spec.meta.MetaRegistry
+import org.apache.spark.sql.hive.execution.HiveTableScan
+import edu.thu.ss.spec.lang.pojo.DataCategory
+import org.apache.spark.sql.catalyst.checker.DataLabel
 
 private[hive] class HiveMetastoreCatalog(hive: HiveContext) extends Catalog with Logging {
 	import HiveMetastoreTypes._
@@ -313,15 +316,15 @@ case class MetastoreRelation(databaseName: String, tableName: String, alias: Opt
 	val output = attributes ++ partitionKeys
 
 	override def calculateLabels(): (mutable.Map[Attribute, Label], mutable.Set[Label]) = {
-		val meta: MetaRegistry = MetaRegistry.get;
+		val meta: MetaRegistry = null;
 		output.foreach(attr => {
-			val data: DataLabel = meta.lookup(databaseName, tableName, attr.name);
+			val data: DataCategory = meta.lookup(databaseName, tableName, attr.name);
 			if (data != null) {
-				projections.put(attr, data);
-			}else{
+				projections.put(attr, DataLabel(data, databaseName, tableName, attr.name));
+			} else {
 				projections.put(attr, Insensitive(attr));
 			}
 		});
-		(projections, tests);
+		(projections, conditions);
 	}
 }

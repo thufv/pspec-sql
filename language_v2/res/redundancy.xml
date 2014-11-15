@@ -25,7 +25,7 @@
 			<data-category-ref refid="pii"></data-category-ref>
 			<restriction>
 				<desensitize>
-					<UDF>op1</UDF>
+					<operation>op1</operation>
 				</desensitize>
 			</restriction>
 		</rule>
@@ -34,8 +34,8 @@
 			<data-category-ref refid="ssn"></data-category-ref>
 			<restriction>
 				<desensitize>
-					<UDF>op1</UDF>
-					<UDF>op2</UDF>
+					<operation>op1</operation>
+					<operation>op2</operation>
 				</desensitize>
 			</restriction>
 		</rule>
@@ -48,9 +48,9 @@
 			<restriction>
 				<desensitize>
 					<data-category-ref refid="ssn" />
-					<UDF>op1</UDF>
-					<UDF>op2</UDF>
-					<UDF>op3</UDF>
+					<operation>op1</operation>
+					<operation>op2</operation>
+					<operation>op3</operation>
 				</desensitize>
 			</restriction>
 		</rule>

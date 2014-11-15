@@ -86,11 +86,11 @@
 							<complexContent>
 								<extension base="tns:hierarchicalType">
 									<sequence>
-										<element name="desensitize-operation" minOccurs="0"
+										<element name="desensitize-operations" minOccurs="0"
 											maxOccurs="1">
 											<complexType>
 												<sequence>
-													<element name="UDF" type="NCName" minOccurs="1"
+													<element name="operation" type="NCName" minOccurs="1"
 														maxOccurs="unbounded"></element>
 												</sequence>
 											</complexType>
@@ -100,7 +100,7 @@
 							</complexContent>
 						</complexType>
 						<unique name="uniqueDesensitizeOperation">
-							<selector xpath="tns:desensitize-operation/tns:UDF"></selector>
+							<selector xpath="tns:desensitize-operation/tns:operation"></selector>
 							<field xpath="."></field>
 						</unique>
 					</element>
@@ -157,8 +157,8 @@
 					<simpleType>
 						<restriction base="string">
 							<enumeration value="all"></enumeration>
-							<enumeration value="project"></enumeration>
-							<enumeration value="test"></enumeration>
+							<enumeration value="projection"></enumeration>
+							<enumeration value="condition"></enumeration>
 						</restriction>
 					</simpleType>
 				</attribute>
@@ -182,11 +182,12 @@
 						<element name="data-category-ref" type="tns:objectRefType"
 							maxOccurs="unbounded" minOccurs="0">
 						</element>
-						<element name="UDF" type="NCName" minOccurs="0" maxOccurs="unbounded"></element>
+						<element name="operation" type="NCName" minOccurs="1"
+							maxOccurs="unbounded"></element>
 					</sequence>
 				</complexType>
 				<unique name="uniqueDesensitizeOp">
-					<selector xpath="tns:UDF"></selector>
+					<selector xpath="tns:operation"></selector>
 					<field xpath="."></field>
 				</unique>
 				<unique name="uniqueDesensitizeData">

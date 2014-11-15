@@ -23,19 +23,19 @@
 
 	<data-category-container id="social-data">
 		<data-category id="all">
-			<desensitize-operation>
-				<UDF>op1</UDF>
-				<UDF>op2</UDF>
-				<UDF>op3</UDF>
-				<UDF>op4</UDF>
-				<UDF>op5</UDF>
-				<UDF>lower</UDF>
-				<UDF>upper</UDF>
-				<UDF>count</UDF>
-				<UDF>max</UDF>
-				<UDF>min</UDF>
-				<UDF>sum</UDF>
-			</desensitize-operation>
+			<desensitize-operations>
+				<operation>op1</operation>
+				<operation>op2</operation>
+				<operation>op3</operation>
+				<operation>op4</operation>
+				<operation>op5</operation>
+				<operation>lower</operation>
+				<operation>upper</operation>
+				<operation>count</operation>
+				<operation>max</operation>
+				<operation>min</operation>
+				<operation>sum</operation>
+			</desensitize-operations>
 		</data-category>
 		<data-category id="i_item_sk" parent="all"></data-category>
 		<data-category id="i_item_id" parent="all"></data-category>

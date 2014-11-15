@@ -30,7 +30,6 @@ import org.apache.spark.sql.catalyst.types._
 import org.apache.spark.util.Utils.getContextOrSparkClassLoader
 import scala.collection.JavaConversions._
 import org.apache.spark.sql.catalyst.checker._
-import org.apache.spark.sql.catalyst.checker.MetaRegistry
 
 private[hive] abstract class HiveFunctionRegistry
 	extends analysis.FunctionRegistry with HiveInspectors {

@@ -1,23 +1,21 @@
 package org.apache.spark.sql.catalyst.checker
 
+import scala.collection.JavaConverters._
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.HashSet
 import scala.collection.mutable.ListBuffer
 import scala.collection.mutable.Map
 import scala.collection.mutable.Set
-import scala.collection.JavaConverters._
-import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
-import edu.thu.ss.lang.pojo.DataCategory
-import edu.thu.ss.lang.pojo.DesensitizeOperation
-import edu.thu.ss.lang.pojo.Policy
-import edu.thu.ss.lang.parser.PolicyParser
 import org.apache.spark.Logging
-import edu.thu.ss.lang.pojo.ExpandedRule
-import edu.thu.ss.lang.pojo.UserCategory
-import edu.thu.ss.lang.pojo.Action
-import edu.thu.ss.lang.pojo.DataActionPair
-import edu.thu.ss.lang.pojo.Restriction
-import edu.thu.ss.lang.pojo.Desensitization
+import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
+import edu.thu.ss.spec.lang.pojo.Action
+import edu.thu.ss.spec.lang.pojo.DataActionPair
+import edu.thu.ss.spec.lang.pojo.DataCategory
+import edu.thu.ss.spec.lang.pojo.Desensitization
+import edu.thu.ss.spec.lang.pojo.DesensitizeOperation
+import edu.thu.ss.spec.lang.pojo.ExpandedRule
+import edu.thu.ss.spec.lang.pojo.UserCategory
+import edu.thu.ss.spec.meta.MetaRegistry
 
 object SparkChecker extends Logging {
 
@@ -41,7 +39,7 @@ object SparkChecker extends Logging {
 		LabelPropagator(plan);
 		val projections = new HashSet[Label];
 		plan.projections.foreach(t => projections.add(t._2))
-		checker.check(projections, plan.tests);
+		checker.check(projections, plan.conditions);
 
 		val end = System.currentTimeMillis();
 		//TODO print
@@ -56,28 +54,30 @@ class SparkChecker extends PrivacyChecker {
 	case class Path(val ops: Seq[DesensitizeOperation]);
 
 	var projectionPaths: Map[DataCategory, Set[Path]] = null;
-	var testPaths: Map[DataCategory, Set[Path]] = null;
+	var conditionPaths: Map[DataCategory, Set[Path]] = null;
+	val meta: MetaRegistry = null;
 
-	def check(projections: Set[Label], tests: Set[Label]): Unit = {
+	def check(projections: Set[Label], conditions: Set[Label]): Unit = {
 		projectionPaths = new HashMap[DataCategory, Set[Path]];
-		testPaths = new HashMap[DataCategory, Set[Path]];
+		conditionPaths = new HashMap[DataCategory, Set[Path]];
 		projections.foreach(buildPath(_, projectionPaths));
-		tests.foreach(buildPath(_, testPaths));
+		conditions.foreach(buildPath(_, conditionPaths));
 
-		printPaths(projectionPaths, testPaths);
-		val user = MetaRegistry.get.currentUser();
-		rules.foreach(checkRule(_, user, projectionPaths, testPaths));
+		printPaths(projectionPaths, conditionPaths);
+		//val user = MetaRegistry.get.currentUser();
+		val user = meta.currentUser();
+		rules.foreach(checkRule(_, user, projectionPaths, conditionPaths));
 	}
 
-	private def printPaths(projectionPaths: Map[DataCategory, Set[Path]], testPaths: Map[DataCategory, Set[Path]]) {
+	private def printPaths(projectionPaths: Map[DataCategory, Set[Path]], conditionPaths: Map[DataCategory, Set[Path]]) {
 		println("\nprojection paths:");
 		projectionPaths.foreach(t => t._2.foreach(path => println(s"${t._1}\t$path")));
 
-		println("\ntest paths:");
-		testPaths.foreach(t => t._2.foreach(path => println(s"${t._1}\t$path")));
+		println("\ncondition paths:");
+		conditionPaths.foreach(t => t._2.foreach(path => println(s"${t._1}\t$path")));
 	}
 
-	private def checkRule(rule: ExpandedRule, user: UserCategory, projectionPaths: Map[DataCategory, Set[Path]], testPaths: Map[DataCategory, Set[Path]]): Unit = {
+	private def checkRule(rule: ExpandedRule, user: UserCategory, projectionPaths: Map[DataCategory, Set[Path]], conditionPaths: Map[DataCategory, Set[Path]]): Unit = {
 		if (!rule.getUsers().contains(user)) {
 			return
 		}
@@ -89,10 +89,10 @@ class SparkChecker extends PrivacyChecker {
 			pair.getAction().getId() match {
 				case Action.Action_All => {
 					collectLabels(pair, projectionPaths, access(i));
-					collectLabels(pair, testPaths, access(i));
+					collectLabels(pair, conditionPaths, access(i));
 				}
-				case Action.Action_Project => collectLabels(pair, projectionPaths, access(i));
-				case Action.Action_Test => collectLabels(pair, testPaths, access(i));
+				case Action.Action_Projection => collectLabels(pair, projectionPaths, access(i));
+				case Action.Action_Condition => collectLabels(pair, conditionPaths, access(i));
 			}
 		}
 		if (access.exists(_.size == 0)) {
@@ -132,13 +132,13 @@ class SparkChecker extends PrivacyChecker {
 						val pair = pairs(index);
 						val data = array(index);
 						pair.getAction().getId() match {
-							case Action.Action_All => if (!checkOperations(de, data, projectionPaths) || !checkOperations(de, data, testPaths)) {
+							case Action.Action_All => if (!checkOperations(de, data, projectionPaths) || !checkOperations(de, data, conditionPaths)) {
 								return false
 							}
-							case Action.Action_Project => if (!checkOperations(de, data, projectionPaths)) {
+							case Action.Action_Projection => if (!checkOperations(de, data, projectionPaths)) {
 								return false
 							}
-							case Action.Action_Test => if (!checkOperations(de, data, testPaths)) {
+							case Action.Action_Condition => if (!checkOperations(de, data, conditionPaths)) {
 								return false
 							}
 						}
@@ -195,7 +195,7 @@ class SparkChecker extends PrivacyChecker {
 			paths.put(label.data, set);
 		}
 
-		val ops = udfs.map(MetaRegistry.get.lookup(_, label)).filter(_ != null);
+		val ops = udfs.map(meta.lookup(_, label.data, label.database, label.table, label.column)).filter(_ != null);
 		set.add(Path(ops));
 	}
 }

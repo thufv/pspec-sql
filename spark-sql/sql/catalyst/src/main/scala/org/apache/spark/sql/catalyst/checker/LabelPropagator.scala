@@ -52,9 +52,24 @@ import org.apache.spark.sql.catalyst.expressions.Attribute
 import org.apache.spark.Logging
 import scala.collection.mutable.HashSet
 import scala.collection.mutable.Set
+import org.apache.spark.sql.catalyst.expressions.In
+import org.apache.spark.sql.catalyst.plans.LeftSemi
+import org.apache.spark.sql.catalyst.plans.logical.ScriptTransformation
+import org.apache.spark.sql.catalyst.expressions.RLike
+import org.apache.spark.sql.catalyst.expressions.StartsWith
+import org.apache.spark.sql.catalyst.expressions.Substring
+import edu.thu.ss.spec.meta.MetaRegistry
+import org.apache.spark.sql.catalyst.expressions.CaseWhen
+import org.apache.spark.sql.catalyst.expressions.ScalaUdf
+import org.apache.spark.sql.catalyst.expressions.MutableLiteral
+import org.apache.spark.sql.catalyst.expressions.BinaryComparison
+import org.apache.spark.sql.catalyst.plans.logical.RedistributeData
+import org.apache.spark.sql.catalyst.expressions.Contains
+import org.apache.spark.sql.catalyst.expressions.EndsWith
+import org.apache.spark.sql.catalyst.expressions.AggregateExpression
 
 object LabelPropagator extends Logging {
-	val meta: MetaRegistry = MetaRegistry.get;
+	val meta: MetaRegistry = null;
 
 	def apply(plan: LogicalPlan): Unit = {
 
@@ -65,8 +80,8 @@ object LabelPropagator extends Logging {
 			println(s"$t");
 		});
 		println();
-		println("tests:")
-		plan.tests.foreach(t => {
+		println("conditions:")
+		plan.conditions.foreach(t => {
 			println(t);
 		});
 	}
@@ -83,18 +98,18 @@ object LabelPropagator extends Logging {
 	private def propagateUnary(unary: UnaryNode): Unit = {
 		propagate(unary.child);
 		val childProjs = unary.child.projections;
-		val childTests = unary.child.tests;
+		val childTests = unary.child.conditions;
 
 		unary match {
 			case aggregate: Aggregate => {
 				//resolve aggregation list
 				aggregate.aggregateExpressions.foreach(resolveNamedExpression(_, unary));
-				aggregate.tests ++= childTests;
+				aggregate.conditions ++= childTests;
 			}
 			case filter: Filter => {
 				//add conditions
 				resolveExpression(filter.condition, filter);
-				filter.tests ++= childTests;
+				filter.conditions ++= childTests;
 				filter.projections ++= childProjs;
 			}
 			case generate: Generate => {
@@ -103,12 +118,12 @@ object LabelPropagator extends Logging {
 			case project: Project => {
 				//resolve projection list
 				project.projectList.foreach(resolveNamedExpression(_, unary));
-				project.tests ++= childTests;
+				project.conditions ++= childTests;
 			}
 			case subquery: Subquery => {
 				//TODO
 				childProjs.foreach(tuple => subquery.projections.put(tuple._1.withQualifiers(List(subquery.alias)), tuple._2));
-				subquery.tests ++ childTests;
+				subquery.conditions ++ childTests;
 			}
 			case script: ScriptTransformation => {
 				//TODO
@@ -150,12 +165,12 @@ object LabelPropagator extends Logging {
 
 		val leftProjs = binary.left.projections;
 		val rightProjs = binary.right.projections;
-		val leftTests = binary.left.tests;
-		val rightTests = binary.right.tests;
+		val leftTests = binary.left.conditions;
+		val rightTests = binary.right.conditions;
 		binary match {
 			case except: Except => {
 				except.projections ++= leftProjs;
-				except.tests ++= leftTests;
+				except.conditions ++= leftTests;
 			}
 			case intersect: Intersect => {
 				propogateSetOperations(binary, LabelConstants.Func_Intersect);
@@ -173,7 +188,7 @@ object LabelPropagator extends Logging {
 						join.projections ++= leftProjs ++= rightProjs;
 					}
 				}
-				join.tests ++= leftTests ++= rightTests;
+				join.conditions ++= leftTests ++= rightTests;
 				join.condition match {
 					case Some(condition) => resolveExpression(condition, binary);
 					case None =>
@@ -183,7 +198,7 @@ object LabelPropagator extends Logging {
 	}
 
 	/**
-	 * if expression is boolean expression, then add term expression into test sets.
+	 * if expression is boolean expression, then add term expression into condition sets.
 	 * otherwise, return the term formula.
 	 */
 	private def resolveExpression(expression: Expression, plan: LogicalPlan): Label = {
@@ -223,7 +238,7 @@ object LabelPropagator extends Logging {
 
 	private def resolvePredicate(predicate: Expression, plan: LogicalPlan): Label = {
 		val labels = predicate.children.map(resolveTerm(_, plan));
-		plan.tests.add(Predicate(labels, ExpressionRegistry.resolvePredicate(predicate)));
+		plan.conditions.add(Predicate(labels, ExpressionRegistry.resolvePredicate(predicate)));
 		null;
 	}
 
@@ -289,7 +304,7 @@ object LabelPropagator extends Logging {
 			val rightLabel = binary.right.projections.getOrElse(binary.right.output(i), null);
 			binary.projections.put(binary.output(i), Function(List(leftLabel, rightLabel), name));
 		}
-		binary.tests ++= binary.left.tests ++= binary.right.tests;
+		binary.conditions ++= binary.left.conditions ++= binary.right.conditions;
 	}
 
 	/**
@@ -297,7 +312,7 @@ object LabelPropagator extends Logging {
 	 */
 	private def propagateDefault(unary: UnaryNode): Unit = {
 		unary.projections ++= unary.child.projections;
-		unary.tests ++= unary.child.tests;
+		unary.conditions ++= unary.child.conditions;
 	}
 
 }

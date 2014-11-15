@@ -1,12 +1,12 @@
 package org.apache.spark.sql.catalyst.checker
 
 import scala.collection.mutable.Set
-import edu.thu.ss.lang.pojo.ExpandedRule
-import edu.thu.ss.lang.pojo.Policy
-import edu.thu.ss.lang.parser.PolicyParser
 import org.apache.spark.Logging
-
 import scala.collection.JavaConverters._
+import edu.thu.ss.spec.meta.MetaRegistry
+import edu.thu.ss.spec.lang.pojo.ExpandedRule
+import edu.thu.ss.spec.lang.pojo.Policy
+import edu.thu.ss.spec.lang.parser.PolicyParser
 
 trait PrivacyChecker extends Logging {
 
@@ -17,7 +17,7 @@ trait PrivacyChecker extends Logging {
 		try {
 			policy = parser.parse(path, false);
 			rules = policy.getExpandedRules().asScala;
-			MetaRegistry.get.init(policy);
+		//	MetaRegistry.get.init(policy);
 			logWarning(s"Privacy Checker successfully initialized with privacy policy: $path");
 		} catch {
 			case e: Exception => logError("PrivacyChecker disabled.", e);

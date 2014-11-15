@@ -29,7 +29,7 @@
 			</data-category-ref>
 			<restriction>
 				<desensitize>
-					<UDF>op1</UDF>
+					<operation>op1</operation>
 				</desensitize>
 			</restriction>
 		</rule>
@@ -38,8 +38,8 @@
 			<data-category-ref refid="phone" />
 			<restriction>
 				<desensitize>
-					<UDF>op2</UDF>
-					<UDF>op3</UDF>
+					<operation>op2</operation>
+					<operation>op3</operation>
 				</desensitize>
 			</restriction>
 		</rule>
@@ -52,8 +52,8 @@
 			<restriction>
 				<desensitize>
 					<data-category-ref refid="phone" />
-					<UDF>op3</UDF>
-					<UDF>op4</UDF>
+					<operation>op3</operation>
+					<operation>op4</operation>
 				</desensitize>
 			</restriction>
 		</rule>
@@ -67,14 +67,14 @@
 			<restriction>
 				<desensitize>
 					<data-category-ref refid="disease" />
-					<UDF>op1</UDF>
-					<UDF>op2</UDF>
+					<operation>op1</operation>
+					<operation>op2</operation>
 				</desensitize>
 			</restriction>
 			<restriction>
 				<desensitize>
 					<data-category-ref refid="contact" />
-					<UDF>op3</UDF>
+					<operation>op3</operation>
 				</desensitize>
 			</restriction>
 		</rule>
@@ -87,8 +87,8 @@
 			<restriction>
 				<desensitize>
 					<data-category-ref refid="disease" />
-					<UDF>op2</UDF>
-					<UDF>op3</UDF>
+					<operation>op2</operation>
+					<operation>op3</operation>
 				</desensitize>
 			</restriction>
 		</rule>
@@ -101,8 +101,8 @@
 			<restriction>
 				<desensitize>
 					<data-category-ref refid="disease" />
-					<UDF>op1</UDF>
-					<UDF>op3</UDF>
+					<operation>op1</operation>
+					<operation>op3</operation>
 				</desensitize>
 			</restriction>
 		</rule>
