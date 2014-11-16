@@ -7,15 +7,15 @@ import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 
 public class Column extends DBObject {
-	DataCategory category;
+	DataCategory dataCategory;
 	Map<String, DesensitizeOperation> operations = new HashMap<>();
 
-	public DataCategory getCategory() {
-		return category;
+	public DataCategory getDataCategory() {
+		return dataCategory;
 	}
 
-	public void setCategory(DataCategory category) {
-		this.category = category;
+	public void setDataCategory(DataCategory category) {
+		this.dataCategory = category;
 	}
 
 	public DesensitizeOperation getDesensitizeOperation(String udf) {
@@ -33,7 +33,7 @@ public class Column extends DBObject {
 		sb.append(name);
 
 		sb.append("\tData Category: ");
-		sb.append(category.getId());
+		sb.append(dataCategory.getId());
 		sb.append("\n");
 		for (String udf : operations.keySet()) {
 			sb.append("\tUDF: ");

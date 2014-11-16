@@ -104,12 +104,6 @@ public class Policy {
 		sb.append(datas.toString());
 		sb.append("\n");
 
-		/*
-		 * sb.append("Rules:\n");
-		for (Rule rule : rules) {
-			sb.append(rule);
-			sb.append("\n");
-		}*/
 		sb.append("Expanded Rules:\n");
 		for (ExpandedRule rule : expandedRules) {
 			sb.append(rule);

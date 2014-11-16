@@ -1,11 +1,18 @@
 package edu.thu.ss.spec.lang.parser;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
 import java.io.File;
+import java.util.Map;
 
 import org.junit.Test;
 
-import edu.thu.ss.spec.lang.parser.PolicyParser;
+import edu.thu.ss.spec.lang.pojo.DataCategory;
+import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.Policy;
+import edu.thu.ss.spec.meta.JoinCondition;
+import edu.thu.ss.spec.meta.MetaRegistry;
 import edu.thu.ss.spec.meta.xml.XMLMetaRegistry;
 import edu.thu.ss.spec.meta.xml.XMLMetaRegistryParser;
 
@@ -29,8 +36,22 @@ public class PolicyParserTest {
 			System.out.println(policy);
 
 			XMLMetaRegistryParser metaParser = new XMLMetaRegistryParser(policy);
-			XMLMetaRegistry registry = metaParser.parse("tpc-ds/tpc-ds-meta.xml");
+			MetaRegistry registry = metaParser.parse("tpc-ds/tpc-ds-meta.xml");
 			System.out.println(registry);
+
+			DataCategory data = registry.lookup("tpc", "date_dim", "d_date");
+			assertSame(null, data);
+
+			Map<JoinCondition, DataCategory> conds = registry.conditionalLookup("tpc", "datE_dim", "d_Date");
+			assertEquals(1, conds.size());
+
+			conds = registry.conditionalLookup("tpc", "date_dim", "d_dom");
+			assertEquals(2, conds.size());
+			DesensitizeOperation op = registry.lookup(policy.getDatas().get("sa"), "sum1", "tpc", "date_dim", "d_dom");
+			assertSame(null, op);
+
+			op = registry.lookup(policy.getDatas().get("financial"), "sum1", "Tpc", "dAte_dim", "d_dom");
+			assertEquals("sum", op.getName());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

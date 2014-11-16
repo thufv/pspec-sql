@@ -49,10 +49,7 @@ public class XMLIdentifiedObject implements Parsable {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("id: ");
-		sb.append(id);
-		return sb.toString();
+		return id;
 	}
 
 }

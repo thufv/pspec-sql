@@ -1,5 +1,6 @@
 package edu.thu.ss.spec.util;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -126,6 +127,32 @@ public class SetUtil {
 		for (int i : index) {
 			sb.append(rules.get(i).getRuleId());
 			sb.append(' ');
+		}
+		return sb.toString();
+	}
+
+	public static <T> String format(Collection<T> collection, String col) {
+		StringBuilder sb = new StringBuilder();
+		int i = 0;
+		for (T t : collection) {
+			sb.append(t);
+			if (i < collection.size() - 1) {
+				sb.append(col);
+			}
+			i++;
+		}
+		return sb.toString();
+	}
+
+	public static <T> String format(T[] array, String col) {
+		StringBuilder sb = new StringBuilder();
+		int i = 0;
+		for (T t : array) {
+			sb.append(t);
+			if (i < array.length - 1) {
+				sb.append(col);
+			}
+			i++;
 		}
 		return sb.toString();
 	}

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <privacy-policy xmlns="http://www.example.org/privacy"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.example.org/privacy privacy.xsd">
+	xsi:schemaLocation="http://www.example.org/privacy ../res/privacy.xsd">
 	<policy-information id="school-policy">
 		<issuer>
 			<name>luochen</name>
@@ -12,7 +12,7 @@
 		</issuer>
 	</policy-information>
 
-	<vocabulary-ref location="res/spark-vocabulary.xml">
+	<vocabulary-ref location="test/res/spark-vocabulary.xml">
 		<user-category-container refid="social-users" />
 		<data-category-container refid="social-data" />
 	</vocabulary-ref>

@@ -9,6 +9,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.spec.lang.parser.ParserConstant;
+import edu.thu.ss.spec.util.SetUtil;
 
 public class DataCategory extends HierarchicalObject<DataCategory> implements Comparable<DataCategory> {
 
@@ -80,10 +81,7 @@ public class DataCategory extends HierarchicalObject<DataCategory> implements Co
 		sb.append(super.toFullString());
 		if (ops.size() > 0) {
 			sb.append("\tdesensitize UDF: ");
-			for (DesensitizeOperation op : ops) {
-				sb.append(op.name);
-				sb.append(' ');
-			}
+			sb.append(SetUtil.format(ops, " "));
 		}
 		return sb.toString();
 	}

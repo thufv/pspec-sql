@@ -2,6 +2,8 @@ package edu.thu.ss.spec.lang.pojo;
 
 import java.util.Set;
 
+import edu.thu.ss.spec.util.SetUtil;
+
 public class Desensitization {
 	protected Set<DataCategory> datas;
 	protected Set<DesensitizeOperation> operations;
@@ -55,10 +57,7 @@ public class Desensitization {
 		sb.append('\t');
 		sb.append("operation: ");
 		if (operations != null) {
-			for (DesensitizeOperation op : operations) {
-				sb.append(op.name);
-				sb.append(' ');
-			}
+			sb.append(SetUtil.format(operations, " "));
 		} else {
 			sb.append("default");
 		}

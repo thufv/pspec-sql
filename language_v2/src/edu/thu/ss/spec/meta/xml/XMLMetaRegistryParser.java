@@ -1,7 +1,11 @@
 package edu.thu.ss.spec.meta.xml;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +18,8 @@ import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.meta.Column;
 import edu.thu.ss.spec.meta.Database;
+import edu.thu.ss.spec.meta.JoinCondition;
+import edu.thu.ss.spec.meta.MetaRegistry;
 import edu.thu.ss.spec.meta.Table;
 import edu.thu.ss.spec.util.ParsingException;
 import edu.thu.ss.spec.util.XMLUtil;
@@ -26,12 +32,13 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 	private XMLMetaRegistry registry = null;
 	private Policy policy = null;
 	private Map<String, DesensitizeOperation> udfs = null;
+	private Set<JoinCondition> joinConditions = null;
 
 	public XMLMetaRegistryParser(Policy policy) {
 		this.policy = policy;
 	}
 
-	public XMLMetaRegistry parse(String path) throws ParsingException {
+	public MetaRegistry parse(String path) throws ParsingException {
 		init();
 		Document policyDoc = null;
 		try {
@@ -43,7 +50,7 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 		try {
 			// parse document
 			Node rootNode = policyDoc.getElementsByTagName(Ele_Root).item(0);
-			
+
 			String policyPath = XMLUtil.getAttrValue(rootNode, Attr_Policy);
 
 			NodeList dbList = policyDoc.getElementsByTagName(Ele_Database);
@@ -58,7 +65,7 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 		if (error) {
 			throw new ParsingException("Error occured when parsing meta file at {}, see error messages above.");
 		} else {
-			return registry;
+			return new MetaRegistryProxy(registry);
 		}
 
 	}
@@ -70,7 +77,7 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 
 	private Database parseDatabase(Node dbNode) {
 		Database database = new Database();
-		String dbName = XMLUtil.getAttrValue(dbNode, Attr_Name);
+		String dbName = XMLUtil.getLowerAttrValue(dbNode, Attr_Name);
 		database.setName(dbName);
 
 		NodeList list = dbNode.getChildNodes();
@@ -86,8 +93,9 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 	}
 
 	private Table parseTable(Node tableNode) {
+		joinConditions = new HashSet<>();
 		Table table = new Table();
-		String tableName = XMLUtil.getAttrValue(tableNode, Attr_Name);
+		String tableName = XMLUtil.getLowerAttrValue(tableNode, Attr_Name);
 		table.setName(tableName);
 		NodeList list = tableNode.getChildNodes();
 		for (int i = 0; i < list.getLength(); i++) {
@@ -96,24 +104,71 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 			if (Ele_Column.equals(name)) {
 				Column column = parseColumn(node);
 				table.addColumn(column);
+			} else if (Ele_Condition.equals(name)) {
+				parseCondition(node, table);
 			}
 		}
+
+		error = error || table.overlap();
 		return table;
+	}
+
+	private void parseCondition(Node condNode, Table table) {
+		Set<JoinCondition> joins = new HashSet<>();
+		List<Column> columns = new LinkedList<>();
+		NodeList list = condNode.getChildNodes();
+		for (int i = 0; i < list.getLength(); i++) {
+			Node node = list.item(i);
+			String name = node.getLocalName();
+			if (Ele_Column.equals(name)) {
+				Column column = parseColumn(node);
+				columns.add(column);
+			} else if (Ele_Join.equals(name)) {
+				JoinCondition join = parseJoin(node);
+				joins.add(join);
+			}
+		}
+
+		for (Column column : columns) {
+			for (JoinCondition join : joins) {
+				error = error || table.addConditionalColumn(join, column);
+			}
+		}
+
+	}
+
+	private JoinCondition parseJoin(Node joinNode) {
+		JoinCondition join = new JoinCondition();
+		String table = XMLUtil.getLowerAttrValue(joinNode, Attr_Join_Table);
+		join.setJoinTable(table);
+
+		NodeList list = joinNode.getChildNodes();
+		for (int i = 0; i < list.getLength(); i++) {
+			Node node = list.item(i);
+			String name = node.getLocalName();
+			if (Ele_Join_Column.equals(name)) {
+				String column = XMLUtil.getLowerAttrValue(node, Attr_Join_Column);
+				String target = XMLUtil.getLowerAttrValue(node, Attr_Join_Target);
+				join.addJoinColumn(column, target);
+			}
+		}
+
+		return join;
 	}
 
 	private Column parseColumn(Node columnNode) {
 		Column column = new Column();
-		String columnName = XMLUtil.getAttrValue(columnNode, Attr_Name);
+		String columnName = XMLUtil.getLowerAttrValue(columnNode, Attr_Name);
 		column.setName(columnName);
 
-		String dataCategoryId = XMLUtil.getAttrValue(columnNode, Attr_Data_Category);
+		String dataCategoryId = XMLUtil.getLowerAttrValue(columnNode, Attr_Data_Category);
 		DataCategory dataCategory = policy.getDatas().get(dataCategoryId);
 		if (dataCategory == null) {
 			logger.error("Cannot locate data category: {}.", dataCategoryId);
 			error = true;
 			return column;
 		}
-		column.setCategory(dataCategory);
+		column.setDataCategory(dataCategory);
 
 		NodeList list = columnNode.getChildNodes();
 		for (int i = 0; i < list.getLength(); i++) {
@@ -128,7 +183,7 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 
 	private void parseDesensitizeOperation(Node deNode, Column column) {
 		String opName = XMLUtil.getAttrValue(deNode, Attr_Name);
-		DataCategory data = column.getCategory();
+		DataCategory data = column.getDataCategory();
 		DesensitizeOperation op = data.getOperation(opName);
 		if (op == null) {
 			logger.error("Desensitize operation: {} is not supported by data category: {}", opName, data.getId());
@@ -155,6 +210,15 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 			logger.error("UDF: {} should not be mapped to multiple desensitize operations: {} and {}.", udf, op.getName(),
 					op2.getName());
 			error = true;
+		}
+	}
+
+	private void checkJoin(JoinCondition join) {
+		if (joinConditions.contains(join)) {
+			logger.error("Duplicate join condition detected, please fix. Join: {}", join);
+			error = true;
+		} else {
+			joinConditions.add(join);
 		}
 	}
 

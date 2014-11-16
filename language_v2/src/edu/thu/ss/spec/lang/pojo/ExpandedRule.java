@@ -7,6 +7,7 @@ import java.util.Set;
 import edu.thu.ss.spec.lang.xml.XMLDataAssociation;
 import edu.thu.ss.spec.lang.xml.XMLDataCategoryRef;
 import edu.thu.ss.spec.lang.xml.XMLRule;
+import edu.thu.ss.spec.util.SetUtil;
 
 public class ExpandedRule {
 
@@ -98,20 +99,14 @@ public class ExpandedRule {
 
 		sb.append("\n\t");
 		sb.append("Users: ");
-		for (UserCategory user : users) {
-			sb.append(user.getId());
-			sb.append(' ');
-		}
+		sb.append(SetUtil.format(users, ","));
 		sb.append("\n\t");
 		for (DataActionPair pair : datas) {
 			sb.append("Action: ");
 			sb.append(pair.action);
 			sb.append("\n\t");
 			sb.append("Datas: ");
-			for (DataCategory data : pair.datas) {
-				sb.append(data.getId());
-				sb.append(' ');
-			}
+			sb.append(SetUtil.format(pair.datas, ","));
 			sb.append("\n\t");
 		}
 		for (Restriction restriction : restrictions) {

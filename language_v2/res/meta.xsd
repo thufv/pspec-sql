@@ -10,25 +10,68 @@
 					<selector xpath="tns:column"></selector>
 					<field xpath="@name"></field>
 				</unique>
+				<unique name="uniqueColumnData">
+					<selector xpath="tns:condition/tns:column"></selector>
+					<field xpath="@name"></field>
+					<field xpath="@data-category"></field>
+				</unique>
 			</element>
 		</sequence>
 		<attribute name="name" use="required"></attribute>
 	</complexType>
 
+	<element name="column" type="tns:columnType">
+		<unique name="uniqueOpName">
+			<selector xpath="tns:desensitize-operation"></selector>
+			<field xpath="@name"></field>
+		</unique>
+		<unique name="uniqueOpUDF">
+			<selector xpath="tns:desensitize-operation/tns:UDF"></selector>
+			<field xpath="."></field>
+		</unique>
+	</element>
+
 	<complexType name="tableType">
 		<sequence>
-			<element name="column" type="tns:columnType" maxOccurs="unbounded">
-				<unique name="uniqueOpName">
-					<selector xpath="tns:desensitize-operation"></selector>
+			<element ref="tns:column" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="condition" type="tns:conditionType" maxOccurs="unbounded"
+				minOccurs="0">
+				<unique name="uniqueConditionColumn">
+					<selector xpath="tns:column"></selector>
 					<field xpath="@name"></field>
-				</unique>
-				<unique name="uniqueOpUDF">
-					<selector xpath="tns:desensitize-operation/tns:UDF"></selector>
-					<field xpath="."></field>
 				</unique>
 			</element>
 		</sequence>
 		<attribute name="name" use="required"></attribute>
+	</complexType>
+
+	<complexType name="conditionType">
+		<sequence>
+			<element name="join" type="tns:joinType" minOccurs="1"
+				maxOccurs="unbounded">
+				<unique name="uniqueJoinColumn">
+					<selector xpath="tns:column"></selector>
+					<field xpath="@name"></field>
+				</unique>
+				<unique name="uniqueJoinTarget">
+					<selector xpath="tns:column"></selector>
+					<field xpath="@target"></field>
+				</unique>
+			</element>
+			<element ref="tns:column" maxOccurs="unbounded"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="joinType">
+		<sequence>
+			<element name="column" minOccurs="1" maxOccurs="unbounded">
+				<complexType>
+					<attribute name="name" type="NCName" use="required"></attribute>
+					<attribute name="target" type="NCName" use="required"></attribute>
+				</complexType>
+			</element>
+		</sequence>
+		<attribute name="table" type="NCName" use="required"></attribute>
 	</complexType>
 
 	<complexType name="columnType">

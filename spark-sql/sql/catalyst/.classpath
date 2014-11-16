@@ -115,6 +115,6 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/spark-core"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/language_v2"/>
-	<classpathentry kind="lib" path="/Users/luochen/Documents/Research/privacy/spark-sql/lib_managed/jars/tachyon-0.5.0.jar"/>
+	<classpathentry kind="lib" path="/Users/luochen/Documents/Research/privacy/spark-sql/lib_managed/jars/tachyon-0.5.0.jar" sourcepath="/Users/luochen/.m2/repository/org/tachyonproject/tachyon/0.5.0/tachyon-0.5.0-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

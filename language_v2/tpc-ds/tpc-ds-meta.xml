@@ -20,5 +20,26 @@
 				</desensitize-operation>
 			</column>
 		</table>
+		<table name="date_dim">
+			<condition>
+				<join table="c_customer">
+					<column name="d_date_sk1" target="c_first_sales_date_sk1"></column>
+				</join>
+				<column name="d_date" data-category="sa"></column>
+				<column name="d_dom" data-category="financial">
+					<desensitize-operation name="sum">
+						<UDF>sum1</UDF>
+					</desensitize-operation>
+				</column>
+			</condition>
+
+			<condition>
+				<join table="c_customer">
+					<column name="d_date_sk2" target="c_first_sales_date_sk1"></column>
+				</join>
+				<column name="d_dom" data-category="sa">
+				</column>
+			</condition>
+		</table>
 	</database>
 </meta-mapping>

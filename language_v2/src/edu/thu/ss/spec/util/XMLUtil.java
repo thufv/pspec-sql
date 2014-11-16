@@ -82,4 +82,18 @@ public class XMLUtil {
 		return baseAttr.getNodeValue();
 	}
 
+	public static String getLowerAttrValue(Node node, String attr) {
+		NamedNodeMap attrs = node.getAttributes();
+		Node baseAttr = attrs.getNamedItem(attr);
+		if (baseAttr == null) {
+			return null;
+		}
+		String value = baseAttr.getNodeValue();
+		if (value != null) {
+			return value.toLowerCase();
+		} else {
+			return null;
+		}
+	}
+
 }
