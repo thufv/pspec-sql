@@ -28,7 +28,6 @@ public class PolicyParserTest {
 		}
 	}
 
-	@Test
 	public void testTpcDs() {
 		try {
 			PolicyParser parser = new PolicyParser();
@@ -52,6 +51,22 @@ public class PolicyParserTest {
 
 			op = registry.lookup(policy.getDatas().get("financial"), "sum1", "Tpc", "dAte_dim", "d_dom");
 			assertEquals("sum", op.getName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void testStore() {
+		try {
+			PolicyParser parser = new PolicyParser();
+			Policy policy = parser.parse("tpc-ds/store-policy.xml");
+			System.out.println(policy);
+
+			XMLMetaRegistryParser metaParser = new XMLMetaRegistryParser(policy);
+			MetaRegistry registry = metaParser.parse("tpc-ds/store-meta.xml");
+			System.out.println(registry);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

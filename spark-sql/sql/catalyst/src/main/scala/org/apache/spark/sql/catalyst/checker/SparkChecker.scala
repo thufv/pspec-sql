@@ -16,17 +16,17 @@ import edu.thu.ss.spec.lang.pojo.DesensitizeOperation
 import edu.thu.ss.spec.lang.pojo.ExpandedRule
 import edu.thu.ss.spec.lang.pojo.UserCategory
 import edu.thu.ss.spec.meta.MetaRegistry
+import org.apache.spark.sql.catalyst.analysis.Catalog
+import edu.thu.ss.spec.meta.MetaRegistryManager
+import edu.thu.ss.spec.meta.xml.MetaRegistryProxy
+import edu.thu.ss.spec.meta.xml.XMLMetaRegistry
 
 object SparkChecker extends Logging {
 
 	val checker = new SparkChecker();
 
-	def init: Unit = {
-		init("res/spark-policy.xml");
-	}
-
-	def init(path: String): Unit = {
-		checker.init(path);
+	def init(catalog: Catalog, policyPath: String = "res/spark-policy.xml", metaPath: String = "res/spark-meta.xml"): Unit = {
+		checker.init(catalog, policyPath, metaPath);
 	}
 
 	def apply(plan: LogicalPlan): Unit = {
@@ -42,7 +42,7 @@ object SparkChecker extends Logging {
 		checker.check(projections, plan.conditions);
 
 		val end = System.currentTimeMillis();
-		//TODO print
+
 		val time = end - begin;
 		println(s"privacy checking finished in $time ms");
 
@@ -55,7 +55,12 @@ class SparkChecker extends PrivacyChecker {
 
 	var projectionPaths: Map[DataCategory, Set[Path]] = null;
 	var conditionPaths: Map[DataCategory, Set[Path]] = null;
-	val meta: MetaRegistry = null;
+	lazy val meta: MetaRegistry = MetaRegistryManager.get();
+
+	override def init(catalog: Catalog, policyPath: String, metaPath: String): Unit = {
+		super.init(catalog, policyPath, metaPath);
+		checkMeta(catalog);
+	}
 
 	def check(projections: Set[Label], conditions: Set[Label]): Unit = {
 		projectionPaths = new HashMap[DataCategory, Set[Path]];
@@ -67,6 +72,46 @@ class SparkChecker extends PrivacyChecker {
 		//val user = MetaRegistry.get.currentUser();
 		val user = meta.currentUser();
 		rules.foreach(checkRule(_, user, projectionPaths, conditionPaths));
+	}
+
+	private def checkMeta(catalog: Catalog): Unit = {
+		val databases = meta.getDatabases();
+		for (db <- databases.asScala) {
+			val dbName = Some(db._1); ;
+			val tables = db._2.getTables().asScala;
+			for (t <- tables) {
+				val relation = lookupRelation(catalog, dbName, t._1);
+				if (relation == null) {
+					logError(s"Error in MetaRegistry, table: ${t._1} not found in database: ${db._1}.");
+				} else {
+					relation.checkMeta(t._2.getAllColumns().asScala);
+
+					val conds = t._2.getAllConditions().asScala;
+					val condColumns = new HashSet[String];
+					conds.foreach(join => {
+						val list = join.getJoinColumns().asScala;
+						list.foreach(e => condColumns.add(e.column));
+						val name = join.getJoinTable();
+						val relation = lookupRelation(catalog, dbName, name);
+						if (relation == null) {
+							logError(s"Error in MetaRegistry, table: $name (joined with ${t._1}) not found in database: ${db._1}.");
+						} else {
+							val cols = list.map(_.target);
+							relation.checkMeta(cols);
+						}
+					});
+					relation.checkMeta(condColumns.toList);
+				}
+			}
+		}
+	}
+
+	private def lookupRelation(catalog: Catalog, database: Option[String], table: String): LogicalPlan = {
+		try {
+			catalog.lookupRelation(database, table);
+		} catch {
+			case _: Throwable => null;
+		}
 	}
 
 	private def printPaths(projectionPaths: Map[DataCategory, Set[Path]], conditionPaths: Map[DataCategory, Set[Path]]) {
@@ -195,7 +240,7 @@ class SparkChecker extends PrivacyChecker {
 			paths.put(label.data, set);
 		}
 
-		val ops = udfs.map(meta.lookup(_, label.data, label.database, label.table, label.column)).filter(_ != null);
+		val ops = udfs.map(meta.lookup(label.data, _, label.database, label.table, label.column)).filter(_ != null);
 		set.add(Path(ops));
 	}
 }

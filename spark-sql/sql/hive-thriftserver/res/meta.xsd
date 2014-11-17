@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/privacy"
+	xmlns:tns="http://www.example.org/privacy" elementFormDefault="qualified"
+	attributeFormDefault="unqualified">
+
+	<complexType name="databaseType">
+		<sequence>
+			<element name="table" type="tns:tableType" maxOccurs="unbounded">
+				<unique name="uniqueColumn">
+					<selector xpath="tns:column"></selector>
+					<field xpath="@name"></field>
+				</unique>
+				<unique name="uniqueColumnData">
+					<selector xpath="tns:condition/tns:column"></selector>
+					<field xpath="@name"></field>
+					<field xpath="@data-category"></field>
+				</unique>
+			</element>
+		</sequence>
+		<attribute name="name" use="required"></attribute>
+	</complexType>
+
+	<element name="column" type="tns:columnType">
+		<unique name="uniqueOpName">
+			<selector xpath="tns:desensitize-operation"></selector>
+			<field xpath="@name"></field>
+		</unique>
+		<unique name="uniqueOpUDF">
+			<selector xpath="tns:desensitize-operation/tns:UDF"></selector>
+			<field xpath="."></field>
+		</unique>
+	</element>
+
+	<complexType name="tableType">
+		<sequence>
+			<element ref="tns:column" maxOccurs="unbounded" minOccurs="0"></element>
+			<element name="condition" type="tns:conditionType" maxOccurs="unbounded"
+				minOccurs="0">
+				<unique name="uniqueConditionColumn">
+					<selector xpath="tns:column"></selector>
+					<field xpath="@name"></field>
+				</unique>
+			</element>
+		</sequence>
+		<attribute name="name" use="required"></attribute>
+	</complexType>
+
+	<complexType name="conditionType">
+		<sequence>
+			<element name="join" type="tns:joinType" minOccurs="1"
+				maxOccurs="unbounded">
+				<unique name="uniqueJoinColumn">
+					<selector xpath="tns:column"></selector>
+					<field xpath="@name"></field>
+				</unique>
+				<unique name="uniqueJoinTarget">
+					<selector xpath="tns:column"></selector>
+					<field xpath="@target"></field>
+				</unique>
+			</element>
+			<element ref="tns:column" maxOccurs="unbounded"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="joinType">
+		<sequence>
+			<element name="column" minOccurs="1" maxOccurs="unbounded">
+				<complexType>
+					<attribute name="name" type="NCName" use="required"></attribute>
+					<attribute name="target" type="NCName" use="required"></attribute>
+				</complexType>
+			</element>
+		</sequence>
+		<attribute name="table" type="NCName" use="required"></attribute>
+	</complexType>
+
+	<complexType name="columnType">
+		<sequence>
+			<element name="desensitize-operation" type="tns:operationType"
+				minOccurs="0" maxOccurs="unbounded"></element>
+		</sequence>
+		<attribute name="name" type="NCName" use="required"></attribute>
+		<attribute name="data-category" type="NCName" use="required"></attribute>
+	</complexType>
+
+	<complexType name="operationType">
+		<sequence>
+			<element name="UDF" type="NCName" maxOccurs="unbounded"></element>
+		</sequence>
+		<attribute name="name" type="NCName" use="required"></attribute>
+	</complexType>
+
+	<element name="meta-mapping">
+		<complexType>
+			<sequence>
+				<element name="database" type="tns:databaseType" maxOccurs="unbounded">
+					<unique name="uniqueTable">
+						<selector xpath="tns:table"></selector>
+						<field xpath="@name"></field>
+					</unique>
+				</element>
+			</sequence>
+			<attribute name="policy" use="required" type="anyURI"></attribute>
+		</complexType>
+
+		<unique name="uniqueDatabase">
+			<selector xpath="tns:database"></selector>
+			<field xpath="@name"></field>
+		</unique>
+	</element>
+
+
+</schema>

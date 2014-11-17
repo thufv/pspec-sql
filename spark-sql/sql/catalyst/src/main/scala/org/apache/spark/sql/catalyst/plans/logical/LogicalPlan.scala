@@ -29,6 +29,7 @@ import scala.collection.mutable.Map
 import scala.collection.mutable.Set
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.HashSet
+import edu.thu.ss.spec.meta.Table
 
 abstract class LogicalPlan extends QueryPlan[LogicalPlan] {
 	self: Product =>
@@ -37,6 +38,10 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] {
 	val conditions: Set[Label] = new HashSet;
 
 	def calculateLabels(): (Map[Attribute, Label], Set[Label]) = { (projections, conditions) };
+
+	def checkMeta(columns: Seq[String]): Unit = {
+		throw new UnsupportedOperationException();
+	}
 
 	def childLabel(attr: Attribute): Label = {
 		children.map(_.projections.getOrElse(attr, null)).find(_ != null).getOrElse(null);

@@ -1,5 +1,6 @@
 package edu.thu.ss.spec.meta;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,5 +56,9 @@ public class ConditionalColumn extends DBObject {
 		}
 		return sb.toString();
 
+	}
+
+	public Collection<JoinCondition> getConditions() {
+		return dataCategories.keySet();
 	}
 }

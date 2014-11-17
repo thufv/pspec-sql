@@ -22,6 +22,11 @@ public class XMLMetaRegistry implements MetaRegistry {
 	}
 
 	@Override
+	public Map<String, Database> getDatabases() {
+		return databases;
+	}
+
+	@Override
 	public UserCategory currentUser() {
 		return null;
 	}

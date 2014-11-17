@@ -159,12 +159,15 @@ case class Subquery(alias: String, child: LogicalPlan) extends UnaryNode {
  * analysis.
  */
 case class LowerCaseSchema(child: LogicalPlan) extends UnaryNode {
+	override def checkMeta(columns: Seq[String]): Unit = child.checkMeta(columns);
+
 	protected def lowerCaseSchema(dataType: DataType): DataType = dataType match {
 		case StructType(fields) =>
 			StructType(fields.map(f =>
 				StructField(f.name.toLowerCase(), lowerCaseSchema(f.dataType), f.nullable)))
 		case ArrayType(elemType, containsNull) => ArrayType(lowerCaseSchema(elemType), containsNull)
 		case otherType => otherType
+
 	}
 
 	override val output = child.output.map {
@@ -181,7 +184,7 @@ case class LowerCaseSchema(child: LogicalPlan) extends UnaryNode {
 
 case class Sample(fraction: Double, withReplacement: Boolean, seed: Long, child: LogicalPlan)
 	extends UnaryNode {
-	
+
 	override def output = child.output
 }
 

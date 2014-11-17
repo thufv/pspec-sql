@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<vocabulary base="tpc-ds/base-vocab.xml" xmlns="http://www.example.org/privacy"
+<vocabulary base="res/base-vocab.xml" xmlns="http://www.example.org/privacy"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.example.org/privacy ../res/privacy.xsd">
+	xsi:schemaLocation="http://www.example.org/privacy privacy.xsd">
 
 	<vocabulary-information id="vocab-info">
 		<issuer>
@@ -17,6 +17,7 @@
 	<data-category-container id="store-data" base="default-data">
 		<data-category id="email" parent="id"></data-category>
 		<data-category id="loginid" parent="id"></data-category>
+
 
 		<data-category id="name" parent="qi"></data-category>
 

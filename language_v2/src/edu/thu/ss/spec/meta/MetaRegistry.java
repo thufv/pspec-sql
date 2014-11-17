@@ -16,4 +16,6 @@ public interface MetaRegistry {
 
 	public UserCategory currentUser();
 
+	public Map<String, Database> getDatabases();
+
 }

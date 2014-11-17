@@ -1,7 +1,11 @@
 package edu.thu.ss.spec.meta;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +18,10 @@ public class Table extends DBObject {
 	Map<String, Column> columns = new HashMap<>();
 
 	Map<String, ConditionalColumn> condColumns = new HashMap<>();
+
+	List<String> allColumns = null;
+
+	Set<JoinCondition> conditions = null;
 
 	public Column getColumn(String name) {
 		return columns.get(name);
@@ -28,6 +36,25 @@ public class Table extends DBObject {
 			return;
 		}
 		columns.put(column.name, column);
+	}
+
+	public Set<JoinCondition> getAllConditions() {
+		if (conditions == null) {
+			conditions = new HashSet<>();
+			for (ConditionalColumn col : condColumns.values()) {
+				conditions.addAll(col.getConditions());
+			}
+		}
+		return conditions;
+	}
+
+	public List<String> getAllColumns() {
+		if (allColumns == null) {
+			allColumns = new ArrayList<>(columns.size() + condColumns.size());
+			allColumns.addAll(columns.keySet());
+			allColumns.addAll(condColumns.keySet());
+		}
+		return allColumns;
 	}
 
 	public void addConditionalColumn(ConditionalColumn condColumn) {

@@ -67,9 +67,10 @@ import org.apache.spark.sql.catalyst.plans.logical.RedistributeData
 import org.apache.spark.sql.catalyst.expressions.Contains
 import org.apache.spark.sql.catalyst.expressions.EndsWith
 import org.apache.spark.sql.catalyst.expressions.AggregateExpression
+import edu.thu.ss.spec.meta.MetaRegistryManager
 
 object LabelPropagator extends Logging {
-	val meta: MetaRegistry = null;
+	lazy val meta: MetaRegistry = MetaRegistryManager.get();
 
 	def apply(plan: LogicalPlan): Unit = {
 

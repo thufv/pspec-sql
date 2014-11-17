@@ -57,7 +57,7 @@ class SQLContext(@transient val sparkContext: SparkContext)
 
 	self =>
 
-	SparkChecker.init;
+	SparkChecker.init(catalog);
 
 	@transient
 	protected[sql] lazy val catalog: Catalog = new SimpleCatalog(true)

@@ -9,8 +9,8 @@ import edu.thu.ss.spec.util.SetUtil;
 public class JoinCondition {
 
 	public static class ColumnEntry implements Comparable<ColumnEntry> {
-		String column;
-		String target;
+		public String column;
+		public String target;
 
 		public ColumnEntry(String column, String target) {
 			this.column = column;
@@ -80,6 +80,10 @@ public class JoinCondition {
 			}
 		}
 		joinColumns.add(entry1);
+	}
+
+	public List<ColumnEntry> getJoinColumns() {
+		return joinColumns;
 	}
 
 	public String getJoinTable() {

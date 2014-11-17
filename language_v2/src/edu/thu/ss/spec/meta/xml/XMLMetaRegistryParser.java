@@ -63,7 +63,7 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 			throw new ParsingException("Fail to parse meta file at " + path, e);
 		}
 		if (error) {
-			throw new ParsingException("Error occured when parsing meta file at {}, see error messages above.");
+			throw new ParsingException("Error occured when parsing meta file at " + path + ", see error messages above.");
 		} else {
 			return new MetaRegistryProxy(registry);
 		}

@@ -47,6 +47,9 @@ import edu.thu.ss.spec.meta.MetaRegistry
 import org.apache.spark.sql.hive.execution.HiveTableScan
 import edu.thu.ss.spec.lang.pojo.DataCategory
 import org.apache.spark.sql.catalyst.checker.DataLabel
+import edu.thu.ss.spec.meta.MetaRegistryManager
+import edu.thu.ss.spec.meta
+import scala.collection.mutable.HashSet
 
 private[hive] class HiveMetastoreCatalog(hive: HiveContext) extends Catalog with Logging {
 	import HiveMetastoreTypes._
@@ -257,7 +260,7 @@ object HiveMetastoreTypes extends RegexParsers {
 }
 
 case class MetastoreRelation(databaseName: String, tableName: String, alias: Option[String])(val table: TTable, val partitions: Seq[TPartition])(@transient sqlContext: SQLContext)
-	extends LeafNode {
+	extends LeafNode with Logging {
 	self: Product =>
 
 	// TODO: Can we use org.apache.hadoop.hive.ql.metadata.Table as the type of table and
@@ -316,7 +319,7 @@ case class MetastoreRelation(databaseName: String, tableName: String, alias: Opt
 	val output = attributes ++ partitionKeys
 
 	override def calculateLabels(): (mutable.Map[Attribute, Label], mutable.Set[Label]) = {
-		val meta: MetaRegistry = null;
+		val meta: MetaRegistry = MetaRegistryManager.get();
 		output.foreach(attr => {
 			val data: DataCategory = meta.lookup(databaseName, tableName, attr.name);
 			if (data != null) {
@@ -326,5 +329,15 @@ case class MetastoreRelation(databaseName: String, tableName: String, alias: Opt
 			}
 		});
 		(projections, conditions);
+	}
+
+	lazy val attributeNames = table.getSd().getCols().map(_.getName().toLowerCase()).toSet;
+
+	override def checkMeta(columns: Seq[String]): Unit = {
+		columns.foreach(col => {
+			if (!attributeNames.contains(col)) {
+				logError(s"Error in MetaRegistry. Column: $col not exist in table: ${table.getTableName()} in database: ${table.getDbName()}");
+			}
+		});
 	}
 }

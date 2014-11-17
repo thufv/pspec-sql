@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<meta-mapping xmlns="http://www.example.org/privacy"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" policy=""
+	xsi:schemaLocation="http://www.example.org/privacy ../res/meta.xsd">
+	<database name="default">
+		<table name="income_band">
+			<column name="ib_lower_bound" data-category="financial"></column>
+			<column name="ib_upper_bound" data-category="financial"></column>
+		</table>
+
+		<table name="customer">
+			<column name="c_customer_sk" data-category="sk"></column>
+			<column name="c_customer_id" data-category="sk"></column>
+			<column name="c_current_cdemo_sk" data-category="sk"></column>
+			<column name="c_current_hdemo_sk" data-category="sk"></column>
+			<column name="c_current_addr_sk" data-category="sk"></column>
+			<column name="c_first_shipto_date_sk" data-category="sk"></column>
+			<column name="c_first_sales_date_sk" data-category="sk"></column>
+
+			<column name="c_salutation" data-category="name"></column>
+			<column name="c_first_name" data-category="name"></column>
+			<column name="c_last_name" data-category="name"></column>
+
+			<column name="c_birth_day" data-category="birth"></column>
+			<column name="c_birth_month" data-category="birth"></column>
+			<column name="c_birth_year" data-category="birth"></column>
+			<column name="c_birth_country" data-category="birth"></column>
+			<column name="c_email_address" data-category="email"></column>
+			<column name="c_login" data-category="loginid"></column>
+		</table>
+
+		<table name="customer_address">
+			<column name="ca_address_sk" data-category="sk"></column>
+			<column name="ca_address_id" data-category="sk"></column>
+			<column name="ca_street_number" data-category="customer_street"></column>
+			<column name="ca_street_name" data-category="customer_street"></column>
+			<column name="ca_street_type" data-category="customer_street"></column>
+			<column name="ca_suite_number" data-category="customer_suite"></column>
+			<column name="ca_city" data-category="customer_region"></column>
+
+			<column name="ca_county" data-category="customer_region"></column>
+			<column name="ca_state" data-category="customer_region"></column>
+			<column name="ca_country" data-category="customer_region"></column>
+
+			<column name="ca_gmt_offset" data-category="customer_region"></column>
+			<column name="ca_location_type" data-category="customer_location_type"></column>
+			<column name="ca_zip" data-category="customer_zip"></column>
+		</table>
+
+		<table name="customer_demographics">
+			<column name="cd_demo_sk" data-category="sk"></column>
+			<column name="cd_gender" data-category="qi"></column>
+			<column name="cd_marital_status" data-category="status"></column>
+			<column name="cd_education_status" data-category="status"></column>
+			<column name="cd_purchase_estimate" data-category="financial"></column>
+			<column name="cd_credit_rating" data-category="financial"></column>
+			<column name="cd_dep_count" data-category="dep"></column>
+			<column name="cd_dep_employed_count" data-category="dep"></column>
+			<column name="cd_dep_college_count" data-category="dep"></column>
+		</table>
+
+
+
+		<table name="household_demographics">
+			<column name="hd_demo_sk" data-category="sk"></column>
+			<column name="hd_income_band_sk" data-category="sk"></column>
+			<column name="hd_buy_potential" data-category="financial"></column>
+			<column name="hd_dep_count" data-category="dep"></column>
+			<column name="hd_vehicle_count" data-category="vehicle"></column>
+		</table>
+
+		<table name="date_dim">
+			<column name="d_date_sk" data-category="sk"></column>
+			<column name="d_date_id" data-category="sk"></column>
+			<condition>
+				<join table="customer">
+					<column name="d_date_sk" target="c_first_sales_date_sk" />
+				</join>
+				<join table="customer">
+					<column name="d_date_sk" target="c_first_shipto_date_sk" />
+				</join>
+				<join table="store_sales">
+					<column name="d_date_sk" target="ss_sold_date_sk" />
+				</join>
+				<column name="d_date" data-category="sa"></column>
+				<column name="d_year" data-category="sa"></column>
+				<column name="d_dow" data-category="sa"></column>
+				<column name="d_moy" data-category="sa"></column>
+				<column name="d_dom" data-category="sa"></column>
+				<column name="d_qoy" data-category="sa"></column>
+			</condition>
+		</table>
+
+		<table name="store_sales">
+			<column name="ss_sold_date_sk" data-category="sk"></column>
+			<column name="ss_sold_time_sk" data-category="sk"></column>
+			<column name="ss_customer_sk" data-category="sk"></column>
+			<column name="ss_cdemo_sk" data-category="sk"></column>
+			<column name="ss_hdemo_sk" data-category="sk"></column>
+			<column name="ss_addr_sk" data-category="sk"></column>
+			<column name="ss_item_sk" data-category="sk"></column>
+
+			<column name="ss_wholesale_cost" data-category="sale_price"></column>
+			<column name="ss_list_price" data-category="sale_price"></column>
+			<column name="ss_sales_price" data-category="sale_price"></column>
+			<column name="ss_ext_discount_amt" data-category="sale_price"></column>
+			<column name="ss_ext_sales_price" data-category="sale_price"></column>
+			<column name="ss_ext_wholesale_cost" data-category="sale_price"></column>
+			<column name="ss_ext_list_price" data-category="sale_price"></column>
+			<column name="ss_ext_tax" data-category="sale_price"></column>
+			<column name="ss_coupon_amt" data-category="sale_price"></column>
+			<column name="ss_net_paid" data-category="sale_price"></column>
+			<column name="ss_net_paid_inc_tax" data-category="sale_price"></column>
+			<column name="ss_net_profit" data-category="sale_price"></column>
+		</table>
+
+		<table name="store_returns">
+			<column name="sr_returned_date_sk" data-category="sk"></column>
+			<column name="sr_return_time_sk" data-category="sk"></column>
+			<column name="sr_customer_sk" data-category="sk"></column>
+			<column name="sr_cdemo_sk" data-category="sk"></column>
+			<column name="sr_hdemo_sk" data-category="sk"></column>
+			<column name="sr_addr_sk" data-category="sk"></column>
+			<column name="sr_item_sk" data-category="sk"></column>
+
+			<column name="sr_return_tax" data-category="return_cost"></column>
+			<column name="sr_return_amt_inc_tax" data-category="return_cost"></column>
+			<column name="sr_fee" data-category="return_cost"></column>
+			<column name="sr_return_ship_cost" data-category="return_cost"></column>
+			<column name="sr_refunded_cash" data-category="return_cost"></column>
+			<column name="sr_reversed_charge" data-category="return_cost"></column>
+			<column name="sr_store_credit" data-category="return_cost"></column>
+			<column name="sr_net_loss" data-category="return_cost"></column>
+		</table>
+
+
+		<table name="item">
+			<column name="i_item_sk" data-category="sk"></column>
+			<column name="i_item_id" data-category="sk"></column>
+			<condition>
+				<join table="store_sales">
+					<column name="i_item_sk" target="ss_item_sk" />
+				</join>
+				<column name="i_item_desc" data-category="sale_item"></column>
+				<column name="i_brand" data-category="sale_item"></column>
+				<column name="i_class" data-category="sale_item"></column>
+				<column name="i_category" data-category="sale_item"></column>
+				<column name="i_manufact" data-category="sale_item"></column>
+				<column name="i_product_name" data-category="sale_item"></column>
+			</condition>
+
+
+			<condition>
+				<join table="store_returns">
+					<column name="i_item_sk" target="sr_item_sk" />
+				</join>
+				<column name="i_item_desc" data-category="return_item"></column>
+				<column name="i_brand" data-category="return_item"></column>
+				<column name="i_class" data-category="return_item"></column>
+				<column name="i_category" data-category="return_item"></column>
+				<column name="i_manufact" data-category="return_item"></column>
+				<column name="i_product_name" data-category="return_item"></column>
+			</condition>
+		</table>
+
+	</database>
+</meta-mapping>

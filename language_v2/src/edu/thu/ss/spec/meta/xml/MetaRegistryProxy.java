@@ -5,6 +5,7 @@ import java.util.Map;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
+import edu.thu.ss.spec.meta.Database;
 import edu.thu.ss.spec.meta.JoinCondition;
 import edu.thu.ss.spec.meta.MetaRegistry;
 
@@ -14,6 +15,11 @@ public class MetaRegistryProxy implements MetaRegistry {
 
 	public MetaRegistryProxy(MetaRegistry registry) {
 		this.registry = registry;
+	}
+
+	@Override
+	public Map<String, Database> getDatabases() {
+		return registry.getDatabases();
 	}
 
 	@Override

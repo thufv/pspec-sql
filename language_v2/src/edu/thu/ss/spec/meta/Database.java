@@ -18,6 +18,10 @@ public class Database extends DBObject {
 		tables.put(table.name, table);
 	}
 
+	public Map<String, Table> getTables() {
+		return tables;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
