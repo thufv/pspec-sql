@@ -409,6 +409,7 @@ SELECT i_brand
     FROM store_sales 
         JOIN store_returns ON ss_item_sk = sr_item_sk
         JOIN item on sr_item_sk = i_item_sk
+        
 
 SELECT i_brand
     FROM (select i_brand from item join store_sales on i_item_sk = ss_item_sk UNION all
