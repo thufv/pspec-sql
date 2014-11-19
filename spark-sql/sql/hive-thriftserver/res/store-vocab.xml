@@ -53,6 +53,7 @@
 		<data-category id="dep" parent="customer_sa"></data-category>
 		<data-category id="vehicle" parent="customer_sa"></data-category>
 
+		<data-category id="sale_date" parent="business_sa"></data-category>
 		<data-category id="sale_item" parent="business_sa"></data-category>
 		<data-category id="sale_price" parent="business_sa"></data-category>
 

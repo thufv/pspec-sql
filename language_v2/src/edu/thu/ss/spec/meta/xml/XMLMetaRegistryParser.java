@@ -65,6 +65,7 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 		if (error) {
 			throw new ParsingException("Error occured when parsing meta file at " + path + ", see error messages above.");
 		} else {
+			registry.setUsers(policy.getUsers());
 			return new MetaRegistryProxy(registry);
 		}
 

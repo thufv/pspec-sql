@@ -30,131 +30,137 @@ import scala.collection.mutable.Set
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.HashSet
 import edu.thu.ss.spec.meta.Table
+import scala.collection.mutable.MutableList
+import scala.collection.mutable.ListBuffer
+import edu.thu.ss.spec.meta.ConditionalColumn
+import scala.collection.mutable.Buffer
+import org.apache.spark.sql.catalyst.checker.ConditionalLabel
+import org.apache.spark.sql.catalyst.checker.ConditionalLabel
 
 abstract class LogicalPlan extends QueryPlan[LogicalPlan] {
-	self: Product =>
+  self: Product =>
 
-	val projections: Map[Attribute, Label] = new HashMap;
-	val conditions: Set[Label] = new HashSet;
+  val projections: Map[Attribute, Label] = new HashMap;
+  val conditions: Set[Label] = new HashSet;
 
-	def calculateLabels(): (Map[Attribute, Label], Set[Label]) = { (projections, conditions) };
+  def calculateLabels(): (Map[Attribute, Label], Set[Label]) = { (projections, conditions) };
 
-	def checkMeta(columns: Seq[String]): Unit = {
-		throw new UnsupportedOperationException();
-	}
+  def checkMeta(columns: Seq[String]): Unit = {
+    throw new UnsupportedOperationException();
+  }
 
-	def childLabel(attr: Attribute): Label = {
-		children.map(_.projections.getOrElse(attr, null)).find(_ != null).getOrElse(null);
-	}
+  def childLabel(attr: Attribute): Label = {
+    children.map(_.projections.getOrElse(attr, null)).find(_ != null).getOrElse(null);
+  }
 
-	/**
-	 *
-	 * Estimates of various statistics.  The default estimation logic simply lazily multiplies the
-	 * corresponding statistic produced by the children.  To override this behavior, override
-	 * `statistics` and assign it an overriden version of `Statistics`.
-	 *
-	 * '''NOTE''': concrete and/or overriden versions of statistics fields should pay attention to the
-	 * performance of the implementations.  The reason is that estimations might get triggered in
-	 * performance-critical processes, such as query plan planning.
-	 *
-	 * @param sizeInBytes Physical size in bytes. For leaf operators this defaults to 1, otherwise it
-	 *                    defaults to the product of children's `sizeInBytes`.
-	 */
-	case class Statistics(
-		sizeInBytes: BigInt)
-	lazy val statistics: Statistics = {
-		if (children.size == 0) {
-			throw new UnsupportedOperationException(s"LeafNode $nodeName must implement statistics.")
-		}
+  /**
+   *
+   * Estimates of various statistics.  The default estimation logic simply lazily multiplies the
+   * corresponding statistic produced by the children.  To override this behavior, override
+   * `statistics` and assign it an overriden version of `Statistics`.
+   *
+   * '''NOTE''': concrete and/or overriden versions of statistics fields should pay attention to the
+   * performance of the implementations.  The reason is that estimations might get triggered in
+   * performance-critical processes, such as query plan planning.
+   *
+   * @param sizeInBytes Physical size in bytes. For leaf operators this defaults to 1, otherwise it
+   *                    defaults to the product of children's `sizeInBytes`.
+   */
+  case class Statistics(
+    sizeInBytes: BigInt)
+  lazy val statistics: Statistics = {
+    if (children.size == 0) {
+      throw new UnsupportedOperationException(s"LeafNode $nodeName must implement statistics.")
+    }
 
-		Statistics(
-			sizeInBytes = children.map(_.statistics).map(_.sizeInBytes).product)
-	}
+    Statistics(
+      sizeInBytes = children.map(_.statistics).map(_.sizeInBytes).product)
+  }
 
-	/**
-	 * Returns the set of attributes that this node takes as
-	 * input from its children.
-	 */
-	lazy val inputSet: AttributeSet = AttributeSet(children.flatMap(_.output))
+  /**
+   * Returns the set of attributes that this node takes as
+   * input from its children.
+   */
+  lazy val inputSet: AttributeSet = AttributeSet(children.flatMap(_.output))
 
-	/**
-	 * Returns true if this expression and all its children have been resolved to a specific schema
-	 * and false if it is still contains any unresolved placeholders. Implementations of LogicalPlan
-	 * can override this (e.g.
-	 * [[org.apache.spark.sql.catalyst.analysis.UnresolvedRelation UnresolvedRelation]]
-	 * should return `false`).
-	 */
-	lazy val resolved: Boolean = !expressions.exists(!_.resolved) && childrenResolved
+  /**
+   * Returns true if this expression and all its children have been resolved to a specific schema
+   * and false if it is still contains any unresolved placeholders. Implementations of LogicalPlan
+   * can override this (e.g.
+   * [[org.apache.spark.sql.catalyst.analysis.UnresolvedRelation UnresolvedRelation]]
+   * should return `false`).
+   */
+  lazy val resolved: Boolean = !expressions.exists(!_.resolved) && childrenResolved
 
-	/**
-	 * Returns true if all its children of this query plan have been resolved.
-	 */
-	def childrenResolved: Boolean = !children.exists(!_.resolved)
+  /**
+   * Returns true if all its children of this query plan have been resolved.
+   */
+  def childrenResolved: Boolean = !children.exists(!_.resolved)
 
-	/**
-	 * Optionally resolves the given string to a [[NamedExpression]] using the input from all child
-	 * nodes of this LogicalPlan. The attribute is expressed as
-	 * as string in the following form: `[scope].AttributeName.[nested].[fields]...`.
-	 */
-	def resolveChildren(name: String): Option[NamedExpression] =
-		resolve(name, children.flatMap(_.output))
+  /**
+   * Optionally resolves the given string to a [[NamedExpression]] using the input from all child
+   * nodes of this LogicalPlan. The attribute is expressed as
+   * as string in the following form: `[scope].AttributeName.[nested].[fields]...`.
+   */
+  def resolveChildren(name: String): Option[NamedExpression] =
+    resolve(name, children.flatMap(_.output))
 
-	/**
-	 * Optionally resolves the given string to a [[NamedExpression]] based on the output of this
-	 * LogicalPlan. The attribute is expressed as string in the following form:
-	 * `[scope].AttributeName.[nested].[fields]...`.
-	 */
-	def resolve(name: String): Option[NamedExpression] =
-		resolve(name, output)
+  /**
+   * Optionally resolves the given string to a [[NamedExpression]] based on the output of this
+   * LogicalPlan. The attribute is expressed as string in the following form:
+   * `[scope].AttributeName.[nested].[fields]...`.
+   */
+  def resolve(name: String): Option[NamedExpression] =
+    resolve(name, output)
 
-	/** Performs attribute resolution given a name and a sequence of possible attributes. */
-	protected def resolve(name: String, input: Seq[Attribute]): Option[NamedExpression] = {
-		val parts = name.split("\\.")
-		// Collect all attributes that are output by this nodes children where either the first part
-		// matches the name or where the first part matches the scope and the second part matches the
-		// name.  Return these matches along with any remaining parts, which represent dotted access to
-		// struct fields.
-		val options = input.flatMap { option =>
-			// If the first part of the desired name matches a qualifier for this possible match, drop it.
-			val remainingParts =
-				if (option.qualifiers.contains(parts.head) && parts.size > 1) parts.drop(1) else parts
-			if (option.name == remainingParts.head) (option, remainingParts.tail.toList) :: Nil else Nil
-		}
+  /** Performs attribute resolution given a name and a sequence of possible attributes. */
+  protected def resolve(name: String, input: Seq[Attribute]): Option[NamedExpression] = {
+    val parts = name.split("\\.")
+    // Collect all attributes that are output by this nodes children where either the first part
+    // matches the name or where the first part matches the scope and the second part matches the
+    // name.  Return these matches along with any remaining parts, which represent dotted access to
+    // struct fields.
+    val options = input.flatMap { option =>
+      // If the first part of the desired name matches a qualifier for this possible match, drop it.
+      val remainingParts =
+        if (option.qualifiers.contains(parts.head) && parts.size > 1) parts.drop(1) else parts
+      if (option.name == remainingParts.head) (option, remainingParts.tail.toList) :: Nil else Nil
+    }
 
-		options.distinct match {
-			case Seq((a, Nil)) => Some(a) // One match, no nested fields, use it.
-			// One match, but we also need to extract the requested nested field.
-			case Seq((a, nestedFields)) =>
-				a.dataType match {
-					case StructType(fields) =>
-						Some(Alias(nestedFields.foldLeft(a: Expression)(GetField), nestedFields.last)())
-					case _ => None // Don't know how to resolve these field references
-				}
-			case Seq() => None // No matches.
-			case ambiguousReferences =>
-				throw new TreeNodeException(
-					this, s"Ambiguous references to $name: ${ambiguousReferences.mkString(",")}")
-		}
-	}
+    options.distinct match {
+      case Seq((a, Nil)) => Some(a) // One match, no nested fields, use it.
+      // One match, but we also need to extract the requested nested field.
+      case Seq((a, nestedFields)) =>
+        a.dataType match {
+          case StructType(fields) =>
+            Some(Alias(nestedFields.foldLeft(a: Expression)(GetField), nestedFields.last)())
+          case _ => None // Don't know how to resolve these field references
+        }
+      case Seq() => None // No matches.
+      case ambiguousReferences =>
+        throw new TreeNodeException(
+          this, s"Ambiguous references to $name: ${ambiguousReferences.mkString(",")}")
+    }
+  }
 }
 
 /**
  * A logical plan node with no children.
  */
 abstract class LeafNode extends LogicalPlan with trees.LeafNode[LogicalPlan] {
-	self: Product =>
+  self: Product =>
 }
 
 /**
  * A logical plan node with single child.
  */
 abstract class UnaryNode extends LogicalPlan with trees.UnaryNode[LogicalPlan] {
-	self: Product =>
+  self: Product =>
 }
 
 /**
  * A logical plan node with a left and right child.
  */
 abstract class BinaryNode extends LogicalPlan with trees.BinaryNode[LogicalPlan] {
-	self: Product =>
+  self: Product =>
 }

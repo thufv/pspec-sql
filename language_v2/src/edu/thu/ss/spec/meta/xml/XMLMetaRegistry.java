@@ -6,6 +6,7 @@ import java.util.Map;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
+import edu.thu.ss.spec.lang.pojo.UserCategoryContainer;
 import edu.thu.ss.spec.meta.Column;
 import edu.thu.ss.spec.meta.ConditionalColumn;
 import edu.thu.ss.spec.meta.Database;
@@ -16,6 +17,7 @@ import edu.thu.ss.spec.meta.Table;
 public class XMLMetaRegistry implements MetaRegistry {
 
 	private Map<String, Database> databases = new HashMap<>();
+	private UserCategoryContainer users = null;
 
 	public void addDatabase(Database database) {
 		this.databases.put(database.getName(), database);
@@ -26,9 +28,13 @@ public class XMLMetaRegistry implements MetaRegistry {
 		return databases;
 	}
 
+	public void setUsers(UserCategoryContainer users) {
+		this.users = users;
+	}
+
 	@Override
 	public UserCategory currentUser() {
-		return null;
+		return users.get("app");
 	}
 
 	@Override

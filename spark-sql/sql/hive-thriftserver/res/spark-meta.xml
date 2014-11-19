@@ -82,12 +82,12 @@
 				<join table="store_sales">
 					<column name="d_date_sk" target="ss_sold_date_sk" />
 				</join>
-				<column name="d_date" data-category="sa"></column>
-				<column name="d_year" data-category="sa"></column>
-				<column name="d_dow" data-category="sa"></column>
-				<column name="d_moy" data-category="sa"></column>
-				<column name="d_dom" data-category="sa"></column>
-				<column name="d_qoy" data-category="sa"></column>
+				<column name="d_date" data-category="sale_date"></column>
+				<column name="d_year" data-category="sale_date"></column>
+				<column name="d_dow" data-category="sale_date"></column>
+				<column name="d_moy" data-category="sale_date"></column>
+				<column name="d_dom" data-category="sale_date"></column>
+				<column name="d_qoy" data-category="sale_date"></column>
 			</condition>
 		</table>
 

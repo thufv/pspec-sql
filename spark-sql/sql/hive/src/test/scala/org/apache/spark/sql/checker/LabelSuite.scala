@@ -26,14 +26,15 @@ import org.apache.spark.SparkConf
 import org.apache.spark.sql.catalyst.checker.LabelPropagator
 
 class LabelSuite extends FunSuite with BeforeAndAfterAll {
-	val conf = new SparkConf().setAppName("test").setMaster("local");
-	val context = new HiveContext(new SparkContext(conf));
+  val conf = new SparkConf().setAppName("test").setMaster("local");
+  val context = new HiveContext(new SparkContext(conf));
 
-	test("parse analyze commands") {
-		var plan = context.sql("select i_item_id from item").queryExecution.optimizedPlan;
-		LabelPropagator(plan);
+  test("parse analyze commands") {
+    var plan = context.sql("select i_item_id from item").queryExecution.optimizedPlan;
+    var prop = new LabelPropagator;
+    prop(plan);
 
-		plan = context.sql(""" 
+    plan = context.sql(""" 
 		  SELECT i_item_id,
          AVG(ss_quantity) agg1,
          AVG(ss_list_price) agg2,
@@ -52,9 +53,10 @@ class LabelSuite extends FunSuite with BeforeAndAfterAll {
          AND d_year = 2001
 				GROUP BY i_item_id
 		""").queryExecution.optimizedPlan;
-		LabelPropagator(plan);
+    prop = new LabelPropagator();
+    prop(plan);
 
-		plan = context.sql("""
+    plan = context.sql("""
 				SELECT
         i_brand_id brand_id
         ,i_brand brand
@@ -121,7 +123,8 @@ class LabelSuite extends FunSuite with BeforeAndAfterAll {
         ext_price DESC
         ,i_brand_id
 		""").queryExecution.optimizedPlan;
-		LabelPropagator(plan);
-	}
+    prop = new LabelPropagator();
+    prop(plan);
+  }
 
 }

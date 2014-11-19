@@ -394,8 +394,38 @@ GROUP BY i_brand,
          t_minute
 ORDER BY ext_price DESC, i_brand_id;
 
-
 SELECT c_first_name, c_last_name, ca_country
   FROM customer JOIN customer_address ON c_current_addr_sk = ca_address_sk
  WHERE c_birth_year > 1990
+ 
+select d_date from date_dim JOIN customer ON d_date_sk = c_first_sales_date_sk;
 
+SELECT d1.d_date, d2.d_date
+  FROM customer
+       JOIN date_dim d1 ON c_first_shipto_date_sk = d1.d_date_sk
+       JOIN date_dim d2 ON c_first_sales_date_sk = d2.d_date_sk
+
+SELECT i_brand 
+    FROM store_sales 
+        JOIN store_returns ON ss_item_sk = sr_item_sk
+        JOIN item on sr_item_sk = i_item_sk
+
+SELECT i_brand
+    FROM (select i_brand from item join store_sales on i_item_sk = ss_item_sk UNION all
+        select i_brand from item join store_returns on i_item_sk = sr_item_sk) x
+        
+SELECT d2.d_date
+    FROM customer
+       JOIN date_dim d1 ON c_first_shipto_date_sk = d1.d_date_sk
+       JOIN date_dim d2
+       
+SELECT case when c_first_shipto_date_sk = d_date_sk then d_date end 
+FROM date_dim JOIN customer
+
+SELECT d_date
+FROM date_dim JOIN store_sales JOIN store_returns
+WHERE case when 1>0 then ss_sold_date_sk else sr_returned_date_sk end = d_date_sk
+
+SELECT i_brand
+FROM store_sales JOIN store_returns JOIN item
+WHERE case when 1>0 then ss_item_sk else sr_item_sk end sk = i_item_sk
