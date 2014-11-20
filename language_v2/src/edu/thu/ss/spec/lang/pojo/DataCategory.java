@@ -11,7 +11,7 @@ import org.w3c.dom.NodeList;
 import edu.thu.ss.spec.lang.parser.ParserConstant;
 import edu.thu.ss.spec.util.SetUtil;
 
-public class DataCategory extends HierarchicalObject<DataCategory> implements Comparable<DataCategory> {
+public class DataCategory extends BaseCategory<DataCategory> {
 
 	protected Set<DesensitizeOperation> ops = new HashSet<>();
 	protected Map<String, DesensitizeOperation> opIndex = new HashMap<>();
@@ -22,11 +22,6 @@ public class DataCategory extends HierarchicalObject<DataCategory> implements Co
 
 	public DesensitizeOperation getOperation(String op) {
 		return opIndex.get(op);
-	}
-
-	@Override
-	public int compareTo(DataCategory o) {
-		return Integer.compare(this.label, o.label);
 	}
 
 	@Override
@@ -73,7 +68,7 @@ public class DataCategory extends HierarchicalObject<DataCategory> implements Co
 	}
 
 	public String toString() {
-		return super.toString();
+		return containerId + ":" + id;
 	}
 
 	public String toFullString() {

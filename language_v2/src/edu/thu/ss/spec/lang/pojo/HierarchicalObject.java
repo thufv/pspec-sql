@@ -18,8 +18,6 @@ public class HierarchicalObject<T extends HierarchicalObject<T>> extends XMLDesc
 
 	protected Set<T> decesdants;
 
-	protected int label;
-
 	public T getParent() {
 		return parent;
 	}
@@ -43,14 +41,6 @@ public class HierarchicalObject<T extends HierarchicalObject<T>> extends XMLDesc
 
 	public String getParentId() {
 		return parentId;
-	}
-
-	public int getLabel() {
-		return label;
-	}
-
-	public void setLabel(int label) {
-		this.label = label;
 	}
 
 	@SuppressWarnings("unchecked")

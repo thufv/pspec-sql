@@ -13,6 +13,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import edu.thu.ss.spec.global.MetaManager;
+import edu.thu.ss.spec.global.PolicyManager;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.Policy;
@@ -34,10 +36,6 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 	private Map<String, DesensitizeOperation> udfs = null;
 	private Set<JoinCondition> joinConditions = null;
 
-	public XMLMetaRegistryParser(Policy policy) {
-		this.policy = policy;
-	}
-
 	public MetaRegistry parse(String path) throws ParsingException {
 		init();
 		Document policyDoc = null;
@@ -52,7 +50,10 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 			Node rootNode = policyDoc.getElementsByTagName(Ele_Root).item(0);
 
 			String policyPath = XMLUtil.getAttrValue(rootNode, Attr_Policy);
-
+			policy = PolicyManager.getPolicy(XMLUtil.toUri(policyPath));
+			if (policy == null) {
+				throw new ParsingException("Policy: " + policyPath + " has not been loaded yet.");
+			}
 			NodeList dbList = policyDoc.getElementsByTagName(Ele_Database);
 			for (int i = 0; i < dbList.getLength(); i++) {
 				Node node = dbList.item(i);
@@ -64,11 +65,12 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 		}
 		if (error) {
 			throw new ParsingException("Error occured when parsing meta file at " + path + ", see error messages above.");
-		} else {
-			registry.setUsers(policy.getUsers());
-			return new MetaRegistryProxy(registry);
 		}
 
+		registry.setPolicy(policy);
+		MetaRegistry result = new MetaRegistryProxy(registry);
+		MetaManager.add(result);
+		return result;
 	}
 
 	private void init() {
@@ -163,7 +165,7 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 		column.setName(columnName);
 
 		String dataCategoryId = XMLUtil.getLowerAttrValue(columnNode, Attr_Data_Category);
-		DataCategory dataCategory = policy.getDatas().get(dataCategoryId);
+		DataCategory dataCategory = policy.getDataCategory(dataCategoryId);
 		if (dataCategory == null) {
 			logger.error("Cannot locate data category: {}.", dataCategoryId);
 			error = true;

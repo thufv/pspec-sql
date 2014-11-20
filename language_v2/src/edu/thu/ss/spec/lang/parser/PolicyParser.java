@@ -1,5 +1,6 @@
 package edu.thu.ss.spec.lang.parser;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import edu.thu.ss.spec.global.PolicyManager;
 import edu.thu.ss.spec.lang.analyzer.ConsistencyAnalyzer;
 import edu.thu.ss.spec.lang.analyzer.PolicyAnalyzer;
 import edu.thu.ss.spec.lang.analyzer.PolicyExpander;
@@ -42,17 +44,20 @@ public class PolicyParser implements ParserConstant {
 		}
 	}
 
-	protected void cleanup() {
-	}
-
-	public Policy parse(String path) throws ParsingException {
+	public Policy parse(String path) throws Exception {
 		return parse(path, true);
 	}
 
-	public Policy parse(String path, boolean consistency) throws ParsingException {
-
+	public Policy parse(String path, boolean consistency) throws Exception {
+		URI uri = XMLUtil.toUri(path);
+		Policy policy = PolicyManager.getPolicy(uri);
+		if (policy != null) {
+			logger.error("Policy: {} has already been parsed.", uri);
+			return policy;
+		}
 		init(consistency);
-		Policy policy = new Policy();
+		policy = new Policy();
+		policy.setPath(uri);
 		Document policyDoc = null;
 		try {
 			// load document
@@ -63,7 +68,6 @@ public class PolicyParser implements ParserConstant {
 		try {
 			// parse document
 			Node policyNode = policyDoc.getElementsByTagName(ParserConstant.Ele_Policy).item(0);
-			parseAttribute(policyNode, policy);
 			NodeList list = policyNode.getChildNodes();
 			for (int i = 0; i < list.getLength(); i++) {
 				Node node = list.item(i);
@@ -78,7 +82,6 @@ public class PolicyParser implements ParserConstant {
 					parseRules(node, policy);
 				}
 			}
-
 			analyzePolicy(policy);
 		} catch (ParsingException e) {
 			throw e;
@@ -88,11 +91,11 @@ public class PolicyParser implements ParserConstant {
 			cleanup();
 		}
 
+		PolicyManager.addPolicy(policy);
 		return policy;
 	}
 
-	private void parseAttribute(Node policyNode, Policy policy) {
-
+	protected void cleanup() {
 	}
 
 	private void parseRules(Node rulesNode, Policy policy) {
@@ -129,8 +132,11 @@ public class PolicyParser implements ParserConstant {
 		policy.setDataRef(dataRef);
 		VocabularyParser vocabParser = new VocabularyParser();
 		XMLVocabulary vocabulary = vocabParser.parse(location, userRef, dataRef);
-		policy.setUsers(vocabulary.getUserCategories(userRef));
-		policy.setDatas(vocabulary.getDataCategories(dataRef));
+		policy.setUserContainer(vocabulary.getUserContainer(userRef));
+		policy.setDataContainer(vocabulary.getDataContainer(dataRef));
+
+		policy.setUserContainers(vocabulary.getUserContainers());
+		policy.setDataContainers(vocabulary.getDataContainers());
 
 	}
 

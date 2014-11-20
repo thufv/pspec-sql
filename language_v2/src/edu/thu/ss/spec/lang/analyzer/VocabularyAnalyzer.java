@@ -1,28 +1,30 @@
 package edu.thu.ss.spec.lang.analyzer;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import edu.thu.ss.spec.lang.pojo.DataCategory;
-import edu.thu.ss.spec.lang.pojo.DataCategoryContainer;
+import edu.thu.ss.spec.lang.pojo.DataContainer;
 import edu.thu.ss.spec.lang.pojo.HierarchicalObject;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
-import edu.thu.ss.spec.lang.pojo.UserCategoryContainer;
-import edu.thu.ss.spec.util.CategoryManager;
+import edu.thu.ss.spec.lang.pojo.UserContainer;
+import edu.thu.ss.spec.lang.xml.XMLCategoryContainer;
 
 public class VocabularyAnalyzer {
 
-	public void analyze(UserCategoryContainer userContainer, DataCategoryContainer dataContainer) {
-		userContainer.accept(new MaterializeVisitor<UserCategory>());
-		userContainer.accept(new LabelVisitor<UserCategory>());
-		userContainer.buildLabels();
+	public void analyze(Collection<UserContainer> users, Collection<DataContainer> datas) {
+		analyze(users, new MaterializeVisitor<UserCategory>());
 
-		dataContainer.accept(new MaterializeVisitor<DataCategory>());
-		dataContainer.accept(new LabelVisitor<DataCategory>());
-		dataContainer.accept(new PropagationVisitor());
-		dataContainer.buildLabels();
+		analyze(datas, new MaterializeVisitor<DataCategory>());
+		analyze(datas, new PropagationVisitor());
+	}
 
-		CategoryManager.init(userContainer, dataContainer);
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private <T extends XMLCategoryContainer> void analyze(Collection<T> containers, CategoryVisitor visitor) {
+		for (XMLCategoryContainer container : containers) {
+			container.accept(visitor);
+		}
 	}
 
 	private class PropagationVisitor implements CategoryVisitor<DataCategory> {
@@ -53,25 +55,6 @@ public class VocabularyAnalyzer {
 				}
 			}
 		}
-	}
-
-	private class LabelVisitor<T extends HierarchicalObject<T>> implements CategoryVisitor<T> {
-		private int used = 0;
-
-		@Override
-		public void visit(T category) {
-			category.setLabel(used++);
-			if (category.getChildren() != null) {
-				for (T child : category.getChildren()) {
-					this.visit(child);
-				}
-			}
-		}
-
-	}
-
-	public void label() {
-
 	}
 
 }

@@ -8,7 +8,7 @@ import edu.thu.ss.spec.lang.pojo.Action;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.util.XMLUtil;
 
-public class XMLDataCategoryRef extends XMLCategoryRef<DataCategory> implements Comparable<XMLDataCategoryRef> {
+public class XMLDataCategoryRef extends XMLCategoryRef<DataCategory> {
 	protected Action action = Action.all;
 
 	public void setData(DataCategory data) {
@@ -21,15 +21,6 @@ public class XMLDataCategoryRef extends XMLCategoryRef<DataCategory> implements 
 
 	public Action getAction() {
 		return action;
-	}
-
-	public int getLabel() {
-		return category.getLabel();
-	}
-
-	@Override
-	public int compareTo(XMLDataCategoryRef o) {
-		return Integer.compare(getLabel(), o.getLabel());
 	}
 
 	@Override

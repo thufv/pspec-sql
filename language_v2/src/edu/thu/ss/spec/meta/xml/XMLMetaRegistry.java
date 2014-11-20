@@ -1,12 +1,14 @@
 package edu.thu.ss.spec.meta.xml;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
+import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
-import edu.thu.ss.spec.lang.pojo.UserCategoryContainer;
 import edu.thu.ss.spec.meta.Column;
 import edu.thu.ss.spec.meta.ConditionalColumn;
 import edu.thu.ss.spec.meta.Database;
@@ -17,7 +19,39 @@ import edu.thu.ss.spec.meta.Table;
 public class XMLMetaRegistry implements MetaRegistry {
 
 	private Map<String, Database> databases = new HashMap<>();
-	private UserCategoryContainer users = null;
+	private Policy policy = null;
+	private Map<String, Set<String>> scope = null;
+
+	public void setPolicy(Policy policy) {
+		this.policy = policy;
+	}
+
+	@Override
+	public boolean applicable(String databaseName, String tableName) {
+		Table table = lookupTable(databaseName, tableName);
+		return table != null;
+	}
+
+	@Override
+	public Map<String, Set<String>> getScope() {
+		if (scope == null) {
+			scope = new HashMap<>();
+			for (Database db : databases.values()) {
+				Set<String> set = scope.get(db.getName());
+				if (set == null) {
+					set = new HashSet<>();
+					scope.put(db.getName(), set);
+				}
+				set.addAll(db.getTables().keySet());
+			}
+		}
+		return scope;
+	}
+
+	@Override
+	public Policy getPolicy() {
+		return policy;
+	}
 
 	public void addDatabase(Database database) {
 		this.databases.put(database.getName(), database);
@@ -28,13 +62,9 @@ public class XMLMetaRegistry implements MetaRegistry {
 		return databases;
 	}
 
-	public void setUsers(UserCategoryContainer users) {
-		this.users = users;
-	}
-
 	@Override
 	public UserCategory currentUser() {
-		return users.get("app");
+		return policy.getUserContainer().get("app");
 	}
 
 	@Override

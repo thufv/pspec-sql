@@ -1,6 +1,8 @@
 package edu.thu.ss.spec.lang.pojo;
 
+import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 import edu.thu.ss.spec.lang.xml.XMLRule;
 
@@ -9,16 +11,30 @@ public class Policy {
 
 	protected String vocabularyLocation;
 
-	protected String userRef;
-	protected String dataRef;
+	protected String userContainerRef;
+	protected String dataContainerRef;
 
-	protected UserCategoryContainer users;
+	protected UserContainer userContainer;
 
-	protected DataCategoryContainer datas;
+	protected DataContainer dataContainer;
+
+	protected Map<String, UserContainer> userContainers;
+
+	protected Map<String, DataContainer> dataContainers;
 
 	protected List<XMLRule> rules;
 
 	protected List<ExpandedRule> expandedRules;
+
+	protected URI path;
+
+	public void setPath(URI path) {
+		this.path = path;
+	}
+
+	public URI getPath() {
+		return path;
+	}
 
 	public void setExpandedRules(List<ExpandedRule> expandedRules) {
 		this.expandedRules = expandedRules;
@@ -37,19 +53,19 @@ public class Policy {
 	}
 
 	public String getUserRef() {
-		return userRef;
+		return userContainerRef;
 	}
 
 	public void setUserRef(String userRef) {
-		this.userRef = userRef;
+		this.userContainerRef = userRef;
 	}
 
 	public String getDataRef() {
-		return dataRef;
+		return dataContainerRef;
 	}
 
 	public void setDataRef(String dataRef) {
-		this.dataRef = dataRef;
+		this.dataContainerRef = dataRef;
 	}
 
 	public Info getInfo() {
@@ -68,20 +84,28 @@ public class Policy {
 		this.rules = rules;
 	}
 
-	public UserCategoryContainer getUsers() {
-		return users;
+	public UserContainer getUserContainer() {
+		return userContainer;
 	}
 
-	public void setUsers(UserCategoryContainer users) {
-		this.users = users;
+	public DataContainer getDataContainer() {
+		return dataContainer;
 	}
 
-	public DataCategoryContainer getDatas() {
-		return datas;
+	public void setUserContainer(UserContainer userContainer) {
+		this.userContainer = userContainer;
 	}
 
-	public void setDatas(DataCategoryContainer datas) {
-		this.datas = datas;
+	public void setDataContainer(DataContainer dataContainer) {
+		this.dataContainer = dataContainer;
+	}
+
+	public void setDataContainers(Map<String, DataContainer> dataContainers) {
+		this.dataContainers = dataContainers;
+	}
+
+	public void setUserContainers(Map<String, UserContainer> userContainers) {
+		this.userContainers = userContainers;
 	}
 
 	@Override
@@ -93,15 +117,15 @@ public class Policy {
 		sb.append("\n");
 
 		sb.append("User Categories: ");
-		sb.append(userRef);
+		sb.append(userContainerRef);
 		sb.append("\n");
-		sb.append(users.toString());
+		sb.append(userContainer.toString());
 		sb.append("\n");
 
 		sb.append("Data Categories: ");
-		sb.append(dataRef);
+		sb.append(dataContainerRef);
 		sb.append("\n");
-		sb.append(datas.toString());
+		sb.append(dataContainer.toString());
 		sb.append("\n");
 
 		sb.append("Expanded Rules:\n");
@@ -112,5 +136,9 @@ public class Policy {
 
 		return sb.toString();
 
+	}
+
+	public DataCategory getDataCategory(String id) {
+		return dataContainer.get(id);
 	}
 }

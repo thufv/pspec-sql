@@ -403,7 +403,7 @@ select d_date from date_dim JOIN customer ON d_date_sk = c_first_sales_date_sk;
 SELECT d1.d_date, d2.d_date
   FROM customer
        JOIN date_dim d1 ON c_first_shipto_date_sk = d1.d_date_sk
-       JOIN date_dim d2 ON c_first_sales_date_sk = d2.d_date_sk
+       JOIN date_dim d2 ON d1.d_date_sk = d2.d_date_sk
 
 SELECT i_brand 
     FROM store_sales 

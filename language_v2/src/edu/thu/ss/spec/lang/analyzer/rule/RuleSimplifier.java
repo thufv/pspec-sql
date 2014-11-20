@@ -7,8 +7,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.thu.ss.spec.lang.pojo.DataCategoryContainer;
-import edu.thu.ss.spec.lang.pojo.UserCategoryContainer;
+import edu.thu.ss.spec.lang.pojo.DataContainer;
+import edu.thu.ss.spec.lang.pojo.UserContainer;
 import edu.thu.ss.spec.lang.xml.XMLDataAssociation;
 import edu.thu.ss.spec.lang.xml.XMLDataCategoryRef;
 import edu.thu.ss.spec.lang.xml.XMLRestriction;
@@ -20,7 +20,7 @@ public class RuleSimplifier extends BaseRuleAnalyzer {
 	private static Logger logger = LoggerFactory.getLogger(RuleSimplifier.class);
 
 	@Override
-	protected boolean analyzeRule(XMLRule rule, UserCategoryContainer users, DataCategoryContainer datas) {
+	protected boolean analyzeRule(XMLRule rule, UserContainer users, DataContainer datas) {
 		/**
 		 * simplification of users/datas in a rule is no longer needed, since
 		 * all users/datas are expanded into a single set.

@@ -10,17 +10,18 @@ import org.w3c.dom.Node;
 
 import edu.thu.ss.spec.lang.analyzer.CategoryVisitor;
 import edu.thu.ss.spec.lang.parser.ParserConstant;
-import edu.thu.ss.spec.lang.pojo.HierarchicalObject;
+import edu.thu.ss.spec.lang.pojo.BaseCategory;
 import edu.thu.ss.spec.util.XMLUtil;
 
-public abstract class XMLCategoryContainer<T extends HierarchicalObject<T>> extends XMLDescribedObject {
+public abstract class XMLCategoryContainer<T extends BaseCategory<T>> extends XMLDescribedObject {
 
 	protected String base;
-
+	protected XMLCategoryContainer<T> baseContainer;
 	protected List<T> categories = new LinkedList<>();
 	protected Map<String, T> index = new HashMap<>();
 	protected List<T> root = new ArrayList<>();
-	protected Object[] labelIndex;
+	protected boolean resolved = false;
+	protected XMLCategoryContainer<T> childContainer;
 
 	public void accept(CategoryVisitor<T> visitor) {
 		for (T t : root) {
@@ -28,19 +29,38 @@ public abstract class XMLCategoryContainer<T extends HierarchicalObject<T>> exte
 		}
 	}
 
-	public void buildLabels() {
-		labelIndex = new Object[categories.size()];
-		for (T t : categories) {
-			labelIndex[t.getLabel()] = t;
-		}
+	public boolean isResolved() {
+		return resolved;
 	}
 
-	public T getCategory(int label) {
-		return (T) labelIndex[label];
+	public boolean isLeaf() {
+		return childContainer == null;
+	}
+
+	public void setResolved(boolean resolved) {
+		this.resolved = resolved;
+	}
+
+	public XMLCategoryContainer<T> getBaseContainer() {
+		return baseContainer;
+	}
+
+	public void setBaseContainer(XMLCategoryContainer<T> baseContainer) {
+		this.baseContainer = baseContainer;
+		baseContainer.childContainer = this;
 	}
 
 	public T get(String id) {
-		return index.get(id);
+		T t = index.get(id);
+		if (t != null) {
+			return t;
+		} else {
+			if (baseContainer != null) {
+				return baseContainer.get(id);
+			} else {
+				return null;
+			}
+		}
 	}
 
 	public void set(String id, T category) {
@@ -78,6 +98,9 @@ public abstract class XMLCategoryContainer<T extends HierarchicalObject<T>> exte
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
+		if (baseContainer != null) {
+			sb.append(baseContainer.toString());
+		}
 		for (T node : root) {
 			toString(node, sb);
 			sb.append("\n");

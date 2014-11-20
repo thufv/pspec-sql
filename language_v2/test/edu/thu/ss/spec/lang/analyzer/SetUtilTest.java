@@ -2,6 +2,9 @@ package edu.thu.ss.spec.lang.analyzer;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -15,7 +18,6 @@ import edu.thu.ss.spec.util.SetUtil.SetRelation;
 
 public class SetUtilTest {
 
-	@Test
 	public void testRelation() {
 		Set<Integer> set1 = new HashSet<>(Arrays.asList(1, 2, 3));
 		Set<Integer> set2 = new HashSet<>(Arrays.asList(1, 2));
@@ -27,7 +29,6 @@ public class SetUtilTest {
 		assertEquals(SetRelation.disjoint, SetUtil.relation(set2, set4));
 	}
 
-	@Test
 	public void testMergeList() {
 		List<Set<Integer>> list = new ArrayList<>();
 
@@ -51,6 +52,18 @@ public class SetUtilTest {
 		SetUtil.mergeOperations(list, new HashSet<>(Arrays.asList(2, 3)));
 		assertEquals(1, list.size());
 		assertEquals(new HashSet<>(Arrays.asList(2, 3)), list.get(0));
+	}
+
+	@Test
+	public void testUri() throws URISyntaxException {
+		String path = "res/meta.xsd";
+		File file = new File(path);
+		if(file.exists()){
+			path = file.getAbsolutePath();
+		}
+		URI uri = new URI(path).normalize();
+
+		System.out.println(uri);
 	}
 
 }

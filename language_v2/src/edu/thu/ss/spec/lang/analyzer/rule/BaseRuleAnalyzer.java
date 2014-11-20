@@ -1,9 +1,9 @@
 package edu.thu.ss.spec.lang.analyzer.rule;
 
 import edu.thu.ss.spec.lang.analyzer.BasePolicyAnalyzer;
-import edu.thu.ss.spec.lang.pojo.DataCategoryContainer;
+import edu.thu.ss.spec.lang.pojo.DataContainer;
 import edu.thu.ss.spec.lang.pojo.Policy;
-import edu.thu.ss.spec.lang.pojo.UserCategoryContainer;
+import edu.thu.ss.spec.lang.pojo.UserContainer;
 import edu.thu.ss.spec.lang.xml.XMLRule;
 
 public abstract class BaseRuleAnalyzer extends BasePolicyAnalyzer {
@@ -17,11 +17,11 @@ public abstract class BaseRuleAnalyzer extends BasePolicyAnalyzer {
 		for (XMLRule rule : policy.getRules()) {
 			this.currentRule = rule;
 			this.ruleId = rule.getId();
-			error = error || this.analyzeRule(rule, policy.getUsers(), policy.getDatas());
+			error = error || this.analyzeRule(rule, policy.getUserContainer(), policy.getDataContainer());
 		}
 		return error;
 	}
 
-	protected abstract boolean analyzeRule(XMLRule rule, UserCategoryContainer users, DataCategoryContainer datas);
+	protected abstract boolean analyzeRule(XMLRule rule, UserContainer users, DataContainer datas);
 
 }

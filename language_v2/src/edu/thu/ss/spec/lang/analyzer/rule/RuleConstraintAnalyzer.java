@@ -7,9 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.thu.ss.spec.lang.pojo.DataCategory;
-import edu.thu.ss.spec.lang.pojo.DataCategoryContainer;
+import edu.thu.ss.spec.lang.pojo.DataContainer;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
-import edu.thu.ss.spec.lang.pojo.UserCategoryContainer;
+import edu.thu.ss.spec.lang.pojo.UserContainer;
 import edu.thu.ss.spec.lang.xml.XMLDataAssociation;
 import edu.thu.ss.spec.lang.xml.XMLDataCategoryRef;
 import edu.thu.ss.spec.lang.xml.XMLDesensitization;
@@ -22,7 +22,7 @@ public class RuleConstraintAnalyzer extends BaseRuleAnalyzer {
 	private String ruleId;
 
 	@Override
-	public boolean analyzeRule(XMLRule rule, UserCategoryContainer users, DataCategoryContainer datas) {
+	public boolean analyzeRule(XMLRule rule, UserContainer users, DataContainer datas) {
 		if (rule.getDataRefs().size() == 0 && rule.getAssociations().size() == 0) {
 			logger.error("At least one data-category-ref or data-association should appear in rule: {}", rule.getId());
 			return true;

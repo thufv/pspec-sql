@@ -1,13 +1,14 @@
 package edu.thu.ss.spec.lang.xml;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.w3c.dom.Node;
 
-import edu.thu.ss.spec.lang.pojo.DataCategoryContainer;
+import edu.thu.ss.spec.lang.pojo.DataContainer;
 import edu.thu.ss.spec.lang.pojo.Info;
-import edu.thu.ss.spec.lang.pojo.UserCategoryContainer;
+import edu.thu.ss.spec.lang.pojo.UserContainer;
 
 public class XMLVocabulary {
 
@@ -15,11 +16,47 @@ public class XMLVocabulary {
 
 	protected String base;
 
-	protected Map<String, UserCategoryContainer> userContainers = new HashMap<>();
+	protected Map<String, UserContainer> userContainers = new HashMap<>();
 
-	protected Map<String, DataCategoryContainer> dataContainers = new HashMap<>();
+	protected Map<String, DataContainer> dataContainers = new HashMap<>();
 
 	protected Node rootNode;
+
+	protected URI path;
+
+	protected boolean resolved = false;
+
+	public URI getPath() {
+		return path;
+	}
+
+	public void setUserContainers(Map<String, UserContainer> userContainers) {
+		this.userContainers = userContainers;
+	}
+
+	public void setDataContainers(Map<String, DataContainer> dataContainers) {
+		this.dataContainers = dataContainers;
+	}
+
+	public void setPath(URI path) {
+		this.path = path;
+	}
+
+	public boolean isResolved() {
+		return resolved;
+	}
+
+	public Map<String, UserContainer> getUserContainers() {
+		return userContainers;
+	}
+
+	public Map<String, DataContainer> getDataContainers() {
+		return dataContainers;
+	}
+
+	public void setResolved(boolean resolved) {
+		this.resolved = resolved;
+	}
 
 	public void setRootNode(Node rootNode) {
 		this.rootNode = rootNode;
@@ -45,19 +82,11 @@ public class XMLVocabulary {
 		this.base = base;
 	}
 
-	public void addUserCategories(String id, UserCategoryContainer categories) {
-		userContainers.put(id, categories);
-	}
-
-	public void addDataCategories(String id, DataCategoryContainer categories) {
-		dataContainers.put(id, categories);
-	}
-
-	public UserCategoryContainer getUserCategories(String id) {
+	public UserContainer getUserContainer(String id) {
 		return userContainers.get(id);
 	}
 
-	public DataCategoryContainer getDataCategories(String id) {
+	public DataContainer getDataContainer(String id) {
 		return dataContainers.get(id);
 	}
 }

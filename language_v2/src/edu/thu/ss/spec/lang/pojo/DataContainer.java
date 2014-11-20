@@ -6,7 +6,7 @@ import org.w3c.dom.NodeList;
 import edu.thu.ss.spec.lang.parser.ParserConstant;
 import edu.thu.ss.spec.lang.xml.XMLCategoryContainer;
 
-public class UserCategoryContainer extends XMLCategoryContainer<UserCategory> {
+public class DataContainer extends XMLCategoryContainer<DataCategory> {
 
 	@Override
 	public void parse(Node categoryNode) {
@@ -16,12 +16,18 @@ public class UserCategoryContainer extends XMLCategoryContainer<UserCategory> {
 		for (int i = 0; i < list.getLength(); i++) {
 			Node node = list.item(i);
 			String name = node.getLocalName();
-			if (ParserConstant.Ele_Vocabulary_User_Category.equals(name)) {
-				UserCategory user = new UserCategory();
-				user.parse(node);
-				set(user.getId(), user);
+			if (ParserConstant.Ele_Vocabulary_Data_Category.equals(name)) {
+				DataCategory data = new DataCategory();
+				data.parse(node);
+				data.setContainerId(this.id);
+				set(data.getId(), data);
 			}
 		}
+	}
+
+	@Override
+	public DataContainer getBaseContainer() {
+		return (DataContainer) baseContainer;
 	}
 
 }

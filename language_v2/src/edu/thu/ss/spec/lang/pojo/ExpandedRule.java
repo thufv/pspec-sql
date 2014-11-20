@@ -1,7 +1,6 @@
 package edu.thu.ss.spec.lang.pojo;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Set;
 
 import edu.thu.ss.spec.lang.xml.XMLDataAssociation;
@@ -28,7 +27,7 @@ public class ExpandedRule {
 		this(rule, users);
 
 		this.datas = new DataActionPair[1];
-		this.datas[0] = new DataActionPair(datas, action, Collections.min(datas).getLabel());
+		this.datas[0] = new DataActionPair(datas, action);
 		this.restrictions = new Restriction[1];
 		this.restrictions[0] = rule.getRestriction().toRestriction(this.datas);
 		if (!this.restrictions[0].isForbid()) {
@@ -44,7 +43,7 @@ public class ExpandedRule {
 		this.datas = new DataActionPair[association.getDataRefs().size()];
 		int i = 0;
 		for (XMLDataCategoryRef ref : association.getDataRefs()) {
-			this.datas[i] = new DataActionPair(ref.getMaterialized(), ref.getAction(), ref.getLabel());
+			this.datas[i] = new DataActionPair(ref.getMaterialized(), ref.getAction());
 			i++;
 		}
 		Arrays.sort(this.datas);
