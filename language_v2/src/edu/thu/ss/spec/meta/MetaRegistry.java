@@ -1,9 +1,11 @@
 package edu.thu.ss.spec.meta;
 
 import java.util.Map;
+import java.util.Set;
 
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
+import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
 
 public interface MetaRegistry {
@@ -18,4 +20,9 @@ public interface MetaRegistry {
 
 	public Map<String, Database> getDatabases();
 
+	public Policy getPolicy();
+
+	public boolean applicable(String database, String table);
+
+	public Map<String, Set<String>> getScope();
 }

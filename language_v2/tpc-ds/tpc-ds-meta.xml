@@ -32,7 +32,6 @@
 					</desensitize-operation>
 				</column>
 			</condition>
-
 			<condition>
 				<join table="c_customer">
 					<column name="d_date_sk2" target="c_first_sales_date_sk1"></column>

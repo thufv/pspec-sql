@@ -79,15 +79,23 @@
 				<join table="customer">
 					<column name="d_date_sk" target="c_first_shipto_date_sk" />
 				</join>
-				<join table="store_sales">
-					<column name="d_date_sk" target="ss_sold_date_sk" />
-				</join>
 				<column name="d_date" data-category="sa"></column>
 				<column name="d_year" data-category="sa"></column>
 				<column name="d_dow" data-category="sa"></column>
 				<column name="d_moy" data-category="sa"></column>
 				<column name="d_dom" data-category="sa"></column>
 				<column name="d_qoy" data-category="sa"></column>
+			</condition>
+			<condition>
+				<join table="store_sales">
+					<column name="d_date_sk" target="ss_sold_date_sk" />
+				</join>
+				<column name="d_date" data-category="sale_date"></column>
+				<column name="d_year" data-category="sale_date"></column>
+				<column name="d_dow" data-category="sale_date"></column>
+				<column name="d_moy" data-category="sale_date"></column>
+				<column name="d_dom" data-category="sale_date"></column>
+				<column name="d_qoy" data-category="sale_date"></column>
 			</condition>
 		</table>
 
@@ -148,8 +156,6 @@
 				<column name="i_manufact" data-category="sale_item"></column>
 				<column name="i_product_name" data-category="sale_item"></column>
 			</condition>
-
-
 			<condition>
 				<join table="store_returns">
 					<column name="i_item_sk" target="sr_item_sk" />

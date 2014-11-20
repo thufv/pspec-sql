@@ -3,6 +3,7 @@ package edu.thu.ss.spec.util;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -94,6 +95,15 @@ public class XMLUtil {
 		} else {
 			return null;
 		}
+	}
+
+	public static URI toUri(String path) throws URISyntaxException {
+		File file = new File(path);
+		if (file.exists()) {
+			path = file.getAbsolutePath();
+		}
+		return new URI(path).normalize();
+
 	}
 
 }

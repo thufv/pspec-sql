@@ -256,7 +256,6 @@
 			<sequence>
 				<element name="policy-information" minOccurs="1" maxOccurs="1"
 					type="tns:infoType"></element>
-
 				<element name="vocabulary-ref">
 					<complexType>
 						<sequence>
@@ -286,14 +285,15 @@
 					</complexType>
 				</element>
 			</sequence>
-
 		</complexType>
-
 		<!-- Rule id's must be unique within a policy -->
 		<unique name="uniqueRuleId">
 			<selector xpath="tns:rules/tns:rule" />
 			<field xpath="@id" />
 		</unique>
+
+
+
 	</element>
 
 
