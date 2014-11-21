@@ -4,9 +4,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.spec.lang.parser.ParserConstant;
-import edu.thu.ss.spec.lang.xml.XMLCategoryContainer;
 
-public class UserContainer extends XMLCategoryContainer<UserCategory> {
+public class UserContainer extends CategoryContainer<UserCategory> {
 
 	@Override
 	public void parse(Node categoryNode) {

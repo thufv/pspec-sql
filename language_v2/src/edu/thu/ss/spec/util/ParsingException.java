@@ -11,6 +11,10 @@ public class ParsingException extends Exception {
 		super(msg);
 	}
 
+	public ParsingException(Throwable cause) {
+		super(cause);
+	}
+
 	public ParsingException(String msg, Throwable cause) {
 		super(msg, cause);
 	}

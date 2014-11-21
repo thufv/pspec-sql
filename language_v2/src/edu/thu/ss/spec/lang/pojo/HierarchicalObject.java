@@ -2,21 +2,17 @@ package edu.thu.ss.spec.lang.pojo;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.w3c.dom.Node;
 
 import edu.thu.ss.spec.lang.parser.ParserConstant;
-import edu.thu.ss.spec.lang.xml.XMLDescribedObject;
 import edu.thu.ss.spec.util.XMLUtil;
 
-public class HierarchicalObject<T extends HierarchicalObject<T>> extends XMLDescribedObject {
+public class HierarchicalObject<T extends HierarchicalObject<T>> extends DescribedObject {
 	protected String parentId;
 
 	protected T parent;
 	protected List<T> children = null;
-
-	protected Set<T> decesdants;
 
 	public T getParent() {
 		return parent;
@@ -24,14 +20,6 @@ public class HierarchicalObject<T extends HierarchicalObject<T>> extends XMLDesc
 
 	public List<T> getChildren() {
 		return children;
-	}
-
-	public Set<T> getDecesdants() {
-		return decesdants;
-	}
-
-	public void setDecesdants(Set<T> decesdants) {
-		this.decesdants = decesdants;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -64,7 +52,8 @@ public class HierarchicalObject<T extends HierarchicalObject<T>> extends XMLDesc
 		}
 		return false;
 	}
-
+	
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -91,6 +80,7 @@ public class HierarchicalObject<T extends HierarchicalObject<T>> extends XMLDesc
 		return true;
 	}
 
+	@Override
 	public String toString() {
 		return super.toString();
 	}

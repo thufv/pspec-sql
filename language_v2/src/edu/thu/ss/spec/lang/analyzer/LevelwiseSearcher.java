@@ -4,104 +4,6 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-class SearchKey {
-	int[] rules;
-
-	public SearchKey(int... rules) {
-		this.rules = rules;
-	}
-
-	public int getFirst() {
-		return rules[0];
-	}
-
-	public void setFirst(int value) {
-		rules[0] = value;
-	}
-
-	public int getLast() {
-		return rules[rules.length - 1];
-	}
-
-	public void setLast(int value) {
-		rules[rules.length - 1] = value;
-	}
-
-	@Override
-	public int hashCode() {
-		if (rules == null)
-			return 0;
-		int result = 1;
-		for (int element : rules) {
-			result = (element >= 0) ? (31 * result + element) : result;
-		}
-		return result;
-	}
-
-	public boolean prefixEquals(SearchKey other) {
-		if (this.rules.length != other.rules.length) {
-			return false;
-		}
-		for (int i = 0; i < rules.length - 1; i++) {
-			if (rules[i] != other.rules[i]) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	public SearchKey combine(SearchKey other) {
-		int[] newRules = Arrays.copyOf(rules, rules.length + 1);
-		newRules[newRules.length - 1] = other.rules[other.rules.length - 1];
-		return new SearchKey(newRules);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		SearchKey other = (SearchKey) obj;
-
-		int[] rule1, rule2;
-		if (this.rules.length == other.rules.length + 1) {
-			rule1 = this.rules;
-			rule2 = other.rules;
-		} else if (this.rules.length == other.rules.length - 1) {
-			rule1 = other.rules;
-			rule2 = this.rules;
-		} else {
-			return false;
-		}
-		//rule1 is longer.
-		boolean skip = false;
-		for (int i = 0; i < rule1.length; i++) {
-			if (rule1[i] < 0) {
-				skip = true;
-				continue;
-			}
-			if (rule1[i] != rule2[skip ? i - 1 : i]) {
-				return false;
-			}
-		}
-		return true;
-
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		for (int i : rules) {
-			sb.append(i);
-			sb.append(' ');
-		}
-		return sb.toString();
-	}
-}
-
 /**
  * Abstract class performing level-wise search on rules.
  * 
@@ -109,6 +11,104 @@ class SearchKey {
  * 
  */
 public abstract class LevelwiseSearcher {
+
+	public static class SearchKey {
+		public int[] rules;
+
+		public SearchKey(int... rules) {
+			this.rules = rules;
+		}
+
+		public int getFirst() {
+			return rules[0];
+		}
+
+		public void setFirst(int value) {
+			rules[0] = value;
+		}
+
+		public int getLast() {
+			return rules[rules.length - 1];
+		}
+
+		public void setLast(int value) {
+			rules[rules.length - 1] = value;
+		}
+
+		@Override
+		public int hashCode() {
+			if (rules == null)
+				return 0;
+			int result = 1;
+			for (int element : rules) {
+				result = (element >= 0) ? (31 * result + element) : result;
+			}
+			return result;
+		}
+
+		public boolean prefixEquals(SearchKey other) {
+			if (this.rules.length != other.rules.length) {
+				return false;
+			}
+			for (int i = 0; i < rules.length - 1; i++) {
+				if (rules[i] != other.rules[i]) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		public SearchKey combine(SearchKey other) {
+			int[] newRules = Arrays.copyOf(rules, rules.length + 1);
+			newRules[newRules.length - 1] = other.rules[other.rules.length - 1];
+			return new SearchKey(newRules);
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			SearchKey other = (SearchKey) obj;
+
+			int[] rule1, rule2;
+			if (this.rules.length == other.rules.length + 1) {
+				rule1 = this.rules;
+				rule2 = other.rules;
+			} else if (this.rules.length == other.rules.length - 1) {
+				rule1 = other.rules;
+				rule2 = this.rules;
+			} else {
+				return false;
+			}
+			//rule1 is longer.
+			boolean skip = false;
+			for (int i = 0; i < rule1.length; i++) {
+				if (rule1[i] < 0) {
+					skip = true;
+					continue;
+				}
+				if (rule1[i] != rule2[skip ? i - 1 : i]) {
+					return false;
+				}
+			}
+			return true;
+
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder sb = new StringBuilder();
+			for (int i : rules) {
+				sb.append(i);
+				sb.append(' ');
+			}
+			return sb.toString();
+		}
+	}
 
 	protected int maxLevel = Integer.MAX_VALUE;
 

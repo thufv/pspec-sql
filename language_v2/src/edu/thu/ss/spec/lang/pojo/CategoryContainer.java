@@ -1,8 +1,8 @@
-package edu.thu.ss.spec.lang.xml;
+package edu.thu.ss.spec.lang.pojo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,18 +10,17 @@ import org.w3c.dom.Node;
 
 import edu.thu.ss.spec.lang.analyzer.CategoryVisitor;
 import edu.thu.ss.spec.lang.parser.ParserConstant;
-import edu.thu.ss.spec.lang.pojo.BaseCategory;
 import edu.thu.ss.spec.util.XMLUtil;
 
-public abstract class XMLCategoryContainer<T extends BaseCategory<T>> extends XMLDescribedObject {
+public abstract class CategoryContainer<T extends Category<T>> extends DescribedObject {
 
-	protected String base;
-	protected XMLCategoryContainer<T> baseContainer;
-	protected List<T> categories = new LinkedList<>();
-	protected Map<String, T> index = new HashMap<>();
+	protected String baseId;
+	protected CategoryContainer<T> baseContainer;
+
+	protected Map<String, T> index = new LinkedHashMap<>();
 	protected List<T> root = new ArrayList<>();
 	protected boolean resolved = false;
-	protected XMLCategoryContainer<T> childContainer;
+	protected boolean leaf = true;
 
 	public void accept(CategoryVisitor<T> visitor) {
 		for (T t : root) {
@@ -34,20 +33,24 @@ public abstract class XMLCategoryContainer<T extends BaseCategory<T>> extends XM
 	}
 
 	public boolean isLeaf() {
-		return childContainer == null;
+		return leaf;
 	}
 
 	public void setResolved(boolean resolved) {
 		this.resolved = resolved;
 	}
 
-	public XMLCategoryContainer<T> getBaseContainer() {
+	public CategoryContainer<T> getBaseContainer() {
 		return baseContainer;
 	}
 
-	public void setBaseContainer(XMLCategoryContainer<T> baseContainer) {
+	public Collection<T> getCategories() {
+		return index.values();
+	}
+
+	public void setBaseContainer(CategoryContainer<T> baseContainer) {
 		this.baseContainer = baseContainer;
-		baseContainer.childContainer = this;
+		baseContainer.leaf = false;
 	}
 
 	public T get(String id) {
@@ -63,17 +66,16 @@ public abstract class XMLCategoryContainer<T extends BaseCategory<T>> extends XM
 		}
 	}
 
+	public boolean contains(String id) {
+		return get(id) != null;
+	}
+
 	public void set(String id, T category) {
 		index.put(id, category);
-		categories.add(category);
 	}
 
 	public String getBase() {
-		return base;
-	}
-
-	public List<T> getCategories() {
-		return categories;
+		return baseId;
 	}
 
 	public Map<String, T> getIndex() {
@@ -85,14 +87,14 @@ public abstract class XMLCategoryContainer<T extends BaseCategory<T>> extends XM
 	}
 
 	public void setBase(String base) {
-		this.base = base;
+		this.baseId = base;
 	}
 
 	@Override
 	public void parse(Node categoryNode) {
 		super.parse(categoryNode);
 
-		this.base = XMLUtil.getAttrValue(categoryNode, ParserConstant.Attr_Vocabulary_Base);
+		this.baseId = XMLUtil.getAttrValue(categoryNode, ParserConstant.Attr_Vocabulary_Base);
 	}
 
 	@Override

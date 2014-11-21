@@ -2,7 +2,7 @@
 <privacy-policy xmlns="http://www.example.org/privacy"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.example.org/privacy privacy.xsd">
-	<policy-information id="store-policy">
+	<policy-information id="spark-policy">
 		<issuer>
 			<name>luochen</name>
 			<organization>Tsinghua</organization>
@@ -11,7 +11,7 @@
 			<country>China</country>
 		</issuer>
 	</policy-information>
-	<vocabulary-ref location="res/store-vocab.xml">
+	<vocabulary-ref location="res/spark-vocab.xml">
 		<user-category-container refid="default-user" />
 		<data-category-container refid="store-data" />
 	</vocabulary-ref>
@@ -38,10 +38,10 @@
 			</restriction>
 		</rule>
 
-		<rule id="forbid_ka_customer_sa">
+		<rule id="forbid_id_customer_sa">
 			<user-category-ref refid="app"></user-category-ref>
 			<data-association>
-				<data-category-ref refid="ka"></data-category-ref>
+				<data-category-ref refid="id"></data-category-ref>
 				<data-category-ref refid="customer_sa"></data-category-ref>
 			</data-association>
 			<restriction>

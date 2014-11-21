@@ -11,7 +11,7 @@ import org.w3c.dom.NodeList;
 import edu.thu.ss.spec.lang.parser.ParserConstant;
 import edu.thu.ss.spec.util.SetUtil;
 
-public class DataCategory extends BaseCategory<DataCategory> {
+public class DataCategory extends Category<DataCategory> {
 
 	protected Set<DesensitizeOperation> ops = new HashSet<>();
 	protected Map<String, DesensitizeOperation> opIndex = new HashMap<>();
@@ -67,10 +67,12 @@ public class DataCategory extends BaseCategory<DataCategory> {
 		}
 	}
 
+	@Override
 	public String toString() {
 		return containerId + ":" + id;
 	}
 
+	@Override
 	public String toFullString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(super.toFullString());

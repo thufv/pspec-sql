@@ -1,12 +1,11 @@
-package edu.thu.ss.spec.lang.xml;
+package edu.thu.ss.spec.lang.pojo;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.spec.lang.parser.ParserConstant;
-import edu.thu.ss.spec.lang.pojo.UserCategory;
 
-public class XMLUserCategoryRef extends XMLCategoryRef<UserCategory> {
+public class UserRef extends CategoryRef<UserCategory> {
 
 	public void setUser(UserCategory user) {
 		this.category = user;
@@ -23,7 +22,7 @@ public class XMLUserCategoryRef extends XMLCategoryRef<UserCategory> {
 			Node node = list.item(i);
 			String name = node.getLocalName();
 			if (ParserConstant.Ele_Policy_Rule_UserRef.equals(name)) {
-				XMLObjectRef ref = new XMLObjectRef();
+				ObjectRef ref = new ObjectRef();
 				ref.parse(node);
 				excludeRefs.add(ref);
 			}
@@ -38,8 +37,8 @@ public class XMLUserCategoryRef extends XMLCategoryRef<UserCategory> {
 		sb.append(refid);
 		if (excludeRefs.size() > 0) {
 			sb.append("\tExclude:");
-			for (XMLObjectRef ref : excludeRefs) {
-				sb.append(ref.refid);
+			for (ObjectRef ref : excludeRefs) {
+				sb.append(ref.getRefid());
 				sb.append(' ');
 			}
 		}

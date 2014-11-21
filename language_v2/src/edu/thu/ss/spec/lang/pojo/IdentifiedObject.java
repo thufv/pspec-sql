@@ -1,12 +1,11 @@
-package edu.thu.ss.spec.lang.xml;
+package edu.thu.ss.spec.lang.pojo;
 
 import org.w3c.dom.Node;
 
 import edu.thu.ss.spec.lang.parser.ParserConstant;
-import edu.thu.ss.spec.lang.pojo.Parsable;
 import edu.thu.ss.spec.util.XMLUtil;
 
-public class XMLIdentifiedObject implements Parsable {
+public class IdentifiedObject implements Parsable {
 
 	protected String id;
 
@@ -18,6 +17,7 @@ public class XMLIdentifiedObject implements Parsable {
 		this.id = id;
 	}
 
+	@Override
 	public void parse(Node node) {
 		this.id = XMLUtil.getAttrValue(node, ParserConstant.Attr_Id);
 	}
@@ -38,7 +38,7 @@ public class XMLIdentifiedObject implements Parsable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		XMLIdentifiedObject other = (XMLIdentifiedObject) obj;
+		IdentifiedObject other = (IdentifiedObject) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

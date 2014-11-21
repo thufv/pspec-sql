@@ -1,4 +1,4 @@
-package edu.thu.ss.spec.lang.analyzer;
+package edu.thu.ss.spec.lang.analyzer.local;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,13 +11,13 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.thu.ss.spec.lang.analyzer.ConsistencyAnalyzer.RuleRelation;
+import edu.thu.ss.spec.lang.analyzer.LevelwiseSearcher;
+import edu.thu.ss.spec.lang.analyzer.local.ConsistencyAnalyzer.RuleRelation;
+import edu.thu.ss.spec.lang.analyzer.local.LocalRule.DataActionPair;
 import edu.thu.ss.spec.lang.pojo.Action;
-import edu.thu.ss.spec.lang.pojo.DataActionPair;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.Desensitization;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
-import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Restriction;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
@@ -64,22 +64,22 @@ class ConsistencySearcher extends LevelwiseSearcher {
 	}
 
 	protected Policy policy;
-	protected List<ExpandedRule> rules;
+	protected List<LocalRule> rules;
 	protected RuleObject[] ruleObjects;
-	protected List<ExpandedRule> sortedRules;
+	protected List<LocalRule> sortedRules;
 	protected int[] index;
 
 	public ConsistencySearcher(Policy policy) {
 		this.policy = policy;
-		this.rules = policy.getExpandedRules();
+		this.rules = policy.getLocalRules();
 	}
 
 	@Override
 	protected void initLevel(Set<SearchKey> currentLevel) {
 		sortedRules = new ArrayList<>(rules);
-		Collections.sort(sortedRules, new Comparator<ExpandedRule>() {
+		Collections.sort(sortedRules, new Comparator<LocalRule>() {
 			@Override
-			public int compare(ExpandedRule o1, ExpandedRule o2) {
+			public int compare(LocalRule o1, LocalRule o2) {
 				return Integer.compare(o1.getDimension(), o2.getDimension());
 			}
 		});
@@ -169,7 +169,7 @@ class ConsistencySearcher extends LevelwiseSearcher {
 		}
 	}
 
-	protected List<Set<DesensitizeOperation>> collectOperations(ExpandedRule rule, Set<DataCategory> datas) {
+	protected List<Set<DesensitizeOperation>> collectOperations(LocalRule rule, Set<DataCategory> datas) {
 		Restriction[] restrictions = rule.getRestrictions();
 		List<Set<DesensitizeOperation>> list = null;
 		for (Restriction res : restrictions) {
@@ -177,7 +177,8 @@ class ConsistencySearcher extends LevelwiseSearcher {
 			boolean match = false;
 			Set<DesensitizeOperation> ops = null;
 			for (Desensitization de : des) {
-				if (SetUtil.containOrDisjoint(de.getDatas(), datas).equals(SetRelation.contain)) {
+				Set<DataCategory> set = de.getDatas() != null ? de.getDatas() : rule.getData().getDatas();
+				if (SetUtil.containOrDisjoint(set, datas).equals(SetRelation.contain)) {
 					ops = de.getOperations();
 					match = true;
 					break;
@@ -200,8 +201,7 @@ class ConsistencySearcher extends LevelwiseSearcher {
 			RuleObject rule = ruleObjects[key.rules[i]];
 			List<Set<DesensitizeOperation>> list = rule.getList(datas);
 			if (list == null) {
-				logger.error(
-						"Possible conflicts between expanded sortedRules: #{}, since rule :#{} forbids the data access.",
+				logger.error("Possible conflicts between expanded sortedRules: #{}, since rule :#{} forbids the data access.",
 						SetUtil.toString(key.rules, sortedRules), sortedRules.get(key.rules[i]).getRuleId());
 				return RuleRelation.forbid;
 			}
@@ -237,7 +237,7 @@ class ConsistencySearcher extends LevelwiseSearcher {
 		return RuleRelation.consistent;
 	}
 
-	private RuleObject ruleToObject(ExpandedRule rule) {
+	private RuleObject ruleToObject(LocalRule rule) {
 		RuleObject obj = new RuleObject();
 		obj.users = new HashSet<>(rule.getUsers());
 		DataActionPair[] pairs = rule.getDatas();

@@ -5,10 +5,10 @@ public interface ParserConstant {
 	public static final String Attr_Id = "id";
 	public static final String Attr_Refid = "refid";
 	public static final String Attr_Parent = "parent";
-	public static final String Attr_Policy_Default_Ruling = "default-ruling";
 	public static final String Attr_Vocabulary_Base = "base";
 	public static final String Attr_Restriction_Type = "type";
 	public static final String Attr_Policy_Data_Action = "action";
+	public static final String Attr_Policy_Global = "global";
 
 	public static final String Ele_Contact_Address = "address";
 	public static final String Ele_Contact_Country = "country";

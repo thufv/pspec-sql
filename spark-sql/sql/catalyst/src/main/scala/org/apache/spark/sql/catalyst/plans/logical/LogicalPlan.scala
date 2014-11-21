@@ -36,6 +36,7 @@ import edu.thu.ss.spec.meta.ConditionalColumn
 import scala.collection.mutable.Buffer
 import org.apache.spark.sql.catalyst.checker.ConditionalLabel
 import org.apache.spark.sql.catalyst.checker.ConditionalLabel
+import edu.thu.ss.spec.lang.pojo.Policy
 
 abstract class LogicalPlan extends QueryPlan[LogicalPlan] {
   self: Product =>
@@ -43,7 +44,7 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] {
   val projections: Map[Attribute, Label] = new HashMap;
   val conditions: Set[Label] = new HashSet;
 
-  def calculateLabels(): (Map[Attribute, Label], Set[Label]) = { (projections, conditions) };
+  def calculateLabels(): Policy = { throw new UnsupportedOperationException };
 
   def checkMeta(columns: Seq[String]): Unit = {
     throw new UnsupportedOperationException();

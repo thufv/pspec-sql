@@ -153,6 +153,7 @@
 						</unique>
 					</element>
 				</sequence>
+				<attribute name="global" type="boolean" default="false"></attribute>
 				<attribute name="action" default="all">
 					<simpleType>
 						<restriction base="string">
@@ -182,7 +183,7 @@
 						<element name="data-category-ref" type="tns:objectRefType"
 							maxOccurs="unbounded" minOccurs="0">
 						</element>
-						<element name="operation" type="NCName" minOccurs="1"
+						<element name="operation" type="NCName" minOccurs="0"
 							maxOccurs="unbounded"></element>
 					</sequence>
 				</complexType>
@@ -206,15 +207,17 @@
 				<sequence>
 					<element name="user-category-ref" type="tns:userCategoryRefType"
 						minOccurs="1" maxOccurs="unbounded"></element>
-					<element name="data-category-ref" type="tns:dataCategoryRefType"
-						minOccurs="0" maxOccurs="unbounded"></element>
-					<element name="data-association" type="tns:dataAssociationType"
-						minOccurs="0">
-						<unique name="uniqueDataCategory">
-							<selector xpath="tns:data-category-ref"></selector>
-							<field xpath="@refid"></field>
-						</unique>
-					</element>
+					<choice>
+						<element name="data-category-ref" type="tns:dataCategoryRefType"
+							minOccurs="1" maxOccurs="unbounded"></element>
+						<element name="data-association" type="tns:dataAssociationType"
+							minOccurs="1" maxOccurs="1">
+							<unique name="uniqueDataCategory">
+								<selector xpath="tns:data-category-ref"></selector>
+								<field xpath="@refid"></field>
+							</unique>
+						</element>
+					</choice>
 					<element name="restriction" type="tns:restrictionType"
 						maxOccurs="unbounded">
 						<unique name="uniqueRestrictedDataCategory">

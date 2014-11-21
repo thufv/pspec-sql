@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <meta-mapping xmlns="http://www.example.org/privacy"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" policy=""
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" policy="tpc-ds/store-policy.xml"
 	xsi:schemaLocation="http://www.example.org/privacy ../res/meta.xsd">
 	<database name="default">
 		<table name="income_band">
@@ -89,6 +89,7 @@
 			<condition>
 				<join table="store_sales">
 					<column name="d_date_sk" target="ss_sold_date_sk" />
+
 				</join>
 				<column name="d_date" data-category="sale_date"></column>
 				<column name="d_year" data-category="sale_date"></column>

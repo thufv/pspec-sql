@@ -1,11 +1,11 @@
-package edu.thu.ss.spec.lang.xml;
+package edu.thu.ss.spec.lang.pojo;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.spec.lang.parser.ParserConstant;
 
-public class XMLDescribedObject extends XMLIdentifiedObject {
+public class DescribedObject extends IdentifiedObject {
 	protected String shortDescription;
 	protected String longDescription;
 
@@ -25,6 +25,7 @@ public class XMLDescribedObject extends XMLIdentifiedObject {
 		this.longDescription = longDescription;
 	}
 
+	@Override
 	public void parse(Node objNode) {
 		super.parse(objNode);
 

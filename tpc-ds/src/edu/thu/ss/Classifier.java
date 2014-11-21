@@ -9,6 +9,8 @@ import java.util.List;
 
 public class Classifier {
 
+	private static PrintWriter out;
+
 	public static void main(String[] args) throws Exception {
 		String path = "query/queries_all.sql";
 		BufferedReader reader = new BufferedReader(new FileReader(path));
@@ -21,7 +23,7 @@ public class Classifier {
 		while ((line = reader.readLine()) != null) {
 			if (line.contains("start")) {
 				if (list.size() > 0) {
-					PrintWriter out = isPublic ? publicOut : privateOut;
+					out = isPublic ? publicOut : privateOut;
 					for (String str : list) {
 						out.println(str);
 					}

@@ -47,11 +47,11 @@ import edu.thu.ss.spec.meta.MetaRegistry
 import org.apache.spark.sql.hive.execution.HiveTableScan
 import edu.thu.ss.spec.lang.pojo.DataCategory
 import org.apache.spark.sql.catalyst.checker.DataLabel
-import edu.thu.ss.spec.meta.MetaRegistryManager
-import edu.thu.ss.spec.meta
 import scala.collection.mutable.HashSet
 import scala.collection.JavaConverters._
 import org.apache.spark.sql.catalyst.checker.ConditionalLabel
+import edu.thu.ss.spec.lang.pojo.Policy
+import edu.thu.ss.spec.global.MetaManager
 
 private[hive] class HiveMetastoreCatalog(hive: HiveContext) extends Catalog with Logging {
   import HiveMetastoreTypes._
@@ -320,24 +320,28 @@ case class MetastoreRelation(databaseName: String, tableName: String, alias: Opt
 
   val output = attributes ++ partitionKeys
 
-  override def calculateLabels(): (mutable.Map[Attribute, Label], mutable.Set[Label]) = {
-    val meta: MetaRegistry = MetaRegistryManager.get();
-    output.foreach(attr => {
-      val data: DataCategory = meta.lookup(databaseName, tableName, attr.name);
-      if (data != null) {
-        projections.put(attr, DataLabel(data, databaseName, tableName, attr));
-      } else {
-        val conds = meta.conditionalLookup(databaseName, tableName, attr.name);
-        if (conds != null) {
-          val condLabel = ConditionalLabel(conds.asScala, databaseName, tableName, attr)
-          projections.put(attr, condLabel);
+  override def calculateLabels(): Policy = {
+    val meta: MetaRegistry = MetaManager.get(databaseName, tableName);
+    if (meta == null) {
+      output.foreach(attr => projections.put(attr, Insensitive(databaseName, tableName, attr)));
+      null;
+    } else {
+      output.foreach(attr => {
+        val data: DataCategory = meta.lookup(databaseName, tableName, attr.name);
+        if (data != null) {
+          projections.put(attr, DataLabel(data, databaseName, tableName, attr));
         } else {
-          projections.put(attr, Insensitive(databaseName, tableName, attr));
-
+          val conds = meta.conditionalLookup(databaseName, tableName, attr.name);
+          if (conds != null) {
+            val condLabel = ConditionalLabel(conds.asScala, databaseName, tableName, attr)
+            projections.put(attr, condLabel);
+          } else {
+            projections.put(attr, Insensitive(databaseName, tableName, attr));
+          }
         }
-      }
-    });
-    (projections, conditions);
+      });
+      meta.getPolicy;
+    }
   }
 
   lazy val attributeNames = table.getSd().getCols().map(_.getName().toLowerCase()).toSet;

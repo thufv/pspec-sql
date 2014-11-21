@@ -1,4 +1,4 @@
-package edu.thu.ss.spec.lang.analyzer;
+package edu.thu.ss.spec.lang.analyzer.local;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,51 +8,49 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import edu.thu.ss.spec.lang.analyzer.BasePolicyAnalyzer;
 import edu.thu.ss.spec.lang.pojo.Action;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
-import edu.thu.ss.spec.lang.pojo.ExpandedRule;
+import edu.thu.ss.spec.lang.pojo.DataRef;
 import edu.thu.ss.spec.lang.pojo.Policy;
+import edu.thu.ss.spec.lang.pojo.Rule;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
-import edu.thu.ss.spec.lang.xml.XMLDataAssociation;
-import edu.thu.ss.spec.lang.xml.XMLDataCategoryRef;
-import edu.thu.ss.spec.lang.xml.XMLRule;
-import edu.thu.ss.spec.lang.xml.XMLUserCategoryRef;
+import edu.thu.ss.spec.lang.pojo.UserRef;
 
-public class PolicyExpander extends BasePolicyAnalyzer {
+public class LocalExpander extends BasePolicyAnalyzer {
 
 	@Override
 	public boolean analyze(Policy policy) {
-		List<ExpandedRule> expandedRules = new ArrayList<>();
-		List<XMLRule> rules = policy.getRules();
-		for (XMLRule rule : rules) {
+		List<LocalRule> expandedRules = new ArrayList<>();
+		List<Rule> rules = policy.getRules();
+		for (Rule rule : rules) {
+			int index = 1;
 			Set<UserCategory> users = expandUser(rule.getUserRefs());
 			Map<Action, Set<DataCategory>> datas = expandData(rule.getDataRefs());
 			for (Entry<Action, Set<DataCategory>> e : datas.entrySet()) {
-				ExpandedRule erule = new ExpandedRule(rule, users, e.getKey(), e.getValue());
+				LocalRule erule = new LocalRule(rule, users, e.getKey(), e.getValue(), index++);
 				expandedRules.add(erule);
 			}
-
-			for (XMLDataAssociation association : rule.getAssociations()) {
-				ExpandedRule erule = new ExpandedRule(rule, users, association);
+			if (rule.getAssociation() != null) {
+				LocalRule erule = new LocalRule(rule, users, rule.getAssociation(), index++);
 				expandedRules.add(erule);
 			}
 		}
-		policy.setExpandedRules(expandedRules);
+		policy.setLocalRules(expandedRules);
 		return false;
-
 	}
 
-	private Set<UserCategory> expandUser(Set<XMLUserCategoryRef> userRefs) {
+	private Set<UserCategory> expandUser(List<UserRef> userRefs) {
 		Set<UserCategory> result = new HashSet<>();
-		for (XMLUserCategoryRef ref : userRefs) {
+		for (UserRef ref : userRefs) {
 			result.addAll(ref.getMaterialized());
 		}
 		return result;
 	}
 
-	private Map<Action, Set<DataCategory>> expandData(Set<XMLDataCategoryRef> dataRefs) {
+	private Map<Action, Set<DataCategory>> expandData(List<DataRef> dataRefs) {
 		Map<Action, Set<DataCategory>> result = new HashMap<>();
-		for (XMLDataCategoryRef ref : dataRefs) {
+		for (DataRef ref : dataRefs) {
 			Set<DataCategory> set = result.get(ref.getAction());
 			if (set == null) {
 				set = new HashSet<>();

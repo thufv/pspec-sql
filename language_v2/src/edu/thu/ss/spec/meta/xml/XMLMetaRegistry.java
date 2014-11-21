@@ -8,7 +8,6 @@ import java.util.Set;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.Policy;
-import edu.thu.ss.spec.lang.pojo.UserCategory;
 import edu.thu.ss.spec.meta.Column;
 import edu.thu.ss.spec.meta.ConditionalColumn;
 import edu.thu.ss.spec.meta.Database;
@@ -22,14 +21,14 @@ public class XMLMetaRegistry implements MetaRegistry {
 	private Policy policy = null;
 	private Map<String, Set<String>> scope = null;
 
-	public void setPolicy(Policy policy) {
-		this.policy = policy;
-	}
-
 	@Override
 	public boolean applicable(String databaseName, String tableName) {
 		Table table = lookupTable(databaseName, tableName);
 		return table != null;
+	}
+
+	public void setPolicy(Policy policy) {
+		this.policy = policy;
 	}
 
 	@Override
@@ -60,11 +59,6 @@ public class XMLMetaRegistry implements MetaRegistry {
 	@Override
 	public Map<String, Database> getDatabases() {
 		return databases;
-	}
-
-	@Override
-	public UserCategory currentUser() {
-		return policy.getUserContainer().get("app");
 	}
 
 	@Override

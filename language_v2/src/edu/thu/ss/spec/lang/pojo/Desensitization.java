@@ -1,29 +1,33 @@
 package edu.thu.ss.spec.lang.pojo;
 
+import java.util.HashSet;
 import java.util.Set;
 
-import edu.thu.ss.spec.util.SetUtil;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
-public class Desensitization {
+import edu.thu.ss.spec.lang.parser.ParserConstant;
+import edu.thu.ss.spec.util.SetUtil;
+import edu.thu.ss.spec.util.XMLUtil;
+
+public class Desensitization implements Parsable {
+	protected Set<String> dataRefIds = new HashSet<>();
+	protected Set<DataRef> dataRefs = new HashSet<>();
+
 	protected Set<DataCategory> datas;
 	protected Set<DesensitizeOperation> operations;
 	protected int[] dataIndex;
-
-	public Desensitization() {
-	}
-
-	public Desensitization(Set<DataCategory> datas, Set<DesensitizeOperation> operations, int[] dataRefs) {
-		this.datas = datas;
-		this.operations = operations;
-		this.dataIndex = dataRefs;
-	}
 
 	public int[] getDataIndex() {
 		return dataIndex;
 	}
 
-	public void setDataIndex(int[] dataIndex) {
-		this.dataIndex = dataIndex;
+	public void setDataIndex(int... index) {
+		this.dataIndex = index;
+	}
+
+	public Set<String> getDataRefIds() {
+		return dataRefIds;
 	}
 
 	public boolean isDefaultOperation() {
@@ -38,12 +42,43 @@ public class Desensitization {
 		this.operations = operations;
 	}
 
-	public void setDatas(Set<DataCategory> data) {
-		this.datas = data;
-	}
-
 	public Set<DataCategory> getDatas() {
 		return datas;
+	}
+
+	public Set<DataRef> getDataRefs() {
+		return dataRefs;
+	}
+
+	public void materialize() {
+		this.datas = new HashSet<>();
+		for (DataRef ref : dataRefs) {
+			this.datas.addAll(ref.getMaterialized());
+		}
+	}
+
+	public void materialize(Set<DataCategory> set) {
+		this.datas = set;
+	}
+
+	@Override
+	public void parse(Node deNode) {
+		NodeList list = deNode.getChildNodes();
+		for (int i = 0; i < list.getLength(); i++) {
+			Node node = list.item(i);
+			String name = node.getLocalName();
+			if (ParserConstant.Ele_Policy_Rule_DataRef.equals(name)) {
+				String refid = XMLUtil.getAttrValue(node, ParserConstant.Attr_Refid);
+				this.dataRefIds.add(refid);
+			} else if (ParserConstant.Ele_Policy_Rule_Desensitize_Operation.equals(name)) {
+				DesensitizeOperation op = new DesensitizeOperation();
+				op.parse(node);
+				if (this.operations == null) {
+					this.operations = new HashSet<>();
+				}
+				operations.add(op);
+			}
+		}
 	}
 
 	@Override
@@ -63,4 +98,5 @@ public class Desensitization {
 		}
 		return sb.toString();
 	}
+
 }

@@ -1,8 +1,9 @@
-package edu.thu.ss.spec.lang.analyzer;
+package edu.thu.ss.spec.lang.analyzer.local;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.thu.ss.spec.lang.analyzer.BasePolicyAnalyzer;
 import edu.thu.ss.spec.lang.pojo.Policy;
 
 public class ConsistencyAnalyzer extends BasePolicyAnalyzer {

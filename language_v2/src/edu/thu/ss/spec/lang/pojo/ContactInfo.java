@@ -13,6 +13,7 @@ public class ContactInfo implements Parsable {
 	protected String organization;
 	protected String country;
 
+	@Override
 	public void parse(Node contactNode) {
 		NodeList list = contactNode.getChildNodes();
 		for (int i = 0; i < list.getLength(); i++) {

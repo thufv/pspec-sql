@@ -1,14 +1,14 @@
-package edu.thu.ss.spec.lang.xml;
+package edu.thu.ss.spec.lang.pojo;
 
 import org.w3c.dom.Node;
 
 import edu.thu.ss.spec.lang.parser.ParserConstant;
-import edu.thu.ss.spec.lang.pojo.Parsable;
 import edu.thu.ss.spec.util.XMLUtil;
 
-public class XMLObjectRef implements Parsable {
+public class ObjectRef implements Parsable {
 	protected String refid;
 
+	@Override
 	public void parse(Node node) {
 		this.refid = XMLUtil.getAttrValue(node, ParserConstant.Ele_Policy_Refid);
 	}
@@ -33,7 +33,7 @@ public class XMLObjectRef implements Parsable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		XMLObjectRef other = (XMLObjectRef) obj;
+		ObjectRef other = (ObjectRef) obj;
 		if (refid == null) {
 			if (other.refid != null)
 				return false;

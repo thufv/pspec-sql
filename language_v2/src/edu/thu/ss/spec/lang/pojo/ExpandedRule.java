@@ -1,81 +1,37 @@
 package edu.thu.ss.spec.lang.pojo;
 
-import java.util.Arrays;
 import java.util.Set;
 
-import edu.thu.ss.spec.lang.xml.XMLDataAssociation;
-import edu.thu.ss.spec.lang.xml.XMLDataCategoryRef;
-import edu.thu.ss.spec.lang.xml.XMLRule;
-import edu.thu.ss.spec.util.SetUtil;
-
-public class ExpandedRule {
+public abstract class ExpandedRule {
 
 	protected String ruleId;
 
-	protected Set<UserCategory> users;
-
-	protected DataActionPair[] datas;
+	protected int num;
 
 	protected Restriction[] restrictions;
 
-	private ExpandedRule(XMLRule rule, Set<UserCategory> users) {
+	public ExpandedRule() {
+
+	}
+
+	protected Set<UserCategory> users;
+
+	protected ExpandedRule(Rule rule, Set<UserCategory> users, int num) {
 		this.ruleId = rule.getId();
+		this.num = num;
 		this.users = users;
-	}
-
-	public ExpandedRule(XMLRule rule, Set<UserCategory> users, Action action, Set<DataCategory> datas) {
-		this(rule, users);
-
-		this.datas = new DataActionPair[1];
-		this.datas[0] = new DataActionPair(datas, action);
-		this.restrictions = new Restriction[1];
-		this.restrictions[0] = rule.getRestriction().toRestriction(this.datas);
-		if (!this.restrictions[0].isForbid()) {
-			Desensitization de = this.restrictions[0].getDesensitization();
-			de.setDatas(datas);
-			de.setDataIndex(new int[] { 0 });
-		}
-
-	}
-
-	public ExpandedRule(XMLRule rule, Set<UserCategory> users, XMLDataAssociation association) {
-		this(rule, users);
-		this.datas = new DataActionPair[association.getDataRefs().size()];
-		int i = 0;
-		for (XMLDataCategoryRef ref : association.getDataRefs()) {
-			this.datas[i] = new DataActionPair(ref.getMaterialized(), ref.getAction());
-			i++;
-		}
-		Arrays.sort(this.datas);
-
-		this.restrictions = new Restriction[rule.getRestrictions().size()];
-		for (i = 0; i < restrictions.length; i++) {
-			this.restrictions[i] = rule.getRestrictions().get(i).toRestriction(this.datas);
-		}
-	}
-
-	public boolean isSingle() {
-		return datas.length == 1;
-	}
-
-	public boolean isAssociation() {
-		return datas.length > 1;
-	}
-
-	public String getRuleId() {
-		return ruleId;
 	}
 
 	public Set<UserCategory> getUsers() {
 		return users;
 	}
 
-	public DataActionPair[] getDatas() {
-		return datas;
+	public String getRuleId() {
+		return ruleId + "#" + num;
 	}
 
-	public DataActionPair getData() {
-		return datas[0];
+	public String getRawRuleId() {
+		return ruleId;
 	}
 
 	public Restriction[] getRestrictions() {
@@ -86,33 +42,7 @@ public class ExpandedRule {
 		return restrictions[0];
 	}
 
-	public int getDimension() {
-		return datas.length;
-	}
+	public abstract boolean isSingle();
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("Rule: ");
-		sb.append(ruleId);
-
-		sb.append("\n\t");
-		sb.append("Users: ");
-		sb.append(SetUtil.format(users, ","));
-		sb.append("\n\t");
-		for (DataActionPair pair : datas) {
-			sb.append("Action: ");
-			sb.append(pair.action);
-			sb.append("\n\t");
-			sb.append("Datas: ");
-			sb.append(SetUtil.format(pair.datas, ","));
-			sb.append("\n\t");
-		}
-		for (Restriction restriction : restrictions) {
-			sb.append(restriction);
-			sb.append("\n\t");
-		}
-		return sb.toString();
-
-	}
+	public abstract boolean isAssociation();
 }

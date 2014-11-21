@@ -103,7 +103,5 @@ public class XMLUtil {
 			path = file.getAbsolutePath();
 		}
 		return new URI(path).normalize();
-
 	}
-
 }

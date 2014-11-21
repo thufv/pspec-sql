@@ -19,7 +19,6 @@
 		<data-category id="loginid" parent="id"></data-category>
 
 		<data-category id="name" parent="qi"></data-category>
-
 		<data-category id="birth" parent="qi"></data-category>
 		<data-category id="gender" parent="qi"></data-category>
 		<data-category id="status" parent="qi"></data-category>
@@ -54,6 +53,7 @@
 
 		<data-category id="sale_item" parent="business_sa"></data-category>
 		<data-category id="sale_price" parent="business_sa"></data-category>
+		<data-category id="sale_date" parent="business_sa"></data-category>
 
 		<data-category id="return_item" parent="business_sa"></data-category>
 		<data-category id="return_cost" parent="business_sa"></data-category>

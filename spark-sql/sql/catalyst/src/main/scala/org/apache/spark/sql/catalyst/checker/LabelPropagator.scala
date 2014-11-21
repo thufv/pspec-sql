@@ -65,20 +65,17 @@ import org.apache.spark.sql.catalyst.plans.logical.RedistributeData
 import org.apache.spark.sql.catalyst.expressions.Contains
 import org.apache.spark.sql.catalyst.expressions.EndsWith
 import org.apache.spark.sql.catalyst.expressions.AggregateExpression
-import edu.thu.ss.spec.meta.MetaRegistryManager
 import org.apache.spark.sql.catalyst.expressions.EqualTo
 import org.apache.spark.sql.catalyst.expressions.EqualNullSafe
 import org.apache.spark.sql.catalyst.expressions.AttributeReference
 import org.apache.spark.sql.catalyst.expressions.BinaryExpression
 import org.apache.spark.sql.catalyst.expressions.AttributeReference
-import org.apache.spark.sql.catalyst.expressions.AttributeReference
-import org.apache.spark.sql.catalyst.expressions.AttributeReference
 import scala.collection.mutable
-import org.apache.spark.sql.catalyst.expressions.AttributeReference
 import scala.collection.mutable.HashSet
 import scala.collection.JavaConverters._
 import scala.collection.mutable.ListBuffer
 import org.apache.spark.sql.catalyst.expressions.AttributeReference
+import edu.thu.ss.spec.lang.pojo.Policy
 
 abstract class EquiVertex;
 
@@ -86,7 +83,6 @@ case class ColumnVertex(attr: AttributeReference) extends EquiVertex;
 case class ConstantVertex(value: Any) extends EquiVertex;
 
 class LabelPropagator extends Logging {
-  lazy val meta: MetaRegistry = MetaRegistryManager.get();
 
   lazy val tables = new mutable.HashMap[ColumnLabel, Map[String, ColumnLabel]];
 
@@ -94,7 +90,9 @@ class LabelPropagator extends Logging {
 
   lazy val equis = new mutable.HashMap[EquiVertex, mutable.Set[EquiVertex]];
 
-  def apply(plan: LogicalPlan): Unit = {
+  lazy val policies = new mutable.HashSet[Policy];
+
+  def apply(plan: LogicalPlan): mutable.Set[Policy] = {
 
     propagate(plan);
     plan.projections.values.foreach(fulfillConditions(_));
@@ -109,18 +107,18 @@ class LabelPropagator extends Logging {
     plan.conditions.foreach(t => {
       println(t);
     });
+
+    policies;
   }
 
   private def propagate(plan: LogicalPlan): Unit = {
     plan match {
       case leaf: LeafNode => {
-        leaf.calculateLabels;
-        val table = leaf.projections.values.map(label =>
-          {
-            val cond = label.asInstanceOf[ColumnLabel];
-            (cond.attr.name, cond);
-          }).toMap;
-        table.foreach(t => tables.put(t._2, table));
+        val policy = leaf.calculateLabels;
+        if (policy != null) {
+          policies.add(policy);
+        }
+        addTable(leaf.projections);
       }
       case unary: UnaryNode => propagateUnary(unary);
       case binary: BinaryNode => propagateBinary(binary);
@@ -357,9 +355,9 @@ class LabelPropagator extends Logging {
         lefts = resolveJoinColumn(expression.left, plan);
         rights = resolveJoinColumn(expression.right, plan);
       }
-      case _ =>
+      case _ => ;
     }
-    if (lefts.size == 0 || rights.size == 0) {
+    if (lefts == null || rights == null) {
       return ;
     }
     for (left <- lefts) {
@@ -406,6 +404,14 @@ class LabelPropagator extends Logging {
       case func: Function => func.children.foreach(resolveJoinLabel(_, set));
       case _ => throw new RuntimeException(s"Predicate $label should not appear in equi-join expression.");
     }
+  }
+
+  private def addTable(projections: mutable.Map[Attribute, Label]): Unit = {
+    val table = projections.values.map(label => {
+      val cond = label.asInstanceOf[ColumnLabel];
+      (cond.attr.name, cond);
+    }).toMap;
+    table.foreach(t => tables.put(t._2, table));
   }
 
   private def addEquiEdge(a: EquiVertex, b: EquiVertex): Unit = {

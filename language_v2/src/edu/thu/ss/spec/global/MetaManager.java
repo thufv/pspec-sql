@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import edu.thu.ss.spec.lang.pojo.Policy;
+import edu.thu.ss.spec.lang.pojo.UserCategory;
 import edu.thu.ss.spec.meta.MetaRegistry;
 
 public class MetaManager {
@@ -15,6 +17,10 @@ public class MetaManager {
 
 	private static Map<String, Map<String, MetaRegistry>> registryIndex = new HashMap<>();
 
+	public static synchronized UserCategory currentUser() {
+		return new UserCategory("app", "default-user");
+	}
+
 	public static synchronized MetaRegistry get(String database, String table) {
 		Map<String, MetaRegistry> map = registryIndex.get(database);
 		if (map != null) {
@@ -22,6 +28,14 @@ public class MetaManager {
 		} else {
 			return null;
 		}
+	}
+
+	public static synchronized boolean applicable(Policy policy, String database, String table) {
+		MetaRegistry meta = get(database, table);
+		if (meta == null) {
+			return false;
+		}
+		return meta.getPolicy() == policy;
 	}
 
 	public static synchronized void add(MetaRegistry registry) {

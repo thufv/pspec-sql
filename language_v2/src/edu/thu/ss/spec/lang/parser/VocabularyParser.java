@@ -16,18 +16,18 @@ import org.w3c.dom.NodeList;
 
 import edu.thu.ss.spec.global.CategoryManager;
 import edu.thu.ss.spec.lang.analyzer.VocabularyAnalyzer;
-import edu.thu.ss.spec.lang.pojo.BaseCategory;
+import edu.thu.ss.spec.lang.pojo.Category;
+import edu.thu.ss.spec.lang.pojo.CategoryContainer;
 import edu.thu.ss.spec.lang.pojo.DataContainer;
 import edu.thu.ss.spec.lang.pojo.Info;
 import edu.thu.ss.spec.lang.pojo.UserContainer;
-import edu.thu.ss.spec.lang.xml.XMLCategoryContainer;
-import edu.thu.ss.spec.lang.xml.XMLVocabulary;
+import edu.thu.ss.spec.lang.pojo.Vocabulary;
 import edu.thu.ss.spec.util.ParsingException;
 import edu.thu.ss.spec.util.XMLUtil;
 
 public class VocabularyParser implements ParserConstant {
 
-	protected Map<URI, XMLVocabulary> vocabularies;
+	protected Map<URI, Vocabulary> vocabularies;
 
 	protected Map<String, UserContainer> userContainers;
 
@@ -37,7 +37,7 @@ public class VocabularyParser implements ParserConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(VocabularyParser.class);
 
-	public XMLVocabulary parse(String path, String user, String data) throws Exception {
+	public Vocabulary parse(String path, String user, String data) throws Exception {
 		init();
 		loadVocabularies(path);
 		parseUsers();
@@ -59,7 +59,7 @@ public class VocabularyParser implements ParserConstant {
 		analyzer.analyze(mergedUsers.values(), mergedDatas.values());
 		registerVocabularies();
 
-		XMLVocabulary vocabulary = new XMLVocabulary();
+		Vocabulary vocabulary = new Vocabulary();
 		vocabulary.setUserContainers(mergedUsers);
 		vocabulary.setDataContainers(mergedDatas);
 		return vocabulary;
@@ -96,7 +96,7 @@ public class VocabularyParser implements ParserConstant {
 	}
 
 	private void registerVocabularies() {
-		for (XMLVocabulary vocab : vocabularies.values()) {
+		for (Vocabulary vocab : vocabularies.values()) {
 			if (!vocab.isResolved()) {
 				vocab.setResolved(true);
 				vocab.setRootNode(null);
@@ -116,11 +116,11 @@ public class VocabularyParser implements ParserConstant {
 	private void loadVocabularies(String path) throws Exception {
 		while (path != null) {
 			URI uri = XMLUtil.toUri(path);
-			XMLVocabulary vocabulary = CategoryManager.getParsedVocab().get(uri);
+			Vocabulary vocabulary = CategoryManager.getParsedVocab().get(uri);
 			if (CategoryManager.containsVocab(path)) {
 				vocabularies.put(uri, vocabulary);
 			} else {
-				vocabulary = new XMLVocabulary();
+				vocabulary = new Vocabulary();
 				Document document = XMLUtil.parseDocument(path, Privacy_Schema_Location);
 				Node rootNode = document.getElementsByTagName(ParserConstant.Ele_Vocabulary).item(0);
 				vocabulary.setRootNode(rootNode);
@@ -135,7 +135,7 @@ public class VocabularyParser implements ParserConstant {
 		}
 	}
 
-	private void parseInfo(XMLVocabulary vocabulary) {
+	private void parseInfo(Vocabulary vocabulary) {
 		Node root = vocabulary.getRootNode();
 		NodeList list = root.getChildNodes();
 		String base = XMLUtil.getAttrValue(root, Attr_Vocabulary_Base);
@@ -153,7 +153,7 @@ public class VocabularyParser implements ParserConstant {
 	}
 
 	private void parseUsers() throws Exception {
-		for (XMLVocabulary vocabulary : vocabularies.values()) {
+		for (Vocabulary vocabulary : vocabularies.values()) {
 			if (vocabulary.isResolved()) {
 				for (UserContainer container : vocabulary.getUserContainers().values()) {
 					userContainers.put(container.getId(), container);
@@ -175,7 +175,7 @@ public class VocabularyParser implements ParserConstant {
 	}
 
 	private void parseDatas() throws Exception {
-		for (XMLVocabulary vocabulary : vocabularies.values()) {
+		for (Vocabulary vocabulary : vocabularies.values()) {
 			if (vocabulary.isResolved()) {
 				for (DataContainer container : vocabulary.getDataContainers().values()) {
 					dataContainers.put(container.getId(), container);
@@ -213,8 +213,8 @@ public class VocabularyParser implements ParserConstant {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private <T extends XMLCategoryContainer> void resolveReference(XMLCategoryContainer container,
-			Map<String, T> containers, Set<String> baseIds) throws ParsingException {
+	private <T extends CategoryContainer> void resolveReference(CategoryContainer container, Map<String, T> containers,
+			Set<String> baseIds) throws ParsingException {
 		if (container.isResolved()) {
 			return;
 		}
@@ -236,12 +236,12 @@ public class VocabularyParser implements ParserConstant {
 			container.setBaseContainer(baseContainer);
 		}
 		for (Object obj : container.getCategories()) {
-			BaseCategory category = (BaseCategory) obj;
+			Category category = (Category) obj;
 			String parentId = category.getParentId();
 			if (parentId == null) {
 				container.getRoot().add(category);
 			} else {
-				BaseCategory parent = resolveParent(parentId, container);
+				Category parent = resolveParent(parentId, container);
 				if (parent == null) {
 					logger.error("Fail to locate parent category: {} for category: {}.", category.getId(), parentId);
 					error = true;
@@ -253,10 +253,10 @@ public class VocabularyParser implements ParserConstant {
 	}
 
 	@SuppressWarnings({ "rawtypes" })
-	private BaseCategory resolveParent(String parentId, XMLCategoryContainer container) {
-		XMLCategoryContainer current = container;
+	private Category resolveParent(String parentId, CategoryContainer container) {
+		CategoryContainer current = container;
 		while (current != null) {
-			BaseCategory result = container.get(parentId);
+			Category result = container.get(parentId);
 			if (result != null) {
 				return result;
 			}
@@ -266,9 +266,9 @@ public class VocabularyParser implements ParserConstant {
 	}
 
 	@SuppressWarnings({ "rawtypes" })
-	private <T extends XMLCategoryContainer> void resolveReference(Map<String, T> containers) throws ParsingException {
+	private <T extends CategoryContainer> void resolveReference(Map<String, T> containers) throws ParsingException {
 		for (String id : containers.keySet()) {
-			XMLCategoryContainer container = containers.get(id);
+			CategoryContainer container = containers.get(id);
 			if (container.isResolved()) {
 				continue;
 			}
@@ -276,7 +276,7 @@ public class VocabularyParser implements ParserConstant {
 			resolveReference(container, containers, baseIds);
 		}
 
-		for (XMLCategoryContainer container : containers.values()) {
+		for (CategoryContainer container : containers.values()) {
 			if (!container.isLeaf()) {
 				continue;
 			}
@@ -285,14 +285,14 @@ public class VocabularyParser implements ParserConstant {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void checkDuplicates(XMLCategoryContainer container) {
-		Map<String, BaseCategory> categories = new HashMap<>();
-		List<BaseCategory> roots = new LinkedList<>();
+	private void checkDuplicates(CategoryContainer container) {
+		Map<String, Category> categories = new HashMap<>();
+		List<Category> roots = new LinkedList<>();
 
-		XMLCategoryContainer current = container;
+		CategoryContainer current = container;
 		while (current != null) {
 			for (Object obj : current.getCategories()) {
-				BaseCategory category = (BaseCategory) obj;
+				Category category = (Category) obj;
 				if (categories.containsKey(category.getId())) {
 					logger.error("Duplicate category: {} detected, please fix.", category.getId());
 					error = true;
@@ -303,7 +303,7 @@ public class VocabularyParser implements ParserConstant {
 			current = current.getBaseContainer();
 		}
 		int count = 0;
-		for (BaseCategory root : roots) {
+		for (Category root : roots) {
 			count += countCategories(root);
 		}
 		if (count < categories.size()) {
@@ -312,11 +312,11 @@ public class VocabularyParser implements ParserConstant {
 	}
 
 	@SuppressWarnings({ "rawtypes" })
-	private int countCategories(BaseCategory category) {
+	private int countCategories(Category category) {
 		int count = 1;
 		if (category.getChildren() != null) {
 			for (Object child : category.getChildren()) {
-				count += countCategories((BaseCategory) child);
+				count += countCategories((Category) child);
 			}
 		}
 		return count;

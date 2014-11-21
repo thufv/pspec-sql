@@ -122,7 +122,7 @@ public class SetUtil {
 		list1.add(ops2);
 	}
 
-	public static String toString(int[] index, List<ExpandedRule> rules) {
+	public static String toString(int[] index, List<? extends ExpandedRule> rules) {
 		StringBuilder sb = new StringBuilder();
 		for (int i : index) {
 			sb.append(rules.get(i).getRuleId());

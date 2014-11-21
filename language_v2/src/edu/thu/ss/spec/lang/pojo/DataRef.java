@@ -1,15 +1,23 @@
-package edu.thu.ss.spec.lang.xml;
+package edu.thu.ss.spec.lang.pojo;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.spec.lang.parser.ParserConstant;
-import edu.thu.ss.spec.lang.pojo.Action;
-import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.util.XMLUtil;
 
-public class XMLDataCategoryRef extends XMLCategoryRef<DataCategory> {
-	protected Action action = Action.all;
+public class DataRef extends CategoryRef<DataCategory> {
+	protected Action action = Action.All;
+
+	protected boolean global = false;
+
+	public void setGlobal(boolean global) {
+		this.global = global;
+	}
+
+	public boolean isGlobal() {
+		return global;
+	}
 
 	public void setData(DataCategory data) {
 		this.category = data;
@@ -19,6 +27,10 @@ public class XMLDataCategoryRef extends XMLCategoryRef<DataCategory> {
 		return category;
 	}
 
+	public void setAction(Action action) {
+		this.action = action;
+	}
+
 	public Action getAction() {
 		return action;
 	}
@@ -26,9 +38,13 @@ public class XMLDataCategoryRef extends XMLCategoryRef<DataCategory> {
 	@Override
 	public void parse(Node refNode) {
 		super.parse(refNode);
+		String globalValue = XMLUtil.getAttrValue(refNode, ParserConstant.Attr_Policy_Global);
+		if (globalValue != null) {
+			global = Boolean.valueOf(globalValue);
+		}
 		String actionValue = XMLUtil.getAttrValue(refNode, ParserConstant.Attr_Policy_Data_Action);
 		if (actionValue != null) {
-			this.action = Action.actions.get(actionValue);
+			this.action = Action.get(actionValue);
 		}
 	}
 
@@ -39,7 +55,7 @@ public class XMLDataCategoryRef extends XMLCategoryRef<DataCategory> {
 			Node node = list.item(i);
 			String name = node.getLocalName();
 			if (ParserConstant.Ele_Policy_Rule_DataRef.equals(name)) {
-				XMLObjectRef ref = new XMLObjectRef();
+				ObjectRef ref = new ObjectRef();
 				ref.parse(node);
 				excludeRefs.add(ref);
 			}
@@ -51,14 +67,15 @@ public class XMLDataCategoryRef extends XMLCategoryRef<DataCategory> {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("Data Category: ");
+		sb.append(isGlobal() ? "global" : "local");
 		sb.append(refid);
 		sb.append('(');
 		sb.append(action);
 		sb.append(')');
 		if (excludeRefs.size() > 0) {
 			sb.append("\tExclude:");
-			for (XMLObjectRef ref : excludeRefs) {
-				sb.append(ref.refid);
+			for (ObjectRef ref : excludeRefs) {
+				sb.append(ref.getRefid());
 				sb.append(' ');
 			}
 		}

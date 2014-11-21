@@ -11,51 +11,55 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.spec.global.PolicyManager;
-import edu.thu.ss.spec.lang.analyzer.ConsistencyAnalyzer;
 import edu.thu.ss.spec.lang.analyzer.PolicyAnalyzer;
-import edu.thu.ss.spec.lang.analyzer.PolicyExpander;
-import edu.thu.ss.spec.lang.analyzer.SimpleRedundancyAnalyzer;
+import edu.thu.ss.spec.lang.analyzer.global.GlobalExpander;
+import edu.thu.ss.spec.lang.analyzer.local.ConsistencyAnalyzer;
+import edu.thu.ss.spec.lang.analyzer.local.LocalExpander;
+import edu.thu.ss.spec.lang.analyzer.local.LocalRedundancyAnalyzer;
 import edu.thu.ss.spec.lang.analyzer.rule.RuleConstraintAnalyzer;
 import edu.thu.ss.spec.lang.analyzer.rule.RuleResolver;
 import edu.thu.ss.spec.lang.analyzer.rule.RuleSimplifier;
 import edu.thu.ss.spec.lang.pojo.Info;
 import edu.thu.ss.spec.lang.pojo.Policy;
-import edu.thu.ss.spec.lang.xml.XMLRule;
-import edu.thu.ss.spec.lang.xml.XMLVocabulary;
+import edu.thu.ss.spec.lang.pojo.Rule;
+import edu.thu.ss.spec.lang.pojo.Vocabulary;
 import edu.thu.ss.spec.util.ParsingException;
 import edu.thu.ss.spec.util.XMLUtil;
 
 public class PolicyParser implements ParserConstant {
 
-	@SuppressWarnings("unused")
 	private static Logger logger = LoggerFactory.getLogger(PolicyParser.class);
 
 	private List<PolicyAnalyzer> analyzers;
 
-	protected void init(boolean consistency) {
+	protected void init(boolean global) {
 		analyzers = new ArrayList<>();
 		analyzers.add(new RuleResolver());
 		analyzers.add(new RuleConstraintAnalyzer());
 		analyzers.add(new RuleSimplifier());
-		analyzers.add(new PolicyExpander());
-		analyzers.add(new SimpleRedundancyAnalyzer());
-		if (consistency) {
+
+		if (global) {
+			analyzers.add(new GlobalExpander());
+		} else {
+			analyzers.add(new LocalExpander());
+			analyzers.add(new LocalRedundancyAnalyzer());
 			analyzers.add(new ConsistencyAnalyzer());
 		}
+
 	}
 
 	public Policy parse(String path) throws Exception {
 		return parse(path, true);
 	}
 
-	public Policy parse(String path, boolean consistency) throws Exception {
+	public Policy parse(String path, boolean global) throws Exception {
 		URI uri = XMLUtil.toUri(path);
 		Policy policy = PolicyManager.getPolicy(uri);
 		if (policy != null) {
 			logger.error("Policy: {} has already been parsed.", uri);
 			return policy;
 		}
-		init(consistency);
+		init(global);
 		policy = new Policy();
 		policy.setPath(uri);
 		Document policyDoc = null;
@@ -99,13 +103,13 @@ public class PolicyParser implements ParserConstant {
 	}
 
 	private void parseRules(Node rulesNode, Policy policy) {
-		List<XMLRule> rules = new ArrayList<>();
+		List<Rule> rules = new ArrayList<>();
 		NodeList list = rulesNode.getChildNodes();
 		for (int i = 0; i < list.getLength(); i++) {
 			Node node = list.item(i);
 			String name = node.getLocalName();
 			if (Ele_Policy_Rule.equals(name)) {
-				XMLRule rule = new XMLRule();
+				Rule rule = new Rule();
 				rule.parse(node);
 				rules.add(rule);
 			}
@@ -131,7 +135,7 @@ public class PolicyParser implements ParserConstant {
 		policy.setUserRef(userRef);
 		policy.setDataRef(dataRef);
 		VocabularyParser vocabParser = new VocabularyParser();
-		XMLVocabulary vocabulary = vocabParser.parse(location, userRef, dataRef);
+		Vocabulary vocabulary = vocabParser.parse(location, userRef, dataRef);
 		policy.setUserContainer(vocabulary.getUserContainer(userRef));
 		policy.setDataContainer(vocabulary.getDataContainer(dataRef));
 

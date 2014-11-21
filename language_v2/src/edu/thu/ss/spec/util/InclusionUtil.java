@@ -4,18 +4,16 @@ import java.util.Iterator;
 import java.util.Set;
 
 import edu.thu.ss.spec.lang.pojo.Action;
+import edu.thu.ss.spec.lang.pojo.DataAssociation;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
+import edu.thu.ss.spec.lang.pojo.DataRef;
 import edu.thu.ss.spec.lang.pojo.Desensitization;
 import edu.thu.ss.spec.lang.pojo.Restriction;
-import edu.thu.ss.spec.lang.xml.XMLDataAssociation;
-import edu.thu.ss.spec.lang.xml.XMLDataCategoryRef;
-import edu.thu.ss.spec.lang.xml.XMLDesensitization;
-import edu.thu.ss.spec.lang.xml.XMLRestriction;
-import edu.thu.ss.spec.lang.xml.XMLUserCategoryRef;
+import edu.thu.ss.spec.lang.pojo.UserRef;
 
 public class InclusionUtil {
 
-	public static boolean includes(XMLUserCategoryRef user1, XMLUserCategoryRef user2) {
+	public static boolean includes(UserRef user1, UserRef user2) {
 		return SetUtil.contains(user1.getMaterialized(), user2.getMaterialized());
 	}
 
@@ -23,20 +21,20 @@ public class InclusionUtil {
 		return action1.ancestorOf(action2);
 	}
 
-	public static boolean includes(XMLDataCategoryRef data1, XMLDataCategoryRef data2) {
+	public static boolean includes(DataRef data1, DataRef data2) {
 		if (!data1.getAction().ancestorOf(data2.getAction())) {
 			return false;
 		}
 		return SetUtil.contains(data1.getMaterialized(), data2.getMaterialized());
 	}
 
-	public static boolean includes(XMLDataAssociation association1, XMLDataAssociation association2) {
+	public static boolean includes(DataAssociation association1, DataAssociation association2) {
 		if (association1.getDataRefs().size() != association2.getDataRefs().size()) {
 			return false;
 		}
-		for (XMLDataCategoryRef data2 : association2.getDataRefs()) {
+		for (DataRef data2 : association2.getDataRefs()) {
 			boolean match = false;
-			for (XMLDataCategoryRef data1 : association1.getDataRefs()) {
+			for (DataRef data1 : association1.getDataRefs()) {
 				if (includes(data1, data2)) {
 					match = true;
 					break;
@@ -46,9 +44,9 @@ public class InclusionUtil {
 				return false;
 			}
 		}
-		for (XMLDataCategoryRef data1 : association1.getDataRefs()) {
+		for (DataRef data1 : association1.getDataRefs()) {
 			boolean match = false;
-			for (XMLDataCategoryRef data2 : association2.getDataRefs()) {
+			for (DataRef data2 : association2.getDataRefs()) {
 				if (includes(data1, data2)) {
 					match = true;
 					break;
@@ -71,17 +69,17 @@ public class InclusionUtil {
 	 * @param res2
 	 * @return
 	 */
-	public static boolean stricterThan(XMLRestriction res1, XMLRestriction res2) {
+	public static boolean innerStricterThan(Restriction res1, Restriction res2) {
 		if (res1.isForbid()) {
 			return true;
 		}
 		if (res2.isForbid()) {
 			return false;
 		}
-		for (XMLDesensitization de2 : res2.getDesensitizations()) {
-			for (XMLDataCategoryRef ref2 : de2.getDataRefs()) {
+		for (Desensitization de2 : res2.getDesensitizations()) {
+			for (DataRef ref2 : de2.getDataRefs()) {
 				boolean match = false;
-				for (XMLDesensitization de1 : res1.getDesensitizations()) {
+				for (Desensitization de1 : res1.getDesensitizations()) {
 					if (de1.getDataRefs().contains(ref2)) {
 						match = true;
 						if (!includes(de1, de2)) {

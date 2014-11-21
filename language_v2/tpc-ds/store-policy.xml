@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <privacy-policy xmlns="http://www.example.org/privacy"
-	id="store-policy" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.example.org/privacy ../res/privacy.xsd">
 	<policy-information id="store-policy">
 		<issuer>
@@ -18,7 +18,8 @@
 	<rules>
 		<rule id="forbid_project">
 			<user-category-ref refid="app"></user-category-ref>
-			<data-category-ref refid="ka" action="projection"></data-category-ref>
+			<data-category-ref refid="ka" action="projection"
+				global="true"></data-category-ref>
 			<data-category-ref refid="name" action="projection"></data-category-ref>
 			<data-category-ref refid="customer_suite" action="projection"></data-category-ref>
 			<data-category-ref refid="customer_sa" action="projection"></data-category-ref>
@@ -41,7 +42,7 @@
 		<rule id="forbid_ka_customer_sa">
 			<user-category-ref refid="app"></user-category-ref>
 			<data-association>
-				<data-category-ref refid="ka"></data-category-ref>
+				<data-category-ref refid="ka" global="true"></data-category-ref>
 				<data-category-ref refid="customer_sa"></data-category-ref>
 			</data-association>
 			<restriction>

@@ -1,4 +1,4 @@
-package edu.thu.ss.spec.lang.xml;
+package edu.thu.ss.spec.lang.pojo;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -6,11 +6,7 @@ import java.util.Map;
 
 import org.w3c.dom.Node;
 
-import edu.thu.ss.spec.lang.pojo.DataContainer;
-import edu.thu.ss.spec.lang.pojo.Info;
-import edu.thu.ss.spec.lang.pojo.UserContainer;
-
-public class XMLVocabulary {
+public class Vocabulary {
 
 	protected Info info;
 

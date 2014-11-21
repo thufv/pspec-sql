@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.thu.ss.spec.lang.pojo.DataContainer;
 import edu.thu.ss.spec.lang.pojo.UserContainer;
-import edu.thu.ss.spec.lang.xml.XMLVocabulary;
+import edu.thu.ss.spec.lang.pojo.Vocabulary;
 
 /**
  * A category manager for data/user category containers
@@ -20,12 +20,12 @@ import edu.thu.ss.spec.lang.xml.XMLVocabulary;
 public class CategoryManager {
 	private static Logger logger = LoggerFactory.getLogger(CategoryManager.class);
 
-	private static Map<URI, XMLVocabulary> parsedVocab = new HashMap<>();
+	private static Map<URI, Vocabulary> parsedVocab = new HashMap<>();
 
 	private static Map<String, UserContainer> users = new HashMap<>();
 	private static Map<String, DataContainer> datas = new HashMap<>();
 
-	public static Map<URI, XMLVocabulary> getParsedVocab() {
+	public static Map<URI, Vocabulary> getParsedVocab() {
 		return parsedVocab;
 	}
 
@@ -45,7 +45,7 @@ public class CategoryManager {
 		datas.put(container.getId(), container);
 	}
 
-	public static void add(XMLVocabulary vocab) {
+	public static void add(Vocabulary vocab) {
 		parsedVocab.put(vocab.getPath(), vocab);
 		for (UserContainer container : vocab.getUserContainers().values()) {
 			add(container);
@@ -59,7 +59,7 @@ public class CategoryManager {
 		return parsedVocab.containsKey(new URI(path).normalize());
 	}
 
-	public static XMLVocabulary getVocab(String path) throws Exception {
+	public static Vocabulary getVocab(String path) throws Exception {
 		return parsedVocab.get(new URI(path).normalize());
 	}
 

@@ -1,4 +1,4 @@
-package edu.thu.ss.spec.lang.analyzer;
+package edu.thu.ss.spec.lang.analyzer.local;
 
 import java.util.Iterator;
 import java.util.List;
@@ -7,8 +7,9 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.thu.ss.spec.lang.analyzer.BasePolicyAnalyzer;
+import edu.thu.ss.spec.lang.analyzer.local.LocalRule.DataActionPair;
 import edu.thu.ss.spec.lang.pojo.Action;
-import edu.thu.ss.spec.lang.pojo.DataActionPair;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.Policy;
@@ -18,17 +19,17 @@ import edu.thu.ss.spec.util.InclusionUtil;
 import edu.thu.ss.spec.util.SetUtil;
 import edu.thu.ss.spec.util.SetUtil.SetRelation;
 
-public class SimpleRedundancyAnalyzer extends BasePolicyAnalyzer {
-	private static Logger logger = LoggerFactory.getLogger(SimpleRedundancyAnalyzer.class);
+public class LocalRedundancyAnalyzer extends BasePolicyAnalyzer {
+	private static Logger logger = LoggerFactory.getLogger(LocalRedundancyAnalyzer.class);
 
 	@Override
 	public boolean analyze(Policy policy) {
-		List<ExpandedRule> rules = policy.getExpandedRules();
+		List<LocalRule> rules = policy.getLocalRules();
 
-		Iterator<ExpandedRule> it = rules.iterator();
+		Iterator<LocalRule> it = rules.iterator();
 		while (it.hasNext()) {
 			ExpandedRule erule1 = it.next();
-			boolean removable = checkRedundancy(erule1, rules);
+			boolean removable = checkRedundancy((LocalRule) erule1, rules);
 			if (removable) {
 				it.remove();
 			}
@@ -37,8 +38,8 @@ public class SimpleRedundancyAnalyzer extends BasePolicyAnalyzer {
 		return false;
 	}
 
-	private boolean checkRedundancy(ExpandedRule target, List<ExpandedRule> rules) {
-		for (ExpandedRule erule : rules) {
+	private boolean checkRedundancy(LocalRule target, List<LocalRule> rules) {
+		for (LocalRule erule : rules) {
 			if (target == erule) {
 				continue;
 			}
@@ -49,8 +50,8 @@ public class SimpleRedundancyAnalyzer extends BasePolicyAnalyzer {
 				redundant = checkAssociation(erule, target);
 			}
 			if (redundant) {
-				logger
-						.warn("The rule: {} is removed since it is covered by rule: {}.", target.getRuleId(), erule.getRuleId());
+				logger.warn("The rule: {} is redundant since it is covered by rule: {}, consider revise your policy.",
+						target.getRuleId(), erule.getRuleId());
 				return true;
 			}
 		}
@@ -65,7 +66,7 @@ public class SimpleRedundancyAnalyzer extends BasePolicyAnalyzer {
 	 * @param rule2
 	 * @return
 	 */
-	private boolean checkSingle(ExpandedRule rule1, ExpandedRule rule2) {
+	private boolean checkSingle(LocalRule rule1, LocalRule rule2) {
 		if (rule1.isAssociation()) {
 			return false;
 		}
@@ -119,7 +120,7 @@ public class SimpleRedundancyAnalyzer extends BasePolicyAnalyzer {
 	 * @param rule2
 	 * @return
 	 */
-	private boolean checkAssociation(ExpandedRule rule1, ExpandedRule rule2) {
+	private boolean checkAssociation(LocalRule rule1, LocalRule rule2) {
 		if (rule1.isSingle()) {
 			return checkSingleAssociation(rule1, rule2);
 		} else {
@@ -135,7 +136,7 @@ public class SimpleRedundancyAnalyzer extends BasePolicyAnalyzer {
 	 * @param rule2
 	 * @return
 	 */
-	private boolean checkSingleAssociation(ExpandedRule rule1, ExpandedRule rule2) {
+	private boolean checkSingleAssociation(LocalRule rule1, LocalRule rule2) {
 		Set<UserCategory> user1 = rule1.getUsers();
 		Set<UserCategory> user2 = rule2.getUsers();
 
@@ -177,7 +178,7 @@ public class SimpleRedundancyAnalyzer extends BasePolicyAnalyzer {
 	 * @param rule2
 	 * @return
 	 */
-	private boolean checkBothAssociation(ExpandedRule rule1, ExpandedRule rule2) {
+	private boolean checkBothAssociation(LocalRule rule1, LocalRule rule2) {
 		DataActionPair[] pairs1 = rule1.getDatas();
 		DataActionPair[] pairs2 = rule2.getDatas();
 		if (pairs1.length > pairs2.length) {

@@ -34,7 +34,6 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 	private XMLMetaRegistry registry = null;
 	private Policy policy = null;
 	private Map<String, DesensitizeOperation> udfs = null;
-	private Set<JoinCondition> joinConditions = null;
 
 	public MetaRegistry parse(String path) throws ParsingException {
 		init();
@@ -89,6 +88,7 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 			String name = node.getLocalName();
 			if (Ele_Table.equals(name)) {
 				Table table = parseTable(node);
+				checkTable(database, table);
 				database.addTable(table);
 			}
 		}
@@ -96,7 +96,6 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 	}
 
 	private Table parseTable(Node tableNode) {
-		joinConditions = new HashSet<>();
 		Table table = new Table();
 		String tableName = XMLUtil.getLowerAttrValue(tableNode, Attr_Name);
 		table.setName(tableName);
@@ -167,7 +166,7 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 		String dataCategoryId = XMLUtil.getLowerAttrValue(columnNode, Attr_Data_Category);
 		DataCategory dataCategory = policy.getDataCategory(dataCategoryId);
 		if (dataCategory == null) {
-			logger.error("Cannot locate data category: {}.", dataCategoryId);
+			logger.error("Cannot locate data category: {} referred in column: {}.", dataCategoryId, columnName);
 			error = true;
 			return column;
 		}
@@ -205,6 +204,14 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 		}
 	}
 
+	private void checkTable(Database database, Table table) {
+		if (MetaManager.isDefined(database.getName(), table.getName())) {
+			logger.error("Table: {} in database: {} has already been defined by other meta files, please fix.",
+					table.getName(), database.getName());
+			error = true;
+		}
+	}
+
 	private void checkOperationMapping(String udf, DesensitizeOperation op) {
 		DesensitizeOperation op2 = udfs.get(udf);
 		if (op2 == null) {
@@ -213,15 +220,6 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 			logger.error("UDF: {} should not be mapped to multiple desensitize operations: {} and {}.", udf, op.getName(),
 					op2.getName());
 			error = true;
-		}
-	}
-
-	private void checkJoin(JoinCondition join) {
-		if (joinConditions.contains(join)) {
-			logger.error("Duplicate join condition detected, please fix. Join: {}", join);
-			error = true;
-		} else {
-			joinConditions.add(join);
 		}
 	}
 

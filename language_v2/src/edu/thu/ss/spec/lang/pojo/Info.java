@@ -4,9 +4,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.spec.lang.parser.ParserConstant;
-import edu.thu.ss.spec.lang.xml.XMLDescribedObject;
 
-public class Info extends XMLDescribedObject {
+public class Info extends DescribedObject {
 	protected ContactInfo contact;
 	protected String location;
 
@@ -26,6 +25,7 @@ public class Info extends XMLDescribedObject {
 		this.location = location;
 	}
 
+	@Override
 	public void parse(Node infoNode) {
 		super.parse(infoNode);
 

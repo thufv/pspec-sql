@@ -7,39 +7,38 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.thu.ss.spec.lang.pojo.DataAssociation;
 import edu.thu.ss.spec.lang.pojo.DataContainer;
+import edu.thu.ss.spec.lang.pojo.DataRef;
+import edu.thu.ss.spec.lang.pojo.Restriction;
+import edu.thu.ss.spec.lang.pojo.Rule;
 import edu.thu.ss.spec.lang.pojo.UserContainer;
-import edu.thu.ss.spec.lang.xml.XMLDataAssociation;
-import edu.thu.ss.spec.lang.xml.XMLDataCategoryRef;
-import edu.thu.ss.spec.lang.xml.XMLRestriction;
-import edu.thu.ss.spec.lang.xml.XMLRule;
-import edu.thu.ss.spec.lang.xml.XMLUserCategoryRef;
+import edu.thu.ss.spec.lang.pojo.UserRef;
 import edu.thu.ss.spec.util.InclusionUtil;
 
 public class RuleSimplifier extends BaseRuleAnalyzer {
 	private static Logger logger = LoggerFactory.getLogger(RuleSimplifier.class);
 
 	@Override
-	protected boolean analyzeRule(XMLRule rule, UserContainer users, DataContainer datas) {
+	protected boolean analyzeRule(Rule rule, UserContainer users, DataContainer datas) {
 		/**
 		 * simplification of users/datas in a rule is no longer needed, since
 		 * all users/datas are expanded into a single set.
 		 */
-		// simplifyUsers(rule.getUserRefs(), rule.getId());
-		// simplifyDatas(rule.getDataRefs(), rule.getId());
+		simplifyUsers(rule.getUserRefs(), rule.getId());
+		simplifyDatas(rule.getDataRefs(), rule.getId());
 
-		simplifyDataAssociations(rule.getAssociations());
+		//simplifyDataAssociations(rule.getAssociations());
 		simplifyRestrictions(rule.getRestrictions());
 		return false;
 	}
 
-	@SuppressWarnings("unused")
-	private void simplifyUsers(Set<XMLUserCategoryRef> categories, String ruleId) {
-		Iterator<XMLUserCategoryRef> it = categories.iterator();
+	private void simplifyUsers(List<UserRef> categories, String ruleId) {
+		Iterator<UserRef> it = categories.iterator();
 		while (it.hasNext()) {
-			XMLUserCategoryRef user1 = it.next();
+			UserRef user1 = it.next();
 			boolean removable = false;
-			for (XMLUserCategoryRef user2 : categories) {
+			for (UserRef user2 : categories) {
 				if (user1 != user2 && InclusionUtil.includes(user2, user1)) {
 					removable = true;
 					break;
@@ -47,19 +46,20 @@ public class RuleSimplifier extends BaseRuleAnalyzer {
 			}
 			if (removable) {
 				it.remove();
-				logger.warn("User category: {} is removed from rule: {} since it is redundant.", user1.getRefid(),
-						ruleId);
+				logger.warn("User category: {} is removed from rule: {} since it is redundant.", user1.getRefid(), ruleId);
 			}
 		}
 	}
 
-	@SuppressWarnings("unused")
-	private void simplifyDatas(Set<XMLDataCategoryRef> categories) {
-		Iterator<XMLDataCategoryRef> it = categories.iterator();
+	private void simplifyDatas(List<DataRef> categories, String ruleId) {
+		Iterator<DataRef> it = categories.iterator();
 		while (it.hasNext()) {
-			XMLDataCategoryRef data1 = it.next();
+			DataRef data1 = it.next();
 			boolean removable = false;
-			for (XMLDataCategoryRef data2 : categories) {
+			for (DataRef data2 : categories) {
+				if (data1.isGlobal() && !data2.isGlobal()) {
+					continue;
+				}
 				if (data1 != data2 && InclusionUtil.includes(data2, data1)) {
 					removable = true;
 					break;
@@ -67,19 +67,19 @@ public class RuleSimplifier extends BaseRuleAnalyzer {
 			}
 			if (removable) {
 				it.remove();
-				logger.warn("Data category: {} is removed from rule: {} since it is redundant.", data1.getRefid(),
-						ruleId);
+				logger.warn("Data category: {} is removed from rule: {} since it is redundant.", data1.getRefid(), ruleId);
 			}
 		}
 	}
 
-	private void simplifyDataAssociations(Set<XMLDataAssociation> associations) {
-		Iterator<XMLDataAssociation> it = associations.iterator();
+	@SuppressWarnings("unused")
+	private void simplifyDataAssociations(Set<DataAssociation> associations) {
+		Iterator<DataAssociation> it = associations.iterator();
 		int i = 1;
 		while (it.hasNext()) {
-			XMLDataAssociation ass1 = it.next();
+			DataAssociation ass1 = it.next();
 			boolean removable = false;
-			for (XMLDataAssociation ass2 : associations) {
+			for (DataAssociation ass2 : associations) {
 				if (ass1 != ass2 && InclusionUtil.includes(ass2, ass1)) {
 					removable = true;
 					break;
@@ -93,17 +93,17 @@ public class RuleSimplifier extends BaseRuleAnalyzer {
 		}
 	}
 
-	private void simplifyRestrictions(List<XMLRestriction> restrictions) {
+	private void simplifyRestrictions(List<Restriction> restrictions) {
 		if (restrictions.size() <= 1) {
 			return;
 		}
-		Iterator<XMLRestriction> it = restrictions.iterator();
+		Iterator<Restriction> it = restrictions.iterator();
 		int i = 1;
 		while (it.hasNext()) {
-			XMLRestriction res1 = it.next();
+			Restriction res1 = it.next();
 			boolean removable = false;
-			for (XMLRestriction res2 : restrictions) {
-				if (res1 != res2 && InclusionUtil.stricterThan(res1, res2)) {
+			for (Restriction res2 : restrictions) {
+				if (res1 != res2 && InclusionUtil.innerStricterThan(res1, res2)) {
 					removable = true;
 					break;
 				}

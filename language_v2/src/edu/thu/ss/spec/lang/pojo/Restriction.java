@@ -3,23 +3,23 @@ package edu.thu.ss.spec.lang.pojo;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Restriction {
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
-	protected Set<Desensitization> desensitizations;
+import edu.thu.ss.spec.lang.parser.ParserConstant;
 
-	protected boolean forbid;
+public class Restriction implements Parsable {
 
-	public Restriction(boolean forbid) {
+	private Set<Desensitization> desensitizations;
+
+	private boolean forbid = false;
+
+	public void setForbid(boolean forbid) {
 		this.forbid = forbid;
 	}
 
-	public Restriction(Set<Desensitization> des) {
-		this.desensitizations = des;
-	}
-
-	public Restriction(Desensitization de) {
-		this.desensitizations = new HashSet<>();
-		this.desensitizations.add(de);
+	public boolean isForbid() {
+		return forbid;
 	}
 
 	public Set<Desensitization> getDesensitizations() {
@@ -30,8 +30,23 @@ public class Restriction {
 		return desensitizations.iterator().next();
 	}
 
-	public boolean isForbid() {
-		return forbid;
+	@Override
+	public void parse(Node resNode) {
+		NodeList list = resNode.getChildNodes();
+		for (int i = 0; i < list.getLength(); i++) {
+			Node node = list.item(i);
+			String name = node.getLocalName();
+			if (ParserConstant.Ele_Policy_Rule_Desensitize.equals(name)) {
+				Desensitization d = new Desensitization();
+				d.parse(node);
+				if (desensitizations == null) {
+					desensitizations = new HashSet<>();
+				}
+				desensitizations.add(d);
+			} else if (ParserConstant.Ele_Policy_Rule_Forbid.equals(name)) {
+				forbid = true;
+			}
+		}
 	}
 
 	@Override

@@ -1,6 +1,9 @@
 package edu.thu.ss.spec.lang.pojo;
 
-public class BaseCategory<T extends BaseCategory<T>> extends HierarchicalObject<T> {
+import java.util.HashSet;
+import java.util.Set;
+
+public abstract class Category<T extends Category<T>> extends HierarchicalObject<T> {
 	protected String containerId;
 
 	public String getContainerId() {
@@ -11,6 +14,25 @@ public class BaseCategory<T extends BaseCategory<T>> extends HierarchicalObject<
 		this.containerId = containerId;
 	}
 
+	@SuppressWarnings("unchecked")
+	public Set<T> getDescendants(CategoryContainer<T> container) {
+		Set<T> set = new HashSet<>();
+		collectDescendants(set, (T) this, container);
+		return set;
+	}
+
+	private void collectDescendants(Set<T> set, T t, CategoryContainer<T> container) {
+		set.add(t);
+		if (t.children == null) {
+			return;
+		}
+		for (T child : t.children) {
+			if (container.contains(child.id)) {
+				collectDescendants(set, child, container);
+			}
+		}
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -19,6 +41,7 @@ public class BaseCategory<T extends BaseCategory<T>> extends HierarchicalObject<
 		return result;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -27,7 +50,7 @@ public class BaseCategory<T extends BaseCategory<T>> extends HierarchicalObject<
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		BaseCategory other = (BaseCategory) obj;
+		Category other = (Category) obj;
 		if (containerId == null) {
 			if (other.containerId != null)
 				return false;

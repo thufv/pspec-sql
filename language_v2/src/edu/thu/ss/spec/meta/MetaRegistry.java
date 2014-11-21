@@ -6,7 +6,6 @@ import java.util.Set;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.Policy;
-import edu.thu.ss.spec.lang.pojo.UserCategory;
 
 public interface MetaRegistry {
 
@@ -15,8 +14,6 @@ public interface MetaRegistry {
 	public Map<JoinCondition, DataCategory> conditionalLookup(String database, String table, String column);
 
 	public DesensitizeOperation lookup(DataCategory data, String udf, String database, String table, String column);
-
-	public UserCategory currentUser();
 
 	public Map<String, Database> getDatabases();
 
