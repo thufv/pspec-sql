@@ -125,7 +125,7 @@ public class RuleResolver extends BaseRuleAnalyzer {
 			for (ObjectRef excludeRef : ref.getExcludeRefs()) {
 				data = resolveData(excludeRef, datas);
 				if (data != null && !checkExclusion(ref.getData(), data)) {
-					ref.getExcludes().add(data);
+					ref.exclude(data);
 				} else {
 					error = true;
 				}

@@ -1,6 +1,7 @@
 package edu.thu.ss.spec.lang.analyzer.global;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -13,6 +14,7 @@ import edu.thu.ss.spec.lang.analyzer.BasePolicyAnalyzer;
 import edu.thu.ss.spec.lang.pojo.Action;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DataRef;
+import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Rule;
 
@@ -21,22 +23,23 @@ public class GlobalExpander extends BasePolicyAnalyzer {
 
 	@Override
 	public boolean analyze(Policy policy) {
-		List<GlobalRule> expandedRules = new ArrayList<>();
+		List<ExpandedRule> expandedRules = new ArrayList<>();
 		List<Rule> rules = policy.getRules();
 		for (Rule rule : rules) {
 			int index = 1;
 			if (rule.isSingle()) {
 				List<DataRef> refs = expandData(rule.getDataRefs());
 				for (DataRef ref : refs) {
-					GlobalRule globalRule = new GlobalRule(rule, ref, index++);
-					expandedRules.add(globalRule);
+					ExpandedRule erule = new ExpandedRule(rule, ref, index++);
+					expandedRules.add(erule);
 				}
 			} else {
-				GlobalRule globalRule = new GlobalRule(rule, rule.getAssociation(), index++);
-				expandedRules.add(globalRule);
+				ExpandedRule erule = new ExpandedRule(rule, rule.getAssociation(), index++);
+				expandedRules.add(erule);
 			}
 		}
-		policy.setGlobalRules(expandedRules);
+		Collections.sort(expandedRules);
+		policy.setExpandedRules(expandedRules);
 		return false;
 	}
 

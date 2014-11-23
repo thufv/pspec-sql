@@ -10,11 +10,10 @@ import edu.thu.ss.spec.meta.xml.XMLMetaRegistryParser;
 
 public class PolicyParserTest {
 
-	@Test
 	public void testStore() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse("tpc-ds/store-policy.xml", true);
+			Policy policy = parser.parse("tpc-ds/store-policy.xml", false);
 			System.out.println(policy);
 
 			XMLMetaRegistryParser metaParser = new XMLMetaRegistryParser();
@@ -26,20 +25,22 @@ public class PolicyParserTest {
 		}
 	}
 
+	@Test
 	public void testConflict() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse("test/res/conflict-policy.xml");
+			Policy policy = parser.parse("test/res/conflict-policy.xml", false);
 			System.out.println(policy);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
+	@Test
 	public void testRedundancy() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse("test/res/redundancy-policy.xml");
+			Policy policy = parser.parse("test/res/redundancy-policy.xml", false);
 			System.out.println(policy);
 		} catch (Exception e) {
 			e.printStackTrace();

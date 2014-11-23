@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.HierarchicalObject;
 
@@ -53,15 +52,6 @@ public class SetUtil {
 			return SetRelation.disjoint;
 		}
 
-	}
-
-	public static String toString(Set<DataCategory> set) {
-		StringBuilder sb = new StringBuilder();
-		for (DataCategory data : set) {
-			sb.append(data.getId());
-			sb.append(' ');
-		}
-		return sb.toString();
 	}
 
 	public static <T> Set<T> intersect(Set<T> set1, Set<T> set2) {

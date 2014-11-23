@@ -52,8 +52,7 @@ public class HierarchicalObject<T extends HierarchicalObject<T>> extends Describ
 		}
 		return false;
 	}
-	
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

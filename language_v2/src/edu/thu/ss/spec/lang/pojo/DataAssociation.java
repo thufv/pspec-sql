@@ -24,6 +24,10 @@ public class DataAssociation implements Parsable {
 		return dataRefs.get(i);
 	}
 
+	public int getDimension() {
+		return dataRefs.size();
+	}
+
 	@Override
 	public void parse(Node refNode) {
 		NodeList list = refNode.getChildNodes();

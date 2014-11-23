@@ -4,9 +4,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-import edu.thu.ss.spec.lang.analyzer.global.GlobalRule;
-import edu.thu.ss.spec.lang.analyzer.local.LocalRule;
-
 public class Policy {
 	protected Info info;
 
@@ -25,9 +22,7 @@ public class Policy {
 
 	protected List<Rule> rules;
 
-	protected List<LocalRule> localRules;
-
-	protected List<GlobalRule> globalRules;
+	protected List<ExpandedRule> expandedRules;
 
 	protected URI path;
 
@@ -39,26 +34,12 @@ public class Policy {
 		return path;
 	}
 
-	public void setLocalRules(List<LocalRule> localRules) {
-		this.localRules = localRules;
+	public void setExpandedRules(List<ExpandedRule> expandedRule) {
+		this.expandedRules = expandedRule;
 	}
 
-	public List<LocalRule> getLocalRules() {
-		if (localRules == null) {
-			throw new RuntimeException("Rules in policy: " + info.getId() + " not expanded yet.");
-		}
-		return localRules;
-	}
-
-	public void setGlobalRules(List<GlobalRule> globalRules) {
-		this.globalRules = globalRules;
-	}
-
-	public List<GlobalRule> getGlobalRules() {
-		if (globalRules == null) {
-			throw new RuntimeException("Rules in policy: " + info.getId() + " not expanded yet.");
-		}
-		return globalRules;
+	public List<ExpandedRule> getExpandedRules() {
+		return expandedRules;
 	}
 
 	public String getVocabularyLocation() {
@@ -171,16 +152,9 @@ public class Policy {
 		sb.append("\n");
 
 		sb.append("Expanded Rules:\n");
-		if (globalRules != null) {
-			for (ExpandedRule rule : globalRules) {
-				sb.append(rule);
-				sb.append("\n");
-			}
-		} else if (localRules != null) {
-			for (ExpandedRule rule : localRules) {
-				sb.append(rule);
-				sb.append("\n");
-			}
+		for (ExpandedRule rule : expandedRules) {
+			sb.append(rule);
+			sb.append("\n");
 		}
 
 		return sb.toString();

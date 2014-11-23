@@ -28,8 +28,6 @@ public class Rule extends DescribedObject {
 		return association == null;
 	}
 
-
-
 	public List<Restriction> getRestrictions() {
 		return restrictions;
 	}

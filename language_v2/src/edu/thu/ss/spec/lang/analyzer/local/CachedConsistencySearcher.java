@@ -108,7 +108,7 @@ public class CachedConsistencySearcher extends ConsistencySearcher {
 					if (ops.size() == 0) {
 						logger.error(
 								"Desensitize operation conflicts detected between expanded sortedRules: #{} for data categories: {}.",
-								SetUtil.toString(key.rules, sortedRules), SetUtil.toString(datas));
+								SetUtil.toString(key.rules, sortedRules), SetUtil.format(datas, ","));
 						return null;
 					}
 					SetUtil.mergeOperations(list, ops);

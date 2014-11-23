@@ -1,6 +1,7 @@
 package edu.thu.ss.spec.lang.pojo;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -8,7 +9,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.spec.lang.parser.ParserConstant;
-import edu.thu.ss.spec.util.XMLUtil;
 
 public abstract class CategoryRef<T extends Category<T>> extends ObjectRef {
 	protected T category;
@@ -20,7 +20,7 @@ public abstract class CategoryRef<T extends Category<T>> extends ObjectRef {
 	protected Set<T> materialized;
 
 	public boolean contains(T t) {
-		return category.ancestorOf(t);
+		return materialized.contains(t);
 	}
 
 	public Set<ObjectRef> getExcludeRefs() {
@@ -29,6 +29,23 @@ public abstract class CategoryRef<T extends Category<T>> extends ObjectRef {
 
 	public Set<T> getExcludes() {
 		return excludes;
+	}
+
+	public void exclude(T exclude) {
+		if (!category.ancestorOf(exclude)) {
+			throw new IllegalArgumentException("excluded category: " + exclude.getId()
+					+ " must be a descedent of target category: " + category.getId());
+		}
+		Iterator<T> it = excludes.iterator();
+		while (it.hasNext()) {
+			T t = it.next();
+			if (t.ancestorOf(exclude)) {
+				return;
+			} else if (exclude.ancestorOf(t)) {
+				it.remove();
+			}
+		}
+		excludes.add(exclude);
 	}
 
 	public Set<T> getMaterialized() {

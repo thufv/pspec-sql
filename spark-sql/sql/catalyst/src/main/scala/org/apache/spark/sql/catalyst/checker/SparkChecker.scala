@@ -13,7 +13,6 @@ import org.apache.spark.sql.catalyst.analysis.Catalog
 import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
 
 import edu.thu.ss.spec.global.MetaManager
-import edu.thu.ss.spec.lang.analyzer.global.GlobalRule
 import edu.thu.ss.spec.lang.parser.PolicyParser
 import edu.thu.ss.spec.lang.pojo.Action
 import edu.thu.ss.spec.lang.pojo.DataCategory
@@ -47,7 +46,7 @@ class SparkChecker extends PrivacyChecker {
 
     printPaths();
 
-    policies.foreach(p => p.getGlobalRules().asScala.foreach(checkRule(_, p)));
+    policies.foreach(p => p.getExpandedRules().asScala.foreach(checkRule(_, p)));
   }
 
   private def printPaths() {
@@ -101,7 +100,7 @@ class SparkChecker extends PrivacyChecker {
     })
   }
 
-  private def checkRule(rule: GlobalRule, policy: Policy): Unit = {
+  private def checkRule(rule: ExpandedRule, policy: Policy): Unit = {
     if (!rule.contains(user)) {
       return ;
     }
@@ -109,7 +108,7 @@ class SparkChecker extends PrivacyChecker {
     if (rule.isSingle()) {
       val access = new HashSet[DataCategory];
       val dataRef = rule.getDataRef();
-      collectDatas(dataRef, access);
+      collectDatas(dataRef, access, policy);
       error = checkRestriction(rule, access, policy);
     } else {
       val association = rule.getAssociation();
@@ -125,7 +124,7 @@ class SparkChecker extends PrivacyChecker {
     }
   }
 
-  private def collectDatas(ref: DataRef, access: Set[DataCategory], policy: Policy = null) {
+  private def collectDatas(ref: DataRef, access: Set[DataCategory], policy: Policy) {
     ref.getAction() match {
       case Action.All => {
         collectDatas(ref, projectionPaths, access, policy);
@@ -155,7 +154,7 @@ class SparkChecker extends PrivacyChecker {
     }
   }
 
-  private def checkRestriction(rule: GlobalRule, access: HashSet[DataCategory], policy: Policy): Boolean = {
+  private def checkRestriction(rule: ExpandedRule, access: HashSet[DataCategory], policy: Policy): Boolean = {
     if (access.size == 0) {
       return false;
     }
@@ -175,7 +174,7 @@ class SparkChecker extends PrivacyChecker {
     false;
   }
 
-  private def checkRestrictions(rule: GlobalRule, accesses: Array[HashSet[DataCategory]], policy: Policy): Boolean = {
+  private def checkRestrictions(rule: ExpandedRule, accesses: Array[HashSet[DataCategory]], policy: Policy): Boolean = {
     if (accesses.exists(_.size == 0)) {
       return false;
     }
@@ -186,7 +185,7 @@ class SparkChecker extends PrivacyChecker {
     return checkRestrictions(array, 0, rule, accesses, policy);
   }
 
-  private def checkRestrictions(array: Array[DataCategory], i: Int, rule: GlobalRule, accesses: Array[HashSet[DataCategory]], policy: Policy): Boolean = {
+  private def checkRestrictions(array: Array[DataCategory], i: Int, rule: ExpandedRule, accesses: Array[HashSet[DataCategory]], policy: Policy): Boolean = {
     if (i == accesses.length) {
       val restrictions = rule.getRestrictions();
       val association = rule.getAssociation();
@@ -275,7 +274,7 @@ object SparkChecker extends Logging {
   def loadPolicy(path: String): Unit = {
     val parser = new PolicyParser;
     try {
-      parser.parse(path, false);
+      parser.parse(path, true);
     } catch {
       case e: Exception => logError(e.getMessage, e);
     }

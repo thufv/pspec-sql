@@ -1,5 +1,7 @@
 package edu.thu.ss.spec.lang.pojo;
 
+import java.util.Set;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -10,6 +12,14 @@ public class DataRef extends CategoryRef<DataCategory> {
 	protected Action action = Action.All;
 
 	protected boolean global = false;
+
+	public DataRef() {
+	}
+
+	public DataRef(Action action, Set<DataCategory> datas) {
+		this.action = action;
+		this.materialized = datas;
+	}
 
 	public void setGlobal(boolean global) {
 		this.global = global;
@@ -33,6 +43,23 @@ public class DataRef extends CategoryRef<DataCategory> {
 
 	public Action getAction() {
 		return action;
+	}
+
+	@Override
+	public boolean contains(DataCategory t) {
+		if (!global) {
+			return super.contains(t);
+		} else {
+			if (!category.ancestorOf(t)) {
+				return false;
+			}
+			for (DataCategory exclude : excludes) {
+				if (exclude.ancestorOf(t)) {
+					return false;
+				}
+			}
+			return true;
+		}
 	}
 
 	@Override

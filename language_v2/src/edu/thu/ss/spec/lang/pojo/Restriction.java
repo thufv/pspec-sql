@@ -22,6 +22,20 @@ public class Restriction implements Parsable {
 		return forbid;
 	}
 
+	@Override
+	public Restriction clone() {
+		Restriction res = new Restriction();
+		res.forbid = this.forbid;
+		if (this.desensitizations != null) {
+			res.desensitizations = new HashSet<>();
+			for (Desensitization de : desensitizations) {
+				res.desensitizations.add(de.clone());
+			}
+		}
+		return res;
+
+	}
+
 	public Set<Desensitization> getDesensitizations() {
 		return desensitizations;
 	}

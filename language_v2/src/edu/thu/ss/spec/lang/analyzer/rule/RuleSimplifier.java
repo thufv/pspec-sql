@@ -39,7 +39,7 @@ public class RuleSimplifier extends BaseRuleAnalyzer {
 			UserRef user1 = it.next();
 			boolean removable = false;
 			for (UserRef user2 : categories) {
-				if (user1 != user2 && InclusionUtil.includes(user2, user1)) {
+				if (user1 != user2 && InclusionUtil.instance.includes(user2, user1)) {
 					removable = true;
 					break;
 				}
@@ -60,7 +60,7 @@ public class RuleSimplifier extends BaseRuleAnalyzer {
 				if (data1.isGlobal() && !data2.isGlobal()) {
 					continue;
 				}
-				if (data1 != data2 && InclusionUtil.includes(data2, data1)) {
+				if (data1 != data2 && InclusionUtil.instance.includes(data2, data1)) {
 					removable = true;
 					break;
 				}
@@ -80,7 +80,7 @@ public class RuleSimplifier extends BaseRuleAnalyzer {
 			DataAssociation ass1 = it.next();
 			boolean removable = false;
 			for (DataAssociation ass2 : associations) {
-				if (ass1 != ass2 && InclusionUtil.includes(ass2, ass1)) {
+				if (ass1 != ass2 && InclusionUtil.instance.includes(ass2, ass1)) {
 					removable = true;
 					break;
 				}
@@ -103,7 +103,7 @@ public class RuleSimplifier extends BaseRuleAnalyzer {
 			Restriction res1 = it.next();
 			boolean removable = false;
 			for (Restriction res2 : restrictions) {
-				if (res1 != res2 && InclusionUtil.innerStricterThan(res1, res2)) {
+				if (res1 != res2 && InclusionUtil.instance.innerStricterThan(res1, res2)) {
 					removable = true;
 					break;
 				}

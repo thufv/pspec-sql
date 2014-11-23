@@ -1,8 +1,5 @@
 package edu.thu.ss.spec.util;
 
-import java.util.Iterator;
-import java.util.Set;
-
 import edu.thu.ss.spec.lang.pojo.Action;
 import edu.thu.ss.spec.lang.pojo.DataAssociation;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
@@ -13,22 +10,24 @@ import edu.thu.ss.spec.lang.pojo.UserRef;
 
 public class InclusionUtil {
 
-	public static boolean includes(UserRef user1, UserRef user2) {
+	public static final InclusionUtil instance = new InclusionUtil();
+
+	public boolean includes(UserRef user1, UserRef user2) {
 		return SetUtil.contains(user1.getMaterialized(), user2.getMaterialized());
 	}
 
-	public static boolean includes(Action action1, Action action2) {
+	public boolean includes(Action action1, Action action2) {
 		return action1.ancestorOf(action2);
 	}
 
-	public static boolean includes(DataRef data1, DataRef data2) {
+	public boolean includes(DataRef data1, DataRef data2) {
 		if (!data1.getAction().ancestorOf(data2.getAction())) {
 			return false;
 		}
 		return SetUtil.contains(data1.getMaterialized(), data2.getMaterialized());
 	}
 
-	public static boolean includes(DataAssociation association1, DataAssociation association2) {
+	public boolean includes(DataAssociation association1, DataAssociation association2) {
 		if (association1.getDataRefs().size() != association2.getDataRefs().size()) {
 			return false;
 		}
@@ -69,7 +68,7 @@ public class InclusionUtil {
 	 * @param res2
 	 * @return
 	 */
-	public static boolean innerStricterThan(Restriction res1, Restriction res2) {
+	public boolean innerStricterThan(Restriction res1, Restriction res2) {
 		if (res1.isForbid()) {
 			return true;
 		}
@@ -82,7 +81,7 @@ public class InclusionUtil {
 				for (Desensitization de1 : res1.getDesensitizations()) {
 					if (de1.getDataRefs().contains(ref2)) {
 						match = true;
-						if (!includes(de1, de2)) {
+						if (!operationIncludes(de1, de2)) {
 							return false;
 						}
 					}
@@ -95,6 +94,18 @@ public class InclusionUtil {
 		return true;
 	}
 
+	public boolean singleStricterThan(Restriction res1, Restriction res2) {
+		if (res1.isForbid()) {
+			return true;
+		}
+		if (res2.isForbid()) {
+			return false;
+		}
+		Desensitization de1 = res1.getDesensitization();
+		Desensitization de2 = res2.getDesensitization();
+		return operationIncludes(de2, de1);
+	}
+
 	/**
 	 * test whether list1 is stricter than list2,
 	 * i.e., every res1 in list1 is stricter than at least one res2 in list2
@@ -103,7 +114,7 @@ public class InclusionUtil {
 	 * @param list2
 	 * @return
 	 */
-	public static boolean stricterThan(Restriction[] list1, Restriction[] list2) {
+	public boolean stricterThan(Restriction[] list1, Restriction[] list2) {
 		for (Restriction res1 : list1) {
 			if (res1.isForbid()) {
 				continue;
@@ -122,18 +133,6 @@ public class InclusionUtil {
 		return true;
 	}
 
-	public static boolean singleStricterThan(Restriction res1, Restriction res2) {
-		if (res1.isForbid()) {
-			return true;
-		}
-		if (res2.isForbid()) {
-			return false;
-		}
-		Desensitization de1 = res1.getDesensitization();
-		Desensitization de2 = res2.getDesensitization();
-		return includes(de2, de1);
-	}
-
 	/**
 	 * test whether res1 is stricter than res2, i.e., every restricted data
 	 * category in res2 must be more restricted in res1
@@ -142,29 +141,24 @@ public class InclusionUtil {
 	 * @param res2
 	 * @return
 	 */
-	public static boolean stricterThan(Restriction res1, Restriction res2) {
+	public boolean stricterThan(Restriction res1, Restriction res2) {
 		if (res1.isForbid()) {
 			return true;
 		}
 		if (res2.isForbid()) {
 			return false;
 		}
+
 		for (Desensitization de2 : res2.getDesensitizations()) {
-			for (Desensitization de1 : res1.getDesensitizations()) {
-				if (SetUtil.intersects(de1.getDatas(), de2.getDatas())) {
-					if (!includes(de2, de1)) {
-						return false;
-					}
-				}
-			}
-		}
-		for (Desensitization de2 : res2.getDesensitizations()) {
-			for (DataCategory data2 : de2.getDatas()) {
+			for (DataRef ref2 : de2.getDataRefs()) {
 				boolean match = false;
 				for (Desensitization de1 : res1.getDesensitizations()) {
-					if (de1.getDatas().contains(data2)) {
+					if (scopeIncludes(de1, ref2)) {
+						if (!operationIncludes(de2, de1)) {
+							return false;
+						}
 						match = true;
-						continue;
+						break;
 					}
 				}
 				if (!match) {
@@ -175,58 +169,30 @@ public class InclusionUtil {
 		return true;
 	}
 
-	/**
-	 * check res1 is stricter than one of res2
-	 * 
-	 * @param res1
-	 * @param res2
-	 * @return
-	 */
-	public static boolean stricterThan(Restriction res1, Restriction[] list2) {
-		if (res1.isForbid()) {
-			return true;
-		}
-		Desensitization de1 = res1.getDesensitization();
-		for (Restriction res2 : list2) {
-			if (res2.isForbid()) {
-				continue;
-			}
-			if (stricterThan(de1, res2.getDesensitizations())) {
-				return true;
+	public boolean scopeIncludes(Desensitization de1, Desensitization de2) {
+		for (DataRef ref2 : de2.getDataRefs()) {
+			if (!scopeIncludes(de1, ref2)) {
+				return false;
 			}
 		}
-		return false;
+		return true;
 	}
 
-	/**
-	 * Side effect, des2 can be simplified.
-	 * 
-	 * @param data1
-	 * @param de1
-	 * @param des2
-	 * @return
-	 */
-	public static boolean stricterThan(Desensitization de1, Set<Desensitization> des2) {
-		boolean match = true;
-		Set<DataCategory> data1 = de1.getDatas();
-		Iterator<Desensitization> it = des2.iterator();
-		while (it.hasNext()) {
-			Desensitization de2 = it.next();
-			if (SetUtil.contains(data1, de2.getDatas())) {
-				if (includes(de2, de1)) {
-					//de2 can be removed;
-					it.remove();
-				} else {
-					match = false;
-				}
-			} else {
-				match = false;
+	public boolean scopeIncludes(Desensitization de1, DataRef ref2) {
+		boolean match = false;
+		for (DataRef ref1 : de1.getDataRefs()) {
+			if (includes(ref1, ref2)) {
+				match = true;
+				break;
 			}
 		}
-		return match;
+		if (!match) {
+			return false;
+		}
+		return true;
 	}
 
-	public static boolean includes(Desensitization de1, Desensitization de2) {
+	public boolean operationIncludes(Desensitization de1, Desensitization de2) {
 		if (de1.isDefaultOperation()) {
 			return true;
 		}
@@ -240,50 +206,5 @@ public class InclusionUtil {
 		}
 		return SetUtil.contains(de1.getOperations(), de2.getOperations());
 	}
-
-	/*
-	
-	/**
-	 * check whether res1 is stricter than res2
-	 * 
-	 * @param res1
-	 * @param res2
-	 * @return
-	 *
-	public static boolean singleStricterThan(Restriction res1, Restriction res2) {
-		if (res1.isForbid()) {
-			return true;
-		}
-		if (res2.isForbid()) {
-			return false;
-		}
-		Desensitization de1 = res1.getDesensitizations().iterator().next();
-		Desensitization de2 = res2.getDesensitizations().iterator().next();
-		return includes(de2, de1);
-	}
-
-	
-
-	public static boolean stricterThan(List<Restriction> list1, List<Restriction> list2) {
-		for (Restriction res1 : list1) {
-			if (res1.isForbid()) {
-				continue;
-			}
-			boolean match = false;
-			for (Restriction res2 : list2) {
-				if (stricterThan(res1, res2)) {
-					match = true;
-					break;
-				}
-			}
-			if (!match) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	
-	*/
 
 }

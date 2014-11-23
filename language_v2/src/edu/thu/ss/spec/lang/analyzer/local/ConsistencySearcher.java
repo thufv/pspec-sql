@@ -13,11 +13,13 @@ import org.slf4j.LoggerFactory;
 
 import edu.thu.ss.spec.lang.analyzer.LevelwiseSearcher;
 import edu.thu.ss.spec.lang.analyzer.local.ConsistencyAnalyzer.RuleRelation;
-import edu.thu.ss.spec.lang.analyzer.local.LocalRule.DataActionPair;
 import edu.thu.ss.spec.lang.pojo.Action;
+import edu.thu.ss.spec.lang.pojo.DataAssociation;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
+import edu.thu.ss.spec.lang.pojo.DataRef;
 import edu.thu.ss.spec.lang.pojo.Desensitization;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
+import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Restriction;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
@@ -36,9 +38,9 @@ class ConsistencySearcher extends LevelwiseSearcher {
 		 */
 		List<Set<DesensitizeOperation>> list; //
 
-		public Triple(DataActionPair pair, List<Set<DesensitizeOperation>> list) {
-			this.action = pair.getAction();
-			this.datas = pair.getDatas();
+		public Triple(DataRef ref, List<Set<DesensitizeOperation>> list) {
+			this.action = ref.getAction();
+			this.datas = new HashSet<>(ref.getMaterialized());
 			this.list = list;
 		}
 
@@ -64,22 +66,22 @@ class ConsistencySearcher extends LevelwiseSearcher {
 	}
 
 	protected Policy policy;
-	protected List<LocalRule> rules;
+	protected List<ExpandedRule> rules;
 	protected RuleObject[] ruleObjects;
-	protected List<LocalRule> sortedRules;
+	protected List<ExpandedRule> sortedRules;
 	protected int[] index;
 
 	public ConsistencySearcher(Policy policy) {
 		this.policy = policy;
-		this.rules = policy.getLocalRules();
+		this.rules = policy.getExpandedRules();
 	}
 
 	@Override
 	protected void initLevel(Set<SearchKey> currentLevel) {
 		sortedRules = new ArrayList<>(rules);
-		Collections.sort(sortedRules, new Comparator<LocalRule>() {
+		Collections.sort(sortedRules, new Comparator<ExpandedRule>() {
 			@Override
-			public int compare(LocalRule o1, LocalRule o2) {
+			public int compare(ExpandedRule o1, ExpandedRule o2) {
 				return Integer.compare(o1.getDimension(), o2.getDimension());
 			}
 		});
@@ -131,7 +133,7 @@ class ConsistencySearcher extends LevelwiseSearcher {
 			if (relation.equals(RuleRelation.conflict)) {
 				logger.error(
 						"Desensitize operation conflicts detected between expanded sortedRules: #{} for data categories: {}.",
-						SetUtil.toString(key.rules, sortedRules), SetUtil.toString(joinDatas));
+						SetUtil.toString(key.rules, sortedRules), SetUtil.format(joinDatas, ","));
 			}
 			return relation;
 		}
@@ -169,7 +171,7 @@ class ConsistencySearcher extends LevelwiseSearcher {
 		}
 	}
 
-	protected List<Set<DesensitizeOperation>> collectOperations(LocalRule rule, Set<DataCategory> datas) {
+	protected List<Set<DesensitizeOperation>> collectOperations(ExpandedRule rule, Set<DataCategory> datas) {
 		Restriction[] restrictions = rule.getRestrictions();
 		List<Set<DesensitizeOperation>> list = null;
 		for (Restriction res : restrictions) {
@@ -177,7 +179,7 @@ class ConsistencySearcher extends LevelwiseSearcher {
 			boolean match = false;
 			Set<DesensitizeOperation> ops = null;
 			for (Desensitization de : des) {
-				Set<DataCategory> set = de.getDatas() != null ? de.getDatas() : rule.getData().getDatas();
+				Set<DataCategory> set = de.getDatas();
 				if (SetUtil.containOrDisjoint(set, datas).equals(SetRelation.contain)) {
 					ops = de.getOperations();
 					match = true;
@@ -237,29 +239,41 @@ class ConsistencySearcher extends LevelwiseSearcher {
 		return RuleRelation.consistent;
 	}
 
-	private RuleObject ruleToObject(LocalRule rule) {
+	private RuleObject ruleToObject(ExpandedRule rule) {
 		RuleObject obj = new RuleObject();
 		obj.users = new HashSet<>(rule.getUsers());
-		DataActionPair[] pairs = rule.getDatas();
 		if (rule.getRestriction().isForbid()) {
-			obj.triples = new Triple[pairs.length];
-			for (int i = 0; i < obj.triples.length; i++) {
-				obj.triples[i] = new Triple(pairs[i], null);
-				obj.triples[i].action = pairs[i].getAction();
-				obj.triples[i].datas = new HashSet<>(pairs[i].getDatas());
+			if (rule.isSingle()) {
+				obj.triples = new Triple[1];
+				obj.triples[0] = new Triple(rule.getDataRef(), null);
+			} else {
+				DataAssociation assoc = rule.getAssociation();
+				obj.triples = new Triple[assoc.getDimension()];
+				for (int i = 0; i < obj.triples.length; i++) {
+					obj.triples[i] = new Triple(assoc.get(i), null);
+				}
 			}
 		} else {
-			List<Triple> triples = new ArrayList<>(pairs.length);
-			for (DataActionPair pair : pairs) {
-				List<Set<DesensitizeOperation>> list = collectOperations(rule, pair.getDatas());
+			List<Triple> triples = new ArrayList<>();
+			if (rule.isSingle()) {
+				DataRef ref = rule.getDataRef();
+				List<Set<DesensitizeOperation>> list = collectOperations(rule, rule.getDataRef().getMaterialized());
 				if (list != null) {
-					Triple triple = new Triple(pair, list);
+					Triple triple = new Triple(ref, list);
 					triples.add(triple);
+				}
+			} else {
+				DataAssociation assoc = rule.getAssociation();
+				for (DataRef ref : assoc.getDataRefs()) {
+					List<Set<DesensitizeOperation>> list = collectOperations(rule, ref.getMaterialized());
+					if (list != null) {
+						Triple triple = new Triple(ref, list);
+						triples.add(triple);
+					}
 				}
 			}
 			obj.triples = triples.toArray(new Triple[triples.size()]);
 		}
 		return obj;
 	}
-
 }

@@ -1,5 +1,6 @@
 package edu.thu.ss.spec.lang.pojo;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,6 +25,22 @@ public class Desensitization implements Parsable {
 
 	public void setDataIndex(int... index) {
 		this.dataIndex = index;
+	}
+
+	public Desensitization clone() {
+		Desensitization de = new Desensitization();
+		de.dataRefIds = new HashSet<>(this.dataRefIds);
+		de.dataRefs = new HashSet<>(this.dataRefs);
+		if (this.datas != null) {
+			de.datas = new HashSet<>(this.datas);
+		}
+		if (this.operations != null) {
+			de.operations = new HashSet<>(this.operations);
+		}
+		if (this.dataIndex != null) {
+			de.dataIndex = Arrays.copyOf(dataIndex, dataIndex.length);
+		}
+		return de;
 	}
 
 	public Set<String> getDataRefIds() {

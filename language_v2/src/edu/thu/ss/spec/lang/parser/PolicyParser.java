@@ -13,6 +13,7 @@ import org.w3c.dom.NodeList;
 import edu.thu.ss.spec.global.PolicyManager;
 import edu.thu.ss.spec.lang.analyzer.PolicyAnalyzer;
 import edu.thu.ss.spec.lang.analyzer.global.GlobalExpander;
+import edu.thu.ss.spec.lang.analyzer.global.GlobalRedundancyAnalyzer;
 import edu.thu.ss.spec.lang.analyzer.local.ConsistencyAnalyzer;
 import edu.thu.ss.spec.lang.analyzer.local.LocalExpander;
 import edu.thu.ss.spec.lang.analyzer.local.LocalRedundancyAnalyzer;
@@ -40,6 +41,7 @@ public class PolicyParser implements ParserConstant {
 
 		if (global) {
 			analyzers.add(new GlobalExpander());
+			analyzers.add(new GlobalRedundancyAnalyzer());
 		} else {
 			analyzers.add(new LocalExpander());
 			analyzers.add(new LocalRedundancyAnalyzer());
