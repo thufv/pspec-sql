@@ -41,6 +41,8 @@ products:
    sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/analysis/HiveTypeCoercionSuite.scala -> sql/catalyst/target/scala-2.10/test-classes/org/apache/spark/sql/catalyst/analysis/HiveTypeCoercionSuite$$anon$1.class
    sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/analysis/HiveTypeCoercionSuite.scala -> sql/catalyst/target/scala-2.10/test-classes/org/apache/spark/sql/catalyst/analysis/HiveTypeCoercionSuite$$anonfun$1.class
    sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/analysis/HiveTypeCoercionSuite.scala -> sql/catalyst/target/scala-2.10/test-classes/org/apache/spark/sql/catalyst/analysis/HiveTypeCoercionSuite.class
+   sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/checker/CheckSuite.scala -> sql/catalyst/target/scala-2.10/test-classes/org/apache/spark/sql/catalyst/checker/CheckerSuite$$anonfun$1.class
+   sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/checker/CheckSuite.scala -> sql/catalyst/target/scala-2.10/test-classes/org/apache/spark/sql/catalyst/checker/CheckerSuite.class
    sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/expressions/ExpressionEvaluationSuite.scala -> sql/catalyst/target/scala-2.10/test-classes/org/apache/spark/sql/catalyst/expressions/ExpressionEvaluationSuite$$anonfun$1.class
    sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/expressions/ExpressionEvaluationSuite.scala -> sql/catalyst/target/scala-2.10/test-classes/org/apache/spark/sql/catalyst/expressions/ExpressionEvaluationSuite$$anonfun$10.class
    sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/expressions/ExpressionEvaluationSuite.scala -> sql/catalyst/target/scala-2.10/test-classes/org/apache/spark/sql/catalyst/expressions/ExpressionEvaluationSuite$$anonfun$11.class
@@ -173,6 +175,9 @@ binary dependencies:
    sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/analysis/HiveTypeCoercionSuite.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
    sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/analysis/HiveTypeCoercionSuite.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
    sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/analysis/HiveTypeCoercionSuite.scala -> /Users/luochen/.m2/repository/org/scalatest/scalatest_2.10/2.1.5/scalatest_2.10-2.1.5.jar
+   sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/checker/CheckSuite.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/checker/CheckSuite.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
+   sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/checker/CheckSuite.scala -> /Users/luochen/.m2/repository/org/scalatest/scalatest_2.10/2.1.5/scalatest_2.10-2.1.5.jar
    sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/expressions/ExpressionEvaluationSuite.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
    sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/expressions/ExpressionEvaluationSuite.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
    sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/expressions/ExpressionEvaluationSuite.scala -> /Users/luochen/.m2/repository/org/scalatest/scalatest_2.10/2.1.5/scalatest_2.10-2.1.5.jar
@@ -482,6 +487,8 @@ class names:
    sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/analysis/HiveTypeCoercionSuite.scala -> org.apache.spark.sql.catalyst.analysis.HiveTypeCoercionSuite
    sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/analysis/HiveTypeCoercionSuite.scala -> org.apache.spark.sql.catalyst.analysis.HiveTypeCoercionSuite$$anon$1
    sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/analysis/HiveTypeCoercionSuite.scala -> org.apache.spark.sql.catalyst.analysis.HiveTypeCoercionSuite$$anonfun$1
+   sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/checker/CheckSuite.scala -> org.apache.spark.sql.catalyst.checker.CheckerSuite
+   sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/checker/CheckSuite.scala -> org.apache.spark.sql.catalyst.checker.CheckerSuite$$anonfun$1
    sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/expressions/ExpressionEvaluationSuite.scala -> org.apache.spark.sql.catalyst.expressions.ExpressionEvaluationSuite
    sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/expressions/ExpressionEvaluationSuite.scala -> org.apache.spark.sql.catalyst.expressions.ExpressionEvaluationSuite$$anonfun$1
    sql/catalyst/src/test/scala/org/apache/spark/sql/catalyst/expressions/ExpressionEvaluationSuite.scala -> org.apache.spark.sql.catalyst.expressions.ExpressionEvaluationSuite$$anonfun$10

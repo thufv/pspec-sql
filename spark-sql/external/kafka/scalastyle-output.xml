@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <checkstyle version="5.0">
- <file name="/Users/luochen/Documents/Research/spark-1.1.0/external/kafka/src/main/scala/org/apache/spark/streaming/kafka/KafkaUtils.scala">
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/external/kafka/src/main/scala/org/apache/spark/streaming/kafka/package.scala">
   <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
  </file>
- <file name="/Users/luochen/Documents/Research/spark-1.1.0/external/kafka/src/main/scala/org/apache/spark/streaming/kafka/package.scala">
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/external/kafka/src/main/scala/org/apache/spark/streaming/kafka/KafkaUtils.scala">
   <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
  </file>
- <file name="/Users/luochen/Documents/Research/spark-1.1.0/external/kafka/src/main/scala/org/apache/spark/streaming/kafka/KafkaInputDStream.scala">
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/external/kafka/src/main/scala/org/apache/spark/streaming/kafka/KafkaInputDStream.scala">
   <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
  </file>
 </checkstyle>

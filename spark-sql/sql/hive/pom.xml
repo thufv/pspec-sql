@@ -32,6 +32,10 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>edu.thss</groupId>
+			<artifactId>privacy</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.twitter</groupId>
 			<artifactId>parquet-hive-bundle</artifactId>
 			<version>1.5.0</version>

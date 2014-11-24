@@ -18,16 +18,14 @@
 package org.apache.spark.sql.hive.thriftserver
 
 import scala.collection.JavaConversions._
-
-import java.util.{ArrayList => JArrayList}
-
+import java.util.{ ArrayList => JArrayList }
 import org.apache.commons.lang.exception.ExceptionUtils
-import org.apache.hadoop.hive.metastore.api.{FieldSchema, Schema}
+import org.apache.hadoop.hive.metastore.api.{ FieldSchema, Schema }
 import org.apache.hadoop.hive.ql.Driver
 import org.apache.hadoop.hive.ql.processors.CommandProcessorResponse
-
 import org.apache.spark.Logging
-import org.apache.spark.sql.hive.{HiveContext, HiveMetastoreTypes}
+import org.apache.spark.sql.hive.{ HiveContext, HiveMetastoreTypes }
+import org.apache.spark.sql.catalyst.checker.PrivacyException
 
 private[hive] class SparkSQLDriver(val context: HiveContext = SparkSQLEnv.hiveContext)
   extends Driver with Logging {
@@ -56,10 +54,15 @@ private[hive] class SparkSQLDriver(val context: HiveContext = SparkSQLEnv.hiveCo
     // TODO unify the error code
     try {
       val execution = context.executePlan(context.sql(command).logicalPlan)
-      hiveResponse = execution.stringResult()
-      tableSchema = getResultSetSchema(execution)
+      execution.sparkPlan;
+      //  hiveResponse = execution.stringResult()
+      // tableSchema = getResultSetSchema(execution)
       new CommandProcessorResponse(0)
     } catch {
+      case e: PrivacyException => {
+        //magic number
+        new CommandProcessorResponse(-10, e.getMessage(), null);
+      }
       case cause: Throwable =>
         logError(s"Failed in [$command]", cause)
         new CommandProcessorResponse(-3, ExceptionUtils.getFullStackTrace(cause), null)

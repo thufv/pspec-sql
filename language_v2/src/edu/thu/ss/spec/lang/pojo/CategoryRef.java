@@ -53,11 +53,8 @@ public abstract class CategoryRef<T extends Category<T>> extends ObjectRef {
 	}
 
 	public void materialize(CategoryContainer<T> container, Map<T, Set<T>> cache) {
-		materialized = cache.get(category);
-		if (materialized != null) {
-			return;
-		}
-		materialized = getDescendants(category, container, cache);
+		Set<T> descendants = getDescendants(category, container, cache);
+		materialized = new HashSet<>(descendants);
 		for (T excluded : excludes) {
 			Set<T> excludes = getDescendants(excluded, container, cache);
 			materialized.removeAll(excludes);

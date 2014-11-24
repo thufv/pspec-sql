@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<privacy-policy xmlns="http://www.example.org/privacy"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.example.org/privacy ../res/privacy.xsd">
+	<policy-information id="school-policy">
+		<issuer>
+			<name>luochen</name>
+			<organization>Tsinghua</organization>
+			<e-mail>luochen01@vip.qq.com</e-mail>
+			<address>Tsinghua</address>
+			<country>China</country>
+		</issuer>
+	</policy-information>
+
+	<vocabulary-ref location="test/res/example-vocabulary.xml">
+		<user-category-container refid="social-users" />
+		<data-category-container refid="social-data" />
+	</vocabulary-ref>
+	<rules>
+		<!--<rule id="forbid"> <user-category-ref refid="employee"/> <user-category-ref 
+			refid="ceo"/> <data-category-ref refid="pii" action="all"/> <restriction> 
+			<forbid/> </restriction> </rule>! -->
+		<rule id="rule1">
+			<user-category-ref refid="employee"></user-category-ref>
+			<data-category-ref refid="pii" action="projection"></data-category-ref>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+		<rule id="rule2">
+			<user-category-ref refid="employee"></user-category-ref>
+			<data-category-ref refid="ssn" action="projection"
+				global="true"></data-category-ref>
+			<restriction>
+				<desensitize>
+					<operation>op1</operation>
+					<operation>op2</operation>
+				</desensitize>
+			</restriction>
+		</rule>
+
+		<rule id="rule3">
+			<user-category-ref refid="employee"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="name" global="true"></data-category-ref>
+				<data-category-ref refid="contact" action="condition"></data-category-ref>
+			</data-association>
+			<restriction>
+				<desensitize>
+					<data-category-ref refid="name"></data-category-ref>
+					<operation>op1</operation>
+					<operation>op2</operation>
+				</desensitize>
+			</restriction>
+		</rule>
+
+		<rule id="rule4">
+			<user-category-ref refid="employee"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="ssn"></data-category-ref>
+				<data-category-ref refid="disease"></data-category-ref>
+			</data-association>
+			<restriction>
+				<desensitize>
+					<data-category-ref refid="ssn" />
+					<operation>op1</operation>
+					<operation>op2</operation>
+					<operation>op3</operation>
+				</desensitize>
+			</restriction>
+		</rule>
+
+		<rule id="rule5">
+			<user-category-ref refid="employee"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="name"></data-category-ref>
+				<data-category-ref refid="contact" action="condition"></data-category-ref>
+			</data-association>
+			<restriction>
+				<desensitize>
+					<data-category-ref refid="name" />
+					<operation>op1</operation>
+				</desensitize>
+			</restriction>
+		</rule>
+
+		<rule id="rule6">
+			<user-category-ref refid="employee"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="name"></data-category-ref>
+				<data-category-ref refid="phone" action="condition"></data-category-ref>
+				<data-category-ref refid="disease" action="condition"
+					global="true"></data-category-ref>
+			</data-association>
+			<restriction>
+				<desensitize>
+					<data-category-ref refid="name"></data-category-ref>
+					<data-category-ref refid="disease"></data-category-ref>
+					<operation>op1</operation>
+					<operation>op2</operation>
+				</desensitize>
+			</restriction>
+		</rule>
+
+	</rules>
+</privacy-policy>

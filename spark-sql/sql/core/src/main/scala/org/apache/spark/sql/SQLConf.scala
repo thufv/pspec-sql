@@ -22,7 +22,6 @@ import scala.collection.JavaConversions._
 
 import java.util.Properties
 
-
 private[spark] object SQLConf {
   val COMPRESS_CACHED = "spark.sql.inMemoryColumnarStorage.compressed"
   val COLUMN_BATCH_SIZE = "spark.sql.inMemoryColumnarStorage.batchSize"

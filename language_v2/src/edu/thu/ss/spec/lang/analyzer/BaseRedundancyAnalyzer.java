@@ -105,12 +105,7 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 		if (!instance.includes(action1, action2)) {
 			return false;
 		}
-		//only 1 restriction each
-		Restriction[] res1 = rule1.getRestrictions();
-		Restriction[] res2 = rule2.getRestrictions();
-		if (!instance.singleStricterThan(res1[0], res2[0])) {
-			return false;
-		}
+
 		Set<UserCategory> user1 = rule1.getUsers();
 		Set<UserCategory> user2 = rule2.getUsers();
 		SetRelation userRelation = SetUtil.relation(user1, user2);
@@ -122,6 +117,13 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 		Set<DataCategory> data2 = ref2.getMaterialized();
 		SetRelation dataRelation = SetUtil.relation(data1, data2);
 		if (dataRelation.equals(SetRelation.disjoint)) {
+			return false;
+		}
+
+		//only 1 restriction each
+		Restriction[] res1 = rule1.getRestrictions();
+		Restriction[] res2 = rule2.getRestrictions();
+		if (!instance.singleStricterThan(res1[0], res2[0])) {
 			return false;
 		}
 
@@ -151,11 +153,10 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 		} else {
 			return checkBothAssociation(rule1, rule2);
 		}
-
 	}
 
 	/**
-	 * rule1 is single, while rule2 is association. Check rule1 implies rule2
+	 * rule1 is single, rule2 is association. Check rule1 implies rule2
 	 * 
 	 * @param rule1
 	 * @param rule2
@@ -170,9 +171,6 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 		}
 
 		DataRef ref1 = rule1.getDataRef();
-		Action action1 = ref1.getAction();
-		Set<DataCategory> data1 = ref1.getMaterialized();
-
 		DataAssociation assoc2 = rule2.getAssociation();
 
 		boolean match = false;
@@ -180,13 +178,11 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 			if (ref2.isGlobal() && !ref1.isGlobal()) {
 				continue;
 			}
-			if (!instance.includes(action1, ref2.getAction())) {
-				continue;
-			}
-			if (SetUtil.contains(data1, ref2.getMaterialized())) {
+			if (instance.includes(ref1, ref2)) {
 				match = true;
 				break;
 			}
+
 		}
 		if (!match) {
 			return false;

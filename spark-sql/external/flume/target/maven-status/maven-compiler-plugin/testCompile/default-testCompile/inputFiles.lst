@@ -1,2 +1,2 @@
-/Users/luochen/Documents/Research/spark-1.1.0/external/flume/src/test/java/org/apache/spark/streaming/flume/JavaFlumeStreamSuite.java
-/Users/luochen/Documents/Research/spark-1.1.0/external/flume/src/test/java/org/apache/spark/streaming/flume/JavaFlumePollingStreamSuite.java
+/Users/luochen/Documents/Research/privacy/spark-sql/external/flume/src/test/java/org/apache/spark/streaming/flume/JavaFlumeStreamSuite.java
+/Users/luochen/Documents/Research/privacy/spark-sql/external/flume/src/test/java/org/apache/spark/streaming/flume/JavaFlumePollingStreamSuite.java

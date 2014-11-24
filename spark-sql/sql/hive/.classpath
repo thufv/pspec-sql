@@ -164,6 +164,5 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/language_v2"/>
 	<classpathentry kind="lib" path="/Users/luochen/Documents/Research/privacy/spark-sql/lib_managed/jars/tachyon-0.5.0.jar"/>
-	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.33-bin.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -1,0 +1,6 @@
+----------------------------------------------------------------
+2014-11-24 07:38:58.592 GMT:
+ Booting Derby version The Apache Software Foundation - Apache Derby - 10.4.2.0 - (689064): instance a816c00e-0149-e0bd-3ba6-00001c97cb88
+on database directory /Users/luochen/Documents/Research/privacy/spark-sql/bin/metastore_db  
+
+Database Class Loader started - derby.database.classpath=''

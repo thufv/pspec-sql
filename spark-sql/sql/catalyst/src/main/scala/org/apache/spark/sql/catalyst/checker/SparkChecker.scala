@@ -7,11 +7,9 @@ import scala.collection.mutable.HashSet
 import scala.collection.mutable.ListBuffer
 import scala.collection.mutable.Map
 import scala.collection.mutable.Set
-
 import org.apache.spark.Logging
 import org.apache.spark.sql.catalyst.analysis.Catalog
 import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
-
 import edu.thu.ss.spec.global.MetaManager
 import edu.thu.ss.spec.lang.parser.PolicyParser
 import edu.thu.ss.spec.lang.pojo.Action
@@ -24,6 +22,7 @@ import edu.thu.ss.spec.lang.pojo.Policy
 import edu.thu.ss.spec.lang.pojo.UserCategory
 import edu.thu.ss.spec.meta.MetaRegistry
 import edu.thu.ss.spec.meta.xml.XMLMetaRegistryParser
+import org.apache.spark.sql.catalyst.analysis.Catalog
 
 class SparkChecker extends PrivacyChecker {
 
@@ -44,12 +43,23 @@ class SparkChecker extends PrivacyChecker {
     projections.foreach(buildPath(_, projectionPaths));
     conditions.foreach(buildPath(_, conditionPaths));
 
-    printPaths();
+    //printPaths(projections, conditions);
 
     policies.foreach(p => p.getExpandedRules().asScala.foreach(checkRule(_, p)));
   }
 
-  private def printPaths() {
+  private def printPaths(projections: collection.Set[Label], conditions: collection.Set[Label]) {
+
+    println("projections:");
+    projections.foreach(t => {
+      println(s"$t");
+    });
+    println();
+    println("conditions:")
+    conditions.foreach(t => {
+      println(t);
+    });
+    println();
     println("\nprojection paths:");
     projectionPaths.foreach(p => {
       p._2.foreach(
@@ -266,7 +276,7 @@ object SparkChecker extends Logging {
 
   val checker = new SparkChecker();
 
-  def init(catalog: Catalog, policyPath: String = "res/spark-policy.xml", metaPath: String = "res/spark-meta.xml"): Unit = {
+  def init(catalog: Catalog, policyPath: String, metaPath: String): Unit = {
     loadPolicy(policyPath);
     loadMeta(metaPath, catalog);
   }

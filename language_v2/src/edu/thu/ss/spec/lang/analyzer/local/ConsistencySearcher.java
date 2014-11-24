@@ -104,14 +104,8 @@ class ConsistencySearcher extends LevelwiseSearcher {
 	@Override
 	protected boolean process(SearchKey key) {
 		Set<UserCategory> users = null;
-		for (int i = 0; i < key.rules.length; i++) {
-			RuleObject rule = ruleObjects[key.rules[i]];
-			/*if() {
-				logger.warn(
-						"Possible conflicts between expanded sortedRules: #{}, since rule :#{} forbids the data access.",
-						SetUtil.toString(key.rules, sortedRules), rule.getRuleId());
-				return false;
-			}*/
+		for (int i = 0; i < key.index.length; i++) {
+			RuleObject rule = ruleObjects[key.index[i]];
 			if (users == null) {
 				users = new HashSet<>(rule.users);
 			} else {
@@ -128,16 +122,16 @@ class ConsistencySearcher extends LevelwiseSearcher {
 	}
 
 	private RuleRelation processDatas(SearchKey key, int i, Action joinAction, Set<DataCategory> joinDatas) {
-		if (i == key.rules.length) {
+		if (i == key.index.length) {
 			RuleRelation relation = checkRestrictions(key, joinAction, joinDatas);
 			if (relation.equals(RuleRelation.conflict)) {
 				logger.error(
 						"Desensitize operation conflicts detected between expanded sortedRules: #{} for data categories: {}.",
-						SetUtil.toString(key.rules, sortedRules), SetUtil.format(joinDatas, ","));
+						SetUtil.toString(key.index, sortedRules), SetUtil.format(joinDatas, ","));
 			}
 			return relation;
 		}
-		RuleObject obj = ruleObjects[key.rules[i]];
+		RuleObject obj = ruleObjects[key.index[i]];
 		Triple[] triples = obj.triples;
 		boolean consistent = false;
 		for (Triple triple : triples) {
@@ -199,12 +193,12 @@ class ConsistencySearcher extends LevelwiseSearcher {
 
 	private RuleRelation checkRestrictions(SearchKey key, Action action, Set<DataCategory> datas) {
 		List<Set<DesensitizeOperation>> joins = null;
-		for (int i = 0; i < key.rules.length; i++) {
-			RuleObject rule = ruleObjects[key.rules[i]];
+		for (int i = 0; i < key.index.length; i++) {
+			RuleObject rule = ruleObjects[key.index[i]];
 			List<Set<DesensitizeOperation>> list = rule.getList(datas);
 			if (list == null) {
 				logger.error("Possible conflicts between expanded sortedRules: #{}, since rule :#{} forbids the data access.",
-						SetUtil.toString(key.rules, sortedRules), sortedRules.get(key.rules[i]).getRuleId());
+						SetUtil.toString(key.index, sortedRules), sortedRules.get(key.index[i]).getRuleId());
 				return RuleRelation.forbid;
 			}
 			if (joins == null) {

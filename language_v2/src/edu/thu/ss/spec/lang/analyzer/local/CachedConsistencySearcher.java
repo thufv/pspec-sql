@@ -25,7 +25,6 @@ public class CachedConsistencySearcher extends ConsistencySearcher {
 
 	public CachedConsistencySearcher(Policy policy) {
 		super(policy);
-
 	}
 
 	@Override
@@ -89,11 +88,10 @@ public class CachedConsistencySearcher extends ConsistencySearcher {
 			List<Set<DesensitizeOperation>> list2, Set<DataCategory> datas) {
 		if (list1 == null || list2 == null) {
 			if (!(list1 == null && list2 == null)) {
-				int index = (list1 == null) ? key.rules[0] : key.rules[1];
+				int index = (list1 == null) ? key.index[0] : key.index[1];
 				logger.error("Possible conflicts between expanded rules: {}, since rule :#{} forbids the data access.",
-						SetUtil.toString(key.rules, sortedRules), sortedRules.get(index).getRuleId());
+						SetUtil.toString(key.index, sortedRules), sortedRules.get(index).getRuleId());
 			}
-
 			return null;
 		}
 		List<Set<DesensitizeOperation>> list = new LinkedList<>();
@@ -108,7 +106,7 @@ public class CachedConsistencySearcher extends ConsistencySearcher {
 					if (ops.size() == 0) {
 						logger.error(
 								"Desensitize operation conflicts detected between expanded sortedRules: #{} for data categories: {}.",
-								SetUtil.toString(key.rules, sortedRules), SetUtil.format(datas, ","));
+								SetUtil.toString(key.index, sortedRules), SetUtil.format(datas, ","));
 						return null;
 					}
 					SetUtil.mergeOperations(list, ops);
@@ -126,8 +124,8 @@ public class CachedConsistencySearcher extends ConsistencySearcher {
 		key.setFirst(-1);
 		objs[1] = cache.get(key);
 		if (objs[1] == null) {
-			if (key.rules.length > 2) {
-				throw new RuntimeException("Invalid cache state for key: " + Arrays.toString(key.rules));
+			if (key.index.length > 2) {
+				throw new RuntimeException("Invalid cache state for key: " + Arrays.toString(key.index));
 			}
 			objs[1] = ruleObjects[key.getLast()];
 		}

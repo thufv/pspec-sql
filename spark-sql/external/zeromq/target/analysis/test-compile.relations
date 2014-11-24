@@ -1,15 +1,8 @@
 products:
-   external/zeromq/src/test/java/org/apache/spark/streaming/zeromq/JavaZeroMQStreamSuite.java -> external/zeromq/target/scala-2.10/test-classes/org/apache/spark/streaming/zeromq/JavaZeroMQStreamSuite$1.class
-   external/zeromq/src/test/java/org/apache/spark/streaming/zeromq/JavaZeroMQStreamSuite.java -> external/zeromq/target/scala-2.10/test-classes/org/apache/spark/streaming/zeromq/JavaZeroMQStreamSuite.class
    external/zeromq/src/test/scala/org/apache/spark/streaming/zeromq/ZeroMQStreamSuite.scala -> external/zeromq/target/scala-2.10/test-classes/org/apache/spark/streaming/zeromq/ZeroMQStreamSuite$$anonfun$1$$anonfun$2.class
    external/zeromq/src/test/scala/org/apache/spark/streaming/zeromq/ZeroMQStreamSuite.scala -> external/zeromq/target/scala-2.10/test-classes/org/apache/spark/streaming/zeromq/ZeroMQStreamSuite$$anonfun$1.class
    external/zeromq/src/test/scala/org/apache/spark/streaming/zeromq/ZeroMQStreamSuite.scala -> external/zeromq/target/scala-2.10/test-classes/org/apache/spark/streaming/zeromq/ZeroMQStreamSuite.class
 binary dependencies:
-   external/zeromq/src/test/java/org/apache/spark/streaming/zeromq/JavaZeroMQStreamSuite.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
-   external/zeromq/src/test/java/org/apache/spark/streaming/zeromq/JavaZeroMQStreamSuite.java -> /Users/luochen/.m2/repository/org/spark-project/akka/akka-actor_2.10/2.2.3-shaded-protobuf/akka-actor_2.10-2.2.3-shaded-protobuf.jar
-   external/zeromq/src/test/java/org/apache/spark/streaming/zeromq/JavaZeroMQStreamSuite.java -> /Users/luochen/.m2/repository/org/spark-project/akka/akka-zeromq_2.10/2.2.3-shaded-protobuf/akka-zeromq_2.10-2.2.3-shaded-protobuf.jar
-   external/zeromq/src/test/java/org/apache/spark/streaming/zeromq/JavaZeroMQStreamSuite.java -> core/target/spark-core_2.10-1.1.0.jar
-   external/zeromq/src/test/java/org/apache/spark/streaming/zeromq/JavaZeroMQStreamSuite.java -> streaming/target/spark-streaming_2.10-1.1.0-tests.jar
    external/zeromq/src/test/scala/org/apache/spark/streaming/zeromq/ZeroMQStreamSuite.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
    external/zeromq/src/test/scala/org/apache/spark/streaming/zeromq/ZeroMQStreamSuite.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
    external/zeromq/src/test/scala/org/apache/spark/streaming/zeromq/ZeroMQStreamSuite.scala -> /Users/luochen/.m2/repository/org/scalatest/scalatest_2.10/2.1.5/scalatest_2.10-2.1.5.jar
@@ -19,13 +12,9 @@ binary dependencies:
    external/zeromq/src/test/scala/org/apache/spark/streaming/zeromq/ZeroMQStreamSuite.scala -> streaming/target/spark-streaming_2.10-1.1.0-tests.jar
    external/zeromq/src/test/scala/org/apache/spark/streaming/zeromq/ZeroMQStreamSuite.scala -> streaming/target/spark-streaming_2.10-1.1.0.jar
 source dependencies:
-   external/zeromq/src/test/java/org/apache/spark/streaming/zeromq/JavaZeroMQStreamSuite.java -> external/zeromq/src/test/java/org/apache/spark/streaming/zeromq/JavaZeroMQStreamSuite.java
 external dependencies:
-   external/zeromq/src/test/java/org/apache/spark/streaming/zeromq/JavaZeroMQStreamSuite.java -> org.apache.spark.streaming.zeromq.ZeroMQUtils
    external/zeromq/src/test/scala/org/apache/spark/streaming/zeromq/ZeroMQStreamSuite.scala -> org.apache.spark.streaming.zeromq.ZeroMQUtils$
 class names:
-   external/zeromq/src/test/java/org/apache/spark/streaming/zeromq/JavaZeroMQStreamSuite.java -> org.apache.spark.streaming.zeromq.JavaZeroMQStreamSuite
-   external/zeromq/src/test/java/org/apache/spark/streaming/zeromq/JavaZeroMQStreamSuite.java -> org.apache.spark.streaming.zeromq.JavaZeroMQStreamSuite$1
    external/zeromq/src/test/scala/org/apache/spark/streaming/zeromq/ZeroMQStreamSuite.scala -> org.apache.spark.streaming.zeromq.ZeroMQStreamSuite
    external/zeromq/src/test/scala/org/apache/spark/streaming/zeromq/ZeroMQStreamSuite.scala -> org.apache.spark.streaming.zeromq.ZeroMQStreamSuite$$anonfun$1
    external/zeromq/src/test/scala/org/apache/spark/streaming/zeromq/ZeroMQStreamSuite.scala -> org.apache.spark.streaming.zeromq.ZeroMQStreamSuite$$anonfun$1$$anonfun$2

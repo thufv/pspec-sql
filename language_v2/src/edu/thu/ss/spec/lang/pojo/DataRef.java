@@ -94,7 +94,7 @@ public class DataRef extends CategoryRef<DataCategory> {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("Data Category: ");
-		sb.append(isGlobal() ? "global" : "local");
+		sb.append(isGlobal() ? "global " : "local ");
 		sb.append(refid);
 		sb.append('(');
 		sb.append(action);

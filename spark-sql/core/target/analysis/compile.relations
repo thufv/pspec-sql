@@ -1,21 +1,7 @@
 products:
-   core/src/main/java/org/apache/spark/api/java/JavaSparkContextVarargsWorkaround.java -> core/target/scala-2.10/classes/org/apache/spark/api/java/JavaSparkContextVarargsWorkaround.class
-   core/src/main/java/org/apache/spark/api/java/StorageLevels.java -> core/target/scala-2.10/classes/org/apache/spark/api/java/StorageLevels.class
-   core/src/main/java/org/apache/spark/api/java/function/DoubleFlatMapFunction.java -> core/target/scala-2.10/classes/org/apache/spark/api/java/function/DoubleFlatMapFunction.class
-   core/src/main/java/org/apache/spark/api/java/function/DoubleFunction.java -> core/target/scala-2.10/classes/org/apache/spark/api/java/function/DoubleFunction.class
-   core/src/main/java/org/apache/spark/api/java/function/FlatMapFunction.java -> core/target/scala-2.10/classes/org/apache/spark/api/java/function/FlatMapFunction.class
-   core/src/main/java/org/apache/spark/api/java/function/FlatMapFunction2.java -> core/target/scala-2.10/classes/org/apache/spark/api/java/function/FlatMapFunction2.class
-   core/src/main/java/org/apache/spark/api/java/function/Function.java -> core/target/scala-2.10/classes/org/apache/spark/api/java/function/Function.class
-   core/src/main/java/org/apache/spark/api/java/function/Function2.java -> core/target/scala-2.10/classes/org/apache/spark/api/java/function/Function2.class
-   core/src/main/java/org/apache/spark/api/java/function/Function3.java -> core/target/scala-2.10/classes/org/apache/spark/api/java/function/Function3.class
-   core/src/main/java/org/apache/spark/api/java/function/PairFlatMapFunction.java -> core/target/scala-2.10/classes/org/apache/spark/api/java/function/PairFlatMapFunction.class
-   core/src/main/java/org/apache/spark/api/java/function/PairFunction.java -> core/target/scala-2.10/classes/org/apache/spark/api/java/function/PairFunction.class
-   core/src/main/java/org/apache/spark/api/java/function/VoidFunction.java -> core/target/scala-2.10/classes/org/apache/spark/api/java/function/VoidFunction.class
    core/src/main/java/org/apache/spark/api/java/function/package.scala -> core/target/scala-2.10/classes/org/apache/spark/api/java/function/package$.class
    core/src/main/java/org/apache/spark/api/java/function/package.scala -> core/target/scala-2.10/classes/org/apache/spark/api/java/function/package.class
    core/src/main/java/org/apache/spark/util/collection/Sorter.java -> core/target/scala-2.10/classes/org/apache/spark/util/collection/Sorter$1.class
-   core/src/main/java/org/apache/spark/util/collection/Sorter.java -> core/target/scala-2.10/classes/org/apache/spark/util/collection/Sorter$SortState.class
-   core/src/main/java/org/apache/spark/util/collection/Sorter.java -> core/target/scala-2.10/classes/org/apache/spark/util/collection/Sorter.class
    core/src/main/scala/org/apache/hadoop/mapred/SparkHadoopMapRedUtil.scala -> core/target/scala-2.10/classes/org/apache/hadoop/mapred/SparkHadoopMapRedUtil$class.class
    core/src/main/scala/org/apache/hadoop/mapred/SparkHadoopMapRedUtil.scala -> core/target/scala-2.10/classes/org/apache/hadoop/mapred/SparkHadoopMapRedUtil.class
    core/src/main/scala/org/apache/hadoop/mapreduce/SparkHadoopMapReduceUtil.scala -> core/target/scala-2.10/classes/org/apache/hadoop/mapreduce/SparkHadoopMapReduceUtil$class.class
@@ -381,9 +367,6 @@ products:
    core/src/main/scala/org/apache/spark/TestUtils.scala -> core/target/scala-2.10/classes/org/apache/spark/TestUtils$.class
    core/src/main/scala/org/apache/spark/TestUtils.scala -> core/target/scala-2.10/classes/org/apache/spark/TestUtils$JavaSourceFromString.class
    core/src/main/scala/org/apache/spark/TestUtils.scala -> core/target/scala-2.10/classes/org/apache/spark/TestUtils.class
-   core/src/main/scala/org/apache/spark/annotation/AlphaComponent.java -> core/target/scala-2.10/classes/org/apache/spark/annotation/AlphaComponent.class
-   core/src/main/scala/org/apache/spark/annotation/DeveloperApi.java -> core/target/scala-2.10/classes/org/apache/spark/annotation/DeveloperApi.class
-   core/src/main/scala/org/apache/spark/annotation/Experimental.java -> core/target/scala-2.10/classes/org/apache/spark/annotation/Experimental.class
    core/src/main/scala/org/apache/spark/annotation/package.scala -> core/target/scala-2.10/classes/org/apache/spark/annotation/package$.class
    core/src/main/scala/org/apache/spark/annotation/package.scala -> core/target/scala-2.10/classes/org/apache/spark/annotation/package.class
    core/src/main/scala/org/apache/spark/api/java/JavaDoubleRDD.scala -> core/target/scala-2.10/classes/org/apache/spark/api/java/JavaDoubleRDD$$anonfun$1.class
@@ -4331,21 +4314,9 @@ products:
    core/src/main/scala/org/apache/spark/util/random/package.scala -> core/target/scala-2.10/classes/org/apache/spark/util/random/package$.class
    core/src/main/scala/org/apache/spark/util/random/package.scala -> core/target/scala-2.10/classes/org/apache/spark/util/random/package.class
 binary dependencies:
-   core/src/main/java/org/apache/spark/api/java/JavaSparkContextVarargsWorkaround.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
-   core/src/main/java/org/apache/spark/api/java/StorageLevels.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
-   core/src/main/java/org/apache/spark/api/java/function/DoubleFlatMapFunction.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
-   core/src/main/java/org/apache/spark/api/java/function/DoubleFunction.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
-   core/src/main/java/org/apache/spark/api/java/function/FlatMapFunction.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
-   core/src/main/java/org/apache/spark/api/java/function/FlatMapFunction2.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
-   core/src/main/java/org/apache/spark/api/java/function/Function.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
-   core/src/main/java/org/apache/spark/api/java/function/Function2.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
-   core/src/main/java/org/apache/spark/api/java/function/Function3.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
-   core/src/main/java/org/apache/spark/api/java/function/PairFlatMapFunction.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
-   core/src/main/java/org/apache/spark/api/java/function/PairFunction.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
-   core/src/main/java/org/apache/spark/api/java/function/PairFunction.java -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
-   core/src/main/java/org/apache/spark/api/java/function/VoidFunction.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
    core/src/main/java/org/apache/spark/api/java/function/package.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
    core/src/main/java/org/apache/spark/util/collection/Sorter.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   core/src/main/java/org/apache/spark/util/collection/Sorter.java -> core/target/scala-2.10/classes/org/apache/spark/util/collection/Sorter.class
    core/src/main/scala/org/apache/hadoop/mapred/SparkHadoopMapRedUtil.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
    core/src/main/scala/org/apache/hadoop/mapred/SparkHadoopMapRedUtil.scala -> /Users/luochen/.m2/repository/org/apache/hadoop/hadoop-core/1.2.1/hadoop-core-1.2.1.jar
    core/src/main/scala/org/apache/hadoop/mapred/SparkHadoopMapRedUtil.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
@@ -4431,9 +4402,6 @@ binary dependencies:
    core/src/main/scala/org/apache/spark/TestUtils.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
    core/src/main/scala/org/apache/spark/TestUtils.scala -> /Users/luochen/.m2/repository/com/google/guava/guava/14.0.1/guava-14.0.1.jar
    core/src/main/scala/org/apache/spark/TestUtils.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
-   core/src/main/scala/org/apache/spark/annotation/AlphaComponent.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
-   core/src/main/scala/org/apache/spark/annotation/DeveloperApi.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
-   core/src/main/scala/org/apache/spark/annotation/Experimental.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
    core/src/main/scala/org/apache/spark/annotation/package.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
    core/src/main/scala/org/apache/spark/api/java/JavaDoubleRDD.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
    core/src/main/scala/org/apache/spark/api/java/JavaDoubleRDD.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
@@ -5333,24 +5301,7 @@ binary dependencies:
    core/src/main/scala/org/apache/spark/util/random/XORShiftRandom.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
    core/src/main/scala/org/apache/spark/util/random/package.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
 source dependencies:
-   core/src/main/java/org/apache/spark/api/java/JavaSparkContextVarargsWorkaround.java -> core/src/main/java/org/apache/spark/api/java/JavaSparkContextVarargsWorkaround.java
-   core/src/main/java/org/apache/spark/api/java/JavaSparkContextVarargsWorkaround.java -> core/src/main/scala/org/apache/spark/api/java/JavaDoubleRDD.scala
-   core/src/main/java/org/apache/spark/api/java/JavaSparkContextVarargsWorkaround.java -> core/src/main/scala/org/apache/spark/api/java/JavaPairRDD.scala
-   core/src/main/java/org/apache/spark/api/java/JavaSparkContextVarargsWorkaround.java -> core/src/main/scala/org/apache/spark/api/java/JavaRDD.scala
-   core/src/main/java/org/apache/spark/api/java/StorageLevels.java -> core/src/main/java/org/apache/spark/api/java/StorageLevels.java
-   core/src/main/java/org/apache/spark/api/java/StorageLevels.java -> core/src/main/scala/org/apache/spark/storage/StorageLevel.scala
-   core/src/main/java/org/apache/spark/api/java/function/DoubleFlatMapFunction.java -> core/src/main/java/org/apache/spark/api/java/function/DoubleFlatMapFunction.java
-   core/src/main/java/org/apache/spark/api/java/function/DoubleFunction.java -> core/src/main/java/org/apache/spark/api/java/function/DoubleFunction.java
-   core/src/main/java/org/apache/spark/api/java/function/FlatMapFunction.java -> core/src/main/java/org/apache/spark/api/java/function/FlatMapFunction.java
-   core/src/main/java/org/apache/spark/api/java/function/FlatMapFunction2.java -> core/src/main/java/org/apache/spark/api/java/function/FlatMapFunction2.java
-   core/src/main/java/org/apache/spark/api/java/function/Function.java -> core/src/main/java/org/apache/spark/api/java/function/Function.java
-   core/src/main/java/org/apache/spark/api/java/function/Function2.java -> core/src/main/java/org/apache/spark/api/java/function/Function2.java
-   core/src/main/java/org/apache/spark/api/java/function/Function3.java -> core/src/main/java/org/apache/spark/api/java/function/Function3.java
-   core/src/main/java/org/apache/spark/api/java/function/PairFlatMapFunction.java -> core/src/main/java/org/apache/spark/api/java/function/PairFlatMapFunction.java
-   core/src/main/java/org/apache/spark/api/java/function/PairFunction.java -> core/src/main/java/org/apache/spark/api/java/function/PairFunction.java
-   core/src/main/java/org/apache/spark/api/java/function/VoidFunction.java -> core/src/main/java/org/apache/spark/api/java/function/VoidFunction.java
    core/src/main/java/org/apache/spark/util/collection/Sorter.java -> core/src/main/java/org/apache/spark/util/collection/Sorter.java
-   core/src/main/java/org/apache/spark/util/collection/Sorter.java -> core/src/main/scala/org/apache/spark/util/collection/SortDataFormat.scala
    core/src/main/scala/org/apache/spark/Accumulators.scala -> core/src/main/scala/org/apache/spark/SparkConf.scala
    core/src/main/scala/org/apache/spark/Accumulators.scala -> core/src/main/scala/org/apache/spark/serializer/JavaSerializer.scala
    core/src/main/scala/org/apache/spark/Accumulators.scala -> core/src/main/scala/org/apache/spark/serializer/Serializer.scala
@@ -5547,9 +5498,6 @@ source dependencies:
    core/src/main/scala/org/apache/spark/TaskEndReason.scala -> core/src/main/scala/org/apache/spark/storage/BlockManagerId.scala
    core/src/main/scala/org/apache/spark/TaskEndReason.scala -> core/src/main/scala/org/apache/spark/util/Utils.scala
    core/src/main/scala/org/apache/spark/TaskKilledException.scala -> core/src/main/scala/org/apache/spark/annotation/DeveloperApi.java
-   core/src/main/scala/org/apache/spark/annotation/AlphaComponent.java -> core/src/main/scala/org/apache/spark/annotation/AlphaComponent.java
-   core/src/main/scala/org/apache/spark/annotation/DeveloperApi.java -> core/src/main/scala/org/apache/spark/annotation/DeveloperApi.java
-   core/src/main/scala/org/apache/spark/annotation/Experimental.java -> core/src/main/scala/org/apache/spark/annotation/Experimental.java
    core/src/main/scala/org/apache/spark/api/java/JavaDoubleRDD.scala -> core/src/main/java/org/apache/spark/api/java/function/Function.java
    core/src/main/scala/org/apache/spark/api/java/JavaDoubleRDD.scala -> core/src/main/scala/org/apache/spark/Partitioner.scala
    core/src/main/scala/org/apache/spark/api/java/JavaDoubleRDD.scala -> core/src/main/scala/org/apache/spark/SparkContext.scala
@@ -7507,23 +7455,9 @@ source dependencies:
    core/src/main/scala/org/apache/spark/util/random/XORShiftRandom.scala -> core/src/main/scala/org/apache/spark/util/Utils.scala
 external dependencies:
 class names:
-   core/src/main/java/org/apache/spark/api/java/JavaSparkContextVarargsWorkaround.java -> org.apache.spark.api.java.JavaSparkContextVarargsWorkaround
-   core/src/main/java/org/apache/spark/api/java/StorageLevels.java -> org.apache.spark.api.java.StorageLevels
-   core/src/main/java/org/apache/spark/api/java/function/DoubleFlatMapFunction.java -> org.apache.spark.api.java.function.DoubleFlatMapFunction
-   core/src/main/java/org/apache/spark/api/java/function/DoubleFunction.java -> org.apache.spark.api.java.function.DoubleFunction
-   core/src/main/java/org/apache/spark/api/java/function/FlatMapFunction.java -> org.apache.spark.api.java.function.FlatMapFunction
-   core/src/main/java/org/apache/spark/api/java/function/FlatMapFunction2.java -> org.apache.spark.api.java.function.FlatMapFunction2
-   core/src/main/java/org/apache/spark/api/java/function/Function.java -> org.apache.spark.api.java.function.Function
-   core/src/main/java/org/apache/spark/api/java/function/Function2.java -> org.apache.spark.api.java.function.Function2
-   core/src/main/java/org/apache/spark/api/java/function/Function3.java -> org.apache.spark.api.java.function.Function3
-   core/src/main/java/org/apache/spark/api/java/function/PairFlatMapFunction.java -> org.apache.spark.api.java.function.PairFlatMapFunction
-   core/src/main/java/org/apache/spark/api/java/function/PairFunction.java -> org.apache.spark.api.java.function.PairFunction
-   core/src/main/java/org/apache/spark/api/java/function/VoidFunction.java -> org.apache.spark.api.java.function.VoidFunction
    core/src/main/java/org/apache/spark/api/java/function/package.scala -> org.apache.spark.api.java.function.package
    core/src/main/java/org/apache/spark/api/java/function/package.scala -> org.apache.spark.api.java.function.package$
-   core/src/main/java/org/apache/spark/util/collection/Sorter.java -> org.apache.spark.util.collection.Sorter
    core/src/main/java/org/apache/spark/util/collection/Sorter.java -> org.apache.spark.util.collection.Sorter$1
-   core/src/main/java/org/apache/spark/util/collection/Sorter.java -> org.apache.spark.util.collection.Sorter$SortState
    core/src/main/scala/org/apache/hadoop/mapred/SparkHadoopMapRedUtil.scala -> org.apache.hadoop.mapred.SparkHadoopMapRedUtil
    core/src/main/scala/org/apache/hadoop/mapred/SparkHadoopMapRedUtil.scala -> org.apache.hadoop.mapred.SparkHadoopMapRedUtil$class
    core/src/main/scala/org/apache/hadoop/mapreduce/SparkHadoopMapReduceUtil.scala -> org.apache.hadoop.mapreduce.SparkHadoopMapReduceUtil
@@ -7889,9 +7823,6 @@ class names:
    core/src/main/scala/org/apache/spark/TestUtils.scala -> org.apache.spark.TestUtils$$anonfun$createCompiledClass$2
    core/src/main/scala/org/apache/spark/TestUtils.scala -> org.apache.spark.TestUtils$$anonfun$createJar$1
    core/src/main/scala/org/apache/spark/TestUtils.scala -> org.apache.spark.TestUtils$JavaSourceFromString
-   core/src/main/scala/org/apache/spark/annotation/AlphaComponent.java -> org.apache.spark.annotation.AlphaComponent
-   core/src/main/scala/org/apache/spark/annotation/DeveloperApi.java -> org.apache.spark.annotation.DeveloperApi
-   core/src/main/scala/org/apache/spark/annotation/Experimental.java -> org.apache.spark.annotation.Experimental
    core/src/main/scala/org/apache/spark/annotation/package.scala -> org.apache.spark.annotation.package
    core/src/main/scala/org/apache/spark/annotation/package.scala -> org.apache.spark.annotation.package$
    core/src/main/scala/org/apache/spark/api/java/JavaDoubleRDD.scala -> org.apache.spark.api.java.JavaDoubleRDD

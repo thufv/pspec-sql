@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<vocabulary xmlns="http://www.example.org/privacy" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.example.org/privacy ../res/privacy.xsd">
+	<vocabulary-information id="vocab-info">
+		<issuer>
+			<name>luochen</name>
+			<organization>Tsinghua</organization>
+			<e-mail>luochen01@vip.qq.com</e-mail>
+			<address>Tsinghua</address>
+			<country>China</country>
+		</issuer>
+	</vocabulary-information>
+	<user-category-container id="default-user">
+		<user-category id="app" />
+	</user-category-container>
+
+	<data-category-container id="default-data">
+		<data-category id="ka"></data-category>
+		<data-category id="qi"></data-category>
+		<data-category id="sa"></data-category>
+
+
+		<data-category id="sk" parent="ka"></data-category>
+		<data-category id="id" parent="ka"></data-category>
+	</data-category-container>
+</vocabulary>

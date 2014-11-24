@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <checkstyle version="5.0">
- <file name="/Users/luochen/Documents/Research/spark-1.1.0/bagel/src/main/scala/org/apache/spark/bagel/package.scala">
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/bagel/src/main/scala/org/apache/spark/bagel/Bagel.scala">
   <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
  </file>
- <file name="/Users/luochen/Documents/Research/spark-1.1.0/bagel/src/main/scala/org/apache/spark/bagel/Bagel.scala">
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/bagel/src/main/scala/org/apache/spark/bagel/package.scala">
   <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
  </file>
 </checkstyle>

@@ -1,0 +1,355 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>checker - Spark Project Catalyst 1.1.0 API - org.apache.spark.sql.catalyst.checker</title>
+          <meta name="description" content="checker - Spark Project Catalyst 1.1.0 API - org.apache.spark.sql.catalyst.checker" />
+          <meta name="keywords" content="checker Spark Project Catalyst 1.1.0 API org.apache.spark.sql.catalyst.checker" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../../../index.html';
+            var hash = 'org.apache.spark.sql.catalyst.checker.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../../../../lib/package_big.png" />
+        <p id="owner"><a href="../../../../../package.html" class="extype" name="org">org</a>.<a href="../../../../package.html" class="extype" name="org.apache">apache</a>.<a href="../../../package.html" class="extype" name="org.apache.spark">spark</a>.<a href="../../package.html" class="extype" name="org.apache.spark.sql">sql</a>.<a href="../package.html" class="extype" name="org.apache.spark.sql.catalyst">catalyst</a></p>
+        <h1>checker</h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">checker</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="org.apache.spark.sql.catalyst.checker.ColumnLabel" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ColumnLabelextendsLabel"></a>
+      <a id="ColumnLabel:ColumnLabel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="ColumnLabel.html"><span class="name">ColumnLabel</span></a><span class="result"> extends <a href="Label.html" class="extype" name="org.apache.spark.sql.catalyst.checker.Label">Label</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.apache.spark.sql.catalyst.checker.ColumnVertex" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ColumnVertexextendsEquiVertexwithProductwithSerializable"></a>
+      <a id="ColumnVertex:ColumnVertex"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ColumnVertex.html"><span class="name">ColumnVertex</span></a><span class="params">(<span name="attr">attr: <a href="../expressions/AttributeReference.html" class="extype" name="org.apache.spark.sql.catalyst.expressions.AttributeReference">AttributeReference</a></span>)</span><span class="result"> extends <a href="EquiVertex.html" class="extype" name="org.apache.spark.sql.catalyst.checker.EquiVertex">EquiVertex</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.apache.spark.sql.catalyst.checker.ConditionalLabel" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ConditionalLabelextendsColumnLabelwithEqualswithProductwithSerializable"></a>
+      <a id="ConditionalLabel:ConditionalLabel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ConditionalLabel.html"><span class="name">ConditionalLabel</span></a><span class="params">(<span name="conds">conds: <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="edu.thu.ss.spec.meta.JoinCondition">JoinCondition</span>, <span class="extype" name="edu.thu.ss.spec.lang.pojo.DataCategory">DataCategory</span>]</span>, <span name="database">database: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="table">table: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="attr">attr: <a href="../expressions/AttributeReference.html" class="extype" name="org.apache.spark.sql.catalyst.expressions.AttributeReference">AttributeReference</a></span>)</span><span class="result"> extends <a href="ColumnLabel.html" class="extype" name="org.apache.spark.sql.catalyst.checker.ColumnLabel">ColumnLabel</a> with <span class="extype" name="scala.Equals">Equals</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.apache.spark.sql.catalyst.checker.Constant" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ConstantextendsLabelwithProductwithSerializable"></a>
+      <a id="Constant:Constant"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Constant.html"><span class="name">Constant</span></a><span class="params">(<span name="value">value: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result"> extends <a href="Label.html" class="extype" name="org.apache.spark.sql.catalyst.checker.Label">Label</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.apache.spark.sql.catalyst.checker.ConstantVertex" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ConstantVertexextendsEquiVertexwithProductwithSerializable"></a>
+      <a id="ConstantVertex:ConstantVertex"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ConstantVertex.html"><span class="name">ConstantVertex</span></a><span class="params">(<span name="value">value: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result"> extends <a href="EquiVertex.html" class="extype" name="org.apache.spark.sql.catalyst.checker.EquiVertex">EquiVertex</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.apache.spark.sql.catalyst.checker.DataLabel" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DataLabelextendsColumnLabelwithProductwithSerializable"></a>
+      <a id="DataLabel:DataLabel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="DataLabel.html"><span class="name">DataLabel</span></a><span class="params">(<span name="data">data: <span class="extype" name="edu.thu.ss.spec.lang.pojo.DataCategory">DataCategory</span></span>, <span name="database">database: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="table">table: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="attr">attr: <a href="../expressions/AttributeReference.html" class="extype" name="org.apache.spark.sql.catalyst.expressions.AttributeReference">AttributeReference</a></span>)</span><span class="result"> extends <a href="ColumnLabel.html" class="extype" name="org.apache.spark.sql.catalyst.checker.ColumnLabel">ColumnLabel</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.apache.spark.sql.catalyst.checker.EquiVertex" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="EquiVertexextendsAnyRef"></a>
+      <a id="EquiVertex:EquiVertex"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="EquiVertex.html"><span class="name">EquiVertex</span></a><span class="result"> extends <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.apache.spark.sql.catalyst.checker.Function" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="FunctionextendsLabelwithProductwithSerializable"></a>
+      <a id="Function:Function"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Function.html"><span class="name">Function</span></a><span class="params">(<span name="children">children: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="Label.html" class="extype" name="org.apache.spark.sql.catalyst.checker.Label">Label</a>]</span>, <span name="udf">udf: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="Label.html" class="extype" name="org.apache.spark.sql.catalyst.checker.Label">Label</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.apache.spark.sql.catalyst.checker.Insensitive" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="InsensitiveextendsColumnLabelwithProductwithSerializable"></a>
+      <a id="Insensitive:Insensitive"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Insensitive.html"><span class="name">Insensitive</span></a><span class="params">(<span name="database">database: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="table">table: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="attr">attr: <a href="../expressions/AttributeReference.html" class="extype" name="org.apache.spark.sql.catalyst.expressions.AttributeReference">AttributeReference</a></span>)</span><span class="result"> extends <a href="ColumnLabel.html" class="extype" name="org.apache.spark.sql.catalyst.checker.ColumnLabel">ColumnLabel</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.apache.spark.sql.catalyst.checker.Label" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="LabelextendsAnyRef"></a>
+      <a id="Label:Label"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Label.html"><span class="name">Label</span></a><span class="result"> extends <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.apache.spark.sql.catalyst.checker.LabelConstants" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="LabelConstantsextendsAnyRef"></a>
+      <a id="LabelConstants:LabelConstants"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="LabelConstants.html"><span class="name">LabelConstants</span></a><span class="result"> extends <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.apache.spark.sql.catalyst.checker.LabelPropagator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LabelPropagatorextendsLogging"></a>
+      <a id="LabelPropagator:LabelPropagator"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="LabelPropagator.html"><span class="name">LabelPropagator</span></a><span class="result"> extends <span class="extype" name="org.apache.spark.Logging">Logging</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.apache.spark.sql.catalyst.checker.Predicate" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PredicateextendsLabelwithProductwithSerializable"></a>
+      <a id="Predicate:Predicate"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Predicate.html"><span class="name">Predicate</span></a><span class="params">(<span name="children">children: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="Label.html" class="extype" name="org.apache.spark.sql.catalyst.checker.Label">Label</a>]</span>, <span name="operation">operation: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="Label.html" class="extype" name="org.apache.spark.sql.catalyst.checker.Label">Label</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.apache.spark.sql.catalyst.checker.PrivacyChecker" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="PrivacyCheckerextendsLogging"></a>
+      <a id="PrivacyChecker:PrivacyChecker"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="PrivacyChecker.html"><span class="name">PrivacyChecker</span></a><span class="result"> extends <span class="extype" name="org.apache.spark.Logging">Logging</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.apache.spark.sql.catalyst.checker.PrivacyException" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PrivacyExceptionextendsExceptionwithProductwithSerializable"></a>
+      <a id="PrivacyException:PrivacyException"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="PrivacyException.html"><span class="name">PrivacyException</span></a><span class="params">(<span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../../../../../scala/package.html#Exception=Exception" class="extmbr" name="scala.Exception">Exception</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.apache.spark.sql.catalyst.checker.SparkChecker" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SparkCheckerextendsPrivacyChecker"></a>
+      <a id="SparkChecker:SparkChecker"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="SparkChecker.html"><span class="name">SparkChecker</span></a><span class="result"> extends <a href="PrivacyChecker.html" class="extype" name="org.apache.spark.sql.catalyst.checker.PrivacyChecker">PrivacyChecker</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.apache.spark.sql.catalyst.checker.UnsupportedPlanException" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="UnsupportedPlanExceptionextendsExceptionwithProductwithSerializable"></a>
+      <a id="UnsupportedPlanException:UnsupportedPlanException"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="UnsupportedPlanException.html"><span class="name">UnsupportedPlanException</span></a><span class="params">(<span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../../../../../../scala/package.html#Exception=Exception" class="extmbr" name="scala.Exception">Exception</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="org.apache.spark.sql.catalyst.checker.ExpressionRegistry" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ExpressionRegistry"></a>
+      <a id="ExpressionRegistry:ExpressionRegistry"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ExpressionRegistry$.html"><span class="name">ExpressionRegistry</span></a><span class="result"> extends <a href="LabelConstants.html" class="extype" name="org.apache.spark.sql.catalyst.checker.LabelConstants">LabelConstants</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.apache.spark.sql.catalyst.checker.LabelConstants" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LabelConstants"></a>
+      <a id="LabelConstants:LabelConstants"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="LabelConstants$.html"><span class="name">LabelConstants</span></a><span class="result"> extends <a href="LabelConstants.html" class="extype" name="org.apache.spark.sql.catalyst.checker.LabelConstants">LabelConstants</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.apache.spark.sql.catalyst.checker.SparkChecker" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SparkChecker"></a>
+      <a id="SparkChecker:SparkChecker"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="SparkChecker$.html"><span class="name">SparkChecker</span></a><span class="result"> extends <span class="extype" name="org.apache.spark.Logging">Logging</span></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../../lib/template.js"></script>
+    </body>
+      </html>

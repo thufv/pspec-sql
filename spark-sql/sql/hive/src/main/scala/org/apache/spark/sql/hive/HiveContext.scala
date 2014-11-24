@@ -351,11 +351,10 @@ class HiveContext(sc: SparkContext) extends SQLContext(sc) {
   /** Extends QueryExecution with hive specific features. */
   protected[sql] abstract class QueryExecution extends super.QueryExecution {
     // TODO: Create mixin for the analyzer instead of overriding things here.
-  	
-  	override lazy val optimizedPlan = 
+
+    override lazy val optimizedPlan =
       optimizer(ExtractPythonUdfs(catalog.PreInsertionCasts(catalog.CreateTables(analyzed))))
 
-      
     override lazy val toRdd: RDD[Row] = executedPlan.execute().map(_.copy())
 
     protected val primitiveTypes =

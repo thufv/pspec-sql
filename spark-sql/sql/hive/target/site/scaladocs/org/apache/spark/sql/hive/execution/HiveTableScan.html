@@ -35,7 +35,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">HiveTableScan</span><span class="params">(<span name="attributes">attributes: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="org.apache.spark.sql.catalyst.expressions.Attribute">Attribute</span>]</span>, <span name="relation">relation: <span class="extype" name="org.apache.spark.sql.hive.MetastoreRelation">MetastoreRelation</span></span>, <span name="partitionPruningPred">partitionPruningPred: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.apache.spark.sql.catalyst.expressions.Expression">Expression</span>]</span>)</span><span class="params">(<span name="context">context: <a href="../HiveContext.html" class="extype" name="org.apache.spark.sql.hive.HiveContext">HiveContext</a></span>)</span><span class="result"> extends <span class="extype" name="org.apache.spark.sql.execution.SparkPlan">SparkPlan</span> with <span class="extype" name="org.apache.spark.sql.execution.LeafNode">LeafNode</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">HiveTableScan</span><span class="params">(<span name="attributes">attributes: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="org.apache.spark.sql.catalyst.expressions.Attribute">Attribute</span>]</span>, <span name="relation">relation: <a href="../MetastoreRelation.html" class="extype" name="org.apache.spark.sql.hive.MetastoreRelation">MetastoreRelation</a></span>, <span name="partitionPruningPred">partitionPruningPred: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.apache.spark.sql.catalyst.expressions.Expression">Expression</span>]</span>)</span><span class="params">(<span name="context">context: <a href="../HiveContext.html" class="extype" name="org.apache.spark.sql.hive.HiveContext">HiveContext</a></span>)</span><span class="result"> extends <span class="extype" name="org.apache.spark.sql.execution.SparkPlan">SparkPlan</span> with <span class="extype" name="org.apache.spark.sql.execution.LeafNode">LeafNode</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -94,7 +94,7 @@ The Hive table scan operator.  Column and partition pruning are both handled.
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">HiveTableScan</span><span class="params">(<span name="attributes">attributes: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="org.apache.spark.sql.catalyst.expressions.Attribute">Attribute</span>]</span>, <span name="relation">relation: <span class="extype" name="org.apache.spark.sql.hive.MetastoreRelation">MetastoreRelation</span></span>, <span name="partitionPruningPred">partitionPruningPred: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.apache.spark.sql.catalyst.expressions.Expression">Expression</span>]</span>)</span><span class="params">(<span name="context">context: <a href="../HiveContext.html" class="extype" name="org.apache.spark.sql.hive.HiveContext">HiveContext</a></span>)</span>
+        <span class="name">HiveTableScan</span><span class="params">(<span name="attributes">attributes: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="org.apache.spark.sql.catalyst.expressions.Attribute">Attribute</span>]</span>, <span name="relation">relation: <a href="../MetastoreRelation.html" class="extype" name="org.apache.spark.sql.hive.MetastoreRelation">MetastoreRelation</a></span>, <span name="partitionPruningPred">partitionPruningPred: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="org.apache.spark.sql.catalyst.expressions.Expression">Expression</span>]</span>)</span><span class="params">(<span name="context">context: <a href="../HiveContext.html" class="extype" name="org.apache.spark.sql.hive.HiveContext">HiveContext</a></span>)</span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">attributes</dt><dd class="cmt"><p>Attributes to be fetched from the Hive table.</p></dd><dt class="param">relation</dt><dd class="cmt"><p>The Hive table be be scanned.</p></dd><dt class="param">partitionPruningPred</dt><dd class="cmt"><p>An optional partition pruning predicate for partitioned table.
@@ -896,7 +896,7 @@ The Hive table scan operator.  Column and partition pruning are both handled.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">relation</span><span class="result">: <span class="extype" name="org.apache.spark.sql.hive.MetastoreRelation">MetastoreRelation</span></span>
+        <span class="name">relation</span><span class="result">: <a href="../MetastoreRelation.html" class="extype" name="org.apache.spark.sql.hive.MetastoreRelation">MetastoreRelation</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">The Hive table be be scanned.</p>

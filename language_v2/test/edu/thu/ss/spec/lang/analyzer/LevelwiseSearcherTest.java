@@ -24,11 +24,11 @@ public class LevelwiseSearcherTest {
 		map.put(key1, 1);
 		map.put(key2, 2);
 
-		key3.rules[3] = -1;
+		key3.index[3] = -1;
 		assertEquals((Integer) 1, map.get(key3));
 
-		key3.rules[3] = 4;
-		key3.rules[0] = -1;
+		key3.index[3] = 4;
+		key3.index[0] = -1;
 		assertEquals((Integer) 2, map.get(key3));
 	}
 
@@ -57,7 +57,7 @@ public class LevelwiseSearcherTest {
 
 		@Override
 		protected boolean process(SearchKey key) {
-			if (Arrays.equals(key.rules, exclude)) {
+			if (Arrays.equals(key.index, exclude)) {
 				//	return true;
 			}
 			System.out.println(key);

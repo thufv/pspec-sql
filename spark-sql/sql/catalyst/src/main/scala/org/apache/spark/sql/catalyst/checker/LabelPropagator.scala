@@ -97,17 +97,6 @@ class LabelPropagator extends Logging {
     propagate(plan);
     plan.projections.values.foreach(fulfillConditions(_));
     plan.conditions.foreach(fulfillConditions(_));
-
-    println("projections:");
-    plan.projections.foreach(t => {
-      println(s"$t");
-    });
-    println();
-    println("conditions:")
-    plan.conditions.foreach(t => {
-      println(t);
-    });
-
     policies;
   }
 

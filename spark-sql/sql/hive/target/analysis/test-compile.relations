@@ -1,10 +1,14 @@
 products:
+   sql/hive/compatibility/src/test/scala/org/apache/spark/sql/hive/execution/HiveCompatibilitySuite.scala -> sql/hive/target/scala-2.10/test-classes/org/apache/spark/sql/hive/execution/HiveCompatibilitySuite$$anonfun$testCases$1.class
+   sql/hive/compatibility/src/test/scala/org/apache/spark/sql/hive/execution/HiveCompatibilitySuite.scala -> sql/hive/target/scala-2.10/test-classes/org/apache/spark/sql/hive/execution/HiveCompatibilitySuite.class
    sql/hive/src/test/scala/org/apache/spark/sql/QueryTest.scala -> sql/hive/target/scala-2.10/test-classes/org/apache/spark/sql/QueryTest$$anonfun$1.class
    sql/hive/src/test/scala/org/apache/spark/sql/QueryTest.scala -> sql/hive/target/scala-2.10/test-classes/org/apache/spark/sql/QueryTest$$anonfun$2.class
    sql/hive/src/test/scala/org/apache/spark/sql/QueryTest.scala -> sql/hive/target/scala-2.10/test-classes/org/apache/spark/sql/QueryTest$$anonfun$checkAnswer$1.class
    sql/hive/src/test/scala/org/apache/spark/sql/QueryTest.scala -> sql/hive/target/scala-2.10/test-classes/org/apache/spark/sql/QueryTest$$anonfun$checkAnswer$2.class
    sql/hive/src/test/scala/org/apache/spark/sql/QueryTest.scala -> sql/hive/target/scala-2.10/test-classes/org/apache/spark/sql/QueryTest$$anonfun$prepareAnswer$1$1.class
    sql/hive/src/test/scala/org/apache/spark/sql/QueryTest.scala -> sql/hive/target/scala-2.10/test-classes/org/apache/spark/sql/QueryTest.class
+   sql/hive/src/test/scala/org/apache/spark/sql/checker/LabelSuite.scala -> sql/hive/target/scala-2.10/test-classes/org/apache/spark/sql/checker/LabelSuite$$anonfun$1.class
+   sql/hive/src/test/scala/org/apache/spark/sql/checker/LabelSuite.scala -> sql/hive/target/scala-2.10/test-classes/org/apache/spark/sql/checker/LabelSuite.class
    sql/hive/src/test/scala/org/apache/spark/sql/hive/CachedTableSuite.scala -> sql/hive/target/scala-2.10/test-classes/org/apache/spark/sql/hive/CachedTableSuite$$anonfun$1.class
    sql/hive/src/test/scala/org/apache/spark/sql/hive/CachedTableSuite.scala -> sql/hive/target/scala-2.10/test-classes/org/apache/spark/sql/hive/CachedTableSuite$$anonfun$2$$anonfun$apply$mcV$sp$2.class
    sql/hive/src/test/scala/org/apache/spark/sql/hive/CachedTableSuite.scala -> sql/hive/target/scala-2.10/test-classes/org/apache/spark/sql/hive/CachedTableSuite$$anonfun$2.class
@@ -260,11 +264,21 @@ products:
    sql/hive/src/test/scala/org/apache/spark/sql/parquet/ParquetMetastoreSuite.scala -> sql/hive/target/scala-2.10/test-classes/org/apache/spark/sql/parquet/ParquetMetastoreSuite$$anonfun$9.class
    sql/hive/src/test/scala/org/apache/spark/sql/parquet/ParquetMetastoreSuite.scala -> sql/hive/target/scala-2.10/test-classes/org/apache/spark/sql/parquet/ParquetMetastoreSuite.class
 binary dependencies:
+   sql/hive/compatibility/src/test/scala/org/apache/spark/sql/hive/execution/HiveCompatibilitySuite.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   sql/hive/compatibility/src/test/scala/org/apache/spark/sql/hive/execution/HiveCompatibilitySuite.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
+   sql/hive/compatibility/src/test/scala/org/apache/spark/sql/hive/execution/HiveCompatibilitySuite.scala -> /Users/luochen/.m2/repository/org/scalatest/scalatest_2.10/2.1.5/scalatest_2.10-2.1.5.jar
+   sql/hive/compatibility/src/test/scala/org/apache/spark/sql/hive/execution/HiveCompatibilitySuite.scala -> core/target/spark-core_2.10-1.1.0.jar
    sql/hive/src/test/scala/org/apache/spark/sql/QueryTest.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
    sql/hive/src/test/scala/org/apache/spark/sql/QueryTest.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
    sql/hive/src/test/scala/org/apache/spark/sql/QueryTest.scala -> /Users/luochen/.m2/repository/org/scalatest/scalatest_2.10/2.1.5/scalatest_2.10-2.1.5.jar
    sql/hive/src/test/scala/org/apache/spark/sql/QueryTest.scala -> sql/catalyst/target/spark-catalyst_2.10-1.1.0.jar
    sql/hive/src/test/scala/org/apache/spark/sql/QueryTest.scala -> sql/core/target/spark-sql_2.10-1.1.0.jar
+   sql/hive/src/test/scala/org/apache/spark/sql/checker/LabelSuite.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   sql/hive/src/test/scala/org/apache/spark/sql/checker/LabelSuite.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
+   sql/hive/src/test/scala/org/apache/spark/sql/checker/LabelSuite.scala -> /Users/luochen/.m2/repository/org/scalatest/scalatest_2.10/2.1.5/scalatest_2.10-2.1.5.jar
+   sql/hive/src/test/scala/org/apache/spark/sql/checker/LabelSuite.scala -> core/target/spark-core_2.10-1.1.0.jar
+   sql/hive/src/test/scala/org/apache/spark/sql/checker/LabelSuite.scala -> sql/catalyst/target/spark-catalyst_2.10-1.1.0.jar
+   sql/hive/src/test/scala/org/apache/spark/sql/checker/LabelSuite.scala -> sql/core/target/spark-sql_2.10-1.1.0.jar
    sql/hive/src/test/scala/org/apache/spark/sql/hive/CachedTableSuite.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
    sql/hive/src/test/scala/org/apache/spark/sql/hive/CachedTableSuite.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
    sql/hive/src/test/scala/org/apache/spark/sql/hive/CachedTableSuite.scala -> /Users/luochen/.m2/repository/org/scalatest/scalatest_2.10/2.1.5/scalatest_2.10-2.1.5.jar
@@ -378,6 +392,8 @@ binary dependencies:
    sql/hive/src/test/scala/org/apache/spark/sql/parquet/ParquetMetastoreSuite.scala -> sql/catalyst/target/spark-catalyst_2.10-1.1.0.jar
    sql/hive/src/test/scala/org/apache/spark/sql/parquet/ParquetMetastoreSuite.scala -> sql/core/target/spark-sql_2.10-1.1.0.jar
 source dependencies:
+   sql/hive/compatibility/src/test/scala/org/apache/spark/sql/hive/execution/HiveCompatibilitySuite.scala -> sql/hive/src/test/scala/org/apache/spark/sql/hive/execution/HiveComparisonTest.scala
+   sql/hive/compatibility/src/test/scala/org/apache/spark/sql/hive/execution/HiveCompatibilitySuite.scala -> sql/hive/src/test/scala/org/apache/spark/sql/hive/execution/HiveQueryFileTest.scala
    sql/hive/src/test/scala/org/apache/spark/sql/hive/CachedTableSuite.scala -> sql/hive/src/test/scala/org/apache/spark/sql/hive/execution/HiveComparisonTest.scala
    sql/hive/src/test/scala/org/apache/spark/sql/hive/InsertIntoHiveTableSuite.scala -> sql/hive/src/test/scala/org/apache/spark/sql/QueryTest.scala
    sql/hive/src/test/scala/org/apache/spark/sql/hive/StatisticsSuite.scala -> sql/hive/src/test/scala/org/apache/spark/sql/QueryTest.scala
@@ -394,6 +410,9 @@ source dependencies:
    sql/hive/src/test/scala/org/apache/spark/sql/hive/execution/SQLQuerySuite.scala -> sql/hive/src/test/scala/org/apache/spark/sql/QueryTest.scala
    sql/hive/src/test/scala/org/apache/spark/sql/parquet/ParquetMetastoreSuite.scala -> sql/hive/src/test/scala/org/apache/spark/sql/QueryTest.scala
 external dependencies:
+   sql/hive/compatibility/src/test/scala/org/apache/spark/sql/hive/execution/HiveCompatibilitySuite.scala -> org.apache.spark.sql.hive.test.TestHive$
+   sql/hive/compatibility/src/test/scala/org/apache/spark/sql/hive/execution/HiveCompatibilitySuite.scala -> org.apache.spark.sql.hive.test.TestHiveContext
+   sql/hive/src/test/scala/org/apache/spark/sql/checker/LabelSuite.scala -> org.apache.spark.sql.hive.HiveContext
    sql/hive/src/test/scala/org/apache/spark/sql/hive/CachedTableSuite.scala -> org.apache.spark.sql.hive.HiveContext
    sql/hive/src/test/scala/org/apache/spark/sql/hive/CachedTableSuite.scala -> org.apache.spark.sql.hive.test.TestHive$
    sql/hive/src/test/scala/org/apache/spark/sql/hive/CachedTableSuite.scala -> org.apache.spark.sql.hive.test.TestHiveContext
@@ -444,12 +463,16 @@ external dependencies:
    sql/hive/src/test/scala/org/apache/spark/sql/parquet/ParquetMetastoreSuite.scala -> org.apache.spark.sql.hive.execution.HiveTableScan
    sql/hive/src/test/scala/org/apache/spark/sql/parquet/ParquetMetastoreSuite.scala -> org.apache.spark.sql.hive.test.TestHive$
 class names:
+   sql/hive/compatibility/src/test/scala/org/apache/spark/sql/hive/execution/HiveCompatibilitySuite.scala -> org.apache.spark.sql.hive.execution.HiveCompatibilitySuite
+   sql/hive/compatibility/src/test/scala/org/apache/spark/sql/hive/execution/HiveCompatibilitySuite.scala -> org.apache.spark.sql.hive.execution.HiveCompatibilitySuite$$anonfun$testCases$1
    sql/hive/src/test/scala/org/apache/spark/sql/QueryTest.scala -> org.apache.spark.sql.QueryTest
    sql/hive/src/test/scala/org/apache/spark/sql/QueryTest.scala -> org.apache.spark.sql.QueryTest$$anonfun$1
    sql/hive/src/test/scala/org/apache/spark/sql/QueryTest.scala -> org.apache.spark.sql.QueryTest$$anonfun$2
    sql/hive/src/test/scala/org/apache/spark/sql/QueryTest.scala -> org.apache.spark.sql.QueryTest$$anonfun$checkAnswer$1
    sql/hive/src/test/scala/org/apache/spark/sql/QueryTest.scala -> org.apache.spark.sql.QueryTest$$anonfun$checkAnswer$2
    sql/hive/src/test/scala/org/apache/spark/sql/QueryTest.scala -> org.apache.spark.sql.QueryTest$$anonfun$prepareAnswer$1$1
+   sql/hive/src/test/scala/org/apache/spark/sql/checker/LabelSuite.scala -> org.apache.spark.sql.checker.LabelSuite
+   sql/hive/src/test/scala/org/apache/spark/sql/checker/LabelSuite.scala -> org.apache.spark.sql.checker.LabelSuite$$anonfun$1
    sql/hive/src/test/scala/org/apache/spark/sql/hive/CachedTableSuite.scala -> org.apache.spark.sql.hive.CachedTableSuite
    sql/hive/src/test/scala/org/apache/spark/sql/hive/CachedTableSuite.scala -> org.apache.spark.sql.hive.CachedTableSuite$$anonfun$1
    sql/hive/src/test/scala/org/apache/spark/sql/hive/CachedTableSuite.scala -> org.apache.spark.sql.hive.CachedTableSuite$$anonfun$2

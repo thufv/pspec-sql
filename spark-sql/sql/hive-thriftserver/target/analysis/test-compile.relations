@@ -1,0 +1,12 @@
+products:
+   sql/hive-thriftserver/src/test/scala/org/apache/spark/sql/hive/thrifserver/TestCLI.scala -> sql/hive-thriftserver/target/scala-2.10/test-classes/org/apache/spark/sql/hive/thrifserver/TestCLI$.class
+   sql/hive-thriftserver/src/test/scala/org/apache/spark/sql/hive/thrifserver/TestCLI.scala -> sql/hive-thriftserver/target/scala-2.10/test-classes/org/apache/spark/sql/hive/thrifserver/TestCLI.class
+binary dependencies:
+   sql/hive-thriftserver/src/test/scala/org/apache/spark/sql/hive/thrifserver/TestCLI.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   sql/hive-thriftserver/src/test/scala/org/apache/spark/sql/hive/thrifserver/TestCLI.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
+source dependencies:
+external dependencies:
+   sql/hive-thriftserver/src/test/scala/org/apache/spark/sql/hive/thrifserver/TestCLI.scala -> org.apache.spark.sql.hive.thriftserver.SparkSQLCLIDriver$
+class names:
+   sql/hive-thriftserver/src/test/scala/org/apache/spark/sql/hive/thrifserver/TestCLI.scala -> org.apache.spark.sql.hive.thrifserver.TestCLI
+   sql/hive-thriftserver/src/test/scala/org/apache/spark/sql/hive/thrifserver/TestCLI.scala -> org.apache.spark.sql.hive.thrifserver.TestCLI$

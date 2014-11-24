@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<privacy-policy xmlns="http://www.example.org/privacy"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.example.org/privacy privacy.xsd">
+	<policy-information id="spark-policy">
+		<issuer>
+			<name>luochen</name>
+			<organization>Tsinghua</organization>
+			<e-mail>luochen01@vip.qq.com</e-mail>
+			<address>Tsinghua</address>
+			<country>China</country>
+		</issuer>
+	</policy-information>
+	<vocabulary-ref location="res/spark-vocab.xml">
+		<user-category-container refid="default-user" />
+		<data-category-container refid="store-data" />
+	</vocabulary-ref>
+	<rules>
+		<rule id="forbid_project">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-category-ref refid="ka" action="projection"></data-category-ref>
+			<data-category-ref refid="name" action="projection"></data-category-ref>
+			<data-category-ref refid="customer_suite" action="projection"></data-category-ref>
+			<data-category-ref refid="customer_sa" action="projection"></data-category-ref>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+
+		<rule id="forbid_name_customer_sa">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="name"></data-category-ref>
+				<data-category-ref refid="customer_sa"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+
+		<rule id="forbid_id_customer_sa">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="id"></data-category-ref>
+				<data-category-ref refid="customer_sa"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+
+		<rule id="forbid_ka_qi_project">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="ka"></data-category-ref>
+				<data-category-ref refid="qi" action="projection"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+
+
+		<rule id="truncate_zip">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-category-ref refid="customer_zip"></data-category-ref>
+			<restriction>
+				<desensitize>
+					<operation>truncate</operation>
+				</desensitize>
+			</restriction>
+		</rule>
+
+		<rule id="agg_financial">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-category-ref refid="financial"></data-category-ref>
+			<restriction>
+				<desensitize>
+					<operation>sum</operation>
+					<operation>avg</operation>
+				</desensitize>
+			</restriction>
+		</rule>
+
+
+	</rules>
+</privacy-policy>

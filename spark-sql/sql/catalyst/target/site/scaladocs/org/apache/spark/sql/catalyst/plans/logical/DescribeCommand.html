@@ -244,6 +244,45 @@ pasted in the REPL to build an equivalent Tree.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.apache.spark.sql.catalyst.plans.logical.LogicalPlan#calculateLabels" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="calculateLabels():edu.thu.ss.spec.lang.pojo.Policy"></a>
+      <a id="calculateLabels():Policy"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">calculateLabels</span><span class="params">()</span><span class="result">: <span class="extype" name="edu.thu.ss.spec.lang.pojo.Policy">Policy</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LogicalPlan.html" class="extype" name="org.apache.spark.sql.catalyst.plans.logical.LogicalPlan">LogicalPlan</a></dd></dl></div>
+    </li><li name="org.apache.spark.sql.catalyst.plans.logical.LogicalPlan#checkMeta" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="checkMeta(columns:Seq[String]):Unit"></a>
+      <a id="checkMeta(Seq[String]):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">checkMeta</span><span class="params">(<span name="columns">columns: <a href="../../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LogicalPlan.html" class="extype" name="org.apache.spark.sql.catalyst.plans.logical.LogicalPlan">LogicalPlan</a></dd></dl></div>
+    </li><li name="org.apache.spark.sql.catalyst.plans.logical.LogicalPlan#childLabel" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="childLabel(attr:org.apache.spark.sql.catalyst.expressions.Attribute):org.apache.spark.sql.catalyst.checker.Label"></a>
+      <a id="childLabel(Attribute):Label"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">childLabel</span><span class="params">(<span name="attr">attr: <a href="../../expressions/Attribute.html" class="extype" name="org.apache.spark.sql.catalyst.expressions.Attribute">Attribute</a></span>)</span><span class="result">: <a href="../../checker/Label.html" class="extype" name="org.apache.spark.sql.catalyst.checker.Label">Label</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LogicalPlan.html" class="extype" name="org.apache.spark.sql.catalyst.plans.logical.LogicalPlan">LogicalPlan</a></dd></dl></div>
     </li><li name="org.apache.spark.sql.catalyst.trees.LeafNode#children" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="children:scala.collection.immutable.Nil.type"></a>
       <a id="children:Nil.type"></a>
@@ -306,6 +345,19 @@ pasted in the REPL to build an equivalent Tree.
 tree on which the function is defined.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a Seq containing the result of applying a partial function to all elements in this
 tree on which the function is defined.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../trees/TreeNode.html" class="extype" name="org.apache.spark.sql.catalyst.trees.TreeNode">TreeNode</a></dd></dl></div>
+    </li><li name="org.apache.spark.sql.catalyst.plans.logical.LogicalPlan#conditions" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="conditions:scala.collection.mutable.Set[org.apache.spark.sql.catalyst.checker.Label]"></a>
+      <a id="conditions:Set[Label]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">conditions</span><span class="result">: <span class="extype" name="scala.collection.mutable.Set">Set</span>[<a href="../../checker/Label.html" class="extype" name="org.apache.spark.sql.catalyst.checker.Label">Label</a>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LogicalPlan.html" class="extype" name="org.apache.spark.sql.catalyst.plans.logical.LogicalPlan">LogicalPlan</a></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -664,6 +716,19 @@ These are appended to the transformed args automatically by makeCopy</p></div><d
       </span>
       </h4>
       <p class="shortcomment cmt">Prints out the schema in the tree format</p><div class="fullcomment"><div class="comment cmt"><p>Prints out the schema in the tree format</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../QueryPlan.html" class="extype" name="org.apache.spark.sql.catalyst.plans.QueryPlan">QueryPlan</a></dd></dl></div>
+    </li><li name="org.apache.spark.sql.catalyst.plans.logical.LogicalPlan#projections" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="projections:scala.collection.mutable.Map[org.apache.spark.sql.catalyst.expressions.Attribute,org.apache.spark.sql.catalyst.checker.Label]"></a>
+      <a id="projections:Map[Attribute,Label]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">projections</span><span class="result">: <span class="extype" name="scala.collection.mutable.Map">Map</span>[<a href="../../expressions/Attribute.html" class="extype" name="org.apache.spark.sql.catalyst.expressions.Attribute">Attribute</a>, <a href="../../checker/Label.html" class="extype" name="org.apache.spark.sql.catalyst.checker.Label">Label</a>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="LogicalPlan.html" class="extype" name="org.apache.spark.sql.catalyst.plans.logical.LogicalPlan">LogicalPlan</a></dd></dl></div>
     </li><li name="org.apache.spark.sql.catalyst.plans.logical.LogicalPlan#resolve" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="resolve(name:String,input:Seq[org.apache.spark.sql.catalyst.expressions.Attribute]):Option[org.apache.spark.sql.catalyst.expressions.NamedExpression]"></a>
       <a id="resolve(String,Seq[Attribute]):Option[NamedExpression]"></a>

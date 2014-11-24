@@ -43,7 +43,7 @@ private[hive] object SparkSQLCLIDriver {
   private var prompt = "spark-sql"
   private var continuedPrompt = "".padTo(prompt.length, ' ')
   private var transport: TSocket = _
-
+  private var number = 0;
   installSignalHandler()
 
   /**
@@ -256,6 +256,8 @@ private[hive] class SparkSQLCLIDriver extends CliDriver with Logging {
   }
 
   override def processCmd(cmd: String): Int = {
+    SparkSQLCLIDriver.number += 1;
+
     val cmd_trimmed: String = cmd.trim()
     val tokens: Array[String] = cmd_trimmed.split("\\s+")
     val cmd_1: String = cmd_trimmed.substring(tokens(0).length()).trim()
@@ -290,9 +292,17 @@ private[hive] class SparkSQLCLIDriver extends CliDriver with Logging {
           val rc = driver.run(cmd)
           ret = rc.getResponseCode
           if (ret != 0) {
-            console.printError(rc.getErrorMessage())
-            driver.close()
-            return ret
+            if (ret == -10) {
+              //privacy error;
+              console.printError(s"SQL ${SparkSQLCLIDriver.number} fail.");
+              console.printError(s"${rc.getErrorMessage()}");
+              return 0;
+            } else {
+              console.printError(rc.getErrorMessage())
+              driver.close()
+              return ret
+            }
+
           }
 
           val res = new JArrayList[String]()
@@ -338,6 +348,7 @@ private[hive] class SparkSQLCLIDriver extends CliDriver with Logging {
           ret = proc.run(cmd_1).getResponseCode
         }
       }
+      console.printInfo(s"SQL ${SparkSQLCLIDriver.number} success.");
       ret
     }
   }

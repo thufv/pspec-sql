@@ -136,5 +136,6 @@ fi
 if [ -n "$YARN_CONF_DIR" ]; then
   CLASSPATH="$CLASSPATH:$YARN_CONF_DIR"
 fi
-
+CLASSPATH="$CLASSPATH:$FWDIR/lib_managed/jars/mysql-connector-java-5.1.33-bin.jar"
+CLASSPATH="$CLASSPATH:$FWDIR/lib_managed/jars/privacy.jar"
 echo "$CLASSPATH"

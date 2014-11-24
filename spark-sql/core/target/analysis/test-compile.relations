@@ -1,56 +1,4 @@
 products:
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$1.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$10.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$11.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$12.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$13.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$14.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$15.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$16.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$17.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$18.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$19.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$2.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$20.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$21.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$22.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$23.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$24.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$25.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$26.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$27.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$28.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$29.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$3.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$30.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$31.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$32.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$33.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$34.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$35.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$36.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$37.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$38.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$39.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$4.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$40.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$41.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$42.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$43.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$44.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$45.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$5.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$6.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$7.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$8.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$9.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite$SomeCustomClass.class
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/target/scala-2.10/test-classes/org/apache/spark/JavaAPISuite.class
-   core/src/test/java/org/apache/spark/serializer/TestJavaSerializerImpl.java -> core/target/scala-2.10/test-classes/org/apache/spark/serializer/TestJavaSerializerImpl$DeserializationStreamImpl.class
-   core/src/test/java/org/apache/spark/serializer/TestJavaSerializerImpl.java -> core/target/scala-2.10/test-classes/org/apache/spark/serializer/TestJavaSerializerImpl$SerializationStreamImpl.class
-   core/src/test/java/org/apache/spark/serializer/TestJavaSerializerImpl.java -> core/target/scala-2.10/test-classes/org/apache/spark/serializer/TestJavaSerializerImpl$SerializerInstanceImpl.class
-   core/src/test/java/org/apache/spark/serializer/TestJavaSerializerImpl.java -> core/target/scala-2.10/test-classes/org/apache/spark/serializer/TestJavaSerializerImpl.class
-   core/src/test/java/org/apache/spark/util/JavaTaskCompletionListenerImpl.java -> core/target/scala-2.10/test-classes/org/apache/spark/util/JavaTaskCompletionListenerImpl.class
    core/src/test/scala/org/apache/spark/AccumulatorSuite.scala -> core/target/scala-2.10/test-classes/org/apache/spark/AccumulatorSuite$$anon$1.class
    core/src/test/scala/org/apache/spark/AccumulatorSuite.scala -> core/target/scala-2.10/test-classes/org/apache/spark/AccumulatorSuite$$anonfun$1$$anonfun$apply$mcV$sp$1.class
    core/src/test/scala/org/apache/spark/AccumulatorSuite.scala -> core/target/scala-2.10/test-classes/org/apache/spark/AccumulatorSuite$$anonfun$1$$anonfun$apply$mcV$sp$2.class
@@ -2737,14 +2685,6 @@ products:
    core/src/test/scala/org/apache/spark/util/random/XORShiftRandomSuite.scala -> core/target/scala-2.10/test-classes/org/apache/spark/util/random/XORShiftRandomSuite$$anonfun$2.class
    core/src/test/scala/org/apache/spark/util/random/XORShiftRandomSuite.scala -> core/target/scala-2.10/test-classes/org/apache/spark/util/random/XORShiftRandomSuite.class
 binary dependencies:
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> /Users/luochen/.m2/repository/com/google/guava/guava/14.0.1/guava-14.0.1.jar
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> /Users/luochen/.m2/repository/junit/junit/4.10/junit-4.10.jar
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> /Users/luochen/.m2/repository/org/apache/hadoop/hadoop-core/1.2.1/hadoop-core-1.2.1.jar
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
-   core/src/test/java/org/apache/spark/serializer/TestJavaSerializerImpl.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
-   core/src/test/java/org/apache/spark/serializer/TestJavaSerializerImpl.java -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
-   core/src/test/java/org/apache/spark/util/JavaTaskCompletionListenerImpl.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
    core/src/test/scala/org/apache/spark/AccumulatorSuite.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
    core/src/test/scala/org/apache/spark/AccumulatorSuite.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
    core/src/test/scala/org/apache/spark/AccumulatorSuite.scala -> /Users/luochen/.m2/repository/org/scalatest/scalatest_2.10/2.1.5/scalatest_2.10-2.1.5.jar
@@ -3117,6 +3057,7 @@ binary dependencies:
    core/src/test/scala/org/apache/spark/util/collection/SorterSuite.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
    core/src/test/scala/org/apache/spark/util/collection/SorterSuite.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
    core/src/test/scala/org/apache/spark/util/collection/SorterSuite.scala -> /Users/luochen/.m2/repository/org/scalatest/scalatest_2.10/2.1.5/scalatest_2.10-2.1.5.jar
+   core/src/test/scala/org/apache/spark/util/collection/SorterSuite.scala -> core/target/scala-2.10/classes/org/apache/spark/util/collection/Sorter.class
    core/src/test/scala/org/apache/spark/util/random/RandomSamplerSuite.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
    core/src/test/scala/org/apache/spark/util/random/RandomSamplerSuite.scala -> /Users/luochen/.m2/repository/colt/colt/1.2.0/colt-1.2.0.jar
    core/src/test/scala/org/apache/spark/util/random/RandomSamplerSuite.scala -> /Users/luochen/.m2/repository/org/easymock/easymock/3.1/easymock-3.1.jar
@@ -3131,9 +3072,6 @@ binary dependencies:
    core/src/test/scala/org/apache/spark/util/random/XORShiftRandomSuite.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
    core/src/test/scala/org/apache/spark/util/random/XORShiftRandomSuite.scala -> /Users/luochen/.m2/repository/org/scalatest/scalatest_2.10/2.1.5/scalatest_2.10-2.1.5.jar
 source dependencies:
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> core/src/test/java/org/apache/spark/JavaAPISuite.java
-   core/src/test/java/org/apache/spark/serializer/TestJavaSerializerImpl.java -> core/src/test/java/org/apache/spark/serializer/TestJavaSerializerImpl.java
-   core/src/test/java/org/apache/spark/util/JavaTaskCompletionListenerImpl.java -> core/src/test/java/org/apache/spark/util/JavaTaskCompletionListenerImpl.java
    core/src/test/scala/org/apache/spark/AccumulatorSuite.scala -> core/src/test/scala/org/apache/spark/LocalSparkContext.scala
    core/src/test/scala/org/apache/spark/CheckpointSuite.scala -> core/src/test/scala/org/apache/spark/LocalSparkContext.scala
    core/src/test/scala/org/apache/spark/ContextCleanerSuite.scala -> core/src/test/scala/org/apache/spark/LocalSparkContext.scala
@@ -3193,36 +3131,6 @@ source dependencies:
    core/src/test/scala/org/apache/spark/util/collection/ExternalSorterSuite.scala -> core/src/test/scala/org/apache/spark/LocalSparkContext.scala
    core/src/test/scala/org/apache/spark/util/collection/ExternalSorterSuite.scala -> core/src/test/scala/org/apache/spark/util/collection/FixedHashObject.scala
 external dependencies:
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.Accumulator
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.AccumulatorParam
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.Partition
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.TaskContext
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.api.java.JavaDoubleRDD
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.api.java.JavaHadoopRDD
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.api.java.JavaPairRDD
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.api.java.JavaRDD
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.api.java.JavaSparkContext
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.api.java.function.DoubleFlatMapFunction
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.api.java.function.DoubleFunction
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.api.java.function.FlatMapFunction
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.api.java.function.FlatMapFunction2
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.api.java.function.Function
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.api.java.function.Function2
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.api.java.function.PairFlatMapFunction
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.api.java.function.PairFunction
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.api.java.function.VoidFunction
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.executor.TaskMetrics
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.partial.BoundedDouble
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.partial.PartialResult
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.rdd.RDD
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.storage.StorageLevel
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.util.StatCounter
-   core/src/test/java/org/apache/spark/serializer/TestJavaSerializerImpl.java -> org.apache.spark.serializer.DeserializationStream
-   core/src/test/java/org/apache/spark/serializer/TestJavaSerializerImpl.java -> org.apache.spark.serializer.SerializationStream
-   core/src/test/java/org/apache/spark/serializer/TestJavaSerializerImpl.java -> org.apache.spark.serializer.Serializer
-   core/src/test/java/org/apache/spark/serializer/TestJavaSerializerImpl.java -> org.apache.spark.serializer.SerializerInstance
-   core/src/test/java/org/apache/spark/util/JavaTaskCompletionListenerImpl.java -> org.apache.spark.TaskContext
-   core/src/test/java/org/apache/spark/util/JavaTaskCompletionListenerImpl.java -> org.apache.spark.util.TaskCompletionListener
    core/src/test/scala/org/apache/spark/AccumulatorSuite.scala -> org.apache.spark.Accumulable
    core/src/test/scala/org/apache/spark/AccumulatorSuite.scala -> org.apache.spark.AccumulableParam
    core/src/test/scala/org/apache/spark/AccumulatorSuite.scala -> org.apache.spark.Accumulator
@@ -4157,7 +4065,6 @@ external dependencies:
    core/src/test/scala/org/apache/spark/util/collection/SorterSuite.scala -> org.apache.spark.util.Utils$
    core/src/test/scala/org/apache/spark/util/collection/SorterSuite.scala -> org.apache.spark.util.collection.KVArraySortDataFormat
    core/src/test/scala/org/apache/spark/util/collection/SorterSuite.scala -> org.apache.spark.util.collection.SortDataFormat
-   core/src/test/scala/org/apache/spark/util/collection/SorterSuite.scala -> org.apache.spark.util.collection.Sorter
    core/src/test/scala/org/apache/spark/util/collection/SorterSuite.scala -> org.apache.spark.util.random.XORShiftRandom
    core/src/test/scala/org/apache/spark/util/random/RandomSamplerSuite.scala -> org.apache.spark.util.random.BernoulliSampler
    core/src/test/scala/org/apache/spark/util/random/RandomSamplerSuite.scala -> org.apache.spark.util.random.PoissonSampler
@@ -4165,58 +4072,6 @@ external dependencies:
    core/src/test/scala/org/apache/spark/util/random/XORShiftRandomSuite.scala -> org.apache.spark.util.Utils$
    core/src/test/scala/org/apache/spark/util/random/XORShiftRandomSuite.scala -> org.apache.spark.util.random.XORShiftRandom
 class names:
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$1
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$10
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$11
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$12
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$13
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$14
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$15
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$16
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$17
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$18
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$19
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$2
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$20
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$21
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$22
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$23
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$24
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$25
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$26
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$27
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$28
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$29
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$3
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$30
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$31
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$32
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$33
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$34
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$35
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$36
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$37
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$38
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$39
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$4
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$40
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$41
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$42
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$43
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$44
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$45
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$5
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$6
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$7
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$8
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$9
-   core/src/test/java/org/apache/spark/JavaAPISuite.java -> org.apache.spark.JavaAPISuite$SomeCustomClass
-   core/src/test/java/org/apache/spark/serializer/TestJavaSerializerImpl.java -> org.apache.spark.serializer.TestJavaSerializerImpl
-   core/src/test/java/org/apache/spark/serializer/TestJavaSerializerImpl.java -> org.apache.spark.serializer.TestJavaSerializerImpl$DeserializationStreamImpl
-   core/src/test/java/org/apache/spark/serializer/TestJavaSerializerImpl.java -> org.apache.spark.serializer.TestJavaSerializerImpl$SerializationStreamImpl
-   core/src/test/java/org/apache/spark/serializer/TestJavaSerializerImpl.java -> org.apache.spark.serializer.TestJavaSerializerImpl$SerializerInstanceImpl
-   core/src/test/java/org/apache/spark/util/JavaTaskCompletionListenerImpl.java -> org.apache.spark.util.JavaTaskCompletionListenerImpl
    core/src/test/scala/org/apache/spark/AccumulatorSuite.scala -> org.apache.spark.AccumulatorSuite
    core/src/test/scala/org/apache/spark/AccumulatorSuite.scala -> org.apache.spark.AccumulatorSuite$$anon$1
    core/src/test/scala/org/apache/spark/AccumulatorSuite.scala -> org.apache.spark.AccumulatorSuite$$anonfun$1

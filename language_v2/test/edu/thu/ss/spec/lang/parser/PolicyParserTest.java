@@ -25,7 +25,6 @@ public class PolicyParserTest {
 		}
 	}
 
-	@Test
 	public void testConflict() {
 		try {
 			PolicyParser parser = new PolicyParser();
@@ -36,11 +35,21 @@ public class PolicyParserTest {
 		}
 	}
 
-	@Test
 	public void testRedundancy() {
 		try {
 			PolicyParser parser = new PolicyParser();
 			Policy policy = parser.parse("test/res/redundancy-policy.xml", false);
+			System.out.println(policy);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void testGlobalRedundancy() {
+		try {
+			PolicyParser parser = new PolicyParser();
+			Policy policy = parser.parse("test/res/global-redundancy-policy.xml", true);
 			System.out.println(policy);
 		} catch (Exception e) {
 			e.printStackTrace();

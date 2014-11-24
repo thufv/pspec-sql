@@ -22,10 +22,10 @@ binary dependencies:
    external/flume-sink/src/test/scala/org/apache/spark/streaming/flume/sink/SparkSinkSuite.scala -> /Users/luochen/.m2/repository/org/apache/flume/flume-ng-sdk/1.4.0/flume-ng-sdk-1.4.0.jar
    external/flume-sink/src/test/scala/org/apache/spark/streaming/flume/sink/SparkSinkSuite.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
    external/flume-sink/src/test/scala/org/apache/spark/streaming/flume/sink/SparkSinkSuite.scala -> /Users/luochen/.m2/repository/org/scalatest/scalatest_2.10/2.1.5/scalatest_2.10-2.1.5.jar
+   external/flume-sink/src/test/scala/org/apache/spark/streaming/flume/sink/SparkSinkSuite.scala -> external/flume-sink/target/scala-2.10/classes/org/apache/spark/streaming/flume/sink/EventBatch.class
+   external/flume-sink/src/test/scala/org/apache/spark/streaming/flume/sink/SparkSinkSuite.scala -> external/flume-sink/target/scala-2.10/classes/org/apache/spark/streaming/flume/sink/SparkFlumeProtocol.class
 source dependencies:
 external dependencies:
-   external/flume-sink/src/test/scala/org/apache/spark/streaming/flume/sink/SparkSinkSuite.scala -> org.apache.spark.streaming.flume.sink.EventBatch
-   external/flume-sink/src/test/scala/org/apache/spark/streaming/flume/sink/SparkSinkSuite.scala -> org.apache.spark.streaming.flume.sink.SparkFlumeProtocol
    external/flume-sink/src/test/scala/org/apache/spark/streaming/flume/sink/SparkSinkSuite.scala -> org.apache.spark.streaming.flume.sink.SparkSink
    external/flume-sink/src/test/scala/org/apache/spark/streaming/flume/sink/SparkSinkSuite.scala -> org.apache.spark.streaming.flume.sink.SparkSinkConfig$
 class names:

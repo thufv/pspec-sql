@@ -12,16 +12,34 @@ public class InclusionUtil {
 
 	public static final InclusionUtil instance = new InclusionUtil();
 
+	/**
+	 * test user1 includes user2
+	 * @param user1
+	 * @param user2
+	 * @return
+	 */
 	public boolean includes(UserRef user1, UserRef user2) {
 		return SetUtil.contains(user1.getMaterialized(), user2.getMaterialized());
 	}
 
+	/**
+	 * test action1 includes action2
+	 * @param action1
+	 * @param action2
+	 * @return
+	 */
 	public boolean includes(Action action1, Action action2) {
 		return action1.ancestorOf(action2);
 	}
 
+	/**
+	 * test data1 includes data2
+	 * @param data1
+	 * @param data2
+	 * @return
+	 */
 	public boolean includes(DataRef data1, DataRef data2) {
-		if (!data1.getAction().ancestorOf(data2.getAction())) {
+		if (!includes(data1.getAction(), data2.getAction())) {
 			return false;
 		}
 		return SetUtil.contains(data1.getMaterialized(), data2.getMaterialized());
@@ -63,7 +81,7 @@ public class InclusionUtil {
 	 * a single rule.
 	 * i.e., every restricted data category is res1 must be more restricted in
 	 * res2
-	 * 
+	 * scope: within a single rule
 	 * @param res1
 	 * @param res2
 	 * @return
@@ -94,6 +112,12 @@ public class InclusionUtil {
 		return true;
 	}
 
+	/**
+	 * test res1 is stricter than res2, both res1 and res2 are single.
+	 * @param res1
+	 * @param res2
+	 * @return
+	 */
 	public boolean singleStricterThan(Restriction res1, Restriction res2) {
 		if (res1.isForbid()) {
 			return true;
@@ -192,6 +216,12 @@ public class InclusionUtil {
 		return true;
 	}
 
+	/**
+	 * test whether desensitize operations in de1 includes de2
+	 * @param de1
+	 * @param de2
+	 * @return
+	 */
 	public boolean operationIncludes(Desensitization de1, Desensitization de2) {
 		if (de1.isDefaultOperation()) {
 			return true;

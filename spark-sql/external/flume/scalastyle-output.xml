@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <checkstyle version="5.0">
- <file name="/Users/luochen/Documents/Research/spark-1.1.0/external/flume/src/main/scala/org/apache/spark/streaming/flume/FlumeInputDStream.scala">
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/external/flume/src/main/scala/org/apache/spark/streaming/flume/FlumeUtils.scala">
   <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
  </file>
- <file name="/Users/luochen/Documents/Research/spark-1.1.0/external/flume/src/main/scala/org/apache/spark/streaming/flume/EventTransformer.scala">
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/external/flume/src/main/scala/org/apache/spark/streaming/flume/package.scala">
   <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
  </file>
- <file name="/Users/luochen/Documents/Research/spark-1.1.0/external/flume/src/main/scala/org/apache/spark/streaming/flume/FlumeUtils.scala">
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/external/flume/src/main/scala/org/apache/spark/streaming/flume/FlumeBatchFetcher.scala">
   <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
  </file>
- <file name="/Users/luochen/Documents/Research/spark-1.1.0/external/flume/src/main/scala/org/apache/spark/streaming/flume/package.scala">
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/external/flume/src/main/scala/org/apache/spark/streaming/flume/EventTransformer.scala">
   <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
  </file>
- <file name="/Users/luochen/Documents/Research/spark-1.1.0/external/flume/src/main/scala/org/apache/spark/streaming/flume/FlumeBatchFetcher.scala">
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/external/flume/src/main/scala/org/apache/spark/streaming/flume/FlumeInputDStream.scala">
   <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
  </file>
- <file name="/Users/luochen/Documents/Research/spark-1.1.0/external/flume/src/main/scala/org/apache/spark/streaming/flume/FlumePollingInputDStream.scala">
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/external/flume/src/main/scala/org/apache/spark/streaming/flume/FlumePollingInputDStream.scala">
   <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
  </file>
 </checkstyle>

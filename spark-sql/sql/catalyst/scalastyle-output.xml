@@ -1,313 +1,997 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <checkstyle version="5.0">
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/analysis/Analyzer.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/codegen/package.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/predicates.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/analysis/Catalog.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/commands.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/codegen/GeneratePredicate.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/codegen/GenerateProjection.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/sets.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/package.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/analysis/FunctionRegistry.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/planning/patterns.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/partitioning.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/stringOperations.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/dsl/package.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/optimizer/Optimizer.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/generators.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/AttributeSet.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/basicOperators.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/analysis/unresolved.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/trees/package.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/util/package.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/rules/RuleExecutor.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/analysis/HiveTypeCoercion.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/QueryPlan.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/physical/partitioning.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/codegen/GenerateMutableProjection.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/BoundAttribute.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/SpecificRow.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/planning/QueryPlanner.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/joinTypes.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/types/dataTypes.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/types/package.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/TestRelation.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/analysis/MultiInstanceRelation.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/Expression.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/errors/package.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/SortOrder.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/Cast.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/nullFunctions.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/ScalaReflection.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/namedExpressions.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/rules/package.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/codegen/CodeGenerator.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/literals.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/rules/Rule.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/WrapDynamic.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/arithmetic.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/trees/TreeNode.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/planning/package.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/codegen/GenerateOrdering.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/complexTypes.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/aggregates.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/Projection.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/Row.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/analysis/package.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/SqlParser.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/ScriptTransformation.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/ScalaUdf.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/Rand.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/package.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
-	<file name="/Users/luochen/Documents/Research/spark-1.1.0/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/package.scala">
-		<error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error"
-			message="Header does not match expected text">
-		</error>
-	</file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/joinTypes.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/rules/package.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/commands.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/util/package.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/namedExpressions.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/codegen/GeneratePredicate.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/Projection.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/errors/package.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/trees/package.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/ScriptTransformation.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/exception.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+  <error source="org.scalastyle.file.NewLineAtEofChecker" severity="error" message="File must end with newline character"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/analysis/unresolved.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/codegen/package.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/label.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+  <error line="18" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="20" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="23" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="26" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="37" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error source="org.scalastyle.file.NewLineAtEofChecker" severity="error" message="File must end with newline character"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/sets.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/aggregates.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/generators.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/ScalaReflection.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/literals.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+  <error line="145" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="319" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="360" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="394" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error source="org.scalastyle.file.NewLineAtEofChecker" severity="error" message="File must end with newline character"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/codegen/CodeGenerator.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/SqlParser.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/package.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+  <error line="36" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="78" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="100" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="102" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="148" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="167" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="187" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="198" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="228" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="230" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="243" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="260" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="333" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="345" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/trees/TreeNode.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/Expression.scala">
+  <error column="0" line="29" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="31" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="33" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="34" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="35" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="37" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="38" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="40" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="41" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="42" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="43" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="44" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="45" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="46" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="47" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="48" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="49" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="50" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="51" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="52" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="53" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="55" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="56" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="58" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="59" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="60" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="61" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="62" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="63" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="64" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="66" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="67" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="68" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="69" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="70" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="72" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="73" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="74" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="75" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="76" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="78" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="79" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="80" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="81" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="82" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="83" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="84" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="85" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="86" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="87" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="88" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="89" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="90" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="91" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="92" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="93" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="94" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="95" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="97" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="98" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="99" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="100" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="101" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="102" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="103" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="104" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="105" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="106" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="107" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="109" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="110" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="111" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="113" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="114" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="115" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="116" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="117" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="118" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="119" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="120" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="121" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="122" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="123" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="124" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="125" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="126" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="127" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="128" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="129" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="131" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="132" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="133" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="134" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="135" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="136" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="137" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="138" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="139" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="140" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="141" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="142" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="143" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="144" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="146" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="147" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="148" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="149" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="150" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="151" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="152" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="153" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="154" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="155" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="156" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="157" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="158" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="159" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="160" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="161" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="162" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="164" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="165" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="166" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="167" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="168" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="169" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="170" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="171" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="172" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="173" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="174" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="175" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="176" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="177" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="179" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="180" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="181" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="182" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="183" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="184" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="185" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="186" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="187" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="188" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="189" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="190" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="191" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="192" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="193" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="194" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="195" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="197" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="198" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="199" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="200" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="201" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="202" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="203" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="204" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="205" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="206" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="207" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="208" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="209" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="210" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="211" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="212" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="213" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="214" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="216" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="217" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="218" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="219" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="220" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="221" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="222" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="223" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="224" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="225" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="226" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="227" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="228" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="229" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="230" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="231" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="232" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="236" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="238" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="240" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="242" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="246" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="250" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/Row.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/rules/RuleExecutor.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/package.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/dsl/package.scala">
+  <error column="0" line="60" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="61" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="63" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="64" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="66" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="67" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="68" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="69" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="70" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="72" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="73" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="75" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="76" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="77" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="78" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="79" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="80" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="81" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="83" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="85" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="86" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="87" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="88" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="89" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="90" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="91" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="92" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="93" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="95" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="96" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="98" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="99" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="101" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="103" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="104" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="106" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="107" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="109" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="110" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="111" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="112" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="114" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="115" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="116" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="117" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="118" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="119" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="120" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="121" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="122" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="123" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="124" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="126" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="128" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="129" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="130" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="131" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="132" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="133" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="134" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="135" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="136" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="137" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="138" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="140" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="141" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="142" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="143" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="144" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="145" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="147" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="148" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="149" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="150" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="152" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="153" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="155" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="156" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="158" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="159" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="161" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="162" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="164" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="165" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="167" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="168" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="170" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="171" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="173" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="174" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="176" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="177" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="179" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="180" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="182" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="183" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="185" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="186" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="188" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="189" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="190" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="191" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="193" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="194" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="195" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="196" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="198" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="199" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="200" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="202" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="203" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="205" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="206" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="207" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="211" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="212" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="214" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="216" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="218" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="220" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="221" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="222" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="223" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="224" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="226" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="228" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="229" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="230" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="231" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="232" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="233" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="234" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="236" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="238" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="240" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="241" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="243" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="244" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="246" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="247" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="248" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="249" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="250" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="252" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="253" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="254" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="255" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="256" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="257" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="259" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="260" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="261" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="263" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="264" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="268" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="269" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="270" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+  <error column="6" line="66" source="org.scalastyle.scalariform.SpacesAfterPlusChecker" severity="error" message="There should be a space after the plus (+) sign"></error>
+  <error line="244" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/QueryPlan.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/stringOperations.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/planning/patterns.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/package.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/planning/package.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/types/dataTypes.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/partitioning.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/ExpressionRegistry.scala">
+  <error column="0" line="7" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="8" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="9" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="10" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="11" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="12" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="13" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="14" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="15" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="16" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="17" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="18" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="19" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="20" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="21" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="23" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="24" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="25" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="26" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="27" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="28" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="29" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="30" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="31" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="32" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="33" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="35" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="36" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="37" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="38" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="39" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="40" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="41" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="42" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="43" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="44" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="46" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="47" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="48" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="49" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="50" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="51" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="52" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="53" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="54" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="55" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="56" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="58" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="59" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="60" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="61" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="62" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="63" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="64" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="65" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="66" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="67" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="68" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="69" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="70" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="71" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="72" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="73" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="74" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="75" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+  <error source="org.scalastyle.file.NewLineAtEofChecker" severity="error" message="File must end with newline character"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/analysis/package.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/rules/Rule.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/analysis/MultiInstanceRelation.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/nullFunctions.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PrivacyChecker.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+  <error source="org.scalastyle.file.NewLineAtEofChecker" severity="error" message="File must end with newline character"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/analysis/HiveTypeCoercion.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/codegen/GenerateProjection.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/TestRelation.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/BoundAttribute.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/analysis/Catalog.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/types/package.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/codegen/GenerateMutableProjection.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/arithmetic.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/basicOperators.scala">
+  <error column="0" line="25" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="41" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="42" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="43" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="44" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="45" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="46" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="48" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="49" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="50" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="51" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="52" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="53" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="54" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="55" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="56" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="57" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="59" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="60" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="64" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="68" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="69" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="71" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="72" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="73" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="77" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="78" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="79" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="80" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="82" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="83" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="84" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="85" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="86" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="87" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="88" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="89" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="90" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="91" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="92" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="93" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="94" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="95" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="99" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="103" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="104" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="105" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="106" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="107" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="108" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="109" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="110" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="112" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="113" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="114" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="118" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="119" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="120" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="121" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="125" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="126" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="127" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="131" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="135" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="136" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="137" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="138" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="140" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="141" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="142" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="143" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="145" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="149" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="153" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="162" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="164" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="165" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="166" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="167" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="168" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="169" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="171" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="173" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="174" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="175" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="176" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="177" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="178" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="179" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="180" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="181" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="182" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="186" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="188" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="192" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="196" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="200" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/codegen/GenerateOrdering.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/Rand.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelConstants.scala">
+  <error column="0" line="4" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="8" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="9" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="10" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="11" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="12" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="13" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="15" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="16" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="18" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="19" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="20" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="21" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="22" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="23" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="24" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="25" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="26" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="27" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="28" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="29" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="30" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="31" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="33" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="34" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="36" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="37" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="38" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="39" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="40" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="41" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="42" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="43" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="44" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="45" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="46" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+  <error source="org.scalastyle.file.NewLineAtEofChecker" severity="error" message="File must end with newline character"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/predicates.scala">
+  <error column="0" line="25" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="26" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="28" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="29" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="30" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="34" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="36" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="38" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="42" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="43" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="44" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="45" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="46" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="47" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="48" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="50" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="51" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="52" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="53" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="54" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="55" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="56" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="57" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="58" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="59" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="60" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="61" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="65" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="66" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="70" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="71" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="72" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="74" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="75" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="76" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="77" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="78" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="79" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="86" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="88" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="89" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="91" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="92" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="93" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="94" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="98" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="100" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="101" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="102" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="103" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="104" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="105" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="106" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="107" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="108" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="109" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="110" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="111" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="112" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="113" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="114" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="115" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="116" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="120" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="122" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="123" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="124" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="125" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="126" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="127" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="128" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="129" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="130" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="131" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="132" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="133" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="134" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="135" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="136" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="137" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="138" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="142" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="146" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="147" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="148" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="149" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="150" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="151" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="152" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="153" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="154" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="155" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="159" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="160" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="161" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="162" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="163" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="164" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="165" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="166" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="167" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="168" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="169" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="170" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="171" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="175" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="176" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="180" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="181" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="185" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="186" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="190" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="191" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="195" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="197" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="198" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="200" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="201" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="202" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="203" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="204" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="205" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="206" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="207" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="208" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="210" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="212" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="213" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="214" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="215" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="216" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="217" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="218" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="220" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="239" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="240" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="242" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="243" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="244" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="245" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="246" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="247" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="249" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="250" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="251" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="252" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="253" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="254" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="255" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="257" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="258" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="259" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="260" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="262" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="263" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="264" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="265" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="266" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="267" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="268" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="269" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="270" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="272" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="273" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="274" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="275" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="276" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="277" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="278" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="279" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="280" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="281" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="282" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="283" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="284" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="285" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="286" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="287" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="288" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="289" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="290" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="292" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="293" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="294" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="295" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="296" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="297" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/Cast.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/AttributeSet.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/WrapDynamic.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/planning/QueryPlanner.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/analysis/FunctionRegistry.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/optimizer/Optimizer.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/SpecificRow.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/analysis/Analyzer.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/ScalaUdf.scala">
+  <error column="0" line="25" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="27" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="29" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="31" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="33" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="34" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="35" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="36" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="37" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="38" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="39" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="40" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="41" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="42" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="43" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="44" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="45" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="46" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="47" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="351" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error column="0" line="352" source="org.scalastyle.file.FileTabChecker" severity="error" message="Line contains a tab"></error>
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+  <error line="24" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/physical/partitioning.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/SortOrder.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
+ <file name="/Users/luochen/Documents/Research/privacy/spark-sql/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/complexTypes.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+ </file>
 </checkstyle>

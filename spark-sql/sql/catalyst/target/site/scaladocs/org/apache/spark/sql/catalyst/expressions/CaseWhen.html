@@ -360,6 +360,19 @@ tree on which the function is defined.
       <p class="shortcomment cmt">Returns the <span class="extype" name="DataType">DataType</span> of the result of evaluating this expression.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the <span class="extype" name="DataType">DataType</span> of the result of evaluating this expression.  It is
 invalid to query the dataType of an unresolved expression (i.e., when <code>resolved</code> == false).
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.apache.spark.sql.catalyst.expressions.CaseWhen">CaseWhen</a> → <a href="Expression.html" class="extype" name="org.apache.spark.sql.catalyst.expressions.Expression">Expression</a></dd></dl></div>
+    </li><li name="org.apache.spark.sql.catalyst.expressions.CaseWhen#elseValue" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="elseValue:Option[org.apache.spark.sql.catalyst.expressions.Expression]"></a>
+      <a id="elseValue:Option[Expression]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">elseValue</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<a href="Expression.html" class="extype" name="org.apache.spark.sql.catalyst.expressions.Expression">Expression</a>]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -512,6 +525,19 @@ executed.</p><p>The following conditions are used to determine suitability for c
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="org.apache.spark.sql.catalyst.expressions.Expression#getName" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getName:String"></a>
+      <a id="getName:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getName</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Expression.html" class="extype" name="org.apache.spark.sql.catalyst.expressions.Expression">Expression</a></dd></dl></div>
     </li><li name="org.apache.spark.sql.catalyst.trees.TreeNode#getNodeNumbered" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getNodeNumbered(number:org.apache.spark.sql.catalyst.trees.MutableInt):BaseType"></a>
       <a id="getNodeNumbered(trees.MutableInt):Expression"></a>
@@ -752,6 +778,19 @@ The numbers can be used with <a href="../trees/TreeNode.html#apply(number:Int):B
       <p class="shortcomment cmt">Args to the constructor that should be copied, but not transformed.</p><div class="fullcomment"><div class="comment cmt"><p>Args to the constructor that should be copied, but not transformed.
 These are appended to the transformed args automatically by makeCopy</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>
 </p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../trees/TreeNode.html" class="extype" name="org.apache.spark.sql.catalyst.trees.TreeNode">TreeNode</a></dd></dl></div>
+    </li><li name="org.apache.spark.sql.catalyst.expressions.CaseWhen#predicates" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="predicates:List[org.apache.spark.sql.catalyst.expressions.Expression]"></a>
+      <a id="predicates:List[Expression]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">predicates</span><span class="result">: <a href="../../../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<a href="Expression.html" class="extype" name="org.apache.spark.sql.catalyst.expressions.Expression">Expression</a>]</span>
+      </span>
+      </h4>
+      
     </li><li name="org.apache.spark.sql.catalyst.expressions.Expression#references" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="references:org.apache.spark.sql.catalyst.expressions.AttributeSet"></a>
       <a id="references:AttributeSet"></a>
@@ -834,6 +873,19 @@ trees.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="org.apache.spark.sql.catalyst.expressions.Expression#toLabel" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toLabel(child:Seq[org.apache.spark.sql.catalyst.checker.Label]):org.apache.spark.sql.catalyst.checker.Label"></a>
+      <a id="toLabel(Seq[Label]):Label"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toLabel</span><span class="params">(<span name="child">child: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../checker/Label.html" class="extype" name="org.apache.spark.sql.catalyst.checker.Label">Label</a>]</span>)</span><span class="result">: <a href="../checker/Label.html" class="extype" name="org.apache.spark.sql.catalyst.checker.Label">Label</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Expression.html" class="extype" name="org.apache.spark.sql.catalyst.expressions.Expression">Expression</a></dd></dl></div>
     </li><li name="org.apache.spark.sql.catalyst.expressions.CaseWhen#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
@@ -939,6 +991,19 @@ unchanged.</p></div><dl class="paramcmts block"><dt class="param">rule</dt><dd c
       </span>
       </h4>
       <p class="shortcomment cmt">Returns a string representation of the nodes in this tree</p><div class="fullcomment"><div class="comment cmt"><p>Returns a string representation of the nodes in this tree</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../trees/TreeNode.html" class="extype" name="org.apache.spark.sql.catalyst.trees.TreeNode">TreeNode</a></dd></dl></div>
+    </li><li name="org.apache.spark.sql.catalyst.expressions.CaseWhen#values" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="values:List[org.apache.spark.sql.catalyst.expressions.Expression]"></a>
+      <a id="values:List[Expression]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">values</span><span class="result">: <a href="../../../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<a href="Expression.html" class="extype" name="org.apache.spark.sql.catalyst.expressions.Expression">Expression</a>]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
