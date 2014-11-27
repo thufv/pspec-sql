@@ -435,3 +435,33 @@ SELECT d_date
 SELECT i_brand
   FROM store_sales JOIN store_returns JOIN item
  WHERE CASE WHEN 1 > 0 THEN ss_item_sk ELSE sr_item_sk END = i_item_sk;
+
+SELECT d_date
+    FROM (SELECT ss_sold_date_sk as s_date_sk
+           FROM store_sales
+           INTERSECT
+           SELECT sr_return_date_sk as s_date_sk
+           FROM store_returns
+        ) x JOIN date_dim ON d_date_sk = s_date_sk
+SELECT i_product_name
+    FROM ( 
+           SELECT ss_item_sk as s_item_sk
+           FROM store_sales
+           UNION ALL
+           SELECT sr_item_sk as s_item_sk
+           FROM store_returns
+        ) tmp JOIN item ON s_item_sk = i_item_sk;
+
+SELECT ss_item_sk as s_item_sk
+FROM store_sales
+INTERSECT 
+SELECT sr_item_sk as s_item_sk
+FROM store_returns;
+
+SELECT i_brand
+  FROM item
+  WHERE i_size > (SELECT avg(i_size) AS avg_size FROM item)
+
+SELECT i_brand
+  FROM item JOIN (SELECT avg(i_size) AS avg_size FROM item) x
+ WHERE i_size > avg_size

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -264,6 +265,12 @@ class ConsistencySearcher extends LevelwiseSearcher {
 						Triple triple = new Triple(ref, list);
 						triples.add(triple);
 					}
+				}
+			}
+			for (Iterator<Triple> it = triples.iterator(); it.hasNext();) {
+				Triple t = it.next();
+				if (t.list != null && t.list.size() == 0) {
+					it.remove();
 				}
 			}
 			obj.triples = triples.toArray(new Triple[triples.size()]);

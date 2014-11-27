@@ -76,6 +76,7 @@ import scala.collection.JavaConverters._
 import scala.collection.mutable.ListBuffer
 import org.apache.spark.sql.catalyst.expressions.AttributeReference
 import edu.thu.ss.spec.lang.pojo.Policy
+import org.apache.spark.sql.catalyst.plans.logical.NativeCommand
 
 abstract class EquiVertex;
 
@@ -103,11 +104,16 @@ class LabelPropagator extends Logging {
   private def propagate(plan: LogicalPlan): Unit = {
     plan match {
       case leaf: LeafNode => {
-        val policy = leaf.calculateLabels;
-        if (policy != null) {
-          policies.add(policy);
+        leaf match {
+          case _: NativeCommand =>
+          case _ => {
+            val policy = leaf.calculateLabels;
+            if (policy != null) {
+              policies.add(policy);
+            }
+            addTable(leaf.projections);
+          }
         }
-        addTable(leaf.projections);
       }
       case unary: UnaryNode => propagateUnary(unary);
       case binary: BinaryNode => propagateBinary(binary);

@@ -1,3 +1,10 @@
+--1. 去掉所有的top
+--2. with clause 合并到join中去
+--3. where subquery 合并到join中去
+--4. 去掉group by中的roll up
+--5. window function
+
+
 --start query 1 using template query1.tpl
 -- @public
 WITH customer_total_return AS (

@@ -43,7 +43,7 @@ class SparkChecker extends PrivacyChecker {
     projections.foreach(buildPath(_, projectionPaths));
     conditions.foreach(buildPath(_, conditionPaths));
 
-    //printPaths(projections, conditions);
+    printPaths(projections, conditions);
 
     policies.foreach(p => p.getExpandedRules().asScala.foreach(checkRule(_, p)));
   }

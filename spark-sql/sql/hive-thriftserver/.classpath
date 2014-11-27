@@ -157,7 +157,7 @@
 	<classpathentry kind="lib" path="../../lib_managed/jars/junit-dep-4.8.2.jar"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/hamcrest-core-1.1.jar"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/test-interface-0.5.jar"/>
-	<classpathentry kind="lib" path="../../lib_managed/jars/hive-cli-0.12.0.jar"/>
+	<classpathentry kind="lib" path="../../lib_managed/jars/hive-cli-0.12.0.jar" sourcepath="/Users/luochen/Documents/Research/spark-hive"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/hive-service-0.12.0.jar"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/mysql-connector-java-5.1.33-bin.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/spark-hive"/>
