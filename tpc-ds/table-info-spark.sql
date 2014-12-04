@@ -37,7 +37,7 @@
 CREATE TABLE dbgen_version
 (
    dv_version        VARCHAR(16),
-   dv_create_date    DATE,
+   dv_create_date    timestamp,
    dv_create_time    TIMESTAMP,
    dv_cmdline_args   VARCHAR(200)
 );
@@ -164,8 +164,8 @@ CREATE TABLE item
 (
    i_item_sk          INT,
    i_item_id          VARCHAR(16),
-   i_rec_start_date   DATE,
-   i_rec_end_date     DATE,
+   i_rec_start_date   timestamp,
+   i_rec_end_date     timestamp,
    i_item_desc        VARCHAR(200),
    i_current_price    DECIMAL,
    i_wholesale_cost   DECIMAL,
@@ -190,8 +190,8 @@ CREATE TABLE store
 (
    s_store_sk           int,
    s_store_id           varchar(16),
-   s_rec_start_date     date,
-   s_rec_end_date       date,
+   s_rec_start_date     timestamp,
+   s_rec_end_date       timestamp,
    s_closed_date_sk     int,
    s_store_name         varchar(50),
    s_number_employees   int,
@@ -223,8 +223,8 @@ CREATE TABLE call_center
 (
    cc_call_center_sk   int,
    cc_call_center_id   varchar(16),
-   cc_rec_start_date   date,
-   cc_rec_end_date     date,
+   cc_rec_start_date   timestamp,
+   cc_rec_end_date     timestamp,
    cc_closed_date_sk   int,
    cc_open_date_sk     int,
    cc_name             varchar(50),
@@ -280,8 +280,8 @@ CREATE TABLE web_site
 (
    web_site_sk          int,
    web_site_id          varchar(16),
-   web_rec_start_date   date,
-   web_rec_end_date     date,
+   web_rec_start_date   timestamp,
+   web_rec_end_date     timestamp,
    web_name             varchar(50),
    web_open_date_sk     int,
    web_close_date_sk    int,
@@ -343,8 +343,8 @@ CREATE TABLE web_page
 (
    wp_web_page_sk        int,
    wp_web_page_id        varchar(16),
-   wp_rec_start_date     date,
-   wp_rec_end_date       date,
+   wp_rec_start_date     timestamp,
+   wp_rec_end_date       timestamp,
    wp_creation_date_sk   int,
    wp_access_date_sk     int,
    wp_autogen_flag       varchar(1),
