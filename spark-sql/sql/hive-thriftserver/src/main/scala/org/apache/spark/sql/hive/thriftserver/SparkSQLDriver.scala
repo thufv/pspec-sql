@@ -60,7 +60,8 @@ private[hive] class SparkSQLDriver(val context: HiveContext = SparkSQLEnv.hiveCo
       new CommandProcessorResponse(0)
     } catch {
       case e: PrivacyException => {
-        //magic number
+        //added by luochen
+        //not print stack trace when privacy exception occur
         new CommandProcessorResponse(-10, e.getMessage(), null);
       }
       case cause: Throwable =>

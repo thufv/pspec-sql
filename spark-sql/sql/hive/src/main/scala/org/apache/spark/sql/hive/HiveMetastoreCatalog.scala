@@ -261,6 +261,10 @@ object HiveMetastoreTypes extends RegexParsers {
   }
 }
 
+/**
+ * modified by luochen
+ * add databaseName, tableName
+ */
 case class MetastoreRelation(databaseName: String, tableName: String, alias: Option[String])(val table: TTable, val partitions: Seq[TPartition])(@transient sqlContext: SQLContext)
   extends LeafNode with Logging {
   self: Product =>
@@ -320,6 +324,9 @@ case class MetastoreRelation(databaseName: String, tableName: String, alias: Opt
 
   val output = attributes ++ partitionKeys
 
+  /**
+   * added by luochen
+   */
   override def calculateLabels(): Policy = {
     val meta: MetaRegistry = MetaManager.get(databaseName, tableName);
     if (meta == null) {
@@ -346,6 +353,9 @@ case class MetastoreRelation(databaseName: String, tableName: String, alias: Opt
 
   lazy val attributeNames = table.getSd().getCols().map(_.getName().toLowerCase()).toSet;
 
+  /**
+   * added by luochen
+   */
   override def checkMeta(columns: Seq[String]): Unit = {
     columns.foreach(col => {
       if (!attributeNames.contains(col)) {

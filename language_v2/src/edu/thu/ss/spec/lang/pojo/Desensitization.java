@@ -11,12 +11,31 @@ import edu.thu.ss.spec.lang.parser.ParserConstant;
 import edu.thu.ss.spec.util.SetUtil;
 import edu.thu.ss.spec.util.XMLUtil;
 
+/**
+ * class for desensitization, requires some data categories must be desensitized with
+ * given operations.
+ * @author luochen
+ *
+ */
 public class Desensitization implements Parsable {
 	protected Set<String> dataRefIds = new HashSet<>();
 	protected Set<DataRef> dataRefs = new HashSet<>();
 
+	/**
+	 * materialized data categories referred in {@link #dataRefs}
+	 */
 	protected Set<DataCategory> datas;
+
+	/**
+	 * required {@link DesensitizeOperation}s must be supported by all {@link DataCategory} in {@link #datas} 
+	 */
 	protected Set<DesensitizeOperation> operations;
+
+	/**
+	 * for single {@link DataRef}, {@link #dataIndex} is always {0}.
+	 * otherwise, {@link DataAssociation} is considered as a array of {@link DataCategory},
+	 * and {@link #dataIndex} contains index for applicable {@link DataCategory} in this {@link Desensitization}
+	 */
 	protected int[] dataIndex;
 
 	public int[] getDataIndex() {
@@ -74,8 +93,8 @@ public class Desensitization implements Parsable {
 		}
 	}
 
-	public void materialize(Set<DataCategory> set) {
-		this.datas = set;
+	public void materialize(Set<DataCategory> datas) {
+		this.datas = datas;
 	}
 
 	@Override

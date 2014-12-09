@@ -5,8 +5,17 @@ import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.UserRef;
 import edu.thu.ss.spec.util.GlobalInclusionUtil;
 
+/**
+ * performs global redundancy analysis
+ * depend on {@link GlobalExpander}
+ * @author luochen
+ *
+ */
 public class GlobalRedundancyAnalyzer extends BaseRedundancyAnalyzer {
 
+	/**
+	 * {@link BaseRedundancyAnalyzer#instance} is set as {@link GlobalInclusionUtil#instance} 
+	 */
 	public GlobalRedundancyAnalyzer() {
 		this.instance = GlobalInclusionUtil.instance;
 	}

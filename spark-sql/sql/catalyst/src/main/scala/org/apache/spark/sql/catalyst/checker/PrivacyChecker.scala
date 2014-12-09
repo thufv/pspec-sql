@@ -11,6 +11,10 @@ import edu.thu.ss.spec.meta.xml.XMLMetaRegistryParser
 import org.apache.spark.sql.catalyst.analysis.Catalog
 import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
 
+/**
+ * interface for privacy checker
+ */
 trait PrivacyChecker extends Logging {
+
   def check(projections: Set[Label], conditions: Set[Label], policies: Set[Policy]): Unit;
 }

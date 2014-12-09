@@ -2,10 +2,13 @@ package edu.thu.ss.spec.lang.pojo;
 
 import org.w3c.dom.Node;
 
+/**
+ * class for desensitize operation
+ * @author luochen
+ *
+ */
 public class DesensitizeOperation implements Parsable {
-	/**
-	 * loaded implicitly from metastore
-	 */
+
 	protected String name;
 
 	@Override

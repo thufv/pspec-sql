@@ -6,10 +6,23 @@ import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Rule;
 import edu.thu.ss.spec.lang.pojo.UserContainer;
 
+/**
+ * base class for rule analyzer
+ * rule analyzer analyzes each rule independently rather than entire policy.
+ * @author luochen
+ *
+ */
 public abstract class BaseRuleAnalyzer extends BasePolicyAnalyzer {
 
+	/**
+	 * current rule being analyzed
+	 */
 	protected Rule currentRule;
+	/**
+	 * current rule id of {@link #currentRule}
+	 */
 	protected String ruleId;
+
 	protected Policy policy;
 
 	@Override

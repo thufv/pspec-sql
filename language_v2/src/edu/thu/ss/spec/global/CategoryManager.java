@@ -12,7 +12,7 @@ import edu.thu.ss.spec.lang.pojo.UserContainer;
 import edu.thu.ss.spec.lang.pojo.Vocabulary;
 
 /**
- * A category manager for data/user category containers
+ * manage global user/data container and parsed vocabularies.
  * 
  * @author luochen
  * 
@@ -20,6 +20,9 @@ import edu.thu.ss.spec.lang.pojo.Vocabulary;
 public class CategoryManager {
 	private static Logger logger = LoggerFactory.getLogger(CategoryManager.class);
 
+	/**
+	 * stores vocabulary, differentiated by unique URI.
+	 */
 	private static Map<URI, Vocabulary> parsedVocab = new HashMap<>();
 
 	private static Map<String, UserContainer> users = new HashMap<>();
@@ -45,6 +48,10 @@ public class CategoryManager {
 		datas.put(container.getId(), container);
 	}
 
+	/**
+	 * add a parsed vocabulary, and also add the included user/data containers.
+	 * @param vocab
+	 */
 	public static void add(Vocabulary vocab) {
 		parsedVocab.put(vocab.getPath(), vocab);
 		for (UserContainer container : vocab.getUserContainers().values()) {
@@ -55,8 +62,8 @@ public class CategoryManager {
 		}
 	}
 
-	public static boolean containsVocab(String path) throws Exception {
-		return parsedVocab.containsKey(new URI(path).normalize());
+	public static boolean containsVocab(URI path) throws Exception {
+		return parsedVocab.containsKey(path);
 	}
 
 	public static Vocabulary getVocab(String path) throws Exception {

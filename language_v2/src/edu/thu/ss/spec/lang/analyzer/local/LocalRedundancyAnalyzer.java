@@ -5,6 +5,12 @@ import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.UserRef;
 import edu.thu.ss.spec.util.InclusionUtil;
 
+/**
+ * performs redundancy analysis in a local manner
+ * depend on{@link LocalExpander}
+ * @author luochen
+ *
+ */
 public class LocalRedundancyAnalyzer extends BaseRedundancyAnalyzer {
 
 	public LocalRedundancyAnalyzer() {

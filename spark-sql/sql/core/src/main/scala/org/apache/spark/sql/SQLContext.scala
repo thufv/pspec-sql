@@ -57,9 +57,13 @@ class SQLContext(@transient val sparkContext: SparkContext)
 
   self =>
 
+    
+  /**
+   * added by luochen
+   * load policy during startups 
+   */
   private val policyPath = sparkContext.conf.get("spark.privacy.policy", "res/spark-policy.xml");
   private val metaPath = sparkContext.conf.get("spark.privacy.meta", "res/spark-meta.xml");
-
   SparkChecker.init(catalog, policyPath, metaPath);
 
   @transient
@@ -403,6 +407,7 @@ class SQLContext(@transient val sparkContext: SparkContext)
     lazy val optimizedPlan = optimizer(analyzed)
     // TODO: Don't just pick the first one...
     lazy val sparkPlan = {
+      //check logical plan
       SparkChecker(optimizedPlan);
       SparkPlan.currentContext.set(self)
       planner(optimizedPlan).next()

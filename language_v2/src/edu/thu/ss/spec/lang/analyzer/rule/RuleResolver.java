@@ -14,6 +14,7 @@ import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DataContainer;
 import edu.thu.ss.spec.lang.pojo.DataRef;
 import edu.thu.ss.spec.lang.pojo.Desensitization;
+import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.HierarchicalObject;
 import edu.thu.ss.spec.lang.pojo.ObjectRef;
 import edu.thu.ss.spec.lang.pojo.Restriction;
@@ -23,8 +24,8 @@ import edu.thu.ss.spec.lang.pojo.UserContainer;
 import edu.thu.ss.spec.lang.pojo.UserRef;
 
 /**
- * Resolve reference elements into concrete elements.
- * Also materialize user and data references.
+ * Resolve reference elements into concrete elements in rules.
+ * Also materialize {@link DataRef} and {@link UserRef}
  * 
  * @author luochen
  * 
@@ -33,7 +34,14 @@ public class RuleResolver extends BaseRuleAnalyzer {
 
 	private static Logger logger = LoggerFactory.getLogger(RuleResolver.class);
 
+	/**
+	 * caches descendants for {@link UserCategory}
+	 */
 	private Map<UserCategory, Set<UserCategory>> userCache = new HashMap<>();
+
+	/**
+	 * caches descendants for {@link DataCategory}
+	 */
 	private Map<DataCategory, Set<DataCategory>> dataCache = new HashMap<>();
 
 	@Override
@@ -91,6 +99,12 @@ public class RuleResolver extends BaseRuleAnalyzer {
 		return error;
 	}
 
+	/**
+	 * checks whether excluded category is descendant of referred category 
+	 * @param category
+	 * @param exclude
+	 * @return error
+	 */
 	@SuppressWarnings("unchecked")
 	private <T extends HierarchicalObject<T>> boolean checkExclusion(HierarchicalObject<T> category,
 			HierarchicalObject<T> exclude) {
@@ -103,14 +117,6 @@ public class RuleResolver extends BaseRuleAnalyzer {
 			return true;
 		}
 		return false;
-	}
-
-	private UserCategory resolveUser(ObjectRef ref, UserContainer container, String ruleId) {
-		UserCategory user = container.get(ref.getRefid());
-		if (user == null) {
-			logger.error("Fail to locate user category: " + ref.getRefid() + ", referenced in rule: " + ruleId);
-		}
-		return user;
 	}
 
 	private boolean resolveDatas(Collection<DataRef> refs, DataContainer datas) {
@@ -137,6 +143,14 @@ public class RuleResolver extends BaseRuleAnalyzer {
 		return error;
 	}
 
+	private UserCategory resolveUser(ObjectRef ref, UserContainer container, String ruleId) {
+		UserCategory user = container.get(ref.getRefid());
+		if (user == null) {
+			logger.error("Fail to locate user category: " + ref.getRefid() + ", referenced in rule: " + ruleId);
+		}
+		return user;
+	}
+
 	private DataCategory resolveData(ObjectRef ref, DataContainer container) {
 		DataCategory data = container.get(ref.getRefid());
 		if (data == null) {
@@ -145,6 +159,13 @@ public class RuleResolver extends BaseRuleAnalyzer {
 		return data;
 	}
 
+	/**
+	 * resolve {@link DesensitizeOperation} in {@link Desensitization}
+	 * also performs constraint checks.
+	 * @param de
+	 * @param rule
+	 * @return error
+	 */
 	private boolean resolveDesensitization(Desensitization de, Rule rule) {
 		if (rule.getAssociation() != null && rule.getDataRefs().size() > 0) {
 			logger

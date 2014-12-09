@@ -18,6 +18,12 @@ import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Rule;
 
+/**
+ * expand rule in a global(system runtime) manner.
+ * when a rule contains multiple {@link DataRef}, only local {@link DataRef}s are merged.
+ * @author luochen
+ *
+ */
 public class GlobalExpander extends BasePolicyAnalyzer {
 	private Map<Action, Set<DataCategory>> actionMap = new HashMap<>();
 

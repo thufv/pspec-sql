@@ -8,24 +8,62 @@ import java.util.Map;
 
 import org.w3c.dom.Node;
 
-import edu.thu.ss.spec.lang.analyzer.CategoryVisitor;
 import edu.thu.ss.spec.lang.parser.ParserConstant;
 import edu.thu.ss.spec.util.XMLUtil;
 
+/**
+ * a base class for category container
+ * @author luochen
+ *
+ */
 public abstract class CategoryContainer<T extends Category<T>> extends DescribedObject {
 
+	/**
+	 * container id for base container
+	 */
 	protected String baseId;
 	protected CategoryContainer<T> baseContainer;
 
-	protected Map<String, T> index = new LinkedHashMap<>();
+	protected Map<String, T> categories = new LinkedHashMap<>();
+
+	/**
+	 * all root categories in the container
+	 */
 	protected List<T> root = new ArrayList<>();
+
 	protected boolean resolved = false;
+
 	protected boolean leaf = true;
 
-	public void accept(CategoryVisitor<T> visitor) {
-		for (T t : root) {
-			visitor.visit(t);
+	/**
+	 * lookup a category by id recursively.
+	 * @param id
+	 * @return category
+	 */
+	public T get(String id) {
+		T t = categories.get(id);
+		if (t != null) {
+			return t;
+		} else {
+			if (baseContainer != null) {
+				return baseContainer.get(id);
+			} else {
+				return null;
+			}
 		}
+	}
+
+	public CategoryContainer<T> getBaseContainer() {
+		return baseContainer;
+	}
+
+	public Collection<T> getCategories() {
+		return categories.values();
+	}
+
+	public void setBaseContainer(CategoryContainer<T> baseContainer) {
+		this.baseContainer = baseContainer;
+		baseContainer.leaf = false;
 	}
 
 	public boolean isResolved() {
@@ -40,38 +78,12 @@ public abstract class CategoryContainer<T extends Category<T>> extends Described
 		this.resolved = resolved;
 	}
 
-	public CategoryContainer<T> getBaseContainer() {
-		return baseContainer;
-	}
-
-	public Collection<T> getCategories() {
-		return index.values();
-	}
-
-	public void setBaseContainer(CategoryContainer<T> baseContainer) {
-		this.baseContainer = baseContainer;
-		baseContainer.leaf = false;
-	}
-
-	public T get(String id) {
-		T t = index.get(id);
-		if (t != null) {
-			return t;
-		} else {
-			if (baseContainer != null) {
-				return baseContainer.get(id);
-			} else {
-				return null;
-			}
-		}
-	}
-
 	public boolean contains(String id) {
 		return get(id) != null;
 	}
 
 	public void set(String id, T category) {
-		index.put(id, category);
+		categories.put(id, category);
 	}
 
 	public String getBase() {
@@ -79,7 +91,7 @@ public abstract class CategoryContainer<T extends Category<T>> extends Described
 	}
 
 	public Map<String, T> getIndex() {
-		return index;
+		return categories;
 	}
 
 	public List<T> getRoot() {

@@ -9,6 +9,11 @@ import java.util.Set;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.HierarchicalObject;
 
+/**
+ * Utility class for set operations
+ * @author luochen
+ *
+ */
 public class SetUtil {
 
 	public enum SetRelation {
@@ -28,6 +33,12 @@ public class SetUtil {
 		return set1.containsAll(set2);
 	}
 
+	/**
+	 * return relation of set1 and set2
+	 * @param set1
+	 * @param set2
+	 * @return {@link SetRelation}
+	 */
 	public static <T> SetRelation relation(Set<T> set1, Set<T> set2) {
 		boolean contain = true;
 		boolean intersect = false;

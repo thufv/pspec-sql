@@ -32,6 +32,7 @@ trait LabelConstants {
 
 	val Func_Intersect = "INTERSECT";
 	val Func_Union = "UNION";
+	val Func_Except = "EXCEPT";
 
 	val Pred_Equal = "=";
 	val Pred_Greater = ">";

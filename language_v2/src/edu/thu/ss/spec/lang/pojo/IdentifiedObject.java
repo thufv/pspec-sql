@@ -5,6 +5,11 @@ import org.w3c.dom.Node;
 import edu.thu.ss.spec.lang.parser.ParserConstant;
 import edu.thu.ss.spec.util.XMLUtil;
 
+/**
+ * class for identified object
+ * @author luochen
+ *
+ */
 public class IdentifiedObject implements Parsable {
 
 	protected String id;

@@ -17,6 +17,11 @@ import edu.thu.ss.spec.lang.pojo.Rule;
 import edu.thu.ss.spec.lang.pojo.UserContainer;
 import edu.thu.ss.spec.util.SetUtil;
 
+/**
+ * check rule constraints after rule is parsed.
+ * @author luochen
+ *
+ */
 public class RuleConstraintAnalyzer extends BaseRuleAnalyzer {
 	private static Logger logger = LoggerFactory.getLogger(RuleConstraintAnalyzer.class);
 	private String ruleId;

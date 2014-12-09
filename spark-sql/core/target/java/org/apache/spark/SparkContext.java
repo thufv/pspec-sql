@@ -217,7 +217,8 @@ public  class SparkContext implements org.apache.spark.Logging {
   private  org.apache.spark.scheduler.DAGSchedulerSource dagSchedulerSource () { throw new RuntimeException(); }
   private  org.apache.spark.storage.BlockManagerSource blockManagerSource () { throw new RuntimeException(); }
   private  void initDriverMetrics () { throw new RuntimeException(); }
-  /** Distribute a local Scala collection to form an RDD.
+  /**
+   * Distribute a local Scala collection to form an RDD.
    * <p>
    * @note Parallelize acts lazily. If <code>seq</code> is a mutable collection and is
    * altered after the call to parallelize and before the first action on the
@@ -225,14 +226,17 @@ public  class SparkContext implements org.apache.spark.Logging {
    * the argument to avoid this.
    */
   public <T extends java.lang.Object> org.apache.spark.rdd.RDD<T> parallelize (scala.collection.Seq<T> seq, int numSlices, scala.reflect.ClassTag<T> evidence$1) { throw new RuntimeException(); }
-  /** Distribute a local Scala collection to form an RDD.
+  /**
+   * Distribute a local Scala collection to form an RDD.
    * <p>
    * This method is identical to <code>parallelize</code>.
    */
   public <T extends java.lang.Object> org.apache.spark.rdd.RDD<T> makeRDD (scala.collection.Seq<T> seq, int numSlices, scala.reflect.ClassTag<T> evidence$2) { throw new RuntimeException(); }
-  /** Distribute a local Scala collection to form an RDD, with one or more
+  /**
+   * Distribute a local Scala collection to form an RDD, with one or more
    * location preferences (hostnames of Spark nodes) for each object.
-   * Create a new partition for each collection item. */
+   * Create a new partition for each collection item.
+   */
   public <T extends java.lang.Object> org.apache.spark.rdd.RDD<T> makeRDD (scala.collection.Seq<scala.Tuple2<T, scala.collection.Seq<java.lang.String>>> seq, scala.reflect.ClassTag<T> evidence$3) { throw new RuntimeException(); }
   /**
    * Read a text file from HDFS, a local file system (available on all nodes), or any
@@ -284,13 +288,14 @@ public  class SparkContext implements org.apache.spark.Logging {
    * a <code>map</code> function.
    */
   public <K extends java.lang.Object, V extends java.lang.Object> org.apache.spark.rdd.RDD<scala.Tuple2<K, V>> hadoopRDD (org.apache.hadoop.mapred.JobConf conf, java.lang.Class<? extends org.apache.hadoop.mapred.InputFormat<K, V>> inputFormatClass, java.lang.Class<K> keyClass, java.lang.Class<V> valueClass, int minPartitions) { throw new RuntimeException(); }
-  /** Get an RDD for a Hadoop file with an arbitrary InputFormat
+  /**
+   * Get an RDD for a Hadoop file with an arbitrary InputFormat
    * <p>
    * '''Note:''' Because Hadoop's RecordReader class re-uses the same Writable object for each
    * record, directly caching the returned RDD will create many references to the same object.
    * If you plan to directly cache Hadoop writable objects, you should first copy them using
    * a <code>map</code> function.
-   * */
+   */
   public <K extends java.lang.Object, V extends java.lang.Object> org.apache.spark.rdd.RDD<scala.Tuple2<K, V>> hadoopFile (java.lang.String path, java.lang.Class<? extends org.apache.hadoop.mapred.InputFormat<K, V>> inputFormatClass, java.lang.Class<K> keyClass, java.lang.Class<V> valueClass, int minPartitions) { throw new RuntimeException(); }
   /**
    * Smarter version of hadoopFile() that uses class tags to figure out the classes of keys,
@@ -342,7 +347,8 @@ public  class SparkContext implements org.apache.spark.Logging {
    * a <code>map</code> function.
    */
   public <K extends java.lang.Object, V extends java.lang.Object, F extends org.apache.hadoop.mapreduce.InputFormat<K, V>> org.apache.spark.rdd.RDD<scala.Tuple2<K, V>> newAPIHadoopRDD (org.apache.hadoop.conf.Configuration conf, java.lang.Class<F> fClass, java.lang.Class<K> kClass, java.lang.Class<V> vClass) { throw new RuntimeException(); }
-  /** Get an RDD for a Hadoop SequenceFile with given key and value types.
+  /**
+   * Get an RDD for a Hadoop SequenceFile with given key and value types.
    * <p>
    * '''Note:''' Because Hadoop's RecordReader class re-uses the same Writable object for each
    * record, directly caching the returned RDD will create many references to the same object.
@@ -350,13 +356,14 @@ public  class SparkContext implements org.apache.spark.Logging {
    * a <code>map</code> function.
    */
   public <K extends java.lang.Object, V extends java.lang.Object> org.apache.spark.rdd.RDD<scala.Tuple2<K, V>> sequenceFile (java.lang.String path, java.lang.Class<K> keyClass, java.lang.Class<V> valueClass, int minPartitions) { throw new RuntimeException(); }
-  /** Get an RDD for a Hadoop SequenceFile with given key and value types.
+  /**
+   * Get an RDD for a Hadoop SequenceFile with given key and value types.
    * <p>
    * '''Note:''' Because Hadoop's RecordReader class re-uses the same Writable object for each
    * record, directly caching the returned RDD will create many references to the same object.
    * If you plan to directly cache Hadoop writable objects, you should first copy them using
    * a <code>map</code> function.
-   * */
+   */
   public <K extends java.lang.Object, V extends java.lang.Object> org.apache.spark.rdd.RDD<scala.Tuple2<K, V>> sequenceFile (java.lang.String path, java.lang.Class<K> keyClass, java.lang.Class<V> valueClass) { throw new RuntimeException(); }
   /**
    * Version of sequenceFile() for types implicitly convertible to Writables through a

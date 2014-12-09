@@ -21,6 +21,10 @@ import org.apache.spark.sql.catalyst.ScalaReflection
 import org.apache.spark.sql.catalyst.types.DataType
 import org.apache.spark.util.ClosureCleaner
 
+/**
+ * updated by luochen
+ * add udf name field
+ */
 case class ScalaUdf(function: AnyRef, dataType: DataType, children: Seq[Expression], name:String = null)
 	extends Expression {
 

@@ -17,6 +17,11 @@ import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Rule;
 
+/**
+ * expands rule in a local manner, global attribute is ignored
+ * @author luochen
+ *
+ */
 public class LocalExpander extends BasePolicyAnalyzer {
 
 	@Override

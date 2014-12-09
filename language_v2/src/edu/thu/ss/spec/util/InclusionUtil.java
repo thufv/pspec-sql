@@ -1,7 +1,6 @@
 package edu.thu.ss.spec.util;
 
 import edu.thu.ss.spec.lang.pojo.Action;
-import edu.thu.ss.spec.lang.pojo.DataAssociation;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DataRef;
 import edu.thu.ss.spec.lang.pojo.Desensitization;
@@ -16,7 +15,7 @@ public class InclusionUtil {
 	 * test user1 includes user2
 	 * @param user1
 	 * @param user2
-	 * @return
+	 * @return boolean
 	 */
 	public boolean includes(UserRef user1, UserRef user2) {
 		return SetUtil.contains(user1.getMaterialized(), user2.getMaterialized());
@@ -26,7 +25,7 @@ public class InclusionUtil {
 	 * test action1 includes action2
 	 * @param action1
 	 * @param action2
-	 * @return
+	 * @return boolean
 	 */
 	public boolean includes(Action action1, Action action2) {
 		return action1.ancestorOf(action2);
@@ -36,44 +35,13 @@ public class InclusionUtil {
 	 * test data1 includes data2
 	 * @param data1
 	 * @param data2
-	 * @return
+	 * @return boolean
 	 */
 	public boolean includes(DataRef data1, DataRef data2) {
 		if (!includes(data1.getAction(), data2.getAction())) {
 			return false;
 		}
 		return SetUtil.contains(data1.getMaterialized(), data2.getMaterialized());
-	}
-
-	public boolean includes(DataAssociation association1, DataAssociation association2) {
-		if (association1.getDataRefs().size() != association2.getDataRefs().size()) {
-			return false;
-		}
-		for (DataRef data2 : association2.getDataRefs()) {
-			boolean match = false;
-			for (DataRef data1 : association1.getDataRefs()) {
-				if (includes(data1, data2)) {
-					match = true;
-					break;
-				}
-			}
-			if (!match) {
-				return false;
-			}
-		}
-		for (DataRef data1 : association1.getDataRefs()) {
-			boolean match = false;
-			for (DataRef data2 : association2.getDataRefs()) {
-				if (includes(data1, data2)) {
-					match = true;
-					break;
-				}
-			}
-			if (!match) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 	/**
@@ -84,7 +52,7 @@ public class InclusionUtil {
 	 * scope: within a single rule
 	 * @param res1
 	 * @param res2
-	 * @return
+	 * @return boolean
 	 */
 	public boolean innerStricterThan(Restriction res1, Restriction res2) {
 		if (res1.isForbid()) {
@@ -116,7 +84,7 @@ public class InclusionUtil {
 	 * test res1 is stricter than res2, both res1 and res2 are single.
 	 * @param res1
 	 * @param res2
-	 * @return
+	 * @return boolean
 	 */
 	public boolean singleStricterThan(Restriction res1, Restriction res2) {
 		if (res1.isForbid()) {
@@ -136,7 +104,7 @@ public class InclusionUtil {
 	 * 
 	 * @param list1
 	 * @param list2
-	 * @return
+	 * @return boolean
 	 */
 	public boolean stricterThan(Restriction[] list1, Restriction[] list2) {
 		for (Restriction res1 : list1) {
@@ -163,7 +131,7 @@ public class InclusionUtil {
 	 * 
 	 * @param res1
 	 * @param res2
-	 * @return
+	 * @return boolean
 	 */
 	public boolean stricterThan(Restriction res1, Restriction res2) {
 		if (res1.isForbid()) {
@@ -193,6 +161,13 @@ public class InclusionUtil {
 		return true;
 	}
 
+	/**
+	 * whether the scope of de1 includes de2.
+	 * scope means restricted {@link DataCategory} in {@link Desensitization}.
+	 * @param de1
+	 * @param de2
+	 * @return boolean
+	 */
 	public boolean scopeIncludes(Desensitization de1, Desensitization de2) {
 		for (DataRef ref2 : de2.getDataRefs()) {
 			if (!scopeIncludes(de1, ref2)) {
@@ -202,6 +177,12 @@ public class InclusionUtil {
 		return true;
 	}
 
+	/**
+	 * whether the scope of de1 includes ref2
+	 * @param de1
+	 * @param ref2
+	 * @return boolean
+	 */
 	public boolean scopeIncludes(Desensitization de1, DataRef ref2) {
 		boolean match = false;
 		for (DataRef ref1 : de1.getDataRefs()) {
@@ -220,7 +201,7 @@ public class InclusionUtil {
 	 * test whether desensitize operations in de1 includes de2
 	 * @param de1
 	 * @param de2
-	 * @return
+	 * @return boolean
 	 */
 	public boolean operationIncludes(Desensitization de1, Desensitization de2) {
 		if (de1.isDefaultOperation()) {

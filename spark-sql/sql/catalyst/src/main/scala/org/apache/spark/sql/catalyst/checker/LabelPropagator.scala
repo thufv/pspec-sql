@@ -79,81 +79,126 @@ import edu.thu.ss.spec.lang.pojo.Policy
 import org.apache.spark.sql.catalyst.plans.logical.NativeCommand
 import org.apache.spark.sql.catalyst.plans.logical.Command
 
+/**
+ * vertex class for equi-graph
+ * used when resolving conditional data categories
+ */
 abstract class EquiVertex;
 
+/**
+ * vertex class for attribute
+ */
 case class ColumnVertex(attr: AttributeReference) extends EquiVertex;
+
+/**
+ * vertex class for constant
+ */
 case class ConstantVertex(value: Any) extends EquiVertex;
 
+/**
+ * Perform label propagation on logical plan,
+ * used for calculating projections and conditions used in the logical plan
+ */
 class LabelPropagator extends Logging {
 
+  /**
+   * column_labal -> (column_name -> column_label)
+   * for each column label, we can find the corresponding table (column_name -> column_label).
+   * table is actually a set of columns.
+   */
   lazy val tables = new mutable.HashMap[ColumnLabel, Map[String, ColumnLabel]];
 
+  /**
+   * equi-graph for all equi conditions
+   */
   lazy val equiEdges = new mutable.HashMap[EquiVertex, mutable.Set[EquiVertex]];
 
+  /**
+   * all equi-relations after performing reachbility analysis
+   */
   lazy val equis = new mutable.HashMap[EquiVertex, mutable.Set[EquiVertex]];
 
+  /**
+   * a set of applicable policies on the logical plan
+   */
   lazy val policies = new mutable.HashSet[Policy];
 
+  /**
+   * performs label propagation, and collects all applicable policy
+   */
   def apply(plan: LogicalPlan): mutable.Set[Policy] = {
-
     propagate(plan);
+
+    //resolve conditional labels
     plan.projections.values.foreach(fulfillConditions(_));
     plan.conditions.foreach(fulfillConditions(_));
-    policies;
+
+    return policies;
   }
 
   private def propagate(plan: LogicalPlan): Unit = {
     plan match {
-      case _: Command =>
+      case _: Command => //skip all command
+
       case leaf: LeafNode => {
+        //dispatch to spark-hive
         val policy = leaf.calculateLabels;
         if (policy != null) {
           policies.add(policy);
         }
         addTable(leaf.projections);
       }
+
       case unary: UnaryNode => propagateUnary(unary);
       case binary: BinaryNode => propagateBinary(binary);
       case _ => logWarning(s"unknown logical plan:$plan");
     }
   }
 
+  /**
+   * propagate unary plan
+   */
   private def propagateUnary(unary: UnaryNode): Unit = {
+
     propagate(unary.child);
     val childProjs = unary.child.projections;
-    val childTests = unary.child.conditions;
+    val childConds = unary.child.conditions;
 
     unary match {
       case aggregate: Aggregate => {
-        //resolve aggregation list
+        //resolve aggregate expression
         aggregate.aggregateExpressions.foreach(resolveNamedExpression(_, unary));
-        aggregate.conditions ++= childTests;
+        aggregate.conditions ++= childConds;
       }
       case filter: Filter => {
-        //add conditions
+        //resolve filter expression, projections unchanged
         resolveExpression(filter.condition, filter);
-        filter.conditions ++= childTests;
+        filter.conditions ++= childConds;
         filter.projections ++= childProjs;
-      }
-      case generate: Generate => {
-        propagateDefault(generate);
       }
       case project: Project => {
         //resolve projection list
         project.projectList.foreach(resolveNamedExpression(_, unary));
-        project.conditions ++= childTests;
+        project.conditions ++= childConds;
       }
       case subquery: Subquery => {
-        //TODO
+        //renaming attribute names
+        //but not used in optimized logical plan?
         childProjs.foreach(tuple => subquery.projections.put(tuple._1.withQualifiers(List(subquery.alias)), tuple._2));
-        subquery.conditions ++ childTests;
+        subquery.conditions ++ childConds;
+      }
+      case sort: Sort => {
+        //resolve sort expression
+        sort.order.foreach(order => resolveExpression(order.child, sort));
+        sort.projections ++= childProjs;
+        sort.conditions ++= childConds;
       }
       case script: ScriptTransformation => {
         //TODO
         propagateDefault(script);
       }
-      case sort: Sort => {
-        propagateDefault(sort);
+      case generate: Generate => {
+        propagateDefault(generate);
       }
       case distinct: Distinct => {
         propagateDefault(distinct);
@@ -177,11 +222,15 @@ class LabelPropagator extends Logging {
         propagateDefault(write);
       }
       case _ => {
+        //this should be turn off in production
         throw new UnsupportedPlanException(s"unkown unary plan: $unary");
       }
     }
   }
 
+  /**
+   * propagate binary plans
+   */
   private def propagateBinary(binary: BinaryNode): Unit = {
     propagate(binary.left);
     propagate(binary.right);
@@ -193,8 +242,7 @@ class LabelPropagator extends Logging {
 
     binary match {
       case except: Except => {
-        except.projections ++= leftProjs;
-        except.conditions ++= leftTests;
+        propogateSetOperators(binary, LabelConstants.Func_Except);
       }
       case intersect: Intersect => {
         propogateSetOperators(binary, LabelConstants.Func_Intersect);
@@ -221,6 +269,10 @@ class LabelPropagator extends Logging {
     }
   }
 
+  /**
+   * propagate set operators (intersect, union, except)
+   * the output attribute is actually a combination of attributes from left and right plan.
+   */
   private def propogateSetOperators(binary: BinaryNode, name: String): Unit = {
     for (i <- 0 to binary.output.length - 1) {
       val leftLabel = binary.left.projections.getOrElse(binary.left.output(i), null);
@@ -238,6 +290,21 @@ class LabelPropagator extends Logging {
     unary.conditions ++= unary.child.conditions;
   }
 
+  /**
+   * after resolve a relation, add all attributes and lineage trees to the table
+   */
+  private def addTable(projections: mutable.Map[Attribute, Label]): Unit = {
+    val table = projections.values.map(label => {
+      val cond = label.asInstanceOf[ColumnLabel];
+      (cond.attr.name, cond);
+    }).toMap;
+    table.foreach(t => tables.put(t._2, table));
+  }
+
+  /**
+   * resolve named expressions, only for aggregate and project operator.
+   * attribute and the corresponding lineage tree is put in unary.
+   */
   private def resolveNamedExpression(expression: NamedExpression, unary: UnaryNode): Unit = {
     val childProjs = unary.child.projections;
     expression match {
@@ -256,16 +323,18 @@ class LabelPropagator extends Logging {
   }
 
   /**
-   * if expression is boolean expression, then add term expression into condition sets.
-   * otherwise, return the term formula.
+   * if expression is boolean expression, then add lineage trees for boolean expressions (predicates) to conditions.
+   * otherwise, return lineage tree for the expression
    */
   private def resolveExpression(expression: Expression, plan: LogicalPlan): Label = {
     expression match {
       case _: And | _: Or | _: Not => {
+        //boolean expression
         expression.children.foreach(resolveExpression(_, plan));
-        null;
+        return null;
       };
       case binary: BinaryComparison => {
+        //boolean expression, and resolve join condition to update equi-graph
         resolveJoinCondition(binary, plan);
         resolvePredicate(expression, plan)
       };
@@ -276,21 +345,32 @@ class LabelPropagator extends Logging {
       case _: StartsWith => resolvePredicate(expression, plan);
       case _: In => resolvePredicate(expression, plan);
 
+      //not boolean expression, resolve term and return lineage tree
       case _ => resolveTerm(expression, plan);
     }
   }
 
+  /**
+   * return a predicate expression
+   */
   private def resolvePredicate(predicate: Expression, plan: LogicalPlan): Label = {
     val labels = predicate.children.map(resolveTerm(_, plan));
     plan.conditions.add(Predicate(labels, ExpressionRegistry.resolvePredicate(predicate)));
-    null;
+    return null;
   }
 
+  /**
+   * resolve a term expression, and return a lineage tree
+   * the lineage tree is built upon lineage trees for expression attributes
+   */
   private def resolveTerm(expression: Expression, plan: LogicalPlan): Label = {
     expression match {
+      //retrieve lineage tree from child plan
       case attr: AttributeReference => plan.childLabel(attr);
+
       case leaf: LeafExpression => {
         leaf match {
+          //a constant node
           case l: Literal => Constant(l.value);
           case l: MutableLiteral => Constant(l.value);
           case _ => throw new UnsupportedPlanException(s"unknown leaf expression: $leaf");
@@ -313,10 +393,12 @@ class LabelPropagator extends Logging {
       }
       case udf: ScalaUdf => {
         val labels = udf.children.map(resolveTerm(_, plan));
-        Function(labels, udf.name);
+        return Function(labels, udf.name);
       }
       case when: CaseWhen => {
+        //collect all predicates in conditions
         when.predicates.foreach(resolveExpression(_, plan));
+        //build a lineage tree that is combination of all values
         val labels = when.values.map(resolveTerm(_, plan));
         when.elseValue match {
           case Some(expr) => Function(labels :+ (resolveTerm(expr, plan)), ExpressionRegistry.resolveFunction(when));
@@ -324,6 +406,7 @@ class LabelPropagator extends Logging {
         }
       }
       case i: If => {
+        //same to when
         resolveExpression(i.predicate, plan);
         val tLabel = resolveTerm(i.trueValue, plan);
         val fLabel = resolveTerm(i.falseValue, plan);
@@ -334,14 +417,21 @@ class LabelPropagator extends Logging {
     }
   }
 
+  /**
+   * return a lineage tree for function
+   */
   private def resolveTermFunction(expression: Expression, plan: LogicalPlan): Function = {
     val labels = expression.children.map(resolveTerm(_, plan));
     Function(labels, ExpressionRegistry.resolveFunction(expression));
   }
 
+  /**
+   * resolve join condition and update equi-graph
+   */
   private def resolveJoinCondition(expression: BinaryComparison, plan: LogicalPlan): Unit = {
     var lefts: mutable.Set[EquiVertex] = null;
     var rights: mutable.Set[EquiVertex] = null;
+    //collect all stored attributes(column) in the left part and right part of the comparison
     expression match {
       case _: EqualTo | _: EqualNullSafe => {
         lefts = resolveJoinColumn(expression.left, plan);
@@ -352,6 +442,8 @@ class LabelPropagator extends Logging {
     if (lefts == null || rights == null) {
       return ;
     }
+
+    //all stored attributes from left and right are considered equal point-wisely.
     for (left <- lefts) {
       for (right <- rights) {
         addEquiEdge(left, right);
@@ -360,6 +452,9 @@ class LabelPropagator extends Logging {
     }
   }
 
+  /**
+   * collect all stored attribute from the expression
+   */
   private def resolveJoinColumn(expr: Expression, plan: LogicalPlan, set: mutable.Set[EquiVertex] = new HashSet): mutable.Set[EquiVertex] = {
     expr match {
       case attr: AttributeReference => {
@@ -389,6 +484,9 @@ class LabelPropagator extends Logging {
     return set;
   }
 
+  /**
+   * given a lineage tree, collect all stored attributes (leaf nodes)
+   */
   private def resolveJoinLabel(label: Label, set: mutable.Set[EquiVertex]): Unit = {
     label match {
       case col: ColumnLabel => set.add(ColumnVertex(col.attr));
@@ -398,19 +496,14 @@ class LabelPropagator extends Logging {
     }
   }
 
-  private def addTable(projections: mutable.Map[Attribute, Label]): Unit = {
-    val table = projections.values.map(label => {
-      val cond = label.asInstanceOf[ColumnLabel];
-      (cond.attr.name, cond);
-    }).toMap;
-    table.foreach(t => tables.put(t._2, table));
-  }
-
   private def addEquiEdge(a: EquiVertex, b: EquiVertex): Unit = {
     val set = equiEdges.getOrElseUpdate(a, new mutable.HashSet[EquiVertex]);
     set.add(b);
   }
 
+  /**
+   * given a lineage tree, for all conditional nodes, check which join conditions are satisfied by the query
+   */
   private def fulfillConditions(label: Label): Unit = {
     label match {
       case cond: ConditionalLabel => fulfillCondition(cond);
@@ -420,6 +513,9 @@ class LabelPropagator extends Logging {
     }
   }
 
+  /**
+   * add actual data categories for conditional labeling to cond.fulfilled
+   */
   private def fulfillCondition(cond: ConditionalLabel): Unit = {
     if (cond.fulfilled != null) {
       return ;
@@ -433,6 +529,7 @@ class LabelPropagator extends Logging {
       var table = join.getJoinTable();
       var entries = join.getJoinColumns().asScala;
       var joinTables = new HashSet[Map[String, ColumnLabel]];
+      //attributes from multiple references of a same table should be differentiated.
       tables.foreach(t => {
         val col = t._1;
         if (col.database == cond.database && col.table == table) {
@@ -451,6 +548,10 @@ class LabelPropagator extends Logging {
     }
   }
 
+  /**
+   * get all vertex that are equal to v.
+   * performs reachability analysis on equi-graph
+   */
   private def getEquis(v: EquiVertex): mutable.Set[EquiVertex] = {
     var reach = equis.getOrElse(v, null);
     if (reach != null) {

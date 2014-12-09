@@ -9,23 +9,25 @@ import org.w3c.dom.NodeList;
 import edu.thu.ss.spec.lang.parser.ParserConstant;
 import edu.thu.ss.spec.util.SetUtil;
 
+/**
+ * class for data association
+ * @author luochen
+ *
+ */
 public class DataAssociation implements Parsable {
+
 	protected List<DataRef> dataRefs = new ArrayList<>();
 
 	public List<DataRef> getDataRefs() {
 		return dataRefs;
 	}
 
-	public int size() {
+	public int getDimension() {
 		return dataRefs.size();
 	}
 
 	public DataRef get(int i) {
 		return dataRefs.get(i);
-	}
-
-	public int getDimension() {
-		return dataRefs.size();
 	}
 
 	@Override

@@ -5,12 +5,12 @@
 
 	<!-- Elements which have an identifier should be of this type -->
 	<complexType name="identifiedObjectType">
-		<attribute name="id" use="required" type="NCName"></attribute>
+		<attribute name="id" use="required" type="string"></attribute>
 	</complexType>
 
 	<!-- Elements which refer to an identifier should be of this type -->
 	<complexType name="objectRefType">
-		<attribute name="refid" use="required" type="NCName"></attribute>
+		<attribute name="refid" use="required" type="string"></attribute>
 	</complexType>
 
 	<!-- Identified Elements which have descriptions should be of this type -->
@@ -29,7 +29,7 @@
 	<complexType name="hierarchicalType">
 		<complexContent>
 			<extension base="tns:describedObjectType">
-				<attribute name="parent" use="optional" type="NCName"></attribute>
+				<attribute name="parent" use="optional" type="string"></attribute>
 			</extension>
 		</complexContent>
 	</complexType>
@@ -72,7 +72,7 @@
 					<element name="user-category" minOccurs="0" maxOccurs="unbounded"
 						type="tns:hierarchicalType"></element>
 				</sequence>
-				<attribute name="base" type="NCName"></attribute>
+				<attribute name="base" type="string"></attribute>
 			</extension>
 		</complexContent>
 	</complexType>
@@ -90,7 +90,7 @@
 											maxOccurs="1">
 											<complexType>
 												<sequence>
-													<element name="operation" type="NCName" minOccurs="1"
+													<element name="operation" type="string" minOccurs="1"
 														maxOccurs="unbounded"></element>
 												</sequence>
 											</complexType>
@@ -105,7 +105,7 @@
 						</unique>
 					</element>
 				</sequence>
-				<attribute name="base" type="NCName"></attribute>
+				<attribute name="base" type="string"></attribute>
 			</extension>
 		</complexContent>
 	</complexType>
@@ -183,7 +183,7 @@
 						<element name="data-category-ref" type="tns:objectRefType"
 							maxOccurs="unbounded" minOccurs="0">
 						</element>
-						<element name="operation" type="NCName" minOccurs="0"
+						<element name="operation" type="string" minOccurs="0"
 							maxOccurs="unbounded"></element>
 					</sequence>
 				</complexType>

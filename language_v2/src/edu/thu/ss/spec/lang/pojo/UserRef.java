@@ -5,6 +5,11 @@ import org.w3c.dom.NodeList;
 
 import edu.thu.ss.spec.lang.parser.ParserConstant;
 
+/**
+ * class for user ref
+ * @author luochen
+ *
+ */
 public class UserRef extends CategoryRef<UserCategory> {
 
 	public void setUser(UserCategory user) {

@@ -3,7 +3,14 @@ package edu.thu.ss.spec.lang.pojo;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * a base class of category, 
+ * each category is global unique by {@link Category#id} and {@link Category#containerId}
+ * @author luochen
+ *
+ */
 public abstract class Category<T extends Category<T>> extends HierarchicalObject<T> {
+
 	protected String containerId;
 
 	public String getContainerId() {
@@ -14,6 +21,10 @@ public abstract class Category<T extends Category<T>> extends HierarchicalObject
 		this.containerId = containerId;
 	}
 
+	/**
+	 * @param container
+	 * @return all descendants in the container of a given category
+	 */
 	@SuppressWarnings("unchecked")
 	public Set<T> getDescendants(CategoryContainer<T> container) {
 		Set<T> set = new HashSet<>();

@@ -11,8 +11,16 @@ import org.w3c.dom.NodeList;
 import edu.thu.ss.spec.lang.parser.ParserConstant;
 import edu.thu.ss.spec.util.SetUtil;
 
+/**
+ * class for data category
+ * @author luochen
+ *
+ */
 public class DataCategory extends Category<DataCategory> {
 
+	/**
+	 * all supported {@link DesensitizeOperation} for the data category
+	 */
 	protected Set<DesensitizeOperation> ops = new HashSet<>();
 	protected Map<String, DesensitizeOperation> opIndex = new HashMap<>();
 
@@ -22,6 +30,24 @@ public class DataCategory extends Category<DataCategory> {
 
 	public DesensitizeOperation getOperation(String op) {
 		return opIndex.get(op);
+	}
+
+	private void addOperation(DesensitizeOperation op) {
+		ops.add(op);
+		opIndex.put(op.name, op);
+	}
+
+	public void inheritDesensitizeOperation(DataContainer container) {
+		if (parent != null) {
+			this.ops.addAll(parent.ops);
+		}
+		if (children != null) {
+			for (DataCategory data : children) {
+				if (container.contains(data.getId())) {
+					data.inheritDesensitizeOperation(container);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -47,22 +73,6 @@ public class DataCategory extends Category<DataCategory> {
 				DesensitizeOperation op = new DesensitizeOperation();
 				op.parse(node);
 				addOperation(op);
-			}
-		}
-	}
-
-	private void addOperation(DesensitizeOperation op) {
-		ops.add(op);
-		opIndex.put(op.name, op);
-	}
-
-	public void inheritDesensitizeOperation() {
-		if (parent != null) {
-			this.ops.addAll(parent.ops);
-		}
-		if (children != null) {
-			for (DataCategory data : children) {
-				data.inheritDesensitizeOperation();
 			}
 		}
 	}

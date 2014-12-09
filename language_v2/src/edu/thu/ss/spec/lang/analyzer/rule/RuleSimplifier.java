@@ -16,29 +16,32 @@ import edu.thu.ss.spec.lang.pojo.UserContainer;
 import edu.thu.ss.spec.lang.pojo.UserRef;
 import edu.thu.ss.spec.util.InclusionUtil;
 
+/**
+ * simplifies {@link UserRef}, {@link DataRef} and {@link Restriction} in each rule.
+ * @author luochen
+ *
+ */
 public class RuleSimplifier extends BaseRuleAnalyzer {
 	private static Logger logger = LoggerFactory.getLogger(RuleSimplifier.class);
 
 	@Override
 	protected boolean analyzeRule(Rule rule, UserContainer users, DataContainer datas) {
-		/**
-		 * simplification of users/datas in a rule is no longer needed, since
-		 * all users/datas are expanded into a single set.
-		 */
+
 		simplifyUsers(rule.getUserRefs(), rule.getId());
 		simplifyDatas(rule.getDataRefs(), rule.getId());
 
 		//simplifyDataAssociations(rule.getAssociations());
+
 		simplifyRestrictions(rule.getRestrictions());
 		return false;
 	}
 
-	private void simplifyUsers(List<UserRef> categories, String ruleId) {
-		Iterator<UserRef> it = categories.iterator();
+	private void simplifyUsers(List<UserRef> users, String ruleId) {
+		Iterator<UserRef> it = users.iterator();
 		while (it.hasNext()) {
 			UserRef user1 = it.next();
 			boolean removable = false;
-			for (UserRef user2 : categories) {
+			for (UserRef user2 : users) {
 				if (user1 != user2 && InclusionUtil.instance.includes(user2, user1)) {
 					removable = true;
 					break;
@@ -51,12 +54,17 @@ public class RuleSimplifier extends BaseRuleAnalyzer {
 		}
 	}
 
-	private void simplifyDatas(List<DataRef> categories, String ruleId) {
-		Iterator<DataRef> it = categories.iterator();
+	/**
+	 * global {@link DataRef} cannot be covered by local {@link UserRef}
+	 * @param datas
+	 * @param ruleId
+	 */
+	private void simplifyDatas(List<DataRef> datas, String ruleId) {
+		Iterator<DataRef> it = datas.iterator();
 		while (it.hasNext()) {
 			DataRef data1 = it.next();
 			boolean removable = false;
-			for (DataRef data2 : categories) {
+			for (DataRef data2 : datas) {
 				if (data1.isGlobal() && !data2.isGlobal()) {
 					continue;
 				}
@@ -69,27 +77,6 @@ public class RuleSimplifier extends BaseRuleAnalyzer {
 				it.remove();
 				logger.warn("Data category: {} is removed from rule: {} since it is redundant.", data1.getRefid(), ruleId);
 			}
-		}
-	}
-
-	@SuppressWarnings("unused")
-	private void simplifyDataAssociations(Set<DataAssociation> associations) {
-		Iterator<DataAssociation> it = associations.iterator();
-		int i = 1;
-		while (it.hasNext()) {
-			DataAssociation ass1 = it.next();
-			boolean removable = false;
-			for (DataAssociation ass2 : associations) {
-				if (ass1 != ass2 && InclusionUtil.instance.includes(ass2, ass1)) {
-					removable = true;
-					break;
-				}
-			}
-			if (removable) {
-				it.remove();
-				logger.warn("The #{} data association is removed from rule: {} since it is redundant.", i);
-			}
-			i++;
 		}
 	}
 

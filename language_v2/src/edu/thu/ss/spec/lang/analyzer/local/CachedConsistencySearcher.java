@@ -17,6 +17,11 @@ import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
 import edu.thu.ss.spec.util.SetUtil;
 
+/**
+ * an enhanced consistency search with caching results in each level.
+ * @author luochen
+ *
+ */
 public class CachedConsistencySearcher extends ConsistencySearcher {
 	private static Logger logger = LoggerFactory.getLogger(CachedConsistencySearcher.class);
 

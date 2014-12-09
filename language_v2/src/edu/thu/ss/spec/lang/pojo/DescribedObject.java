@@ -5,6 +5,11 @@ import org.w3c.dom.NodeList;
 
 import edu.thu.ss.spec.lang.parser.ParserConstant;
 
+/**
+ * class for described object (with descriptions)
+ * @author luochen
+ *
+ */
 public class DescribedObject extends IdentifiedObject {
 	protected String shortDescription;
 	protected String longDescription;

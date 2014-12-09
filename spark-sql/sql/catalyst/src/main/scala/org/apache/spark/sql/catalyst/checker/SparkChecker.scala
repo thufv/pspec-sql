@@ -26,6 +26,9 @@ import org.apache.spark.sql.catalyst.analysis.Catalog
 
 class SparkChecker extends PrivacyChecker {
 
+  /**
+   * path is essential a list of desensitize operations
+   */
   case class Path(val ops: Seq[DesensitizeOperation]);
 
   var projectionPaths: Map[Policy, Map[DataCategory, Set[Path]]] = null;
@@ -40,14 +43,19 @@ class SparkChecker extends PrivacyChecker {
     this.policies = policies;
     projectionPaths = new HashMap;
     conditionPaths = new HashMap;
+    //first calculate all paths for data categories
     projections.foreach(buildPath(_, projectionPaths));
     conditions.foreach(buildPath(_, conditionPaths));
 
     printPaths(projections, conditions);
 
+    //check each rule
     policies.foreach(p => p.getExpandedRules().asScala.foreach(checkRule(_, p)));
   }
 
+  /**
+   * should be turn off in production
+   */
   private def printPaths(projections: collection.Set[Label], conditions: collection.Set[Label]) {
 
     println("projections:");
@@ -75,6 +83,9 @@ class SparkChecker extends PrivacyChecker {
 
   }
 
+  /**
+   * build paths for each data category recursively.
+   */
   private def buildPath(label: Label, paths: Map[Policy, Map[DataCategory, Set[Path]]], list: ListBuffer[String] = new ListBuffer): Unit = {
     label match {
       case data: DataLabel => {
@@ -97,6 +108,9 @@ class SparkChecker extends PrivacyChecker {
     }
   }
 
+  /**
+   * first map udfs to desensitize operations, then add the path to paths.
+   */
   private def addPath(data: DataCategory, label: ColumnLabel, udfs: ListBuffer[String], paths: Map[Policy, Map[DataCategory, Set[Path]]]): Unit = {
     val meta = MetaManager.get(label.database, label.table);
     val ops = udfs.map(meta.lookup(data, _, label.database, label.table, label.attr.name)).filter(_ != null);
@@ -110,20 +124,30 @@ class SparkChecker extends PrivacyChecker {
     })
   }
 
+  /**
+   * check rule
+   *
+   * @throws PrivacyException
+   */
   private def checkRule(rule: ExpandedRule, policy: Policy): Unit = {
+    // check user
     if (!rule.contains(user)) {
       return ;
     }
     var error = false;
     if (rule.isSingle()) {
+      //single rule
       val access = new HashSet[DataCategory];
       val dataRef = rule.getDataRef();
+      //collect all applicable data categories
       collectDatas(dataRef, access, policy);
       error = checkRestriction(rule, access, policy);
     } else {
+      //association rule
       val association = rule.getAssociation();
-      val accesses = Array.fill(association.size())(new HashSet[DataCategory]);
+      val accesses = Array.fill(association.getDimension())(new HashSet[DataCategory]);
       val dataRefs = association.getDataRefs();
+      //collect all applicable data categories
       for (i <- 0 to dataRefs.size - 1) {
         collectDatas(dataRefs.get(i), accesses(i), policy);
       }
@@ -134,6 +158,11 @@ class SparkChecker extends PrivacyChecker {
     }
   }
 
+  /**
+   * collect all applicable data categories into access.
+   * note that data ref/ association is essentially treated as n (>=1) buckets,
+   * and we fill these buckets based on data categories accessed by the query.
+   */
   private def collectDatas(ref: DataRef, access: Set[DataCategory], policy: Policy) {
     ref.getAction() match {
       case Action.All => {
@@ -147,12 +176,14 @@ class SparkChecker extends PrivacyChecker {
 
   private def collectDatas(ref: DataRef, paths: Map[Policy, Map[DataCategory, Set[Path]]], access: Set[DataCategory], policy: Policy): Unit = {
     if (ref.isGlobal()) {
+      // all data categories are applicable
       paths.values.foreach(_.keys.foreach(data => {
         if (ref.contains(data)) {
           access.add(data);
         }
       }));
     } else {
+      //only collect data categories that for current policy
       val map = paths.getOrElse(policy, null);
       if (map != null) {
         ref.getMaterialized().asScala.foreach(data => {
@@ -164,6 +195,10 @@ class SparkChecker extends PrivacyChecker {
     }
   }
 
+  /**
+   * check restriction for single rule
+   * only 1 restriction, and only 1 desensitization
+   */
   private def checkRestriction(rule: ExpandedRule, access: HashSet[DataCategory], policy: Policy): Boolean = {
     if (access.size == 0) {
       return false;
@@ -184,7 +219,11 @@ class SparkChecker extends PrivacyChecker {
     false;
   }
 
+  /**
+   * check restriction for association rule
+   */
   private def checkRestrictions(rule: ExpandedRule, accesses: Array[HashSet[DataCategory]], policy: Policy): Boolean = {
+    //if any bucket is empty, then return.
     if (accesses.exists(_.size == 0)) {
       return false;
     }
@@ -195,10 +234,15 @@ class SparkChecker extends PrivacyChecker {
     return checkRestrictions(array, 0, rule, accesses, policy);
   }
 
+  /**
+   * check restrictions recursively.
+   * for buckets with m1, m2, ..., mn elements, we need to check m1 * m2 *... mn combinations.
+   */
   private def checkRestrictions(array: Array[DataCategory], i: Int, rule: ExpandedRule, accesses: Array[HashSet[DataCategory]], policy: Policy): Boolean = {
     if (i == accesses.length) {
       val restrictions = rule.getRestrictions();
       val association = rule.getAssociation();
+      //a combination of element, and check whether exist a satisfied restriction
       return restrictions.exists(res => {
         if (res.isForbid()) {
           return false;
@@ -225,6 +269,9 @@ class SparkChecker extends PrivacyChecker {
     }
   }
 
+  /**
+   * check whether a desensitization is satisfied
+   */
   private def checkDesensitization(ref: DataRef, data: DataCategory, de: Desensitization, policy: Policy, global: Boolean): Boolean = {
     ref.getAction() match {
       case Action.All => if (checkOperations(de, data, projectionPaths, policy, global) || checkOperations(de, data, conditionPaths, policy, global)) {
@@ -240,6 +287,9 @@ class SparkChecker extends PrivacyChecker {
     false;
   }
 
+  /**
+   * check all paths for a data category is desensitized with one of the operations
+   */
   private def checkOperations(de: Desensitization, data: DataCategory, paths: Map[Policy, Map[DataCategory, Set[Path]]], policy: Policy, global: Boolean): Boolean = {
     if (global) {
       for (map <- paths.values) {
@@ -267,7 +317,7 @@ class SparkChecker extends PrivacyChecker {
       //fall back to default desensitize operations
       ops = data.getOperations();
     }
-    !set.forall(path => path.ops.exists(ops.contains(_)));
+    return !set.forall(path => path.ops.exists(ops.contains(_)));
   }
 
 }
@@ -276,6 +326,10 @@ object SparkChecker extends Logging {
 
   val checker = new SparkChecker();
 
+  /**
+   * load policy and meta during startup.
+   * may need to be modified in a pluggable way.
+   */
   def init(catalog: Catalog, policyPath: String, metaPath: String): Unit = {
     loadPolicy(policyPath);
     loadMeta(metaPath, catalog);
@@ -300,6 +354,9 @@ object SparkChecker extends Logging {
     }
   }
 
+  /**
+   * wrap of spark checker
+   */
   def apply(plan: LogicalPlan): Unit = {
     val begin = System.currentTimeMillis();
     val propagator = new LabelPropagator;
@@ -311,6 +368,9 @@ object SparkChecker extends Logging {
     println(s"privacy checking finished in $time ms");
   }
 
+  /**
+   * check whether column is properly labeled
+   */
   private def checkMeta(meta: MetaRegistry, catalog: Catalog): Unit = {
     val databases = meta.getDatabases();
     for (db <- databases.asScala) {

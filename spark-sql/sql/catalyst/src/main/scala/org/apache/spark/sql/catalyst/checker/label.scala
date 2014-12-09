@@ -13,16 +13,32 @@ import org.apache.spark.sql.catalyst.expressions.AttributeReference
 import org.apache.spark.sql.catalyst.expressions.AttributeReference
 import org.apache.spark.sql.catalyst.expressions.AttributeReference
 
+/**
+ * base class for lineage tree
+ */
 sealed abstract class Label;
 
+/**
+ * base class for column node in lineage tree
+ */
 abstract class ColumnLabel(val database: String, val table: String, val attr: AttributeReference) extends Label;
 
+/**
+ * class for data category node (leaf) in lineage tree
+ */
 case class DataLabel(data: DataCategory, override val database: String, override val table: String, override val attr: AttributeReference)
   extends ColumnLabel(database, table, attr);
 
+/**
+ * class for insensitive attribute (leaf) in lineage tree
+ */
 case class Insensitive(override val database: String, override val table: String, override val attr: AttributeReference)
   extends ColumnLabel(database, table, attr);
 
+/**
+ * class for conditional category attribute (leaf) in lineage tree
+ * @see {@link ConditionalColumn}
+ */
 case class ConditionalLabel(conds: Map[JoinCondition, DataCategory], override val database: String, override val table: String, override val attr: AttributeReference)
   extends ColumnLabel(database, table, attr) with Equals {
 
@@ -45,8 +61,18 @@ case class ConditionalLabel(conds: Map[JoinCondition, DataCategory], override va
   }
 }
 
+/**
+ * class for function node (non-leaf) in lineage tree
+ */
 case class Function(val children: Seq[Label], val udf: String) extends Label;
 
+/**
+ * class for constant node (leaf) in lineage tree
+ */
 case class Constant(val value: Any) extends Label;
 
+/**
+ * class for predicate node (non-leaf, root) in lineage tree
+ * predicate node only appears in condition lineage trees
+ */
 case class Predicate(val children: Seq[Label], val operation: String) extends Label;

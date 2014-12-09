@@ -5,13 +5,19 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * Abstract class performing level-wise search on rules.
+ * an algorithm framework for level-wise search, providing basic level generation functionanlity.
  * 
  * @author luochen
  * 
  */
 public abstract class LevelwiseSearcher {
 
+	/**
+	 * search key mainly contains an array of rule indices.
+	 * the length of array is the same to the current search level.
+	 * @author luochen
+	 *
+	 */
 	public static class SearchKey {
 		public int[] index;
 
@@ -35,17 +41,6 @@ public abstract class LevelwiseSearcher {
 			index[index.length - 1] = value;
 		}
 
-		@Override
-		public int hashCode() {
-			if (index == null)
-				return 0;
-			int result = 1;
-			for (int element : index) {
-				result = (element >= 0) ? (31 * result + element) : result;
-			}
-			return result;
-		}
-
 		public boolean prefixEquals(SearchKey other) {
 			if (this.index.length != other.index.length) {
 				return false;
@@ -62,6 +57,23 @@ public abstract class LevelwiseSearcher {
 			int[] newRules = Arrays.copyOf(index, index.length + 1);
 			newRules[newRules.length - 1] = other.index[other.index.length - 1];
 			return new SearchKey(newRules);
+		}
+
+		/**
+		 * small trick on {@link #hashCode()} and {@link #equals(Object)}
+		 * when generating next level, one can create an array with length n+1,
+		 * and set each position to -1.
+		 * @see {@link LevelwiseSearcher#isValidKey(SearchKey, Set)}
+		 */
+		@Override
+		public int hashCode() {
+			if (index == null)
+				return 0;
+			int result = 1;
+			for (int element : index) {
+				result = (element >= 0) ? (31 * result + element) : result;
+			}
+			return result;
 		}
 
 		@Override
@@ -110,20 +122,36 @@ public abstract class LevelwiseSearcher {
 		}
 	}
 
+	/**
+	 * max search level, can be overrode by child.
+	 */
 	protected int maxLevel = Integer.MAX_VALUE;
-
-	protected int defaultSize = 10;
 
 	protected SearchKey[] keys = new SearchKey[0];
 
+	/**
+	 * process a combination of rules(key).
+	 * 
+	 * @param key a combination of rules
+	 * @return  whether key should be kept.
+	 */
+	protected abstract boolean process(SearchKey key);
+
+	/**
+	 * initialize first level
+	 * @param currentLevel
+	 */
+	protected abstract void initLevel(Set<SearchKey> currentLevel);
+
 	public void search() {
 		int level = 1;
-		Set<SearchKey> currentLevel = new LinkedHashSet<>(defaultSize);
+		Set<SearchKey> currentLevel = new LinkedHashSet<>();
 		initLevel(currentLevel);
+
 		while (currentLevel.size() > 0 && level < maxLevel) {
 			beginLevel(level + 1);
-			Set<SearchKey> nextLevel = new LinkedHashSet<>(defaultSize);
-			processNextLevel(currentLevel, nextLevel, level);
+			Set<SearchKey> nextLevel = new LinkedHashSet<>();
+			generateNextLevel(currentLevel, nextLevel);
 			level++;
 			currentLevel = nextLevel;
 			endLevel(level);
@@ -131,25 +159,11 @@ public abstract class LevelwiseSearcher {
 	}
 
 	/**
-	 * main interface for implementation, process the new combination.
-	 * 
-	 * @param key
-	 * @param currentIndex
-	 * @return true/false decides whether key should be kept.
+	 * generate next level
+	 * @param currentLevel
+	 * @param nextLevel
 	 */
-	protected abstract boolean process(SearchKey key);
-
-	protected abstract void initLevel(Set<SearchKey> currentLevel);
-
-	protected void beginLevel(int level) {
-
-	}
-
-	protected void endLevel(int level) {
-
-	}
-
-	private void processNextLevel(Set<SearchKey> currentLevel, Set<SearchKey> nextLevel, int level) {
+	private void generateNextLevel(Set<SearchKey> currentLevel, Set<SearchKey> nextLevel) {
 		int size = currentLevel.size();
 		keys = currentLevel.toArray(keys);
 
@@ -173,16 +187,24 @@ public abstract class LevelwiseSearcher {
 		}
 	}
 
-	private boolean isValidKey(SearchKey key, Set<SearchKey> currentIndex) {
+	private boolean isValidKey(SearchKey key, Set<SearchKey> currentLevel) {
 		for (int i = 0; i < key.index.length - 2; i++) {
 			int tmp = key.index[i];
 			key.index[i] = -1;
-			if (!currentIndex.contains(key)) {
+			if (!currentLevel.contains(key)) {
 				return false;
 			}
 			key.index[i] = tmp;
 		}
 		return true;
+	}
+
+	protected void beginLevel(int level) {
+
+	}
+
+	protected void endLevel(int level) {
+
 	}
 
 }

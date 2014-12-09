@@ -27,22 +27,34 @@ import edu.thu.ss.spec.lang.pojo.Vocabulary;
 import edu.thu.ss.spec.util.ParsingException;
 import edu.thu.ss.spec.util.XMLUtil;
 
+/**
+ * main entrance for privacy language
+ * @author luochen
+ *
+ */
 public class PolicyParser implements ParserConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(PolicyParser.class);
 
+	/**
+	 * a list of {@link PolicyAnalyzer}, executed sequentially
+	 */
 	private List<PolicyAnalyzer> analyzers;
 
 	protected void init(boolean global) {
 		analyzers = new ArrayList<>();
 		analyzers.add(new RuleResolver());
+
 		analyzers.add(new RuleConstraintAnalyzer());
+
 		analyzers.add(new RuleSimplifier());
 
 		if (global) {
+			//online
 			analyzers.add(new GlobalExpander());
 			analyzers.add(new GlobalRedundancyAnalyzer());
 		} else {
+			//offline
 			analyzers.add(new LocalExpander());
 			analyzers.add(new LocalRedundancyAnalyzer());
 			analyzers.add(new ConsistencyAnalyzer());
@@ -51,9 +63,17 @@ public class PolicyParser implements ParserConstant {
 	}
 
 	public Policy parse(String path) throws Exception {
+		//online by default
 		return parse(path, true);
 	}
 
+	/**
+	 * parse a {@link Policy} from path
+	 * @param path
+	 * @param global
+	 * @return {@link Policy}
+	 * @throws Exception
+	 */
 	public Policy parse(String path, boolean global) throws Exception {
 		URI uri = XMLUtil.toUri(path);
 		Policy policy = PolicyManager.getPolicy(uri);
@@ -67,7 +87,7 @@ public class PolicyParser implements ParserConstant {
 		Document policyDoc = null;
 		try {
 			// load document
-			policyDoc = XMLUtil.parseDocument(path, Privacy_Schema_Location);
+			policyDoc = XMLUtil.parseDocument(uri, Privacy_Schema_Location);
 		} catch (Exception e) {
 			throw new ParsingException("Fail to load privacy policy at " + path, e);
 		}
@@ -83,11 +103,13 @@ public class PolicyParser implements ParserConstant {
 					info.parse(node);
 					policy.setInfo(info);
 				} else if (Ele_Policy_Vocabulary_Ref.equals(name)) {
+					//parse referred vocabulary first
 					parseVocabularyRef(node, policy);
 				} else if (Ele_Policy_Rules.equals(name)) {
 					parseRules(node, policy);
 				}
 			}
+			//perform policy analysis
 			analyzePolicy(policy);
 		} catch (ParsingException e) {
 			throw e;
@@ -97,6 +119,7 @@ public class PolicyParser implements ParserConstant {
 			cleanup();
 		}
 
+		//register parsed policy to PolicyManager
 		PolicyManager.addPolicy(policy);
 		return policy;
 	}
@@ -104,21 +127,12 @@ public class PolicyParser implements ParserConstant {
 	protected void cleanup() {
 	}
 
-	private void parseRules(Node rulesNode, Policy policy) {
-		List<Rule> rules = new ArrayList<>();
-		NodeList list = rulesNode.getChildNodes();
-		for (int i = 0; i < list.getLength(); i++) {
-			Node node = list.item(i);
-			String name = node.getLocalName();
-			if (Ele_Policy_Rule.equals(name)) {
-				Rule rule = new Rule();
-				rule.parse(node);
-				rules.add(rule);
-			}
-		}
-		policy.setRules(rules);
-	}
-
+	/**
+	 * Invoking {@link VocabularyParser} to parse referred {@link Vocabulary}s
+	 * @param refNode
+	 * @param policy
+	 * @throws Exception
+	 */
 	private void parseVocabularyRef(Node refNode, Policy policy) throws Exception {
 		String location = XMLUtil.getAttrValue(refNode, Attr_Policy_Vocabulary_location);
 		String userRef = null;
@@ -146,6 +160,21 @@ public class PolicyParser implements ParserConstant {
 
 	}
 
+	private void parseRules(Node rulesNode, Policy policy) {
+		List<Rule> rules = new ArrayList<>();
+		NodeList list = rulesNode.getChildNodes();
+		for (int i = 0; i < list.getLength(); i++) {
+			Node node = list.item(i);
+			String name = node.getLocalName();
+			if (Ele_Policy_Rule.equals(name)) {
+				Rule rule = new Rule();
+				rule.parse(node);
+				rules.add(rule);
+			}
+		}
+		policy.setRules(rules);
+	}
+
 	private void analyzePolicy(Policy policy) throws ParsingException {
 		for (PolicyAnalyzer analyzer : analyzers) {
 			boolean error = analyzer.analyze(policy);
@@ -153,7 +182,6 @@ public class PolicyParser implements ParserConstant {
 				throw new ParsingException(analyzer.errorMsg());
 			}
 		}
-
 	}
 
 }

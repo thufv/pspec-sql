@@ -21,6 +21,12 @@ import edu.thu.ss.spec.util.InclusionUtil;
 import edu.thu.ss.spec.util.SetUtil;
 import edu.thu.ss.spec.util.SetUtil.SetRelation;
 
+/**
+ * performs policy redundancy analysis, for all rule r1 and r2,
+ * if r1 covers r2, then r2 can be removed.
+ * @author luochen
+ *
+ */
 public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 
 	protected static class SimplificationLog {

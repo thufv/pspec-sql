@@ -11,12 +11,24 @@ import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
 import edu.thu.ss.spec.meta.MetaRegistry;
 
+/**
+ * manages all meta registries
+ * @author luochen
+ *
+ */
 public class MetaManager {
 
 	private static List<MetaRegistry> registries = new LinkedList<>();
 
+	/**
+	 * database -> (table -> registry)
+	 */
 	private static Map<String, Map<String, MetaRegistry>> registryIndex = new HashMap<>();
 
+	/**
+	 * 
+	 * @return current user category, unfinished implementation.
+	 */
 	public static synchronized UserCategory currentUser() {
 		return new UserCategory("app", "default-user");
 	}
@@ -30,6 +42,13 @@ public class MetaManager {
 		}
 	}
 
+	/**
+	 * return whether policy is applicable for {database, table}
+	 * @param policy
+	 * @param database
+	 * @param table
+	 * @return
+	 */
 	public static synchronized boolean applicable(Policy policy, String database, String table) {
 		MetaRegistry meta = get(database, table);
 		if (meta == null) {
@@ -38,6 +57,11 @@ public class MetaManager {
 		return meta.getPolicy() == policy;
 	}
 
+	/**
+	 * add a parsed registry, and update {@link MetaManager#registryIndex}
+	 * @param registry
+	 * @throws RuntimeException if a table is covered by multiple registries
+	 */
 	public static synchronized void add(MetaRegistry registry) {
 		registries.add(registry);
 		Map<String, Set<String>> scope = registry.getScope();

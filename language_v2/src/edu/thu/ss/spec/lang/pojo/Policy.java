@@ -4,6 +4,11 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * class for policy
+ * @author luochen
+ *
+ */
 public class Policy {
 	protected Info info;
 
@@ -12,12 +17,24 @@ public class Policy {
 	protected String userContainerRef;
 	protected String dataContainerRef;
 
+	/**
+	 * {@link UserContainer} of id {@link #userContainerRef}
+	 */
 	protected UserContainer userContainer;
 
+	/**
+	 * {@link DataContainer} of id {@link #dataContainerRef}
+	 */
 	protected DataContainer dataContainer;
 
+	/**
+	 * all referenced {@link UserContainer}
+	 */
 	protected Map<String, UserContainer> userContainers;
 
+	/**
+	 * all referenced {@link DataContainer}
+	 */
 	protected Map<String, DataContainer> dataContainers;
 
 	protected List<Rule> rules;

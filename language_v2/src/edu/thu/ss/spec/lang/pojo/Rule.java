@@ -8,6 +8,11 @@ import org.w3c.dom.NodeList;
 
 import edu.thu.ss.spec.lang.parser.ParserConstant;
 
+/**
+ * class for rule, directly parsed from xml.
+ * @author luochen
+ *
+ */
 public class Rule extends DescribedObject {
 
 	protected List<UserRef> userRefs = new ArrayList<>();

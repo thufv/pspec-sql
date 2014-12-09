@@ -6,16 +6,27 @@ import java.util.Map;
 
 import org.w3c.dom.Node;
 
+/**
+ * class for vocabulary
+ * @author luochen
+ *
+ */
 public class Vocabulary {
 
 	protected Info info;
 
-	protected String base;
+	/**
+	 * path of base vocabulary
+	 */
+	protected URI basePath;
 
 	protected Map<String, UserContainer> userContainers = new HashMap<>();
 
 	protected Map<String, DataContainer> dataContainers = new HashMap<>();
 
+	/**
+	 * only used during parsing
+	 */
 	protected Node rootNode;
 
 	protected URI path;
@@ -70,12 +81,12 @@ public class Vocabulary {
 		this.info = info;
 	}
 
-	public String getBase() {
-		return base;
+	public URI getBase() {
+		return basePath;
 	}
 
-	public void setBase(String base) {
-		this.base = base;
+	public void setBase(URI base) {
+		this.basePath = base;
 	}
 
 	public UserContainer getUserContainer(String id) {

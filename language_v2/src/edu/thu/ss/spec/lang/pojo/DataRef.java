@@ -8,7 +8,15 @@ import org.w3c.dom.NodeList;
 import edu.thu.ss.spec.lang.parser.ParserConstant;
 import edu.thu.ss.spec.util.XMLUtil;
 
+/**
+ * class for data ref
+ * @author luochen
+ *
+ */
 public class DataRef extends CategoryRef<DataCategory> {
+	/**
+	 * all(default), projection and condition
+	 */
 	protected Action action = Action.All;
 
 	protected boolean global = false;
@@ -45,6 +53,9 @@ public class DataRef extends CategoryRef<DataCategory> {
 		return action;
 	}
 
+	/**
+	 * for global {@link DataRef}, {@link #contains(DataCategory)} must be checked on data category hierarchy
+	 */
 	@Override
 	public boolean contains(DataCategory t) {
 		if (!global) {
@@ -108,16 +119,6 @@ public class DataRef extends CategoryRef<DataCategory> {
 		}
 		return sb.toString();
 
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		return super.equals(obj);
-	}
-
-	@Override
-	public int hashCode() {
-		return super.hashCode();
 	}
 
 }

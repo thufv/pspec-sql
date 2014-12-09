@@ -2,6 +2,10 @@ package org.apache.spark.sql.catalyst.checker
 
 import org.apache.spark.sql.catalyst.expressions._
 
+/**
+ * resolve expression to a name
+ * used when constructing lineage trees
+ */
 object ExpressionRegistry extends LabelConstants {
 
 	def resolvePredicate(predicate: Expression): String = {

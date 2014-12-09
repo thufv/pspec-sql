@@ -25,6 +25,7 @@ public class PolicyParserTest {
 		}
 	}
 
+	@Test
 	public void testConflict() {
 		try {
 			PolicyParser parser = new PolicyParser();
@@ -45,7 +46,6 @@ public class PolicyParserTest {
 		}
 	}
 
-	@Test
 	public void testGlobalRedundancy() {
 		try {
 			PolicyParser parser = new PolicyParser();

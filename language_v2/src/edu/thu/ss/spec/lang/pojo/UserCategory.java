@@ -1,5 +1,10 @@
 package edu.thu.ss.spec.lang.pojo;
 
+/**
+ * class for user category
+ * @author luochen
+ *
+ */
 public class UserCategory extends Category<UserCategory> {
 
 	public UserCategory() {

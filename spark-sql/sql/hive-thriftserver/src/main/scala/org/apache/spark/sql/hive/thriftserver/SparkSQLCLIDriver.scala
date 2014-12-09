@@ -43,6 +43,10 @@ private[hive] object SparkSQLCLIDriver {
   private var prompt = "spark-sql"
   private var continuedPrompt = "".padTo(prompt.length, ' ')
   private var transport: TSocket = _
+  /**
+   * added by luochen
+   * a counter for query executed
+   */
   private var number = 0;
   installSignalHandler()
 

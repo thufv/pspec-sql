@@ -76,6 +76,10 @@ private[hive] trait HiveFunctionFactory {
 		getContextOrSparkClassLoader.loadClass(functionClassName).newInstance.asInstanceOf[UDFType]
 }
 
+/**
+ * modified by luochen
+ * add name
+ */
 private[hive] abstract class HiveUdf(name: String) extends Expression with Logging with HiveFunctionFactory {
 	self: Product =>
 

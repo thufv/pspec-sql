@@ -19,29 +19,34 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
+/**
+ * a utility class for xml related functionalities
+ * @author luochen
+ *
+ */
 public class XMLUtil {
 
 	private static Map<String, Schema> schemas = new HashMap<>();
 
-	public static Document parseDocument(String path, String xsdPath) throws Exception {
-
+	public static Document parseDocument(URI uri, String xsdPath) throws Exception {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
 		DocumentBuilder builder = factory.newDocumentBuilder();
 
 		Document doc = null;
-		//	URI uri = validateURI(path);
 
-		InputStream is = XMLUtil.class.getClassLoader().getResourceAsStream(path);
+		InputStream is = XMLUtil.class.getClassLoader().getResourceAsStream(uri.getPath());
 		if (is != null) {
 			//load from class path
-			doc = builder.parse(path);
+			doc = builder.parse(is);
 		} else {
-			File docFile = new File(path);
+			//load from file
+			File docFile = new File(uri.getPath());
 			if (docFile.exists()) {
 				doc = builder.parse(docFile);
 			} else {
-				doc = builder.parse(path);
+				//load from absolute uri
+				doc = builder.parse(uri.toString());
 			}
 		}
 		Validator validator = getValidator(xsdPath);
@@ -84,12 +89,7 @@ public class XMLUtil {
 	}
 
 	public static String getLowerAttrValue(Node node, String attr) {
-		NamedNodeMap attrs = node.getAttributes();
-		Node baseAttr = attrs.getNamedItem(attr);
-		if (baseAttr == null) {
-			return null;
-		}
-		String value = baseAttr.getNodeValue();
+		String value = getAttrValue(node, attr);
 		if (value != null) {
 			return value.toLowerCase();
 		} else {

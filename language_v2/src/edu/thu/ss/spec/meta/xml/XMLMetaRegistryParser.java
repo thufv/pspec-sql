@@ -40,7 +40,7 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 		Document policyDoc = null;
 		try {
 			// load document
-			policyDoc = XMLUtil.parseDocument(path, Meta_Schema_Location);
+			policyDoc = XMLUtil.parseDocument(XMLUtil.toUri(path), Meta_Schema_Location);
 		} catch (Exception e) {
 			throw new ParsingException("Fail to load meta file at :" + path, e);
 		}

@@ -8,6 +8,11 @@ import org.w3c.dom.NodeList;
 
 import edu.thu.ss.spec.lang.parser.ParserConstant;
 
+/**
+ * class for restriction, contains multiple {@link Desensitization}
+ * @author luochen
+ *
+ */
 public class Restriction implements Parsable {
 
 	private Set<Desensitization> desensitizations;

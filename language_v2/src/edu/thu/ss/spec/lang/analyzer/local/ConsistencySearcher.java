@@ -27,9 +27,20 @@ import edu.thu.ss.spec.lang.pojo.UserCategory;
 import edu.thu.ss.spec.util.SetUtil;
 import edu.thu.ss.spec.util.SetUtil.SetRelation;
 
+/**
+ * performs consistency search based on level wise search algorithm
+ * @author luochen
+ *
+ */
 class ConsistencySearcher extends LevelwiseSearcher {
 	private static Logger logger = LoggerFactory.getLogger(ConsistencySearcher.class);
 
+	/**
+	 * intermediate representation of restriction
+	 * datas, action => list< operations >
+	 * @author luochen
+	 *
+	 */
 	protected class Triple {
 		Set<DataCategory> datas;
 		Action action;
@@ -52,6 +63,11 @@ class ConsistencySearcher extends LevelwiseSearcher {
 		}
 	}
 
+	/**
+	 * intermediate representation of rule
+	 * @author luochen
+	 *
+	 */
 	protected class RuleObject {
 		Set<UserCategory> users;
 		Triple[] triples;

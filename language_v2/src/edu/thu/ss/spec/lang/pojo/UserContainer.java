@@ -5,6 +5,11 @@ import org.w3c.dom.NodeList;
 
 import edu.thu.ss.spec.lang.parser.ParserConstant;
 
+/**
+ * class for user container
+ * @author luochen
+ *
+ */
 public class UserContainer extends CategoryContainer<UserCategory> {
 
 	@Override

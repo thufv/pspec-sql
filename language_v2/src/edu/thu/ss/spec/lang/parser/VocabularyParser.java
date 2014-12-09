@@ -1,6 +1,8 @@
 package edu.thu.ss.spec.lang.parser;
 
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -15,9 +17,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.spec.global.CategoryManager;
-import edu.thu.ss.spec.lang.analyzer.VocabularyAnalyzer;
 import edu.thu.ss.spec.lang.pojo.Category;
 import edu.thu.ss.spec.lang.pojo.CategoryContainer;
+import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DataContainer;
 import edu.thu.ss.spec.lang.pojo.Info;
 import edu.thu.ss.spec.lang.pojo.UserContainer;
@@ -25,8 +27,16 @@ import edu.thu.ss.spec.lang.pojo.Vocabulary;
 import edu.thu.ss.spec.util.ParsingException;
 import edu.thu.ss.spec.util.XMLUtil;
 
+/**
+ * parses and analyzes vocabulary
+ * @author luochen
+ *
+ */
 public class VocabularyParser implements ParserConstant {
 
+	/**
+	 * parsed vocabulary in current instance
+	 */
 	protected Map<URI, Vocabulary> vocabularies;
 
 	protected Map<String, UserContainer> userContainers;
@@ -39,7 +49,8 @@ public class VocabularyParser implements ParserConstant {
 
 	public Vocabulary parse(String path, String user, String data) throws Exception {
 		init();
-		loadVocabularies(path);
+		loadVocabularies(XMLUtil.toUri(path));
+
 		parseUsers();
 		parseDatas();
 		if (error) {
@@ -55,14 +66,21 @@ public class VocabularyParser implements ParserConstant {
 		if (error) {
 			throw new ParsingException("Fail to parse vocabularies, see error messages above");
 		}
-		VocabularyAnalyzer analyzer = new VocabularyAnalyzer();
-		analyzer.analyze(mergedUsers.values(), mergedDatas.values());
+
+		inheritOperations(mergedDatas.values(), mergedDatas.get(data));
 		registerVocabularies();
 
 		Vocabulary vocabulary = new Vocabulary();
 		vocabulary.setUserContainers(mergedUsers);
 		vocabulary.setDataContainers(mergedDatas);
 		return vocabulary;
+	}
+
+	private void init() {
+		this.vocabularies = new HashMap<>();
+		this.userContainers = new HashMap<>();
+		this.dataContainers = new HashMap<>();
+		this.error = false;
 	}
 
 	private Map<String, UserContainer> collectUsers(String user) {
@@ -106,40 +124,45 @@ public class VocabularyParser implements ParserConstant {
 
 	}
 
-	private void init() {
-		this.vocabularies = new HashMap<>();
-		this.userContainers = new HashMap<>();
-		this.dataContainers = new HashMap<>();
-		this.error = false;
-	}
-
-	private void loadVocabularies(String path) throws Exception {
-		while (path != null) {
-			URI uri = XMLUtil.toUri(path);
+	/**
+	 * load all referred {@link Vocabulary} (chain)
+	 * @param uri
+	 * @throws Exception
+	 */
+	private void loadVocabularies(URI uri) throws Exception {
+		while (uri != null) {
 			Vocabulary vocabulary = CategoryManager.getParsedVocab().get(uri);
-			if (CategoryManager.containsVocab(path)) {
+			//check vocabulary is parsed before
+			if (CategoryManager.containsVocab(uri)) {
 				vocabularies.put(uri, vocabulary);
 			} else {
 				vocabulary = new Vocabulary();
-				Document document = XMLUtil.parseDocument(path, Privacy_Schema_Location);
+				Document document = XMLUtil.parseDocument(uri, Privacy_Schema_Location);
 				Node rootNode = document.getElementsByTagName(ParserConstant.Ele_Vocabulary).item(0);
 				vocabulary.setRootNode(rootNode);
 				vocabulary.setPath(uri);
 				parseInfo(vocabulary);
 				if (vocabularies.get(uri) != null) {
-					throw new ParsingException("Cycle reference of vocabularies detected: " + path);
+					throw new ParsingException("Cycle reference of vocabularies detected: " + uri);
 				}
 				vocabularies.put(uri, vocabulary);
 			}
-			path = vocabulary.getBase();
+			uri = vocabulary.getBase();
 		}
 	}
 
-	private void parseInfo(Vocabulary vocabulary) {
+	/**
+	 * parse {@link Info} from {@link Vocabulary}
+	 * @param vocabulary
+	 * @throws Exception
+	 */
+	private void parseInfo(Vocabulary vocabulary) throws Exception {
 		Node root = vocabulary.getRootNode();
 		NodeList list = root.getChildNodes();
 		String base = XMLUtil.getAttrValue(root, Attr_Vocabulary_Base);
-		vocabulary.setBase(base);
+		if (base != null) {
+			vocabulary.setBase(XMLUtil.toUri(base));
+		}
 		for (int i = 0; i < list.getLength(); i++) {
 			Node node = list.item(i);
 			String name = node.getLocalName();
@@ -148,6 +171,14 @@ public class VocabularyParser implements ParserConstant {
 				info.parse(node);
 				vocabulary.setInfo(info);
 				return;
+			}
+		}
+	}
+
+	private void inheritOperations(Collection<DataContainer> containers, DataContainer target) {
+		for (DataContainer container : containers) {
+			for (DataCategory category : container.getRoot()) {
+				category.inheritDesensitizeOperation(target);
 			}
 		}
 	}
@@ -212,6 +243,12 @@ public class VocabularyParser implements ParserConstant {
 		dataContainers.put(container.getId(), container);
 	}
 
+	/**resolve reference recursively
+	 * @param container
+	 * @param containers
+	 * @param baseIds: used for detect cycle reference
+	 * @throws ParsingException
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private <T extends CategoryContainer> void resolveReference(CategoryContainer container, Map<String, T> containers,
 			Set<String> baseIds) throws ParsingException {
@@ -220,6 +257,7 @@ public class VocabularyParser implements ParserConstant {
 		}
 		String base = container.getBase();
 		if (base != null) {
+			//resolve base container
 			T baseContainer = containers.get(base);
 			if (baseContainer == null) {
 				logger.error("Fail to locate base category container: {} for category container: {}.", base, container.getId());
@@ -235,6 +273,7 @@ public class VocabularyParser implements ParserConstant {
 			baseIds.remove(base);
 			container.setBaseContainer(baseContainer);
 		}
+		//resolve parent reference of all categories
 		for (Object obj : container.getCategories()) {
 			Category category = (Category) obj;
 			String parentId = category.getParentId();
@@ -265,6 +304,11 @@ public class VocabularyParser implements ParserConstant {
 		return null;
 	}
 
+	/**
+	 * Resolve all references (container and category) in containers
+	 * @param containers
+	 * @throws ParsingException
+	 */
 	@SuppressWarnings({ "rawtypes" })
 	private <T extends CategoryContainer> void resolveReference(Map<String, T> containers) throws ParsingException {
 		for (String id : containers.keySet()) {

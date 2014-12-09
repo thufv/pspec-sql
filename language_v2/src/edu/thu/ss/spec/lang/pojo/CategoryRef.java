@@ -10,13 +10,31 @@ import org.w3c.dom.NodeList;
 
 import edu.thu.ss.spec.lang.parser.ParserConstant;
 
+/**
+ * base class for category reference
+ * @author luochen
+ *
+ * @param <T>
+ */
 public abstract class CategoryRef<T extends Category<T>> extends ObjectRef {
+	/**
+	 * referred category
+	 */
 	protected T category;
 
+	/**
+	 * excluded category ids
+	 */
 	protected Set<ObjectRef> excludeRefs = new HashSet<>();
 
+	/**
+	 * excluded categories
+	 */
 	protected Set<T> excludes = new HashSet<>();
 
+	/**
+	 * the materialized categories, calculated as {@link #category} - {@link #excludes}
+	 */
 	protected Set<T> materialized;
 
 	public boolean contains(T t) {
@@ -31,6 +49,14 @@ public abstract class CategoryRef<T extends Category<T>> extends ObjectRef {
 		return excludes;
 	}
 
+	public T getCategory() {
+		return category;
+	}
+
+	/**
+	 * adds a excluded data category with simplification
+	 * @param exclude
+	 */
 	public void exclude(T exclude) {
 		if (!category.ancestorOf(exclude)) {
 			throw new IllegalArgumentException("excluded category: " + exclude.getId()
@@ -52,6 +78,12 @@ public abstract class CategoryRef<T extends Category<T>> extends ObjectRef {
 		return materialized;
 	}
 
+	/**
+	 * performs materialization based on specified container
+	 * 
+	 * @param container
+	 * @param cache
+	 */
 	public void materialize(CategoryContainer<T> container, Map<T, Set<T>> cache) {
 		Set<T> descendants = getDescendants(category, container, cache);
 		materialized = new HashSet<>(descendants);
@@ -61,6 +93,10 @@ public abstract class CategoryRef<T extends Category<T>> extends ObjectRef {
 		}
 	}
 
+	/**
+	 * set already materialized category
+	 * @param materialized
+	 */
 	public void materialize(Set<T> materialized) {
 		this.materialized = materialized;
 	}
@@ -89,9 +125,5 @@ public abstract class CategoryRef<T extends Category<T>> extends ObjectRef {
 	}
 
 	abstract protected void parseExclude(Node node);
-
-	public T getCategory() {
-		return category;
-	}
 
 }

@@ -5,6 +5,11 @@ import org.w3c.dom.Node;
 import edu.thu.ss.spec.lang.parser.ParserConstant;
 import edu.thu.ss.spec.util.XMLUtil;
 
+/**
+ * class for object ref
+ * @author luochen
+ *
+ */
 public class ObjectRef implements Parsable {
 	protected String refid;
 

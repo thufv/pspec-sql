@@ -13,7 +13,6 @@ import gudusoft.gsqlparser.stmt.TSelectSqlStatement;
 public class ParserExample {
 
 	public static void main(String[] args) {
-
 		TGSqlParser parser = new TGSqlParser(EDbVendor.dbvmssql);
 		parser.sqlfilename = "query2.sql";
 		int ret = parser.parse();
@@ -25,10 +24,10 @@ public class ParserExample {
 		for (int i = 0; i < list.size(); i++) {
 			transform((TSelectSqlStatement) list.get(i));
 		}
-
 	}
 
 	private static void transform(TSelectSqlStatement stmt) {
+		
 		TCTEList list = stmt.getCteList();
 		TCTE cte = list.getCTE(0);
 		TSelectSqlStatement sub = cte.getSubquery();

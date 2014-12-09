@@ -6,22 +6,37 @@ import java.util.Set;
 
 import edu.thu.ss.spec.util.SetUtil;
 
+/**
+ * an expanded version of {@link Rule}
+ * @author luochen
+ *
+ */
 public class ExpandedRule implements Comparable<ExpandedRule> {
 
 	protected String ruleId;
 
-	protected Restriction[] restrictions;
-
-	protected Set<UserCategory> users;
-
+	/**
+	 * the number of expanded rule from {@link #ruleId}
+	 */
 	protected int num;
+
+	protected Restriction[] restrictions;
 
 	protected List<UserRef> userRefs;
 
-	//if data ref is single, then it is merged
+	/**
+	 * materialized version of {@link #userRefs}
+	 */
+	protected Set<UserCategory> users;
+
+	/**
+	 * only for single rule
+	 */
 	protected DataRef dataRef;
 
-	//used for association
+	/**
+	 * only for data association
+	 */
 	protected DataAssociation association;
 
 	private ExpandedRule(Rule rule, int num) {

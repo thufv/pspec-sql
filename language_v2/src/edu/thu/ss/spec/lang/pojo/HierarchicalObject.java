@@ -8,10 +8,16 @@ import org.w3c.dom.Node;
 import edu.thu.ss.spec.lang.parser.ParserConstant;
 import edu.thu.ss.spec.util.XMLUtil;
 
+/**
+ * class for hierarchical object
+ * @author luochen
+ *
+ * @param <T>
+ */
 public class HierarchicalObject<T extends HierarchicalObject<T>> extends DescribedObject {
 	protected String parentId;
-
 	protected T parent;
+
 	protected List<T> children = null;
 
 	public T getParent() {

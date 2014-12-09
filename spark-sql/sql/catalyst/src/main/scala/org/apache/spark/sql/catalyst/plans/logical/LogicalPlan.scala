@@ -41,15 +41,30 @@ import edu.thu.ss.spec.lang.pojo.Policy
 abstract class LogicalPlan extends QueryPlan[LogicalPlan] {
   self: Product =>
 
+  /**
+   * added by luochen
+   */
   val projections: Map[Attribute, Label] = new HashMap;
   val conditions: Set[Label] = new HashSet;
 
+  /**
+   * added by luochen
+   * calculate labels and return applicable policy for hive relation
+   */
   def calculateLabels(): Policy = { throw new UnsupportedOperationException };
 
+  /**
+   * added by luochen
+   * check meta for hive relaiton
+   */
   def checkMeta(columns: Seq[String]): Unit = {
     throw new UnsupportedOperationException();
   }
 
+  /**
+   * added by luochen
+   * lookup lineage tree for attr on child projections
+   */
   def childLabel(attr: Attribute): Label = {
     children.map(_.projections.getOrElse(attr, null)).find(_ != null).getOrElse(null);
   }
