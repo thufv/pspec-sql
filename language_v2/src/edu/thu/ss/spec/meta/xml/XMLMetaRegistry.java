@@ -8,6 +8,7 @@ import java.util.Set;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.Policy;
+import edu.thu.ss.spec.meta.BaseType;
 import edu.thu.ss.spec.meta.Column;
 import edu.thu.ss.spec.meta.ConditionalColumn;
 import edu.thu.ss.spec.meta.Database;
@@ -62,12 +63,12 @@ public class XMLMetaRegistry implements MetaRegistry {
 	}
 
 	@Override
-	public DataCategory lookup(String databaseName, String tableName, String columnName) {
+	public BaseType lookup(String databaseName, String tableName, String columnName) {
 		Column column = lookupColumn(databaseName, tableName, columnName);
 		if (column == null) {
 			return null;
 		} else {
-			return column.getDataCategory();
+			return column.getType();
 		}
 	}
 
@@ -82,34 +83,16 @@ public class XMLMetaRegistry implements MetaRegistry {
 	@Override
 	public DesensitizeOperation lookup(DataCategory data, String udf, String databaseName, String tableName,
 			String columnName) {
-		Column column = lookupColumn(databaseName, tableName, columnName);
-		DesensitizeOperation op = null;
-		if (column != null) {
-			if (!column.getDataCategory().equals(data)) {
-				throw new RuntimeException("Target data category: " + data + " is inconsistent with original data category: "
-						+ column.getDataCategory() + " for column: " + column);
-			}
-			op = column.getDesensitizeOperation(udf);
-		} else {
-			ConditionalColumn condColumn = lookupConditionalColumn(databaseName, tableName, columnName);
-			if (condColumn != null) {
-				op = condColumn.getOperation(data, udf);
-			}
-		}
-		if (op != null) {
-			return op;
-		} else {
-			return data.getOperation(udf);
-		}
+		return null;
 	}
 
 	@Override
-	public Map<JoinCondition, DataCategory> conditionalLookup(String databaseName, String tableName, String columnName) {
+	public Map<JoinCondition, BaseType> conditionalLookup(String databaseName, String tableName, String columnName) {
 		ConditionalColumn column = lookupConditionalColumn(databaseName, tableName, columnName);
 		if (column == null) {
 			return null;
 		}
-		return column.getDataCategories();
+		return column.getTypes();
 	}
 
 	@Override

@@ -1,8 +1,9 @@
 package edu.thu.ss.spec.meta;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,16 +11,14 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.thu.ss.spec.lang.pojo.DataCategory;
+import edu.thu.ss.spec.util.SetUtil;
 
 public class Table extends DBObject {
 	private static Logger logger = LoggerFactory.getLogger(Table.class);
 
-	Map<String, Column> columns = new HashMap<>();
+	Map<String, Column> columns = new LinkedHashMap<>();
 
-	Map<String, ConditionalColumn> condColumns = new HashMap<>();
-
-	List<String> allColumns = null;
+	Map<String, ConditionalColumn> condColumns = new LinkedHashMap<>();
 
 	Set<JoinCondition> conditions = null;
 
@@ -48,15 +47,6 @@ public class Table extends DBObject {
 		return conditions;
 	}
 
-	public List<String> getAllColumns() {
-		if (allColumns == null) {
-			allColumns = new ArrayList<>(columns.size() + condColumns.size());
-			allColumns.addAll(columns.keySet());
-			allColumns.addAll(condColumns.keySet());
-		}
-		return allColumns;
-	}
-
 	public void addConditionalColumn(ConditionalColumn condColumn) {
 		if (condColumn == null) {
 			return;
@@ -71,20 +61,22 @@ public class Table extends DBObject {
 			condColumn.name = column.name;
 			condColumns.put(condColumn.name, condColumn);
 		}
-		DataCategory data = condColumn.getDataCategory(join);
-		if (data != null && !data.equals(column.dataCategory)) {
-			logger.error(
-					"Column: {} should not be mapped to different data categories: {} and {}, under the same join condition: {}",
-					column.name, data, column.dataCategory, join);
+		BaseType type = condColumn.getType(join);
+		if (type != null) {
+			logger.error("Column: {} should not be mapped to multiple types under the same join condition: {}", column.name,
+					join);
 			return true;
 		}
-		condColumn.dataCategories.put(join, column.dataCategory);
-		condColumn.operations.put(column.dataCategory, column.operations);
+		condColumn.addType(join, column.type);
 		return false;
 	}
 
 	public Map<String, Column> getColumns() {
 		return columns;
+	}
+
+	public Map<String, ConditionalColumn> getCondColumns() {
+		return condColumns;
 	}
 
 	public boolean overlap() {
@@ -99,17 +91,17 @@ public class Table extends DBObject {
 		return error;
 	}
 
-	@Override
-	public String toString() {
+	public String toString(int l) {
 		StringBuilder sb = new StringBuilder();
+		sb.append(SetUtil.spaces(l));
 		sb.append("Table: ");
 		sb.append(name);
 		sb.append("\n");
 		for (Column column : columns.values()) {
-			sb.append(column);
+			sb.append(column.toString(l + 1));
 		}
 		for (ConditionalColumn column : condColumns.values()) {
-			sb.append(column);
+			sb.append(column.toString(l + 1));
 		}
 		return sb.toString();
 	}

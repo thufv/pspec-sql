@@ -2,12 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/gsp.jar" sourcepath="/Users/luochen/Documents/Development/gsp/javadoc">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/Users/luochen/Documents/Development/gsp/javadoc/"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
-	<classpathentry kind="lib" path="lib/jsqlparser.jar" sourcepath="lib/jsqlparser-0.7.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

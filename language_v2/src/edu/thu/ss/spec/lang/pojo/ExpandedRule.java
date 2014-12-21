@@ -11,9 +11,7 @@ import edu.thu.ss.spec.util.SetUtil;
  * @author luochen
  *
  */
-public class ExpandedRule implements Comparable<ExpandedRule> {
-
-	protected String ruleId;
+public class ExpandedRule extends DescribedObject implements Comparable<ExpandedRule> {
 
 	/**
 	 * the number of expanded rule from {@link #ruleId}
@@ -40,7 +38,9 @@ public class ExpandedRule implements Comparable<ExpandedRule> {
 	protected DataAssociation association;
 
 	private ExpandedRule(Rule rule, int num) {
-		this.ruleId = rule.getId();
+		this.id = rule.getId();
+		this.shortDescription = rule.getShortDescription();
+		this.longDescription = rule.getLongDescription();
 		this.num = num;
 		this.userRefs = rule.getUserRefs();
 		this.users = new HashSet<>();
@@ -77,11 +77,11 @@ public class ExpandedRule implements Comparable<ExpandedRule> {
 	}
 
 	public String getRuleId() {
-		return ruleId + "#" + num;
+		return id + "#" + num;
 	}
 
 	public String getRawRuleId() {
-		return ruleId;
+		return id;
 	}
 
 	public Restriction[] getRestrictions() {

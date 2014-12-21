@@ -21,7 +21,7 @@ public interface MetaRegistry {
 	 * @param column
 	 * @return {@link DataCategory}
 	 */
-	public DataCategory lookup(String database, String table, String column);
+	public BaseType lookup(String database, String table, String column);
 
 	/**
 	 * lookup conditional {@link DataCategory} for column in table and database
@@ -30,7 +30,7 @@ public interface MetaRegistry {
 	 * @param column
 	 * @return {@link JoinCondition} for each {@link DataCategory}
 	 */
-	public Map<JoinCondition, DataCategory> conditionalLookup(String database, String table, String column);
+	public Map<JoinCondition, BaseType> conditionalLookup(String database, String table, String column);
 
 	/**
 	 * given a {@link DataCategory} and udf, lookup the corresponding {@link DesensitizeOperation}

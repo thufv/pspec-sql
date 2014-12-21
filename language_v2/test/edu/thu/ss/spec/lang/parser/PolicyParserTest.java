@@ -10,22 +10,22 @@ import edu.thu.ss.spec.meta.xml.XMLMetaRegistryParser;
 
 public class PolicyParserTest {
 
-	public void testStore() {
+	@Test
+	public void testMeta() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse("tpc-ds/store-policy.xml", false);
-			System.out.println(policy);
+			Policy policy = parser.parse("tpc-ds/spark-policy.xml", false);
+			//System.out.println(policy);
 
 			XMLMetaRegistryParser metaParser = new XMLMetaRegistryParser();
-			MetaRegistry registry = metaParser.parse("tpc-ds/store-meta.xml");
-			//System.out.println(registry);
+			MetaRegistry registry = metaParser.parse("tpc-ds/spark-meta.xml");
+			System.out.println(registry);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	@Test
 	public void testConflict() {
 		try {
 			PolicyParser parser = new PolicyParser();
@@ -50,6 +50,16 @@ public class PolicyParserTest {
 		try {
 			PolicyParser parser = new PolicyParser();
 			Policy policy = parser.parse("test/res/global-redundancy-policy.xml", true);
+			System.out.println(policy);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void testIntel() {
+		try {
+			PolicyParser parser = new PolicyParser();
+			Policy policy = parser.parse("intel/tpcds-policy.xml", false);
 			System.out.println(policy);
 		} catch (Exception e) {
 			e.printStackTrace();

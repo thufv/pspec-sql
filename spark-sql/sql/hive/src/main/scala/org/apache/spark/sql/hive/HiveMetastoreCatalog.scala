@@ -52,6 +52,7 @@ import scala.collection.JavaConverters._
 import org.apache.spark.sql.catalyst.checker.ConditionalLabel
 import edu.thu.ss.spec.lang.pojo.Policy
 import edu.thu.ss.spec.global.MetaManager
+import edu.thu.ss.spec.meta.BaseType
 
 private[hive] class HiveMetastoreCatalog(hive: HiveContext) extends Catalog with Logging {
   import HiveMetastoreTypes._
@@ -143,10 +144,10 @@ private[hive] class HiveMetastoreCatalog(hive: HiveContext) extends Catalog with
       // Wait until children are resolved
       case p: LogicalPlan if !p.childrenResolved => p
 
-      case p @ InsertIntoTable(table: MetastoreRelation, _, child, _) =>
+      case p@InsertIntoTable(table: MetastoreRelation, _, child, _) =>
         castChildOutput(p, table, child)
 
-      case p @ logical.InsertIntoTable(
+      case p@logical.InsertIntoTable(
         InMemoryRelation(_, _, _,
           HiveTableScan(_, table, _)), _, child, _) =>
         castChildOutput(p, table, child)
@@ -334,9 +335,9 @@ case class MetastoreRelation(databaseName: String, tableName: String, alias: Opt
       null;
     } else {
       output.foreach(attr => {
-        val data: DataCategory = meta.lookup(databaseName, tableName, attr.name);
-        if (data != null) {
-          projections.put(attr, DataLabel(data, databaseName, tableName, attr));
+        val labelType = meta.lookup(databaseName, tableName, attr.name);
+        if (labelType != null) {
+          projections.put(attr, DataLabel(labelType, databaseName, tableName, attr));
         } else {
           val conds = meta.conditionalLookup(databaseName, tableName, attr.name);
           if (conds != null) {
@@ -351,16 +352,4 @@ case class MetastoreRelation(databaseName: String, tableName: String, alias: Opt
     }
   }
 
-  lazy val attributeNames = table.getSd().getCols().map(_.getName().toLowerCase()).toSet;
-
-  /**
-   * added by luochen
-   */
-  override def checkMeta(columns: Seq[String]): Unit = {
-    columns.foreach(col => {
-      if (!attributeNames.contains(col)) {
-        logError(s"Error in MetaRegistry. Column: $col not exist in table: ${table.getTableName()} in database: ${table.getDbName()}");
-      }
-    });
-  }
 }

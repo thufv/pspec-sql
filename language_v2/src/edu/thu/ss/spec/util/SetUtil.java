@@ -157,4 +157,12 @@ public class SetUtil {
 		}
 		return sb.toString();
 	}
+
+	public static String spaces(int l) {
+		StringBuilder sb = new StringBuilder(l * 2);
+		for (int i = 0; i < 2 * l; i++) {
+			sb.append(' ');
+		}
+		return sb.toString();
+	}
 }

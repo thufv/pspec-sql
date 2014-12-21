@@ -37,6 +37,7 @@ import scala.collection.mutable.Buffer
 import org.apache.spark.sql.catalyst.checker.ConditionalLabel
 import org.apache.spark.sql.catalyst.checker.ConditionalLabel
 import edu.thu.ss.spec.lang.pojo.Policy
+import edu.thu.ss.spec.meta.BaseType
 
 abstract class LogicalPlan extends QueryPlan[LogicalPlan] {
   self: Product =>
@@ -52,14 +53,6 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] {
    * calculate labels and return applicable policy for hive relation
    */
   def calculateLabels(): Policy = { throw new UnsupportedOperationException };
-
-  /**
-   * added by luochen
-   * check meta for hive relaiton
-   */
-  def checkMeta(columns: Seq[String]): Unit = {
-    throw new UnsupportedOperationException();
-  }
 
   /**
    * added by luochen

@@ -38,7 +38,7 @@ case class GetItem(child: Expression, ordinal: Expression) extends Expression {
   }
   override lazy val resolved =
     childrenResolved &&
-    (child.dataType.isInstanceOf[ArrayType] || child.dataType.isInstanceOf[MapType])
+      (child.dataType.isInstanceOf[ArrayType] || child.dataType.isInstanceOf[MapType])
 
   override def toString = s"$child[$ordinal]"
 
@@ -87,8 +87,8 @@ case class GetField(child: Expression, fieldName: String) extends UnaryExpressio
 
   lazy val field =
     structType.fields
-        .find(_.name == fieldName)
-        .getOrElse(sys.error(s"No such field $fieldName in ${child.dataType}"))
+      .find(_.name == fieldName)
+      .getOrElse(sys.error(s"No such field $fieldName in ${child.dataType}"))
 
   lazy val ordinal = structType.fields.indexOf(field)
 

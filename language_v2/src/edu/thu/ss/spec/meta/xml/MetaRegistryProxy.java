@@ -6,6 +6,7 @@ import java.util.Set;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.Policy;
+import edu.thu.ss.spec.meta.BaseType;
 import edu.thu.ss.spec.meta.Database;
 import edu.thu.ss.spec.meta.JoinCondition;
 import edu.thu.ss.spec.meta.MetaRegistry;
@@ -39,12 +40,12 @@ public class MetaRegistryProxy implements MetaRegistry {
 	}
 
 	@Override
-	public DataCategory lookup(String databaseName, String tableName, String columnName) {
+	public BaseType lookup(String databaseName, String tableName, String columnName) {
 		return registry.lookup(databaseName.toLowerCase(), tableName.toLowerCase(), columnName.toLowerCase());
 	}
 
 	@Override
-	public Map<JoinCondition, DataCategory> conditionalLookup(String databaseName, String tableName, String columnName) {
+	public Map<JoinCondition, BaseType> conditionalLookup(String databaseName, String tableName, String columnName) {
 		return registry.conditionalLookup(databaseName.toLowerCase(), tableName.toLowerCase(), columnName.toLowerCase());
 	}
 

@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<privacy-policy xmlns="http://www.example.org/privacy"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.example.org/privacy privacy.xsd">
+	<policy-information id="tpcds-policy">
+		<issuer>
+			<name>YanDong</name>
+			<organization>Intel</organization>
+			<e-mail>dong.yan@intel.com</e-mail>
+			<address>IntelLabChina</address>
+			<country>China</country>
+		</issuer>
+	</policy-information>
+	<vocabulary-ref location="res/tpcds-vocab.xml">
+		<user-category-container refid="default-user" />
+		<data-category-container refid="tpcds-data" />
+	</vocabulary-ref>
+	<rules>
+		<rule id="single_data_category_projection">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-category-ref refid="ka" action="projection"></data-category-ref>
+			<data-category-ref refid="name" action="projection"></data-category-ref>
+			<data-category-ref refid="email" action="projection"></data-category-ref>
+			<data-category-ref refid="street" action="projection"></data-category-ref>
+			<data-category-ref refid="suite" action="projection"></data-category-ref>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+
+		<rule id="forbid_id_qi">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="id" action="condition"></data-category-ref>
+				<data-category-ref refid="qi" action="all"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+		<rule id="forbid_id_sa">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="id" action="condition"></data-category-ref>
+				<data-category-ref refid="sa" action="all"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+
+		<rule id="forbid_name_sa">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="name" action="condition"></data-category-ref>
+				<data-category-ref refid="sa" action="all"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+
+		<rule id="forbid_email_sa">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="email" action="condition"></data-category-ref>
+				<data-category-ref refid="sa" action="all"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+		<rule id="forbid_login_sa">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="login" action="condition"></data-category-ref>
+				<data-category-ref refid="sa" action="all"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+		<rule id="forbid_street_sa">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="street" action="condition"></data-category-ref>
+				<data-category-ref refid="sa" action="all"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+		<rule id="forbid_suite_sa">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="suite" action="condition"></data-category-ref>
+				<data-category-ref refid="sa" action="all"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+
+		<rule id="forbid_birth_date_city_sa">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="birth_date" action="condition"></data-category-ref>
+				<data-category-ref refid="city" action="condition"></data-category-ref>
+				<data-category-ref refid="sa" action="all"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+		<rule id="forbid_birth_date_county_sa">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="birth_date" action="condition"></data-category-ref>
+				<data-category-ref refid="county" action="condition"></data-category-ref>
+				<data-category-ref refid="sa" action="all"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+
+		<rule id="forbid_birth_date_address_gender">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="birth_date" action="condition"></data-category-ref>
+				<data-category-ref refid="address" action="condition"></data-category-ref>
+				<data-category-ref refid="gender" action="condition"></data-category-ref>
+				<data-category-ref refid="sa" action="all"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+		<rule id="forbid_birth_date_address_marital">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="birth_date" action="condition"></data-category-ref>
+				<data-category-ref refid="address" action="condition"></data-category-ref>
+				<data-category-ref refid="marital" action="condition"></data-category-ref>
+				<data-category-ref refid="sa" action="all"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+		<rule id="forbid_birth_date_address_education">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="birth_date" action="condition"></data-category-ref>
+				<data-category-ref refid="address" action="condition"></data-category-ref>
+				<data-category-ref refid="education" action="condition"></data-category-ref>
+				<data-category-ref refid="sa" action="all"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+
+		<rule id="forbid_birth_address_gender_marital">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="birth" action="condition"></data-category-ref>
+				<data-category-ref refid="address" action="condition"></data-category-ref>
+				<data-category-ref refid="gender" action="condition"></data-category-ref>
+				<data-category-ref refid="marital" action="condition"></data-category-ref>
+				<data-category-ref refid="sa" action="all"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+		<rule id="forbid_birth_address_gender_education">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="birth" action="condition"></data-category-ref>
+				<data-category-ref refid="address" action="condition"></data-category-ref>
+				<data-category-ref refid="gender" action="condition"></data-category-ref>
+				<data-category-ref refid="education" action="condition"></data-category-ref>
+				<data-category-ref refid="sa" action="all"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+		<rule id="forbid_birth_address_marital_education">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="birth" action="condition"></data-category-ref>
+				<data-category-ref refid="address" action="condition"></data-category-ref>
+				<data-category-ref refid="marital" action="condition"></data-category-ref>
+				<data-category-ref refid="education" action="condition"></data-category-ref>
+				<data-category-ref refid="sa" action="all"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+
+		<rule id="truncate_zip">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-category-ref refid="zip"></data-category-ref>
+			<restriction>
+				<desensitize>
+					<operation>truncate</operation>
+				</desensitize>
+			</restriction>
+		</rule>
+
+		<rule id="agg_financial">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-category-ref refid="financial"></data-category-ref>
+			<restriction>
+				<desensitize>
+					<operation>sum</operation>
+					<operation>avg</operation>
+				</desensitize>
+			</restriction>
+		</rule>
+
+	</rules>
+</privacy-policy>

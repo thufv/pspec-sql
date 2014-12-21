@@ -54,9 +54,9 @@ private[hive] class SparkSQLDriver(val context: HiveContext = SparkSQLEnv.hiveCo
     // TODO unify the error code
     try {
       val execution = context.executePlan(context.sql(command).logicalPlan)
-      //execution.sparkPlan;
-      hiveResponse = execution.stringResult()
-      tableSchema = getResultSetSchema(execution)
+      execution.sparkPlan;
+      //hiveResponse = execution.stringResult()
+      //tableSchema = getResultSetSchema(execution)
       new CommandProcessorResponse(0)
     } catch {
       case e: PrivacyException => {

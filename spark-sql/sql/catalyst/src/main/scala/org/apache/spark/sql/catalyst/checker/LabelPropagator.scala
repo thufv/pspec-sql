@@ -78,6 +78,11 @@ import org.apache.spark.sql.catalyst.expressions.AttributeReference
 import edu.thu.ss.spec.lang.pojo.Policy
 import org.apache.spark.sql.catalyst.plans.logical.NativeCommand
 import org.apache.spark.sql.catalyst.plans.logical.Command
+import org.apache.spark.sql.catalyst.expressions.GetItem
+import org.apache.spark.sql.catalyst.expressions.IsNull
+import org.apache.spark.sql.catalyst.expressions.Coalesce
+import org.apache.spark.sql.catalyst.expressions.Alias
+import org.apache.spark.sql.catalyst.expressions.IsNotNull
 
 /**
  * vertex class for equi-graph
@@ -344,6 +349,8 @@ class LabelPropagator extends Logging {
       case _: RLike => resolvePredicate(expression, plan);
       case _: StartsWith => resolvePredicate(expression, plan);
       case _: In => resolvePredicate(expression, plan);
+      case _: IsNull => resolvePredicate(expression, plan);
+      case _: IsNotNull => resolvePredicate(expression, plan);
 
       //not boolean expression, resolve term and return lineage tree
       case _ => resolveTerm(expression, plan);
@@ -367,6 +374,7 @@ class LabelPropagator extends Logging {
     expression match {
       //retrieve lineage tree from child plan
       case attr: AttributeReference => plan.childLabel(attr);
+      case alias: Alias => resolveExpression(alias.child, plan);
 
       case leaf: LeafExpression => {
         leaf match {
@@ -389,6 +397,12 @@ class LabelPropagator extends Logging {
         resolveTermFunction(expression, plan);
       }
       case _: Substring => {
+        resolveTermFunction(expression, plan);
+      }
+      case _: GetItem => {
+        resolveTermFunction(expression, plan);
+      }
+      case _: Coalesce => {
         resolveTermFunction(expression, plan);
       }
       case udf: ScalaUdf => {

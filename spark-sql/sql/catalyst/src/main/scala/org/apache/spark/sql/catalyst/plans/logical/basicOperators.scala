@@ -20,9 +20,10 @@ package org.apache.spark.sql.catalyst.plans.logical
 import org.apache.spark.sql.catalyst.expressions._
 import org.apache.spark.sql.catalyst.plans._
 import org.apache.spark.sql.catalyst.types._
+import edu.thu.ss.spec.meta.BaseType
 
 case class Project(projectList: Seq[NamedExpression], child: LogicalPlan) extends UnaryNode {
-	def output = projectList.map(_.toAttribute)
+  def output = projectList.map(_.toAttribute)
 }
 
 /**
@@ -38,119 +39,119 @@ case class Project(projectList: Seq[NamedExpression], child: LogicalPlan) extend
  *              as a qualifier.
  */
 case class Generate(
-	generator: Generator,
-	join: Boolean,
-	outer: Boolean,
-	alias: Option[String],
-	child: LogicalPlan)
-	extends UnaryNode {
+  generator: Generator,
+  join: Boolean,
+  outer: Boolean,
+  alias: Option[String],
+  child: LogicalPlan)
+  extends UnaryNode {
 
-	protected def generatorOutput: Seq[Attribute] = {
-		val output = alias
-			.map(a => generator.output.map(_.withQualifiers(a :: Nil)))
-			.getOrElse(generator.output)
-		if (join && outer) {
-			output.map(_.withNullability(true))
-		} else {
-			output
-		}
-	}
+  protected def generatorOutput: Seq[Attribute] = {
+    val output = alias
+      .map(a => generator.output.map(_.withQualifiers(a :: Nil)))
+      .getOrElse(generator.output)
+    if (join && outer) {
+      output.map(_.withNullability(true))
+    } else {
+      output
+    }
+  }
 
-	override def output =
-		if (join) child.output ++ generatorOutput else generatorOutput
+  override def output =
+    if (join) child.output ++ generatorOutput else generatorOutput
 }
 
 case class Filter(condition: Expression, child: LogicalPlan) extends UnaryNode {
-	override def output = child.output
+  override def output = child.output
 }
 
 case class Union(left: LogicalPlan, right: LogicalPlan) extends BinaryNode {
-	// TODO: These aren't really the same attributes as nullability etc might change.
-	override def output = left.output
+  // TODO: These aren't really the same attributes as nullability etc might change.
+  override def output = left.output
 
-	override lazy val resolved =
-		childrenResolved &&
-			!left.output.zip(right.output).exists { case (l, r) => l.dataType != r.dataType }
+  override lazy val resolved =
+    childrenResolved &&
+      !left.output.zip(right.output).exists { case (l, r) => l.dataType != r.dataType }
 }
 
 case class Join(
-	left: LogicalPlan,
-	right: LogicalPlan,
-	joinType: JoinType,
-	condition: Option[Expression]) extends BinaryNode {
+  left: LogicalPlan,
+  right: LogicalPlan,
+  joinType: JoinType,
+  condition: Option[Expression]) extends BinaryNode {
 
-	override def output = {
-		joinType match {
-			case LeftSemi =>
-				left.output
-			case LeftOuter =>
-				left.output ++ right.output.map(_.withNullability(true))
-			case RightOuter =>
-				left.output.map(_.withNullability(true)) ++ right.output
-			case FullOuter =>
-				left.output.map(_.withNullability(true)) ++ right.output.map(_.withNullability(true))
-			case _ =>
-				left.output ++ right.output
-		}
-	}
+  override def output = {
+    joinType match {
+      case LeftSemi =>
+        left.output
+      case LeftOuter =>
+        left.output ++ right.output.map(_.withNullability(true))
+      case RightOuter =>
+        left.output.map(_.withNullability(true)) ++ right.output
+      case FullOuter =>
+        left.output.map(_.withNullability(true)) ++ right.output.map(_.withNullability(true))
+      case _ =>
+        left.output ++ right.output
+    }
+  }
 }
 
 case class Except(left: LogicalPlan, right: LogicalPlan) extends BinaryNode {
-	def output = left.output
+  def output = left.output
 }
 
 case class InsertIntoTable(
-	table: LogicalPlan,
-	partition: Map[String, Option[String]],
-	child: LogicalPlan,
-	overwrite: Boolean)
-	extends LogicalPlan {
-	// The table being inserted into is a child for the purposes of transformations.
-	override def children = table :: child :: Nil
-	override def output = child.output
+  table: LogicalPlan,
+  partition: Map[String, Option[String]],
+  child: LogicalPlan,
+  overwrite: Boolean)
+  extends LogicalPlan {
+  // The table being inserted into is a child for the purposes of transformations.
+  override def children = table :: child :: Nil
+  override def output = child.output
 
-	override lazy val resolved = childrenResolved && child.output.zip(table.output).forall {
-		case (childAttr, tableAttr) => childAttr.dataType == tableAttr.dataType
-	}
+  override lazy val resolved = childrenResolved && child.output.zip(table.output).forall {
+    case (childAttr, tableAttr) => childAttr.dataType == tableAttr.dataType
+  }
 }
 
 case class InsertIntoCreatedTable(
-	databaseName: Option[String],
-	tableName: String,
-	child: LogicalPlan) extends UnaryNode {
-	override def output = child.output
+  databaseName: Option[String],
+  tableName: String,
+  child: LogicalPlan) extends UnaryNode {
+  override def output = child.output
 }
 
 case class WriteToFile(
-	path: String,
-	child: LogicalPlan) extends UnaryNode {
-	override def output = child.output
+  path: String,
+  child: LogicalPlan) extends UnaryNode {
+  override def output = child.output
 }
 
 case class Sort(order: Seq[SortOrder], child: LogicalPlan) extends UnaryNode {
-	override def output = child.output
+  override def output = child.output
 }
 
 case class Aggregate(
-	groupingExpressions: Seq[Expression],
-	aggregateExpressions: Seq[NamedExpression],
-	child: LogicalPlan)
-	extends UnaryNode {
+  groupingExpressions: Seq[Expression],
+  aggregateExpressions: Seq[NamedExpression],
+  child: LogicalPlan)
+  extends UnaryNode {
 
-	/** The set of all AttributeReferences required for this aggregation. */
-	def references =
-		AttributeSet(
-			groupingExpressions.flatMap(_.references) ++ aggregateExpressions.flatMap(_.references))
+  /** The set of all AttributeReferences required for this aggregation. */
+  def references =
+    AttributeSet(
+      groupingExpressions.flatMap(_.references) ++ aggregateExpressions.flatMap(_.references))
 
-	override def output = aggregateExpressions.map(_.toAttribute)
+  override def output = aggregateExpressions.map(_.toAttribute)
 }
 
 case class Limit(limitExpr: Expression, child: LogicalPlan) extends UnaryNode {
-	override def output = child.output
+  override def output = child.output
 }
 
 case class Subquery(alias: String, child: LogicalPlan) extends UnaryNode {
-	override def output = child.output.map(_.withQualifiers(alias :: Nil))
+  override def output = child.output.map(_.withQualifiers(alias :: Nil))
 }
 
 /**
@@ -159,43 +160,42 @@ case class Subquery(alias: String, child: LogicalPlan) extends UnaryNode {
  * analysis.
  */
 case class LowerCaseSchema(child: LogicalPlan) extends UnaryNode {
-	override def checkMeta(columns: Seq[String]): Unit = child.checkMeta(columns);
 
-	protected def lowerCaseSchema(dataType: DataType): DataType = dataType match {
-		case StructType(fields) =>
-			StructType(fields.map(f =>
-				StructField(f.name.toLowerCase(), lowerCaseSchema(f.dataType), f.nullable)))
-		case ArrayType(elemType, containsNull) => ArrayType(lowerCaseSchema(elemType), containsNull)
-		case otherType => otherType
+  protected def lowerCaseSchema(dataType: DataType): DataType = dataType match {
+    case StructType(fields) =>
+      StructType(fields.map(f =>
+        StructField(f.name.toLowerCase(), lowerCaseSchema(f.dataType), f.nullable)))
+    case ArrayType(elemType, containsNull) => ArrayType(lowerCaseSchema(elemType), containsNull)
+    case otherType => otherType
 
-	}
+  }
 
-	override val output = child.output.map {
-		case a: AttributeReference =>
-			AttributeReference(
-				a.name.toLowerCase,
-				lowerCaseSchema(a.dataType),
-				a.nullable)(
-					a.exprId,
-					a.qualifiers)
-		case other => other
-	}
+  override val output = child.output.map {
+    case a: AttributeReference =>
+      AttributeReference(
+        a.name.toLowerCase,
+        lowerCaseSchema(a.dataType),
+        a.nullable)(
+          a.exprId,
+          a.qualifiers)
+    case other => other
+  }
 }
 
 case class Sample(fraction: Double, withReplacement: Boolean, seed: Long, child: LogicalPlan)
-	extends UnaryNode {
+  extends UnaryNode {
 
-	override def output = child.output
+  override def output = child.output
 }
 
 case class Distinct(child: LogicalPlan) extends UnaryNode {
-	override def output = child.output
+  override def output = child.output
 }
 
 case object NoRelation extends LeafNode {
-	override def output = Nil
+  override def output = Nil
 }
 
 case class Intersect(left: LogicalPlan, right: LogicalPlan) extends BinaryNode {
-	override def output = left.output
+  override def output = left.output
 }

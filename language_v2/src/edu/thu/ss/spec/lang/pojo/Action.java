@@ -19,12 +19,12 @@ public class Action extends HierarchicalObject<Action> {
 
 	/**
 	 * Unused
-	 */
+	 *
 	public static final String Action_Equal_Test = "equal-test";
 	public static final String Action_Range_Test = "range-test";
 	public static final String Action_Bounded_Range_Test = "bounded-range-test";
 	public static final String Action_Unbounded_Range_Test = "unbounded-range-test";
-
+	*/
 	static {
 		All = new Action(Action_All);
 		Projection = new Action(Action_Projection);

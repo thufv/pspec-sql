@@ -1,10 +1,8 @@
 package org.apache.spark.sql.catalyst.checker
 
-import scala.collection
-import scala.collection.JavaConverters._
-import scala.collection.mutable.HashMap
-import scala.collection.mutable.HashSet
-import scala.collection.mutable.ListBuffer
+import scala.collection.JavaConverters.asScalaBufferConverter
+import scala.collection.JavaConverters.asScalaSetConverter
+import scala.collection.JavaConverters.mapAsScalaMapConverter
 import scala.collection.mutable.Map
 import scala.collection.mutable.Set
 import org.apache.spark.Logging
@@ -16,112 +14,38 @@ import edu.thu.ss.spec.lang.pojo.Action
 import edu.thu.ss.spec.lang.pojo.DataCategory
 import edu.thu.ss.spec.lang.pojo.DataRef
 import edu.thu.ss.spec.lang.pojo.Desensitization
-import edu.thu.ss.spec.lang.pojo.DesensitizeOperation
 import edu.thu.ss.spec.lang.pojo.ExpandedRule
 import edu.thu.ss.spec.lang.pojo.Policy
-import edu.thu.ss.spec.lang.pojo.UserCategory
 import edu.thu.ss.spec.meta.MetaRegistry
 import edu.thu.ss.spec.meta.xml.XMLMetaRegistryParser
-import org.apache.spark.sql.catalyst.analysis.Catalog
+import scala.collection.mutable.HashSet
+import edu.thu.ss.spec.meta.BaseType
+import org.apache.spark.sql.catalyst.expressions.Attribute
+import org.apache.spark.sql.catalyst.types.DataType
+import edu.thu.ss.spec.meta.PrimitiveType
+import edu.thu.ss.spec.meta.CompositeType
+import org.apache.spark.sql.catalyst.types
+import edu.thu.ss.spec.meta.ArrayType
+import edu.thu.ss.spec.meta.StructType
+import edu.thu.ss.spec.meta.MapType
 
 class SparkChecker extends PrivacyChecker {
 
-  /**
-   * path is essential a list of desensitize operations
-   */
-  case class Path(val ops: Seq[DesensitizeOperation]);
-
-  var projectionPaths: Map[Policy, Map[DataCategory, Set[Path]]] = null;
-  var conditionPaths: Map[Policy, Map[DataCategory, Set[Path]]] = null;
   lazy val user = MetaManager.currentUser();
   var policies: collection.Set[Policy] = null;
 
-  def check(projections: collection.Set[Label], conditions: collection.Set[Label], policies: collection.Set[Policy]): Unit = {
+  var projectionPaths: Map[Policy, Map[DataCategory, Set[Path]]] = null;
+  var conditionPaths: Map[Policy, Map[DataCategory, Set[Path]]] = null;
+
+  def check(projectionPaths: Map[Policy, Map[DataCategory, Set[Path]]], conditionPaths: Map[Policy, Map[DataCategory, Set[Path]]], policies: collection.Set[Policy]): Unit = {
     if (policies.size == 0) {
       return ;
     }
     this.policies = policies;
-    projectionPaths = new HashMap;
-    conditionPaths = new HashMap;
-    //first calculate all paths for data categories
-    projections.foreach(buildPath(_, projectionPaths));
-    conditions.foreach(buildPath(_, conditionPaths));
-
-    printPaths(projections, conditions);
-
+    this.projectionPaths = projectionPaths;
+    this.conditionPaths = conditionPaths;
     //check each rule
     policies.foreach(p => p.getExpandedRules().asScala.foreach(checkRule(_, p)));
-  }
-
-  /**
-   * should be turn off in production
-   */
-  private def printPaths(projections: collection.Set[Label], conditions: collection.Set[Label]) {
-
-    println("projections:");
-    projections.foreach(t => {
-      println(s"$t");
-    });
-    println();
-    println("conditions:")
-    conditions.foreach(t => {
-      println(t);
-    });
-    println();
-    println("\nprojection paths:");
-    projectionPaths.foreach(p => {
-      p._2.foreach(
-        t => t._2.foreach(path => println(s"${t._1}\t$path")))
-    })
-
-    println("\ncondition paths:");
-
-    conditionPaths.foreach(p => {
-      p._2.foreach(
-        t => t._2.foreach(path => println(s"${t._1}\t$path")))
-    })
-
-  }
-
-  /**
-   * build paths for each data category recursively.
-   */
-  private def buildPath(label: Label, paths: Map[Policy, Map[DataCategory, Set[Path]]], list: ListBuffer[String] = new ListBuffer): Unit = {
-    label match {
-      case data: DataLabel => {
-        addPath(data.data, data, list, paths);
-      }
-      case cond: ConditionalLabel => {
-        cond.fulfilled.foreach(data => {
-          addPath(data, cond, list, paths);
-        });
-      }
-      case func: Function => {
-        list.prepend(func.udf);
-        func.children.foreach(buildPath(_, paths, list));
-        list.remove(0);
-      }
-      case pred: Predicate => {
-        pred.children.foreach(buildPath(_, paths, list));
-      }
-      case _ =>
-    }
-  }
-
-  /**
-   * first map udfs to desensitize operations, then add the path to paths.
-   */
-  private def addPath(data: DataCategory, label: ColumnLabel, udfs: ListBuffer[String], paths: Map[Policy, Map[DataCategory, Set[Path]]]): Unit = {
-    val meta = MetaManager.get(label.database, label.table);
-    val ops = udfs.map(meta.lookup(data, _, label.database, label.table, label.attr.name)).filter(_ != null);
-
-    policies.foreach(p => {
-      if (MetaManager.applicable(p, label.database, label.table)) {
-        val map = paths.getOrElseUpdate(p, new HashMap[DataCategory, Set[Path]]);
-        map.getOrElseUpdate(data, new HashSet[Path]).add(Path(ops));
-        return ;
-      }
-    })
   }
 
   /**
@@ -361,8 +285,13 @@ object SparkChecker extends Logging {
     val begin = System.currentTimeMillis();
     val propagator = new LabelPropagator;
     val policies = propagator(plan);
+
+    val builder = new PathBuilder;
+    val (projectionPaths, conditionPaths) = builder(plan.projections.values.toSet, plan.conditions);
+
     val checker = new SparkChecker;
-    checker.check(plan.projections.values.toSet, plan.conditions, policies);
+    checker.check(projectionPaths, conditionPaths, policies);
+
     val end = System.currentTimeMillis();
     val time = end - begin;
     println(s"privacy checking finished in $time ms");
@@ -377,11 +306,15 @@ object SparkChecker extends Logging {
       val dbName = Some(db._1); ;
       val tables = db._2.getTables().asScala;
       for (t <- tables) {
-        val relation = lookupRelation(catalog, dbName, t._1);
+        val table = t._1;
+        val relation = lookupRelation(catalog, dbName, table);
         if (relation == null) {
-          logError(s"Error in MetaRegistry, table: ${t._1} not found in database: ${db._1}.");
+          logError(s"Error in MetaRegistry, table: ${table} not found in database: ${db._1}.");
         } else {
-          relation.checkMeta(t._2.getAllColumns().asScala);
+          t._2.getColumns().asScala.values.foreach(c => checkColumn(c.getName(), c.getType(), relation, table));
+          t._2.getCondColumns().asScala.values.foreach(c => {
+            c.getTypes().asScala.values.foreach(t => checkColumn(c.getName(), t, relation, table));
+          });
           val conds = t._2.getAllConditions().asScala;
           val condColumns = new HashSet[String];
           conds.foreach(join => {
@@ -393,13 +326,67 @@ object SparkChecker extends Logging {
               logError(s"Error in MetaRegistry, table: $name (joined with ${t._1}) not found in database: ${db._1}.");
             } else {
               val cols = list.map(_.target);
-              relation.checkMeta(cols);
+              cols.foreach(checkColumn(_, null, relation, table));
             }
           });
-          relation.checkMeta(condColumns.toList);
         }
       }
     }
+  }
+
+  private def checkColumn(name: String, labelType: BaseType, relation: LogicalPlan, table: String) {
+    val attribute = relation.output.find(attr => attr.name == name).getOrElse(null);
+    if (attribute == null) {
+      logError(s"Error in MetaRegistry. Column: $name not exist in table: ${table}");
+      return ;
+    }
+    if (labelType != null) {
+      if (checkType(name, labelType, attribute.dataType)) {
+        logError(s"Error in MetaRegistry. Type mismatch for column: $name in table: $table. Expected type: ${attribute.dataType}");
+      }
+    }
+  }
+
+  private def checkType(name: String, labelType: BaseType, attrType: DataType): Boolean = {
+    var error = false;
+    labelType match {
+      case _: PrimitiveType =>
+      case _: CompositeType =>
+      case array: ArrayType => {
+        attrType match {
+          case attrArray: types.ArrayType => {
+            error = checkType(name, array.getItemType(), attrArray.elementType)
+          }
+          case _ => error = true;
+        }
+      }
+      case struct: StructType => {
+        attrType match {
+          case attrStruct: types.StructType => {
+            error = struct.getFields().asScala.values.exists(field => {
+              val attrField = attrStruct.fields.find(f => f.name == field.name).getOrElse(null);
+              if (attrField == null) {
+                true;
+              } else {
+                checkType(name, field.getType(), attrField.dataType);
+              }
+            });
+          }
+          case _ => error = true;
+        }
+      }
+      case map: MapType => {
+        attrType match {
+          case attrMap: types.MapType => {
+            error = map.getEntries().asScala.values.exists(entry => {
+              checkType(name, entry.valueType, attrMap.valueType);
+            });
+          }
+          case _ => error = true;
+        }
+      }
+    }
+    error;
   }
 
   private def lookupRelation(catalog: Catalog, database: Option[String], table: String): LogicalPlan = {
