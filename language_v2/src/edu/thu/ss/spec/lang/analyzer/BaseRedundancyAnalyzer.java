@@ -72,7 +72,7 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 			}
 			ExpandedRule prule = rules.get(i);
 			List<Integer> list = new ArrayList<>();
-			for (int j = 0; j < rules.size(); j++) {
+			for (int j = i + 1; j < rules.size(); j++) {
 				if (removable[j]) {
 					continue;
 				}

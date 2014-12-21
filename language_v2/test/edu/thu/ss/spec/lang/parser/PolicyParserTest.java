@@ -9,7 +9,6 @@ import edu.thu.ss.spec.meta.MetaRegistry;
 import edu.thu.ss.spec.meta.xml.XMLMetaRegistryParser;
 
 public class PolicyParserTest {
-	@Test
 	public void testMeta() {
 		try {
 			PolicyParser parser = new PolicyParser();
@@ -25,7 +24,6 @@ public class PolicyParserTest {
 		}
 	}
 
-	@Test
 	public void testConflict() {
 		try {
 			PolicyParser parser = new PolicyParser();
@@ -47,7 +45,6 @@ public class PolicyParserTest {
 		}
 	}
 	
-	@Test
 	public void testGlobalRedundancy() {
 		try {
 			PolicyParser parser = new PolicyParser();
@@ -58,7 +55,6 @@ public class PolicyParserTest {
 		}
 	}
 
-	@Test
 	public void testIntel() {
 		try {
 			PolicyParser parser = new PolicyParser();

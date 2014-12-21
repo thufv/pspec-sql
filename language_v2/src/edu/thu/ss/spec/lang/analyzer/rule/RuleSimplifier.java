@@ -90,7 +90,7 @@ public class RuleSimplifier extends BaseRuleAnalyzer {
 			Restriction res1 = it.next();
 			boolean removable = false;
 			for (Restriction res2 : restrictions) {
-				if (res1 != res2 && InclusionUtil.instance.innerStricterThan(res1, res2)) {
+				if (res1 != res2 && InclusionUtil.instance.innerStricterThan(res2, res1)) {
 					removable = true;
 					break;
 				}

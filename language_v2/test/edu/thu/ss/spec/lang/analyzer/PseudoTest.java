@@ -16,13 +16,15 @@ public class PseudoTest {
 		boolean[][] imply = initImplication();
 		boolean[] removed = new boolean[10];
 
-		for (int r : policy) {
+		for (int i = 0; i < policy.length; i++) {
+			int r = policy[i];
 			if (removed[r]) {
 				continue;
 			}
 			List<Integer> list = new LinkedList<>();
 			int rp = r;
-			for (int rt : policy) {
+			for (int j = i+1; j < policy.length; j++) {
+				int rt = policy[j];
 				if (removed[rt]) {
 					continue;
 				}
@@ -37,9 +39,9 @@ public class PseudoTest {
 					list.add(rt);
 				}
 			}
-			for(int i : list){
-				System.out.println(i+"  "+rp);
-				removed[i] = true;
+			for (int l : list) {
+				System.out.println(l + "  " + rp);
+				removed[l] = true;
 			}
 		}
 	}
