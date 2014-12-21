@@ -47,6 +47,14 @@ public class RuleResolver extends BaseRuleAnalyzer {
 	@Override
 	public boolean analyzeRule(Rule rule, UserContainer users, DataContainer datas) {
 		boolean error = false;
+		if (rule.getAssociation() != null && rule.getDataRefs().size() > 0) {
+			logger
+					.error(
+							"Data-category-ref and data-association should not appear together when restriction contains desensitize element in rule: {}",
+							ruleId);
+			return true;
+		}
+
 		error = error || resolveUsers(rule.getUserRefs(), users);
 		error = error || resolveDatas(rule.getDataRefs(), datas);
 
@@ -58,9 +66,8 @@ public class RuleResolver extends BaseRuleAnalyzer {
 			if (restriction.isForbid()) {
 				continue;
 			}
-			for (Desensitization de : restriction.getDesensitizations()) {
-				error = error || resolveDesensitization(de, rule);
-			}
+			error = error || resolveRestriction(restriction, rule);
+
 		}
 		return error;
 	}
@@ -166,55 +173,59 @@ public class RuleResolver extends BaseRuleAnalyzer {
 	 * @param rule
 	 * @return error
 	 */
-	private boolean resolveDesensitization(Desensitization de, Rule rule) {
-		if (rule.getAssociation() != null && rule.getDataRefs().size() > 0) {
-			logger
-					.error(
-							"Data-category-ref and data-association should not appear together when restriction contains desensitize element in rule: {}",
-							ruleId);
+	private boolean resolveRestriction(Restriction res, Rule rule) {
+		if (rule.getAssociation() == null) {
+			return resolveSingleRestriction(res, rule);
+		} else {
+			return resolveAssociateRestriction(res, rule);
+		}
+	}
+
+	private boolean resolveSingleRestriction(Restriction res, Rule rule) {
+		if (res.getList().size() > 1) {
+			logger.error("Only 1 desensitization is allowed for single rule: {}", rule.getId());
 			return true;
 		}
-		if (rule.getDataRefs().size() > 0) {
-			if (de.getDataRefIds().size() > 0) {
-				logger
-						.error("No data-category-ref element should appear in desensitize element when only data category is referenced in rule: "
-								+ ruleId);
-				return true;
-			}
-			de.setDataIndex(0);
-			return false;
-		} else if (rule.getAssociation() != null) {
-			if (de.getDataRefIds().size() == 0) {
+		Desensitization de = res.getList().get(0);
+		if (de.getDataRefId() != null) {
+			logger
+					.error("No data-category-ref element should appear in desensitize element when only data category is referenced in rule: "
+							+ ruleId);
+			return true;
+		}
+		Desensitization[] des = new Desensitization[] { de };
+		res.setDesensitizations(des);
+		return false;
+	}
+
+	private boolean resolveAssociateRestriction(Restriction res, Rule rule) {
+		Desensitization[] des = new Desensitization[rule.getAssociation().getDimension()];
+		DataAssociation association = rule.getAssociation();
+		boolean error = false;
+		for (Desensitization de : res.getList()) {
+			if (de.getDataRefId() == null) {
 				logger
 						.error("Restricted data category must be specified explicitly when data association is referenced by rule: "
 								+ ruleId);
 				return true;
 			}
-		}
-		boolean error = false;
-		DataAssociation association = rule.getAssociation();
-		int[] index = new int[de.getDataRefIds().size()];
-		int i = 0;
-		for (String refid : de.getDataRefIds()) {
-			DataRef data = null;
-			data = association.get(refid);
-			if (data == null) {
+			String refid = de.getDataRefId();
+			DataRef ref = association.get(refid);
+			if (ref == null) {
 				logger.error("Restricted data category: {} must be contained in referenced data association in rule: {}",
 						refid, ruleId);
 				error = true;
+				continue;
 			}
-			if (!error) {
-				de.getDataRefs().add(data);
-				index[i++] = association.getIndex(refid);
-			}
+			de.setDataRef(ref);
+			de.materialize();
+			int index = association.getIndex(refid);
+			des[index] = de;
 		}
-		if (!error) {
-			de.setDataIndex(index);
-			if (rule.getAssociation() != null) {
-				de.materialize();
-			}
-		}
+
+		res.setDesensitizations(des);
 
 		return error;
 	}
+
 }

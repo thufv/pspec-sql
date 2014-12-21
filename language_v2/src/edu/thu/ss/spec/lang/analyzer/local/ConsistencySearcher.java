@@ -186,15 +186,19 @@ class ConsistencySearcher extends LevelwiseSearcher {
 		Restriction[] restrictions = rule.getRestrictions();
 		List<Set<DesensitizeOperation>> list = null;
 		for (Restriction res : restrictions) {
-			Set<Desensitization> des = res.getDesensitizations();
 			boolean match = false;
+			Desensitization[] des = res.getDesensitizations();
 			Set<DesensitizeOperation> ops = null;
-			for (Desensitization de : des) {
-				Set<DataCategory> set = de.getDatas();
-				if (SetUtil.containOrDisjoint(set, datas).equals(SetRelation.contain)) {
-					ops = de.getOperations();
-					match = true;
-					break;
+			if (des != null) {
+				for (Desensitization de : des) {
+					if (de != null) {
+						Set<DataCategory> set = de.getDatas();
+						if (SetUtil.containOrDisjoint(set, datas).equals(SetRelation.contain)) {
+							ops = de.getOperations();
+							match = true;
+							break;
+						}
+					}
 				}
 			}
 			if (!match) {

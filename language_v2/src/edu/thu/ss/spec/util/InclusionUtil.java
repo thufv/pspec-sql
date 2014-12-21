@@ -4,6 +4,7 @@ import edu.thu.ss.spec.lang.pojo.Action;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DataRef;
 import edu.thu.ss.spec.lang.pojo.Desensitization;
+import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.Restriction;
 import edu.thu.ss.spec.lang.pojo.UserRef;
 
@@ -31,6 +32,10 @@ public class InclusionUtil {
 		return action1.ancestorOf(action2);
 	}
 
+	public boolean isGlobal(DataRef ref) {
+		return false;
+	}
+
 	/**
 	 * test data1 includes data2
 	 * @param data1
@@ -45,7 +50,7 @@ public class InclusionUtil {
 	}
 
 	/**
-	 * test whether res1 is stricter than res2, such that res1 can be removed in
+	 * test whether res2 is stricter than res1, such that res1 can be removed in
 	 * a single rule.
 	 * i.e., every restricted data category is res1 must be more restricted in
 	 * res2
@@ -61,20 +66,17 @@ public class InclusionUtil {
 		if (res2.isForbid()) {
 			return false;
 		}
-		for (Desensitization de2 : res2.getDesensitizations()) {
-			for (DataRef ref2 : de2.getDataRefs()) {
-				boolean match = false;
-				for (Desensitization de1 : res1.getDesensitizations()) {
-					if (de1.getDataRefs().contains(ref2)) {
-						match = true;
-						if (!operationIncludes(de1, de2)) {
-							return false;
-						}
-					}
-				}
-				if (!match) {
-					return false;
-				}
+		Desensitization[] des1 = res1.getDesensitizations();
+		Desensitization[] des2 = res2.getDesensitizations();
+		for (int i = 0; i < des1.length; i++) {
+			if (des1[i] == null) {
+				continue;
+			}
+			if (des2[i] == null) {
+				return false;
+			}
+			if (!operationIncludes(des1[i], des2[i])) {
+				return false;
 			}
 		}
 		return true;
@@ -99,13 +101,47 @@ public class InclusionUtil {
 	}
 
 	/**
+	 * test whether desensitize operations in de1 includes de2
+	 * @param de1
+	 * @param de2
+	 * @return boolean
+	 */
+	public boolean operationIncludes(Desensitization de1, Desensitization de2) {
+		if (de1.isDefaultOperation()) {
+			return true;
+		}
+		if (de2.isDefaultOperation()) {
+			for (DataCategory data2 : de2.getDatas()) {
+				if (!SetUtil.contains(de1.getOperations(), data2.getOperations())) {
+					return false;
+				}
+			}
+			return true;
+		}
+		return SetUtil.contains(de1.getOperations(), de2.getOperations());
+	}
+
+	/**
+	 * test restrictions in rule1 is stricter than rule2.
+	 * @param rule1
+	 * @param rule2, not single
+	 * @return boolean
+	 */
+	public boolean stricterThan(ExpandedRule rule1, ExpandedRule rule2, int[][] dataIncludes, int[] dataLength) {
+		Restriction[] res1 = rule1.getRestrictions();
+		Restriction[] res2 = rule2.getRestrictions();
+
+		return false;
+	}
+
+	/**
 	 * test whether list1 is stricter than list2,
 	 * i.e., every res1 in list1 is stricter than at least one res2 in list2
 	 * 
 	 * @param list1
 	 * @param list2
 	 * @return boolean
-	 */
+	 *
 	public boolean stricterThan(Restriction[] list1, Restriction[] list2) {
 		for (Restriction res1 : list1) {
 			if (res1.isForbid()) {
@@ -132,7 +168,7 @@ public class InclusionUtil {
 	 * @param res1
 	 * @param res2
 	 * @return boolean
-	 */
+	 *
 	public boolean stricterThan(Restriction res1, Restriction res2) {
 		if (res1.isForbid()) {
 			return true;
@@ -167,7 +203,7 @@ public class InclusionUtil {
 	 * @param de1
 	 * @param de2
 	 * @return boolean
-	 */
+	 *
 	public boolean scopeIncludes(Desensitization de1, Desensitization de2) {
 		for (DataRef ref2 : de2.getDataRefs()) {
 			if (!scopeIncludes(de1, ref2)) {
@@ -182,7 +218,7 @@ public class InclusionUtil {
 	 * @param de1
 	 * @param ref2
 	 * @return boolean
-	 */
+	 *
 	public boolean scopeIncludes(Desensitization de1, DataRef ref2) {
 		boolean match = false;
 		for (DataRef ref1 : de1.getDataRefs()) {
@@ -196,26 +232,6 @@ public class InclusionUtil {
 		}
 		return true;
 	}
-
-	/**
-	 * test whether desensitize operations in de1 includes de2
-	 * @param de1
-	 * @param de2
-	 * @return boolean
-	 */
-	public boolean operationIncludes(Desensitization de1, Desensitization de2) {
-		if (de1.isDefaultOperation()) {
-			return true;
-		}
-		if (de2.isDefaultOperation()) {
-			for (DataCategory data2 : de2.getDatas()) {
-				if (!SetUtil.contains(de1.getOperations(), data2.getOperations())) {
-					return false;
-				}
-			}
-			return true;
-		}
-		return SetUtil.contains(de1.getOperations(), de2.getOperations());
-	}
+	*/
 
 }

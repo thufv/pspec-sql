@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<vocabulary base="res/base-vocab.xml" xmlns="http://www.example.org/privacy"
+<vocabulary base="intel/base-vocab.xml" xmlns="http://www.example.org/privacy"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.example.org/privacy ../res/privacy.xsd">
 	<vocabulary-information id="vocab-info">

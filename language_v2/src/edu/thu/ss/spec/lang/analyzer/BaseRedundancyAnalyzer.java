@@ -1,5 +1,7 @@
 package edu.thu.ss.spec.lang.analyzer;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,6 +21,7 @@ import edu.thu.ss.spec.lang.pojo.UserCategory;
 import edu.thu.ss.spec.lang.pojo.UserRef;
 import edu.thu.ss.spec.util.InclusionUtil;
 import edu.thu.ss.spec.util.SetUtil;
+import edu.thu.ss.spec.util.Z3Util;
 import edu.thu.ss.spec.util.SetUtil.SetRelation;
 
 /**
@@ -46,6 +49,14 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 
 	protected List<SimplificationLog> logs = new LinkedList<>();
 
+	public static final int Max_Dimension = 10;
+
+	protected final int[][] dataIncludes = new int[Max_Dimension][Max_Dimension];
+
+	protected final int[] dataLength = new int[Max_Dimension];
+
+	protected final boolean[] covered = new boolean[Max_Dimension];
+
 	/**
 	 * initialized by sub classes
 	 */
@@ -54,37 +65,63 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 	public boolean analyze(Policy policy) {
 		List<ExpandedRule> rules = policy.getExpandedRules();
 
-		Iterator<ExpandedRule> it = rules.iterator();
-		while (it.hasNext()) {
-			ExpandedRule erule = it.next();
-			boolean removable = checkRedundancy(erule, rules);
-			if (removable) {
-				it.remove();
+		boolean[] removable = new boolean[rules.size()];
+		for (int i = 0; i < rules.size(); i++) {
+			if (removable[i]) {
+				continue;
+			}
+			ExpandedRule prule = rules.get(i);
+			List<Integer> list = new ArrayList<>();
+			for (int j = 0; j < rules.size(); j++) {
+				if (removable[j]) {
+					continue;
+				}
+				ExpandedRule trule = rules.get(j);
+				if (prule == trule) {
+					continue;
+				}
+				if (checkRedundancy(prule, trule)) {
+					list.add(i);
+					prule = trule;
+				} else if (checkRedundancy(trule, prule)) {
+					list.add(j);
+				}
+			}
+			if (list.size() > 0) {
+				for (int index : list) {
+					removable[index] = true;
+					ExpandedRule rule = rules.get(index);
+					logger.warn("The rule: {} is redundant since it is covered by rule: {}, consider revise your policy.",
+							rule.getRuleId(), prule.getRuleId());
+				}
 			}
 		}
+		Iterator<ExpandedRule> it = rules.iterator();
+		int index = 0;
+		while (it.hasNext()) {
+			it.next();
+			if (removable[index]) {
+				it.remove();
+			}
+			index++;
+		}
+
 		commit();
 		return false;
 	}
 
-	private boolean checkRedundancy(ExpandedRule target, List<ExpandedRule> rules) {
-		for (ExpandedRule erule : rules) {
-			if (target == erule) {
-				continue;
-			}
-			boolean redundant = false;
-			if (target.isSingle()) {
-				redundant = checkSingle(erule, target);
-			} else {
-				redundant = checkAssociation(erule, target);
-			}
-			if (redundant) {
-				logger.warn("The rule: {} is redundant since it is covered by rule: {}, consider revise your policy.",
-						target.getRuleId(), erule.getRuleId());
-				return true;
-			}
+	/**
+	 * check whether target is redundant w.r.t rule
+	 * @param target
+	 * @param rule
+	 * @return redundant
+	 */
+	private boolean checkRedundancy(ExpandedRule target, ExpandedRule rule) {
+		if (target.isSingle()) {
+			return checkSingle(rule, target);
+		} else {
+			return checkAssociation(rule, target);
 		}
-
-		return false;
 	}
 
 	/**
@@ -92,13 +129,13 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 	 * 
 	 * @param rule1
 	 * @param rule2
-	 * @return
+	 * @return rule1 implies rule2
 	 */
 	private boolean checkSingle(ExpandedRule rule1, ExpandedRule rule2) {
 		if (rule1.isAssociation()) {
 			return false;
 		}
-		if (rule2.isGlobal() && !rule1.isGlobal()) {
+		if (instance.isGlobal(rule2.getDataRef()) && !instance.isGlobal(rule1.getDataRef())) {
 			//global rule cannot be covered by local rules.
 			return false;
 		}
@@ -151,7 +188,7 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 	 * 
 	 * @param rule1
 	 * @param rule2
-	 * @return
+	 * @return rule1 implies rule2
 	 */
 	private boolean checkAssociation(ExpandedRule rule1, ExpandedRule rule2) {
 		if (rule1.isSingle()) {
@@ -166,7 +203,7 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 	 * 
 	 * @param rule1
 	 * @param rule2
-	 * @return
+	 * @return rule1 implies rule2
 	 */
 	private boolean checkSingleAssociation(ExpandedRule rule1, ExpandedRule rule2) {
 		Set<UserCategory> user1 = rule1.getUsers();
@@ -180,24 +217,23 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 		DataAssociation assoc2 = rule2.getAssociation();
 
 		boolean match = false;
-		for (DataRef ref2 : assoc2.getDataRefs()) {
-			if (ref2.isGlobal() && !ref1.isGlobal()) {
-				continue;
-			}
+		int index = 0;
+		List<DataRef> dataRefs = assoc2.getDataRefs();
+		Arrays.fill(covered, false);
+		for (int i = 0; i < dataRefs.size(); i++) {
+			DataRef ref2 = dataRefs.get(i);
 			if (instance.includes(ref1, ref2)) {
 				match = true;
-				break;
+				dataIncludes[0][index++] = i;
+				covered[i] = true;
 			}
-
 		}
+		dataLength[0] = index;
 		if (!match) {
 			return false;
 		}
 
-		Restriction[] res1 = rule1.getRestrictions();
-		Restriction[] res2 = rule2.getRestrictions();
-
-		return instance.stricterThan(res1, res2);
+		return Z3Util.implies(rule1, rule2, dataIncludes, dataLength, covered);
 
 	}
 
@@ -222,23 +258,29 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 			return false;
 		}
 
-		for (DataRef ref1 : assoc1.getDataRefs()) {
+		List<DataRef> dataRefs1 = assoc1.getDataRefs();
+		List<DataRef> dataRefs2 = assoc2.getDataRefs();
+
+		Arrays.fill(covered, false);
+		for (int i = 0; i < dataRefs1.size(); i++) {
 			boolean match = false;
-			for (DataRef ref2 : assoc2.getDataRefs()) {
+			int index = 0;
+			DataRef ref1 = dataRefs1.get(i);
+			for (int j = 0; j < dataRefs2.size(); j++) {
+				DataRef ref2 = dataRefs2.get(j);
 				if (instance.includes(ref1, ref2)) {
 					match = true;
-					break;
+					dataIncludes[i][index++] = j;
+					covered[j] = true;
 				}
 			}
 			if (!match) {
 				return false;
 			}
+			dataLength[i] = index;
 		}
 
-		Restriction[] res1 = rule1.getRestrictions();
-		Restriction[] res2 = rule2.getRestrictions();
-
-		return instance.stricterThan(res1, res2);
+		return Z3Util.implies(rule1, rule2, dataIncludes, dataLength, covered);
 
 	}
 

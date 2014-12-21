@@ -70,8 +70,7 @@ public class DataCategory extends Category<DataCategory> {
 			Node node = list.item(i);
 			String name = node.getLocalName();
 			if (ParserConstant.Ele_Vocabulary_Desensitize_Op.equals(name)) {
-				DesensitizeOperation op = new DesensitizeOperation();
-				op.parse(node);
+				DesensitizeOperation op = DesensitizeOperation.parse(node);
 				addOperation(op);
 			}
 		}

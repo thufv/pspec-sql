@@ -15,4 +15,9 @@ public class GlobalInclusionUtil extends InclusionUtil {
 		}
 		return SetUtil.contains(data1.getMaterialized(), data2.getMaterialized());
 	}
+
+	@Override
+	public boolean isGlobal(DataRef ref) {
+		return ref.isGlobal();
+	}
 }

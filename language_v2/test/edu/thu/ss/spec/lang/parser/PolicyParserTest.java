@@ -9,16 +9,15 @@ import edu.thu.ss.spec.meta.MetaRegistry;
 import edu.thu.ss.spec.meta.xml.XMLMetaRegistryParser;
 
 public class PolicyParserTest {
-
 	@Test
 	public void testMeta() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse("tpc-ds/spark-policy.xml", false);
-			//System.out.println(policy);
+			Policy policy = parser.parse("res/spark-policy.xml", false);
+			System.out.println(policy);
 
 			XMLMetaRegistryParser metaParser = new XMLMetaRegistryParser();
-			MetaRegistry registry = metaParser.parse("tpc-ds/spark-meta.xml");
+			MetaRegistry registry = metaParser.parse("res/spark-meta.xml");
 			System.out.println(registry);
 
 		} catch (Exception e) {
@@ -26,6 +25,7 @@ public class PolicyParserTest {
 		}
 	}
 
+	@Test
 	public void testConflict() {
 		try {
 			PolicyParser parser = new PolicyParser();
@@ -36,16 +36,18 @@ public class PolicyParserTest {
 		}
 	}
 
+	@Test
 	public void testRedundancy() {
 		try {
 			PolicyParser parser = new PolicyParser();
 			Policy policy = parser.parse("test/res/redundancy-policy.xml", false);
-			System.out.println(policy);
+			//	System.out.println(policy);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-
+	
+	@Test
 	public void testGlobalRedundancy() {
 		try {
 			PolicyParser parser = new PolicyParser();
@@ -56,10 +58,11 @@ public class PolicyParserTest {
 		}
 	}
 
+	@Test
 	public void testIntel() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse("intel/tpcds-policy.xml", false);
+			Policy policy = parser.parse("intel/spark-policy.xml", false);
 			System.out.println(policy);
 		} catch (Exception e) {
 			e.printStackTrace();

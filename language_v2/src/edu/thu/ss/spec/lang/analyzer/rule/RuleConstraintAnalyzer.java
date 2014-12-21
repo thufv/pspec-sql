@@ -39,7 +39,7 @@ public class RuleConstraintAnalyzer extends BaseRuleAnalyzer {
 		error |= checkAssociaiton(rule);
 
 		if (rule.getDataRefs().size() > 0) {
-			error |= checkDataRestriction(rule);
+			error |= checkSingleRestirction(rule);
 		} else {
 			error |= checkAssociationRestriction(rule);
 		}
@@ -81,7 +81,7 @@ public class RuleConstraintAnalyzer extends BaseRuleAnalyzer {
 		return error;
 	}
 
-	private boolean checkDataRestriction(Rule rule) {
+	private boolean checkSingleRestirction(Rule rule) {
 		List<Restriction> restrictions = rule.getRestrictions();
 		if (restrictions.size() > 1) {
 			logger.error("Only one restriction should appear in rule when only data categories are referenced by rule: {}",
@@ -92,14 +92,9 @@ public class RuleConstraintAnalyzer extends BaseRuleAnalyzer {
 		if (restriction.isForbid()) {
 			return false;
 		}
-		Set<Desensitization> desensitizations = restriction.getDesensitizations();
-		if (desensitizations.size() > 1) {
-			logger.error("Only one desensitize should appear in rule when only data categories are referenced by rule: {}",
-					rule.getId());
-			return true;
-		}
+
 		boolean error = false;
-		Desensitization de = desensitizations.iterator().next();
+		Desensitization de = restriction.getDesensitization();
 		for (DataRef ref : rule.getDataRefs()) {
 			error |= checkInclusion(ref.getData(), de.getOperations());
 		}
@@ -114,9 +109,11 @@ public class RuleConstraintAnalyzer extends BaseRuleAnalyzer {
 				continue;
 			}
 			for (Desensitization de : restriction.getDesensitizations()) {
-				for (DataRef ref : de.getDataRefs()) {
-					error |= checkInclusion(ref.getCategory(), de.getOperations());
+				if (de == null) {
+					continue;
 				}
+				DataRef ref = de.getDataRef();
+				error |= checkInclusion(ref.getCategory(), de.getOperations());
 			}
 		}
 		return error;

@@ -1,5 +1,8 @@
 package edu.thu.ss.spec.lang.pojo;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.w3c.dom.Node;
 
 /**
@@ -7,21 +10,39 @@ import org.w3c.dom.Node;
  * @author luochen
  *
  */
-public class DesensitizeOperation implements Parsable {
+public class DesensitizeOperation {
 
-	protected String name;
+	private static int globalId = 0;
+	private static Map<String, DesensitizeOperation> operations = new HashMap<>();
 
-	@Override
-	public void parse(Node opNode) {
-		this.name = opNode.getTextContent();
+	public static DesensitizeOperation parse(Node opNode) {
+		String name = opNode.getTextContent();
+		return get(name);
+	}
+
+	public static DesensitizeOperation get(String name) {
+		DesensitizeOperation op = operations.get(name);
+		if (op == null) {
+			op = new DesensitizeOperation(name);
+			operations.put(name, op);
+		}
+		return op;
+	}
+
+	protected final String name;
+	protected final int id;
+
+	private DesensitizeOperation(String name) {
+		id = (globalId++);
+		this.name = name;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public int getId() {
+		return id;
 	}
 
 	@Override

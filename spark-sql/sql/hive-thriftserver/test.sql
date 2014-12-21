@@ -437,12 +437,23 @@ SELECT i_brand
  WHERE CASE WHEN 1 > 0 THEN ss_item_sk ELSE sr_item_sk END = i_item_sk;
 
 SELECT d_date
-    FROM (SELECT ss_sold_date_sk as s_date_sk
+    FROM (
+           SELECT ss_sold_date_sk as s_date_sk
            FROM store_sales
            INTERSECT
            SELECT sr_return_date_sk as s_date_sk
            FROM store_returns
-        ) x JOIN date_dim ON d_date_sk = s_date_sk
+        ) x JOIN date_dim ON d_date_sk = s_date_sk;
+
+SELECT * 
+FROM (
+      SELECT ss_sold_date_sk as s_date_sk
+      FROM store_sales
+      ) x1 LEFT SEMI JOIN 
+    (
+      SELECT sr_return_date_sk as s_date_sk
+     FROM store_returns) x2 ON a1=a2
+        
 SELECT i_product_name
     FROM ( 
            SELECT ss_item_sk as s_item_sk
@@ -465,3 +476,18 @@ SELECT i_brand
 SELECT i_brand
   FROM item JOIN (SELECT avg(i_size) AS avg_size FROM item) x
  WHERE i_size > avg_size
+
+
+SELECT i_brand
+  FROM (SELECT i_brand, CASE WHEN i_color = 'blue' THEN i_size ELSE i_class END as i_tmp
+    FROM item
+   )x
+WHERE i_tmp = 'r'
+
+
+SELECT a1 FROM A EXCEPT SELECT b1 FROM B
+
+SELECT a1 FROM A LEFT OUTER JOIN B ON a1 = b1 WHERE b1 = null
+
+
+create table test (c1 struct<f1:string, f2:map<int, array<int>>>, c2 map<int, struct<f1:string>>, c3 string);

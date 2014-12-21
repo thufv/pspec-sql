@@ -183,7 +183,7 @@
 						<element name="data-category-ref" type="tns:objectRefType"
 							maxOccurs="unbounded" minOccurs="0">
 						</element>
-						<element name="operation" type="string" minOccurs="0"
+						<element name="operation" type="string" minOccurs="1"
 							maxOccurs="unbounded"></element>
 					</sequence>
 				</complexType>

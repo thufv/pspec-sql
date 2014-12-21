@@ -28,6 +28,7 @@ import org.apache.spark.sql.catalyst.types
 import edu.thu.ss.spec.meta.ArrayType
 import edu.thu.ss.spec.meta.StructType
 import edu.thu.ss.spec.meta.MapType
+import edu.thu.ss.spec.lang.pojo.Restriction
 
 class SparkChecker extends PrivacyChecker {
 
@@ -155,42 +156,52 @@ class SparkChecker extends PrivacyChecker {
       return true;
     }
     val array = new Array[DataCategory](accesses.length);
-    return checkRestrictions(array, 0, rule, accesses, policy);
+    return satisfyRestrictions(array, 0, rule, accesses, policy);
   }
 
   /**
    * check restrictions recursively.
    * for buckets with m1, m2, ..., mn elements, we need to check m1 * m2 *... mn combinations.
    */
-  private def checkRestrictions(array: Array[DataCategory], i: Int, rule: ExpandedRule, accesses: Array[HashSet[DataCategory]], policy: Policy): Boolean = {
+  private def satisfyRestrictions(array: Array[DataCategory], i: Int, rule: ExpandedRule, accesses: Array[HashSet[DataCategory]], policy: Policy): Boolean = {
     if (i == accesses.length) {
       val restrictions = rule.getRestrictions();
       val association = rule.getAssociation();
       //a combination of element, and check whether exist a satisfied restriction
-      return restrictions.exists(res => {
-        if (res.isForbid()) {
-          return false;
-        }
-        res.getDesensitizations().asScala.forall(de => {
-          for (index <- de.getDataIndex()) {
-            val ref = association.get(index);
-            val data = array(index);
-            val global = ref.isGlobal();
-            checkDesensitization(ref, data, de, policy, global);
-          }
-          return true;
-        });
-      });
+
+      return restrictions.exists(satisfyRestriction(_, array, rule, policy));
     } else {
       val access = accesses(i);
       for (data <- access) {
         array(i) = data;
-        if (!checkRestrictions(array, i + 1, rule, accesses, policy)) {
+        if (!satisfyRestrictions(array, i + 1, rule, accesses, policy)) {
           return false;
         }
       }
       return true;
     }
+  }
+
+  private def satisfyRestriction(res: Restriction, array: Array[DataCategory], rule: ExpandedRule, policy: Policy): Boolean = {
+    if (res.isForbid()) {
+      return false;
+    }
+    val des = res.getDesensitizations();
+
+    var i = 0;
+    for (de <- res.getDesensitizations()) {
+      if (de != null) {
+        val ref = rule.getAssociation().get(i);
+        val data = array(i);
+        val global = ref.isGlobal();
+        if (!checkDesensitization(ref, data, de, policy, global)) {
+          return false;
+        }
+      }
+      i += 1;
+    }
+    return true;
+
   }
 
   /**

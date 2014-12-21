@@ -3,9 +3,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.example.org/privacy ../res/privacy.xsd">
 
-	<vocabulary-ref location="example-vocabulary.xml">
-		<user-category-container refid="example-user" />
-		<data-category-container refid="example-data" />
+	<vocabulary-ref location="test/res/example-vocabulary.xml">
+		<user-category-container refid="social-users" />
+		<data-category-container refid="social-data" />
 	</vocabulary-ref>
 
 	<policy-information id="store-policy">

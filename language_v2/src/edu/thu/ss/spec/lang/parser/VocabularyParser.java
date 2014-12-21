@@ -198,7 +198,7 @@ public class VocabularyParser implements ParserConstant {
 					if (Ele_Vocabulary_User_Category_Container.equals(name)) {
 						UserContainer container = new UserContainer();
 						container.parse(node);
-						addUserContainer(container);
+						addUserContainer(container, vocabulary);
 					}
 				}
 			}
@@ -220,27 +220,29 @@ public class VocabularyParser implements ParserConstant {
 					if (Ele_Vocabulary_Data_Category_Container.equals(name)) {
 						DataContainer container = new DataContainer();
 						container.parse(node);
-						addDataContainer(container);
+						addDataContainer(container, vocabulary);
 					}
 				}
 			}
 		}
 	}
 
-	private void addUserContainer(UserContainer container) {
+	private void addUserContainer(UserContainer container, Vocabulary vocabulary) {
 		if (userContainers.containsKey(container.getId()) || CategoryManager.getUsers().containsKey(container.getId())) {
 			logger.error("Duplicate UserCategoryContainer: {} detected, please fix.", container.getId());
 			error = true;
 		}
 		userContainers.put(container.getId(), container);
+		vocabulary.getUserContainers().put(container.getId(), container);
 	}
 
-	private void addDataContainer(DataContainer container) {
+	private void addDataContainer(DataContainer container, Vocabulary vocabulary) {
 		if (dataContainers.containsKey(container.getId()) || CategoryManager.getDatas().containsKey(container.getId())) {
 			logger.error("Duplicate UserCategoryContainer: {} detected, please fix.", container.getId());
 			error = true;
 		}
 		dataContainers.put(container.getId(), container);
+		vocabulary.getDataContainers().put(container.getId(), container);
 	}
 
 	/**resolve reference recursively
