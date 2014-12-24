@@ -30,23 +30,29 @@ import edu.thu.ss.spec.meta.StructType
 import edu.thu.ss.spec.meta.MapType
 import edu.thu.ss.spec.lang.pojo.Restriction
 
-class SparkChecker extends PrivacyChecker {
+class SparkChecker extends PrivacyChecker with Logging {
 
   lazy val user = MetaManager.currentUser();
   var policies: collection.Set[Policy] = null;
 
   var projectionPaths: Map[Policy, Map[DataCategory, Set[Path]]] = null;
   var conditionPaths: Map[Policy, Map[DataCategory, Set[Path]]] = null;
+  var violated = false;
 
   def check(projectionPaths: Map[Policy, Map[DataCategory, Set[Path]]], conditionPaths: Map[Policy, Map[DataCategory, Set[Path]]], policies: collection.Set[Policy]): Unit = {
     if (policies.size == 0) {
       return ;
     }
+    violated = false;
     this.policies = policies;
     this.projectionPaths = projectionPaths;
     this.conditionPaths = conditionPaths;
     //check each rule
+
     policies.foreach(p => p.getExpandedRules().asScala.foreach(checkRule(_, p)));
+    if (violated) {
+      throw new PrivacyException("");
+    }
   }
 
   /**
@@ -79,7 +85,8 @@ class SparkChecker extends PrivacyChecker {
       error = checkRestrictions(rule, accesses, policy);
     }
     if (error) {
-      throw new PrivacyException(s"The SQL query violates the rule: #${rule.getRuleId()}.");
+      violated = true;
+      logError(s"The SQL query violates the rule: #${rule.getRuleId()}.");
     }
   }
 
@@ -294,18 +301,22 @@ object SparkChecker extends Logging {
    */
   def apply(plan: LogicalPlan): Unit = {
     val begin = System.currentTimeMillis();
-    val propagator = new LabelPropagator;
-    val policies = propagator(plan);
 
-    val builder = new PathBuilder;
-    val (projectionPaths, conditionPaths) = builder(plan.projections.values.toSet, plan.conditions);
+    try {
+      val propagator = new LabelPropagator;
+      val policies = propagator(plan);
 
-    val checker = new SparkChecker;
-    checker.check(projectionPaths, conditionPaths, policies);
+      val builder = new PathBuilder;
+      val (projectionPaths, conditionPaths) = builder(plan.projections.values.toSet, plan.conditions);
 
-    val end = System.currentTimeMillis();
-    val time = end - begin;
-    println(s"privacy checking finished in $time ms");
+      val checker = new SparkChecker;
+      checker.check(projectionPaths, conditionPaths, policies);
+
+    } finally {
+      val end = System.currentTimeMillis();
+      val time = end - begin;
+      println(s"privacy checking finished in $time ms");
+    }
   }
 
   /**

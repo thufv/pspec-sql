@@ -299,7 +299,6 @@ private[hive] class SparkSQLCLIDriver extends CliDriver with Logging {
             if (ret == -10) {
               //privacy error;
               console.printError(s"SQL ${SparkSQLCLIDriver.number} fail.");
-              console.printError(s"${rc.getErrorMessage()}");
               return 0;
             } else {
               console.printError(rc.getErrorMessage())

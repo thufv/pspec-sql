@@ -103,7 +103,7 @@ class PathBuilder {
   private def resolvePaths(labelType: BaseType, label: ColumnLabel, transforms: ListBuffer[String], paths: Map[Policy, Map[DataCategory, Set[Path]]]): Unit = {
 
     val meta = MetaManager.get(label.database, label.table);
-    val policy = paths.keys.find(meta.getPolicy() == _).getOrElse(null);
+    val policy = meta.getPolicy();
 
     var data: DataCategory = null;
 

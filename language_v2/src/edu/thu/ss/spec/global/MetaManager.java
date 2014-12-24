@@ -30,7 +30,7 @@ public class MetaManager {
 	 * @return current user category, unfinished implementation.
 	 */
 	public static synchronized UserCategory currentUser() {
-		return new UserCategory("app", "default-user");
+		return new UserCategory("analyst", "default-user");
 	}
 
 	public static synchronized MetaRegistry get(String database, String table) {

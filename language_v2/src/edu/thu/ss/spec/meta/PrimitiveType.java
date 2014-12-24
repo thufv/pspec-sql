@@ -19,11 +19,11 @@ public class PrimitiveType extends BaseType {
 	}
 
 	public DesensitizeOperation getDesensitizeOperation(String udf) {
-		return operations.get(udf);
+		return operations.get(udf.toLowerCase());
 	}
 
 	public void addDesensitizeOperation(String udf, DesensitizeOperation op) {
-		operations.put(udf, op);
+		operations.put(udf.toLowerCase(), op);
 	}
 
 	@Override

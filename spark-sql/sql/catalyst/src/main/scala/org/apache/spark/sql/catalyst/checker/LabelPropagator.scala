@@ -83,6 +83,8 @@ import org.apache.spark.sql.catalyst.expressions.IsNull
 import org.apache.spark.sql.catalyst.expressions.Coalesce
 import org.apache.spark.sql.catalyst.expressions.Alias
 import org.apache.spark.sql.catalyst.expressions.IsNotNull
+import org.apache.spark.sql.catalyst.expressions.Count
+import org.apache.spark.sql.catalyst.expressions.IntegerLiteral
 
 /**
  * vertex class for equi-graph
@@ -318,9 +320,14 @@ class LabelPropagator extends Logging {
         unary.projections.put(attr, label);
       }
       case alias: Alias => {
-        val label = resolveExpression(alias.child, unary);
+        var label = childProjs.getOrElse(alias.toAttribute, null);
         if (label != null) {
           unary.projections.put(alias.toAttribute, label);
+        } else {
+          label = resolveExpression(alias.child, unary);
+          if (label != null) {
+            unary.projections.put(alias.toAttribute, label);
+          }
         }
       }
       case _ => throw new UnsupportedPlanException(s"unknown named expression: $expression");
@@ -382,6 +389,15 @@ class LabelPropagator extends Logging {
           case l: Literal => Constant(l.value);
           case l: MutableLiteral => Constant(l.value);
           case _ => throw new UnsupportedPlanException(s"unknown leaf expression: $leaf");
+        }
+      }
+      case count: Count => {
+        count.child match {
+          case IntegerLiteral(1) => {
+            val labels = plan.children.flatMap(_.projections.values.toSeq);
+            Function(labels, ExpressionRegistry.resolveFunction(expression));
+          }
+          case _ => resolveTermFunction(expression, plan);
         }
       }
       case _: AggregateExpression => {

@@ -59,7 +59,13 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] {
    * lookup lineage tree for attr on child projections
    */
   def childLabel(attr: Attribute): Label = {
-    children.map(_.projections.getOrElse(attr, null)).find(_ != null).getOrElse(null);
+    children.foreach(c => {
+      val result = c.projections.getOrElse(attr, null);
+      if (result != null) {
+        return result;
+      }
+    });
+    null;
   }
 
   /**

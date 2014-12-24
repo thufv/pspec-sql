@@ -29,7 +29,7 @@ public class DataCategory extends Category<DataCategory> {
 	}
 
 	public DesensitizeOperation getOperation(String op) {
-		return opIndex.get(op);
+		return opIndex.get(op.toLowerCase());
 	}
 
 	private void addOperation(DesensitizeOperation op) {

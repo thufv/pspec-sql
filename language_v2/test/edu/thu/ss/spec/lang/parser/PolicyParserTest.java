@@ -1,6 +1,11 @@
 package edu.thu.ss.spec.lang.parser;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 import org.junit.Test;
 
@@ -9,6 +14,22 @@ import edu.thu.ss.spec.meta.MetaRegistry;
 import edu.thu.ss.spec.meta.xml.XMLMetaRegistryParser;
 
 public class PolicyParserTest {
+
+	@Test
+	public void testPaper() {
+		try {
+			PolicyParser parser = new PolicyParser();
+			Policy policy = parser.parse("paper/spark-policy.xml", false);
+			System.out.println(policy);
+
+			XMLMetaRegistryParser metaParser = new XMLMetaRegistryParser();
+			MetaRegistry registry = metaParser.parse("paper/spark-meta.xml");
+			System.out.println(registry);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void testMeta() {
 		try {
 			PolicyParser parser = new PolicyParser();
@@ -34,7 +55,6 @@ public class PolicyParserTest {
 		}
 	}
 
-	@Test
 	public void testRedundancy() {
 		try {
 			PolicyParser parser = new PolicyParser();
@@ -44,7 +64,7 @@ public class PolicyParserTest {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void testGlobalRedundancy() {
 		try {
 			PolicyParser parser = new PolicyParser();
@@ -65,19 +85,30 @@ public class PolicyParserTest {
 		}
 	}
 
-	public static void main1(String[] args) {
-		String path = "/Users/luochen/Documents/Research/DSGen_v1.1.0/data/";
-		File dir = new File(path);
-		File[] files = dir.listFiles();
-		String pattern = "load data  local infile 'pos_0' into table pos_1 "
-				+ " fields terminated by '|'  lines terminated by '\\n';  ";
+	public static void main1(String[] args) throws IOException {
+		String path = "tmp";
 
+		File dir = new File(path);
+
+		File[] files = dir.listFiles();
 		for (File f : files) {
-			if (f.getName().contains(".DS_Store")) {
-				continue;
+			String table = f.getName();
+			BufferedReader reader = new BufferedReader(new FileReader(f));
+			String line = null;
+			System.out.println("<table name=\"" + table + "\">");
+			while ((line = reader.readLine()) != null) {
+				String[] tmp = line.split("\\.");
+				String column = tmp[1];
+				if (column.endsWith(",")) {
+					column = column.substring(0, column.length() - 1);
+				}
+				column = column.substring(1, column.length() - 1);
+				System.out.println("<column name=\"" + column + "\" data-category=\"\" />");
+
 			}
-			String table = f.getName().split("\\.")[0];
-			System.out.println(pattern.replaceAll("pos_0", f.getAbsolutePath()).replaceAll("pos_1", table));
+			System.out.println("</table>");
+			reader.close();
+
 		}
 	}
 }

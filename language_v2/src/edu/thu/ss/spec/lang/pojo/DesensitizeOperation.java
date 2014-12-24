@@ -21,6 +21,7 @@ public class DesensitizeOperation {
 	}
 
 	public static DesensitizeOperation get(String name) {
+		name = name.toLowerCase();
 		DesensitizeOperation op = operations.get(name);
 		if (op == null) {
 			op = new DesensitizeOperation(name);
