@@ -3,6 +3,8 @@ package edu.thu.ss.spec.lang.pojo;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -14,7 +16,7 @@ import edu.thu.ss.spec.util.SetUtil;
  * @author luochen
  *
  */
-public class DataAssociation implements Parsable {
+public class DataAssociation implements Parsable, Writable {
 
 	protected List<DataRef> dataRefs = new ArrayList<>();
 
@@ -42,6 +44,21 @@ public class DataAssociation implements Parsable {
 				dataRefs.add(obj);
 			}
 		}
+	}
+
+	@Override
+	public Element outputElement(Document document) {
+		Element element = document.createElement(ParserConstant.Ele_Policy_Rule_DataAsscoation);
+		for (DataRef ref : dataRefs) {
+			Element refEle = ref.outputElement(document);
+			element.appendChild(refEle);
+		}
+		return element;
+	}
+
+	@Override
+	public Element outputType(Document document, String name) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

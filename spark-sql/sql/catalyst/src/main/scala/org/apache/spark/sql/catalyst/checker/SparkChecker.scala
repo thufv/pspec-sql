@@ -246,7 +246,6 @@ class SparkChecker extends PrivacyChecker with Logging {
       }
     }
     return false;
-
   }
 
   private def checkOperations(de: Desensitization, data: DataCategory, paths: Map[DataCategory, Set[Path]]): Boolean = {

@@ -1,7 +1,9 @@
 package edu.thu.ss.spec.util;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -10,7 +12,11 @@ import java.util.Map;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
@@ -27,6 +33,33 @@ import org.w3c.dom.Node;
 public class XMLUtil {
 
 	private static Map<String, Schema> schemas = new HashMap<>();
+
+	public static Document newDocument() throws Exception {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+		DocumentBuilder builder = factory.newDocumentBuilder();
+		return builder.newDocument();
+	}
+
+	public static void writeDocument(Document document, String path) throws Exception {
+		TransformerFactory tf = TransformerFactory.newInstance();
+		Transformer transformer = tf.newTransformer();
+		DOMSource source = new DOMSource(document);
+		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+
+		File file = new File(path);
+		if (!file.exists()) {
+			File parent = file.getParentFile();
+			if (!parent.exists()) {
+				parent.mkdirs();
+			}
+		}
+
+		PrintWriter writer = new PrintWriter(new FileOutputStream(path));
+		StreamResult result = new StreamResult(writer);
+		transformer.transform(source, result);
+	}
 
 	public static Document parseDocument(URI uri, String xsdPath) throws Exception {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

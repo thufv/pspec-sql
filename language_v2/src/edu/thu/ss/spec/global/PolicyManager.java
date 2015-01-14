@@ -8,8 +8,9 @@ import edu.thu.ss.spec.lang.pojo.Policy;
 
 /**
  * manages all loaded policies
+ * 
  * @author luochen
- *
+ * 
  */
 public class PolicyManager {
 
@@ -21,6 +22,10 @@ public class PolicyManager {
 
 	public static void addPolicy(Policy policy) {
 		policies.put(policy.getPath(), policy);
+	}
+
+	public static void clear() {
+		policies.clear();
 	}
 
 }

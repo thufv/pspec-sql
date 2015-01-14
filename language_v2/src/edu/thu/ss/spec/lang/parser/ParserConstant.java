@@ -2,12 +2,14 @@ package edu.thu.ss.spec.lang.parser;
 
 public interface ParserConstant {
 
+	public static final String Attr_XMLNs = "xmlns";
+
+
 	public static final String Attr_Id = "id";
 	public static final String Attr_Refid = "refid";
 	public static final String Attr_Parent = "parent";
 	public static final String Attr_Vocabulary_Base = "base";
-	public static final String Attr_Restriction_Type = "type";
-	public static final String Attr_Policy_Data_Action = "action";
+	public static final String Attr_Policy_Action = "action";
 	public static final String Attr_Policy_Global = "global";
 
 	public static final String Ele_Contact_Address = "address";
@@ -42,7 +44,7 @@ public interface ParserConstant {
 	public static final String Ele_Policy_Rule_Restriction = "restriction";
 	public static final String Ele_Policy_Rule_Forbid = "forbid";
 	public static final String Ele_Policy_Rule_Desensitize = "desensitize";
-	public static final Object Ele_Policy_Rule_Desensitize_Operation = "operation";
+	public static final String Ele_Policy_Rule_Desensitize_Operation = "operation";
 
 	public static final String Attr_Policy_Vocabulary_location = "location";
 	public static final String Ele_Policy_Vocabulary_User = "user-category-container";
@@ -53,5 +55,7 @@ public interface ParserConstant {
 	public static final String Privacy_Schema_Location = "res/privacy.xsd";
 
 	public static final String Meta_Schema_Location = "res/meta.xsd";
+
+	public static final String XMLNs = "http://www.example.org/privacy";
 
 }

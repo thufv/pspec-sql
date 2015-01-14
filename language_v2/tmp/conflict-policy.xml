@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<privacy-policy xmlns="http://www.example.org/privacy">
+<policy-information id="school-policy">
+<issuer>
+<name>issuer</name>
+<organization>Tsinghua</organization>
+<e-mail>luochen01@vip.qq.com</e-mail>
+<address>Tsinghua</address>
+<country>China</country>
+</issuer>
+</policy-information>
+<vocabulary-ref location="test/res/example-vocabulary.xml">
+<user-category-container refid="social-users"/>
+<data-category-container refid="social-data"/>
+</vocabulary-ref>
+<rules>
+<rule id="rule2#1">
+<user-category-ref refid="teacher"/>
+<data-category-ref action="all" refid="contact">
+<exclude>
+<data-category-ref refid="email"/>
+</exclude>
+</data-category-ref>
+<restriction>
+<desensitize>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule3#1">
+<user-category-ref refid="teacher"/>
+<data-category-ref action="all" refid="phone"/>
+<restriction>
+<desensitize>
+<operation>op2</operation>
+<operation>op3</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule4#1">
+<user-category-ref refid="teacher"/>
+<data-association>
+<data-category-ref action="all" refid="phone"/>
+<data-category-ref action="all" refid="disease"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="phone"/>
+<operation>op3</operation>
+<operation>op4</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule6#1">
+<user-category-ref refid="teacher"/>
+<data-association>
+<data-category-ref action="all" refid="contact"/>
+<data-category-ref action="all" refid="disease"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="disease"/>
+<operation>op1</operation>
+<operation>op2</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="contact"/>
+<operation>op3</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule7#1">
+<user-category-ref refid="teacher"/>
+<data-association>
+<data-category-ref action="all" refid="phone"/>
+<data-category-ref action="all" refid="disease"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="disease"/>
+<operation>op2</operation>
+<operation>op3</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule8#1">
+<user-category-ref refid="teacher"/>
+<data-association>
+<data-category-ref action="all" refid="email"/>
+<data-category-ref action="all" refid="disease"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="disease"/>
+<operation>op1</operation>
+<operation>op3</operation>
+</desensitize>
+</restriction>
+</rule>
+</rules>
+</privacy-policy>

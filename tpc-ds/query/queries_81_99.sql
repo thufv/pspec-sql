@@ -227,7 +227,7 @@ WITH sr_items AS (
 --start query 84 using template query84.tpl
 -- @private, @projection(customer), @condition(demographics, customer_address)
 SELECT
-        top 100 c_customer_id AS customer_id
+        c_customer_id AS customer_id
         ,c_last_name || ', ' || c_first_name AS customername
     FROM
         customer

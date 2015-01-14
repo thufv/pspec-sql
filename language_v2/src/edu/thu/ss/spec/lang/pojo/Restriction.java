@@ -6,6 +6,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -17,7 +19,7 @@ import edu.thu.ss.spec.util.XMLUtil;
  * @author luochen
  *
  */
-public class Restriction implements Parsable {
+public class Restriction implements Parsable, Writable {
 
 	private List<Desensitization> list = new ArrayList<>();
 
@@ -103,7 +105,28 @@ public class Restriction implements Parsable {
 				this.list.add(de);
 			}
 		}
+	}
 
+	@Override
+	public Element outputElement(Document document) {
+		Element element = document.createElement(ParserConstant.Ele_Policy_Rule_Restriction);
+
+		if (this.forbid) {
+			Element forbidEle = document.createElement(ParserConstant.Ele_Policy_Rule_Forbid);
+			element.appendChild(forbidEle);
+		} else {
+			for (Desensitization de : desensitizations) {
+				if (de != null) {
+					element.appendChild(de.outputElement(document));
+				}
+			}
+		}
+		return element;
+	}
+
+	@Override
+	public Element outputType(Document document, String name) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

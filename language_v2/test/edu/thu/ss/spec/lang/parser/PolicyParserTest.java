@@ -15,7 +15,6 @@ import edu.thu.ss.spec.meta.xml.XMLMetaRegistryParser;
 
 public class PolicyParserTest {
 
-	@Test
 	public void testPaper() {
 		try {
 			PolicyParser parser = new PolicyParser();

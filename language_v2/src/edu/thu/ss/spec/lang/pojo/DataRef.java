@@ -2,6 +2,8 @@ package edu.thu.ss.spec.lang.pojo;
 
 import java.util.Set;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -80,7 +82,7 @@ public class DataRef extends CategoryRef<DataCategory> {
 		if (globalValue != null) {
 			global = Boolean.valueOf(globalValue);
 		}
-		String actionValue = XMLUtil.getAttrValue(refNode, ParserConstant.Attr_Policy_Data_Action);
+		String actionValue = XMLUtil.getAttrValue(refNode, ParserConstant.Attr_Policy_Action);
 		if (actionValue != null) {
 			this.action = Action.get(actionValue);
 		}
@@ -98,6 +100,30 @@ public class DataRef extends CategoryRef<DataCategory> {
 				excludeRefs.add(ref);
 			}
 		}
+	}
+
+	@Override
+	public Element outputElement(Document document) {
+		Element element = super.outputType(document, ParserConstant.Ele_Policy_Rule_DataRef);
+
+		if (this.global) {
+			element.setAttribute(ParserConstant.Attr_Policy_Global, String.valueOf(this.global));
+		}
+		if (this.action != null) {
+			element.setAttribute(ParserConstant.Attr_Policy_Action, this.action.id);
+		}
+
+		if (this.excludes.size() > 0) {
+			Element excludeEle = document.createElement(ParserConstant.Ele_Policy_Rule_Exclude);
+			element.appendChild(excludeEle);
+
+			for (DataCategory data : excludes) {
+				Element dataEle = document.createElement(ParserConstant.Ele_Policy_Rule_DataRef);
+				dataEle.setAttribute(ParserConstant.Attr_Refid, data.id);
+				excludeEle.appendChild(dataEle);
+			}
+		}
+		return element;
 	}
 
 	@Override

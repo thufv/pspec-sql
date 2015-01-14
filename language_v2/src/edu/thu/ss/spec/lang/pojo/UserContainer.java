@@ -1,5 +1,7 @@
 package edu.thu.ss.spec.lang.pojo;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -27,6 +29,17 @@ public class UserContainer extends CategoryContainer<UserCategory> {
 				set(user.getId(), user);
 			}
 		}
+	}
+
+	@Override
+	public Element outputElement(Document document) {
+		Element element = super.outputType(document, ParserConstant.Ele_Vocabulary_User_Category_Container);
+
+		for (UserCategory user : categories.values()) {
+			Element userEle = user.outputElement(document);
+			element.appendChild(userEle);
+		}
+		return element;
 	}
 
 	@Override

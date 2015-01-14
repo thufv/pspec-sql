@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -74,6 +76,21 @@ public class DataCategory extends Category<DataCategory> {
 				addOperation(op);
 			}
 		}
+	}
+
+	@Override
+	public Element outputElement(Document document) {
+		Element element = super.outputType(document, ParserConstant.Ele_Vocabulary_Data_Category);
+		if (this.ops != null && this.ops.size() > 0) {
+			Element opsEle = document.createElement(ParserConstant.Ele_Vocabulary_Desensitize_Ops);
+			element.appendChild(opsEle);
+			for (DesensitizeOperation op : ops) {
+				Element opEle = document.createElement(ParserConstant.Ele_Vocabulary_Desensitize_Op);
+				opEle.appendChild(document.createTextNode(op.name));
+				opsEle.appendChild(opEle);
+			}
+		}
+		return element;
 	}
 
 	@Override

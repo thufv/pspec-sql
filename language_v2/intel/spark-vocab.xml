@@ -14,9 +14,10 @@
 	</vocabulary-information>
 
 	<data-category-container id="tpcds-data" base="default-data">
+		<data-category id="email" parent="ka"></data-category>
+		<data-category id="login" parent="ka"></data-category>
+
 		<data-category id="address" parent="qi"></data-category>
-		<data-category id="email" parent="qi"></data-category>
-		<data-category id="login" parent="qi"></data-category>
 		<data-category id="gender" parent="qi"></data-category>
 		<data-category id="name" parent="qi"></data-category>
 		<data-category id="birth" parent="qi"></data-category>

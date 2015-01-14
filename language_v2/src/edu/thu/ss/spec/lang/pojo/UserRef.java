@@ -1,5 +1,7 @@
 package edu.thu.ss.spec.lang.pojo;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -32,6 +34,23 @@ public class UserRef extends CategoryRef<UserCategory> {
 				excludeRefs.add(ref);
 			}
 		}
+	}
+
+	@Override
+	public Element outputElement(Document document) {
+		Element element = super.outputType(document, ParserConstant.Ele_Policy_Rule_UserRef);
+
+		if (this.excludes.size() > 0) {
+			Element excludeEle = document.createElement(ParserConstant.Ele_Policy_Rule_Exclude);
+			element.appendChild(excludeEle);
+
+			for (UserCategory user : excludes) {
+				Element userEle = document.createElement(ParserConstant.Ele_Policy_Rule_UserRef);
+				userEle.setAttribute(ParserConstant.Attr_Refid, user.id);
+				excludeEle.appendChild(userEle);
+			}
+		}
+		return element;
 	}
 
 	@Override

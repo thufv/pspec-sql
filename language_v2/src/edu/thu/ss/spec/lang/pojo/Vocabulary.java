@@ -8,8 +8,9 @@ import org.w3c.dom.Node;
 
 /**
  * class for vocabulary
+ * 
  * @author luochen
- *
+ * 
  */
 public class Vocabulary {
 
@@ -35,6 +36,14 @@ public class Vocabulary {
 
 	public URI getPath() {
 		return path;
+	}
+
+	public void addUserContainer(UserContainer container) {
+		userContainers.put(container.id, container);
+	}
+
+	public void addDataContainer(DataContainer container) {
+		dataContainers.put(container.id, container);
 	}
 
 	public void setUserContainers(Map<String, UserContainer> userContainers) {

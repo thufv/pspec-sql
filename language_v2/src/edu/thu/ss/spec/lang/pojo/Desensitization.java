@@ -5,7 +5,14 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import edu.thu.ss.spec.lang.parser.ParserConstant;
 import edu.thu.ss.spec.util.SetUtil;
+import edu.thu.ss.spec.util.XMLUtil;
 
 /**
  * class for desensitization, requires some data categories must be desensitized with
@@ -13,7 +20,7 @@ import edu.thu.ss.spec.util.SetUtil;
  * @author luochen
  *
  */
-public class Desensitization {
+public class Desensitization implements Writable {
 
 	protected String dataRefId;
 
@@ -40,6 +47,30 @@ public class Desensitization {
 			de.operations = new LinkedHashSet<>(this.operations);
 		}
 		return de;
+	}
+
+	@Override
+	public Element outputElement(Document document) {
+		Element element = document.createElement(ParserConstant.Ele_Policy_Rule_Desensitize);
+
+		if (this.dataRef != null) {
+			Element refEle = document.createElement(ParserConstant.Ele_Policy_Rule_DataRef);
+			refEle.setAttribute(ParserConstant.Attr_Refid, this.dataRef.refid);
+			element.appendChild(refEle);
+		}
+
+		for (DesensitizeOperation op : operations) {
+			Element opEle = document.createElement(ParserConstant.Ele_Policy_Rule_Desensitize_Operation);
+			opEle.appendChild(document.createTextNode(op.name));
+			element.appendChild(opEle);
+		}
+
+		return element;
+	}
+
+	@Override
+	public Element outputType(Document document, String name) {
+		throw new UnsupportedOperationException();
 	}
 
 	public void setOperations(Set<DesensitizeOperation> operations) {

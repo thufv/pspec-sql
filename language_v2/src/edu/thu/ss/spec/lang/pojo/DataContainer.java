@@ -1,5 +1,7 @@
 package edu.thu.ss.spec.lang.pojo;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -32,6 +34,17 @@ public class DataContainer extends CategoryContainer<DataCategory> {
 	@Override
 	public DataContainer getBaseContainer() {
 		return (DataContainer) baseContainer;
+	}
+
+	@Override
+	public Element outputElement(Document document) {
+		Element element = super.outputType(document, ParserConstant.Ele_Vocabulary_Data_Category_Container);
+
+		for (DataCategory data : categories.values()) {
+			Element dataEle = data.outputElement(document);
+			element.appendChild(dataEle);
+		}
+		return element;
 	}
 
 }

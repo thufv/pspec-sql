@@ -1,5 +1,7 @@
 package edu.thu.ss.spec.lang.pojo;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -10,7 +12,7 @@ import edu.thu.ss.spec.lang.parser.ParserConstant;
  * @author luochen
  *
  */
-public class DescribedObject extends IdentifiedObject {
+public abstract class DescribedObject extends IdentifiedObject {
 	protected String shortDescription;
 	protected String longDescription;
 
@@ -30,6 +32,22 @@ public class DescribedObject extends IdentifiedObject {
 		this.longDescription = longDescription;
 	}
 
+	public Element outputType(Document document, String name) {
+		Element element = super.outputType(document, name);
+		if (this.shortDescription != null) {
+			Element shortEle = document.createElement(ParserConstant.Ele_Short_Description);
+			shortEle.appendChild(document.createTextNode(shortDescription));
+			element.appendChild(shortEle);
+		}
+		if (this.longDescription != null) {
+			Element longEle = document.createElement(ParserConstant.Ele_Long_Description);
+			longEle.appendChild(document.createTextNode(longDescription));
+			element.appendChild(longEle);
+		}
+
+		return element;
+	}
+
 	@Override
 	public void parse(Node objNode) {
 		super.parse(objNode);
@@ -43,7 +61,6 @@ public class DescribedObject extends IdentifiedObject {
 			} else if (ParserConstant.Ele_Long_Description.equals(name)) {
 				this.longDescription = node.getTextContent();
 			}
-
 		}
 	}
 

@@ -10,6 +10,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.thu.ss.spec.lang.exp.ExperimentStat;
+import edu.thu.ss.spec.lang.exp.RedundancyStat;
 import edu.thu.ss.spec.lang.pojo.Action;
 import edu.thu.ss.spec.lang.pojo.DataAssociation;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
@@ -25,10 +27,11 @@ import edu.thu.ss.spec.util.Z3Util;
 import edu.thu.ss.spec.util.SetUtil.SetRelation;
 
 /**
- * performs policy redundancy analysis, for all rule r1 and r2,
- * if r1 covers r2, then r2 can be removed.
+ * performs policy redundancy analysis, for all rule r1 and r2, if r1 covers r2,
+ * then r2 can be removed.
+ * 
  * @author luochen
- *
+ * 
  */
 public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 
@@ -37,7 +40,8 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 		public List<UserRef> userRefs;
 		public DataRef dataRef;
 
-		public SimplificationLog(ExpandedRule rule, List<UserRef> userRefs, DataRef dataRef) {
+		public SimplificationLog(ExpandedRule rule, List<UserRef> userRefs,
+				DataRef dataRef) {
 			this.rule = rule;
 			this.userRefs = userRefs;
 			this.dataRef = dataRef;
@@ -45,7 +49,8 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 
 	}
 
-	protected static Logger logger = LoggerFactory.getLogger(BaseRedundancyAnalyzer.class);
+	protected static Logger logger = LoggerFactory
+			.getLogger(BaseRedundancyAnalyzer.class);
 
 	protected List<SimplificationLog> logs = new LinkedList<>();
 
@@ -57,12 +62,25 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 
 	protected final boolean[] covered = new boolean[Max_Dimension];
 
+	protected boolean simplify = false;
+
 	/**
 	 * initialized by sub classes
 	 */
 	protected InclusionUtil instance = null;
 
+	protected ExperimentStat stat = null;
+	protected int n;
+
+	@Override
+	public boolean analyze(Policy policy, ExperimentStat stat, int n) {
+		this.stat = stat;
+		this.n = n;
+		return analyze(policy);
+	}
+
 	public boolean analyze(Policy policy) {
+		int count = 0;
 		List<ExpandedRule> rules = policy.getExpandedRules();
 
 		boolean[] removable = new boolean[rules.size()];
@@ -91,9 +109,12 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 				for (int index : list) {
 					removable[index] = true;
 					ExpandedRule rule = rules.get(index);
-					logger.warn("The rule: {} is redundant since it is covered by rule: {}, consider revise your policy.",
-							rule.getRuleId(), prule.getRuleId());
+					logger
+							.warn(
+									"The rule: {} is redundant since it is covered by rule: {}, consider revise your policy.",
+									rule.getRuleId(), prule.getRuleId());
 				}
+				count += list.size();
 			}
 		}
 		Iterator<ExpandedRule> it = rules.iterator();
@@ -106,12 +127,19 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 			index++;
 		}
 
+		logger.error("{} redundant rules detected.", count);
+		if (stat != null) {
+			RedundancyStat rStat = (RedundancyStat) stat;
+			rStat.rules[n] = count;
+		}
+
 		commit();
 		return false;
 	}
 
 	/**
 	 * check whether target is redundant w.r.t rule
+	 * 
 	 * @param target
 	 * @param rule
 	 * @return redundant
@@ -125,7 +153,8 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 	}
 
 	/**
-	 * both rule1 and rule2 are single. Check rule1 implies rule2, i.e., whether rule2 is redundant
+	 * both rule1 and rule2 are single. Check rule1 implies rule2, i.e., whether
+	 * rule2 is redundant
 	 * 
 	 * @param rule1
 	 * @param rule2
@@ -135,8 +164,9 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 		if (rule1.isAssociation()) {
 			return false;
 		}
-		if (instance.isGlobal(rule2.getDataRef()) && !instance.isGlobal(rule1.getDataRef())) {
-			//global rule cannot be covered by local rules.
+		if (instance.isGlobal(rule2.getDataRef())
+				&& !instance.isGlobal(rule1.getDataRef())) {
+			// global rule cannot be covered by local rules.
 			return false;
 		}
 		// pre-test, to filter out result early.
@@ -163,19 +193,24 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 			return false;
 		}
 
-		//only 1 restriction each
+		// only 1 restriction each
 		Restriction[] res1 = rule1.getRestrictions();
 		Restriction[] res2 = rule2.getRestrictions();
 		if (!instance.singleStricterThan(res1[0], res2[0])) {
 			return false;
 		}
 
-		if (userRelation.equals(SetRelation.contain) && dataRelation.equals(SetRelation.contain)) {
+		if (userRelation.equals(SetRelation.contain)
+				&& dataRelation.equals(SetRelation.contain)) {
 			return true;
-		} else if (userRelation.equals(SetRelation.contain) && dataRelation.equals(SetRelation.intersect)) {
-			logs.add(new SimplificationLog(rule2, null, ref1));
-		} else if (userRelation.equals(SetRelation.intersect) && dataRelation.equals(SetRelation.contain)) {
-			logs.add(new SimplificationLog(rule2, rule1.getUserRefs(), null));
+		} else if (simplify) {
+			if (userRelation.equals(SetRelation.contain)
+					&& dataRelation.equals(SetRelation.intersect)) {
+				logs.add(new SimplificationLog(rule2, null, ref1));
+			} else if (userRelation.equals(SetRelation.intersect)
+					&& dataRelation.equals(SetRelation.contain)) {
+				logs.add(new SimplificationLog(rule2, rule1.getUserRefs(), null));
+			}
 		}
 		return false;
 	}

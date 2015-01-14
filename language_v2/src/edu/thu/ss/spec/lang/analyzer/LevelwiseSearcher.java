@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * an algorithm framework for level-wise search, providing basic level generation functionanlity.
  * 
@@ -11,6 +14,8 @@ import java.util.Set;
  * 
  */
 public abstract class LevelwiseSearcher {
+
+	private static Logger logger = LoggerFactory.getLogger(LevelwiseSearcher.class);
 
 	/**
 	 * search key mainly contains an array of rule indices.
@@ -147,6 +152,7 @@ public abstract class LevelwiseSearcher {
 		int level = 1;
 		Set<SearchKey> currentLevel = new LinkedHashSet<>();
 		initLevel(currentLevel);
+		logger.error("Finish generating level 1 with {} elements.", currentLevel.size());
 
 		while (currentLevel.size() > 0 && level < maxLevel) {
 			beginLevel(level + 1);
@@ -155,6 +161,8 @@ public abstract class LevelwiseSearcher {
 			level++;
 			currentLevel = nextLevel;
 			endLevel(level);
+
+			logger.error("Finish generating level {} with {} elements.", level, currentLevel.size());
 		}
 	}
 

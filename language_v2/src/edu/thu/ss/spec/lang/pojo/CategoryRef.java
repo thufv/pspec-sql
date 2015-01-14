@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -122,6 +124,13 @@ public abstract class CategoryRef<T extends Category<T>> extends ObjectRef {
 				parseExclude(node);
 			}
 		}
+	}
+
+	@Override
+	public Element outputType(Document document, String name) {
+		Element element = document.createElement(name);
+		element.setAttribute(ParserConstant.Attr_Refid, category.id);
+		return element;
 	}
 
 	abstract protected void parseExclude(Node node);

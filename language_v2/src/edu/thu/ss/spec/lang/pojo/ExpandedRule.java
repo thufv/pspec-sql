@@ -4,6 +4,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import edu.thu.ss.spec.lang.parser.ParserConstant;
 import edu.thu.ss.spec.util.SetUtil;
 
 /**
@@ -16,7 +20,7 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 	/**
 	 * the number of expanded rule from {@link #ruleId}
 	 */
-	protected int num;
+	protected int num = 1;
 
 	protected Restriction[] restrictions;
 
@@ -32,10 +36,15 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 	 */
 	protected DataRef dataRef;
 
+	protected List<DataRef> rawDataRefs;
+
 	/**
 	 * only for data association
 	 */
 	protected DataAssociation association;
+
+	public ExpandedRule() {
+	}
 
 	private ExpandedRule(Rule rule, int num) {
 		this.id = rule.getId();
@@ -68,8 +77,51 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 	}
 
 	@Override
+	public Element outputElement(Document document) {
+		Element element = super.outputType(document, ParserConstant.Ele_Policy_Rule);
+		element.setAttribute(ParserConstant.Attr_Id, getRuleId());
+
+		for (UserRef ref : userRefs) {
+			Element refEle = ref.outputElement(document);
+			element.appendChild(refEle);
+		}
+
+		if (this.dataRef != null) {
+			//TODO
+			if (this.rawDataRefs != null) {
+				for (DataRef ref : rawDataRefs) {
+					Element refEle = ref.outputElement(document);
+					element.appendChild(refEle);
+				}
+			} else {
+				Element refEle = dataRef.outputElement(document);
+				element.appendChild(refEle);
+			}
+
+		} else {
+			Element assocEle = association.outputElement(document);
+			element.appendChild(assocEle);
+		}
+
+		for (Restriction res : restrictions) {
+			Element resEle = res.outputElement(document);
+			element.appendChild(resEle);
+		}
+		return element;
+
+	}
+
+	@Override
 	public int compareTo(ExpandedRule o) {
 		return Integer.compare(this.getDimension(), o.getDimension());
+	}
+
+	public void setRawDataRefs(List<DataRef> rawDataRefs) {
+		this.rawDataRefs = rawDataRefs;
+	}
+
+	public List<DataRef> getRawDataRefs() {
+		return rawDataRefs;
 	}
 
 	public Set<UserCategory> getUsers() {
@@ -98,6 +150,22 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 
 	public DataAssociation getAssociation() {
 		return association;
+	}
+
+	public void setAssociation(DataAssociation association) {
+		this.association = association;
+	}
+
+	public void setRestrictions(Restriction[] restrictions) {
+		this.restrictions = restrictions;
+	}
+
+	public void setUserRefs(List<UserRef> userRefs) {
+		this.userRefs = userRefs;
+	}
+
+	public void setDataRef(DataRef dataRef) {
+		this.dataRef = dataRef;
 	}
 
 	public boolean contains(UserCategory user) {
@@ -166,6 +234,5 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 			sb.append("\n\t");
 		}
 		return sb.toString();
-
 	}
 }

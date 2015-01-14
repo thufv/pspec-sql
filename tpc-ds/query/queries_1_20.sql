@@ -646,7 +646,7 @@ ORDER BY
  --start query 7 using template query7.tpl
  -- @private, @condition(demographics)
  SELECT
-    top 100 i_item_id ,
+    i_item_id ,
     AVG(ss_quantity) agg1 ,
     AVG(ss_list_price) agg2 ,
     AVG(ss_coupon_amt) agg3 ,

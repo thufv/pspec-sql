@@ -13,8 +13,9 @@ import edu.thu.ss.spec.meta.MetaRegistry;
 
 /**
  * manages all meta registries
+ * 
  * @author luochen
- *
+ * 
  */
 public class MetaManager {
 
@@ -44,12 +45,14 @@ public class MetaManager {
 
 	/**
 	 * return whether policy is applicable for {database, table}
+	 * 
 	 * @param policy
 	 * @param database
 	 * @param table
 	 * @return
 	 */
-	public static synchronized boolean applicable(Policy policy, String database, String table) {
+	public static synchronized boolean applicable(Policy policy, String database,
+			String table) {
 		MetaRegistry meta = get(database, table);
 		if (meta == null) {
 			return false;
@@ -59,8 +62,10 @@ public class MetaManager {
 
 	/**
 	 * add a parsed registry, and update {@link MetaManager#registryIndex}
+	 * 
 	 * @param registry
-	 * @throws RuntimeException if a table is covered by multiple registries
+	 * @throws RuntimeException
+	 *           if a table is covered by multiple registries
 	 */
 	public static synchronized void add(MetaRegistry registry) {
 		registries.add(registry);
@@ -73,7 +78,8 @@ public class MetaManager {
 			}
 			for (String table : e.getValue()) {
 				if (index.containsKey(table)) {
-					throw new RuntimeException("database: " + e.getKey() + " table: " + table + " is already defined.");
+					throw new RuntimeException("database: " + e.getKey() + " table: "
+							+ table + " is already defined.");
 				}
 				index.put(table, registry);
 			}

@@ -6,6 +6,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import edu.thu.ss.spec.lang.parser.ParserConstant;
@@ -13,8 +15,9 @@ import edu.thu.ss.spec.util.XMLUtil;
 
 /**
  * a base class for category container
+ * 
  * @author luochen
- *
+ * 
  */
 public abstract class CategoryContainer<T extends Category<T>> extends DescribedObject {
 
@@ -35,8 +38,14 @@ public abstract class CategoryContainer<T extends Category<T>> extends Described
 
 	protected boolean leaf = true;
 
+	public void add(T c) {
+		this.set(c.id, c);
+		c.containerId = this.id;
+	}
+
 	/**
 	 * lookup a category by id recursively.
+	 * 
 	 * @param id
 	 * @return category
 	 */
@@ -105,8 +114,16 @@ public abstract class CategoryContainer<T extends Category<T>> extends Described
 	@Override
 	public void parse(Node categoryNode) {
 		super.parse(categoryNode);
-
 		this.baseId = XMLUtil.getAttrValue(categoryNode, ParserConstant.Attr_Vocabulary_Base);
+	}
+
+	@Override
+	public Element outputType(Document document, String name) {
+		Element element = super.outputType(document, name);
+		if (this.baseId != null) {
+			element.setAttribute(ParserConstant.Attr_Vocabulary_Base, this.baseId);
+		}
+		return element;
 	}
 
 	@Override

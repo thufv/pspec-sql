@@ -4,10 +4,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * a base class of category, 
- * each category is global unique by {@link Category#id} and {@link Category#containerId}
+ * a base class of category, each category is global unique by
+ * {@link Category#id} and {@link Category#containerId}
+ * 
  * @author luochen
- *
+ * 
  */
 public abstract class Category<T extends Category<T>> extends HierarchicalObject<T> {
 
@@ -33,8 +34,8 @@ public abstract class Category<T extends Category<T>> extends HierarchicalObject
 	}
 
 	private void collectDescendants(Set<T> set, T t, CategoryContainer<T> container) {
-		set.add(t);
 		if (t.children == null) {
+			set.add(t);
 			return;
 		}
 		for (T child : t.children) {

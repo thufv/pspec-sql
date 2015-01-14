@@ -5,7 +5,7 @@
 	<classpathentry excluding="**/*.java" kind="src" path="target/maven-shared-archive-resources"/>
 	<classpathentry kind="src" path="src/test/scala"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/hadoop-client-1.2.1.jar"/>
-	<classpathentry kind="lib" path="../../lib_managed/jars/hadoop-core-1.2.1.jar"/>
+	<classpathentry kind="lib" path="../../lib_managed/jars/hadoop-core-1.2.1.jar" sourcepath="/usr/dev/hadoop-1.2.1/src"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/xmlenc-0.52.jar"/>
 	<classpathentry kind="lib" path="../../lib_managed/bundles/jersey-core-1.8.jar"/>
 	<classpathentry kind="lib" path="../../lib_managed/bundles/jersey-json-1.8.jar"/>

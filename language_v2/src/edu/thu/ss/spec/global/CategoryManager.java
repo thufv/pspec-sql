@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import edu.thu.ss.spec.lang.pojo.DataContainer;
 import edu.thu.ss.spec.lang.pojo.UserContainer;
 import edu.thu.ss.spec.lang.pojo.Vocabulary;
+import edu.thu.ss.spec.util.XMLUtil;
 
 /**
  * manage global user/data container and parsed vocabularies.
@@ -67,7 +68,14 @@ public class CategoryManager {
 	}
 
 	public static Vocabulary getVocab(String path) throws Exception {
-		return parsedVocab.get(new URI(path).normalize());
+		return parsedVocab.get(XMLUtil.toUri(path));
+	}
+
+	public static void clear() {
+		parsedVocab.clear();
+		users.clear();
+		datas.clear();
+
 	}
 
 }

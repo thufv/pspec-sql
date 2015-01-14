@@ -123,6 +123,14 @@ public class Policy {
 		this.userContainers = userContainers;
 	}
 
+	public void setUserContainerRef(String userContainerRef) {
+		this.userContainerRef = userContainerRef;
+	}
+
+	public void setDataContainerRef(String dataContainerRef) {
+		this.dataContainerRef = dataContainerRef;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

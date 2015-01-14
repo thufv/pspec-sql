@@ -29,8 +29,9 @@ import edu.thu.ss.spec.util.XMLUtil;
 
 /**
  * parses and analyzes vocabulary
+ * 
  * @author luochen
- *
+ * 
  */
 public class VocabularyParser implements ParserConstant {
 
@@ -126,13 +127,14 @@ public class VocabularyParser implements ParserConstant {
 
 	/**
 	 * load all referred {@link Vocabulary} (chain)
+	 * 
 	 * @param uri
 	 * @throws Exception
 	 */
 	private void loadVocabularies(URI uri) throws Exception {
 		while (uri != null) {
 			Vocabulary vocabulary = CategoryManager.getParsedVocab().get(uri);
-			//check vocabulary is parsed before
+			// check vocabulary is parsed before
 			if (CategoryManager.containsVocab(uri)) {
 				vocabularies.put(uri, vocabulary);
 			} else {
@@ -153,6 +155,7 @@ public class VocabularyParser implements ParserConstant {
 
 	/**
 	 * parse {@link Info} from {@link Vocabulary}
+	 * 
 	 * @param vocabulary
 	 * @throws Exception
 	 */
@@ -228,7 +231,8 @@ public class VocabularyParser implements ParserConstant {
 	}
 
 	private void addUserContainer(UserContainer container, Vocabulary vocabulary) {
-		if (userContainers.containsKey(container.getId()) || CategoryManager.getUsers().containsKey(container.getId())) {
+		if (userContainers.containsKey(container.getId())
+				|| CategoryManager.getUsers().containsKey(container.getId())) {
 			logger.error("Duplicate UserCategoryContainer: {} detected, please fix.", container.getId());
 			error = true;
 		}
@@ -237,7 +241,8 @@ public class VocabularyParser implements ParserConstant {
 	}
 
 	private void addDataContainer(DataContainer container, Vocabulary vocabulary) {
-		if (dataContainers.containsKey(container.getId()) || CategoryManager.getDatas().containsKey(container.getId())) {
+		if (dataContainers.containsKey(container.getId())
+				|| CategoryManager.getDatas().containsKey(container.getId())) {
 			logger.error("Duplicate UserCategoryContainer: {} detected, please fix.", container.getId());
 			error = true;
 		}
@@ -245,37 +250,42 @@ public class VocabularyParser implements ParserConstant {
 		vocabulary.getDataContainers().put(container.getId(), container);
 	}
 
-	/**resolve reference recursively
+	/**
+	 * resolve reference recursively
+	 * 
 	 * @param container
 	 * @param containers
-	 * @param baseIds: used for detect cycle reference
+	 * @param baseIds
+	 *          : used for detect cycle reference
 	 * @throws ParsingException
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private <T extends CategoryContainer> void resolveReference(CategoryContainer container, Map<String, T> containers,
-			Set<String> baseIds) throws ParsingException {
+	private <T extends CategoryContainer> void resolveReference(CategoryContainer container,
+			Map<String, T> containers, Set<String> baseIds) throws ParsingException {
 		if (container.isResolved()) {
 			return;
 		}
 		String base = container.getBase();
 		if (base != null) {
-			//resolve base container
+			// resolve base container
 			T baseContainer = containers.get(base);
 			if (baseContainer == null) {
-				logger.error("Fail to locate base category container: {} for category container: {}.", base, container.getId());
+				logger.error("Fail to locate base category container: {} for category container: {}.",
+						base, container.getId());
 				error = true;
 				return;
 			}
 			if (baseIds.contains(base)) {
 				error = true;
-				throw new ParsingException("Cycle reference of category container detected: " + baseIds.toString());
+				throw new ParsingException("Cycle reference of category container detected: "
+						+ baseIds.toString());
 			}
 			baseIds.add(base);
 			resolveReference(baseContainer, containers, baseIds);
 			baseIds.remove(base);
 			container.setBaseContainer(baseContainer);
 		}
-		//resolve parent reference of all categories
+		// resolve parent reference of all categories
 		for (Object obj : container.getCategories()) {
 			Category category = (Category) obj;
 			String parentId = category.getParentId();
@@ -284,10 +294,12 @@ public class VocabularyParser implements ParserConstant {
 			} else {
 				Category parent = resolveParent(parentId, container);
 				if (parent == null) {
-					logger.error("Fail to locate parent category: {} for category: {}.", category.getId(), parentId);
+					logger.error("Fail to locate parent category: {} for category: {}.", parentId,
+							category.getId());
 					error = true;
+				} else {
+					parent.buildRelation(category);
 				}
-				parent.buildRelation(category);
 			}
 		}
 		container.setResolved(true);
@@ -308,11 +320,13 @@ public class VocabularyParser implements ParserConstant {
 
 	/**
 	 * Resolve all references (container and category) in containers
+	 * 
 	 * @param containers
 	 * @throws ParsingException
 	 */
 	@SuppressWarnings({ "rawtypes" })
-	private <T extends CategoryContainer> void resolveReference(Map<String, T> containers) throws ParsingException {
+	private <T extends CategoryContainer> void resolveReference(Map<String, T> containers)
+			throws ParsingException {
 		for (String id : containers.keySet()) {
 			CategoryContainer container = containers.get(id);
 			if (container.isResolved()) {
@@ -353,7 +367,8 @@ public class VocabularyParser implements ParserConstant {
 			count += countCategories(root);
 		}
 		if (count < categories.size()) {
-			logger.error("Cycle reference of categories detected in container: {}, please fix.", container.getId());
+			logger.error("Cycle reference of categories detected in container: {}, please fix.",
+					container.getId());
 		}
 	}
 

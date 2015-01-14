@@ -10,6 +10,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.thu.ss.spec.lang.exp.ConsistencyStat;
 import edu.thu.ss.spec.lang.pojo.Action;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
@@ -19,28 +20,42 @@ import edu.thu.ss.spec.util.SetUtil;
 
 /**
  * an enhanced consistency search with caching results in each level.
+ * 
  * @author luochen
- *
+ * 
  */
 public class CachedConsistencySearcher extends ConsistencySearcher {
-	private static Logger logger = LoggerFactory.getLogger(CachedConsistencySearcher.class);
+	private static Logger logger = LoggerFactory
+			.getLogger(CachedConsistencySearcher.class);
 
 	private Map<SearchKey, RuleObject> cache;
 	private Map<SearchKey, RuleObject> nextCache = new HashMap<>();
+	private int conflicts = 0;
+	private ConsistencyStat stat;
+	private int n;
 
 	public CachedConsistencySearcher(Policy policy) {
 		super(policy);
+	}
+
+	public CachedConsistencySearcher(Policy policy, ConsistencyStat stat, int n) {
+		super(policy);
+		this.stat = stat;
+		this.n = n;
 	}
 
 	@Override
 	protected void beginLevel(int level) {
 		cache = nextCache;
 		nextCache = new HashMap<>();
-
+		conflicts = 0;
 	}
 
 	@Override
 	protected void endLevel(int level) {
+		logger.error("{} conflict rules detected in levle: {}", conflicts, level);
+		stat.levels[n] = level;
+		stat.conflicts[n] += conflicts;
 	};
 
 	@Override
@@ -70,7 +85,8 @@ public class CachedConsistencySearcher extends ConsistencySearcher {
 					continue;
 				}
 				match = true;
-				List<Set<DesensitizeOperation>> list = checkRestriction(key, t1.list, t2.list, datas);
+				List<Set<DesensitizeOperation>> list = checkRestriction(key, t1.list,
+						t2.list, datas);
 				if (list == null) {
 					return false;
 				}
@@ -86,16 +102,21 @@ public class CachedConsistencySearcher extends ConsistencySearcher {
 
 		result.triples = triples.toArray(new Triple[triples.size()]);
 		nextCache.put(key, result);
+
 		return true;
 	}
 
-	private List<Set<DesensitizeOperation>> checkRestriction(SearchKey key, List<Set<DesensitizeOperation>> list1,
+	private List<Set<DesensitizeOperation>> checkRestriction(SearchKey key,
+			List<Set<DesensitizeOperation>> list1,
 			List<Set<DesensitizeOperation>> list2, Set<DataCategory> datas) {
 		if (list1 == null || list2 == null) {
 			if (!(list1 == null && list2 == null)) {
 				int index = (list1 == null) ? key.index[0] : key.index[1];
-				logger.error("Possible conflicts between expanded rules: {}, since rule :#{} forbids the data access.",
-						SetUtil.toString(key.index, sortedRules), sortedRules.get(index).getRuleId());
+				logger
+						.warn(
+								"Possible conflicts between expanded rules: {}, since rule :#{} forbids the data access.",
+								SetUtil.toString(key.index, sortedRules), sortedRules
+										.get(index).getRuleId());
 			}
 			return null;
 		}
@@ -109,9 +130,12 @@ public class CachedConsistencySearcher extends ConsistencySearcher {
 				} else {
 					Set<DesensitizeOperation> ops = SetUtil.intersect(ops1, ops2);
 					if (ops.size() == 0) {
-						logger.error(
-								"Desensitize operation conflicts detected between expanded sortedRules: #{} for data categories: {}.",
-								SetUtil.toString(key.index, sortedRules), SetUtil.format(datas, ","));
+						conflicts++;
+						logger
+								.warn(
+										"Desensitize operation conflicts detected between expanded rules: #{} for data categories: {}.",
+										SetUtil.toString(key.index, sortedRules),
+										SetUtil.format(datas, ","));
 						return null;
 					}
 					SetUtil.mergeOperations(list, ops);
@@ -130,7 +154,8 @@ public class CachedConsistencySearcher extends ConsistencySearcher {
 		objs[1] = cache.get(key);
 		if (objs[1] == null) {
 			if (key.index.length > 2) {
-				throw new RuntimeException("Invalid cache state for key: " + Arrays.toString(key.index));
+				throw new RuntimeException("Invalid cache state for key: "
+						+ Arrays.toString(key.index));
 			}
 			objs[1] = ruleObjects[key.getLast()];
 		}

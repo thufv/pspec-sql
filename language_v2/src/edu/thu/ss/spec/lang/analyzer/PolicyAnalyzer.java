@@ -1,12 +1,14 @@
 package edu.thu.ss.spec.lang.analyzer;
 
+import edu.thu.ss.spec.lang.exp.ExperimentStat;
 import edu.thu.ss.spec.lang.pojo.Policy;
 
 /**
- * An interface for analyzing policy.
- * All implemented analyzers should be composed sequentially.
+ * An interface for analyzing policy. All implemented analyzers should be
+ * composed sequentially.
+ * 
  * @author luochen
- *
+ * 
  */
 public interface PolicyAnalyzer {
 
@@ -16,8 +18,11 @@ public interface PolicyAnalyzer {
 	 */
 	public boolean analyze(Policy policy);
 
+	public boolean analyze(Policy policy, ExperimentStat stat, int n);
+
 	/**
 	 * whether stop policy parser when error occurred.
+	 * 
 	 * @return boolean
 	 */
 	public boolean stopOnError();

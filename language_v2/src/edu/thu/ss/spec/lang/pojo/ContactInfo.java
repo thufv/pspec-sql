@@ -1,5 +1,7 @@
 package edu.thu.ss.spec.lang.pojo;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -8,9 +10,9 @@ import edu.thu.ss.spec.lang.parser.ParserConstant;
 public class ContactInfo implements Parsable {
 
 	protected String name;
+	protected String organization;
 	protected String email;
 	protected String address;
-	protected String organization;
 	protected String country;
 
 	@Override
@@ -33,6 +35,75 @@ public class ContactInfo implements Parsable {
 		}
 
 	}
+
+	public Element output(Document document, String name) {
+		Element element = document.createElement(name);
+
+		Element tmpEle = document.createElement(ParserConstant.Ele_Contact_Name);
+		tmpEle.appendChild(document.createTextNode(name));
+		element.appendChild(tmpEle);
+
+		tmpEle = document.createElement(ParserConstant.Ele_Contact_Organization);
+		tmpEle.appendChild(document.createTextNode(organization));
+		element.appendChild(tmpEle);
+
+		tmpEle = document.createElement(ParserConstant.Ele_Contact_Email);
+		tmpEle.appendChild(document.createTextNode(email));
+		element.appendChild(tmpEle);
+
+		tmpEle = document.createElement(ParserConstant.Ele_Contact_Address);
+		tmpEle.appendChild(document.createTextNode(address));
+		element.appendChild(tmpEle);
+
+		tmpEle = document.createElement(ParserConstant.Ele_Contact_Country);
+		tmpEle.appendChild(document.createTextNode(country));
+		element.appendChild(tmpEle);
+
+		return element;
+	}
+	
+	
+
+	public String getName() {
+		return name;
+	}
+
+	public String getOrganization() {
+		return organization;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setOrganization(String organization) {
+		this.organization = organization;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
 
 	@Override
 	public String toString() {

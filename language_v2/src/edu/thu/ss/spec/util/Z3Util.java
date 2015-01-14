@@ -126,7 +126,7 @@ public class Z3Util {
 
 		BoolExpr condition = context.mkForall(types, symbols, implies, 0, null, null, null, null);
 
-	//	logger.info(condition.toString());
+		//	logger.info(condition.toString());
 
 		Solver solver = context.mkSolver();
 		solver.add(condition);

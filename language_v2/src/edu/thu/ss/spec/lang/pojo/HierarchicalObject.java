@@ -3,6 +3,8 @@ package edu.thu.ss.spec.lang.pojo;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import edu.thu.ss.spec.lang.parser.ParserConstant;
@@ -20,6 +22,10 @@ public class HierarchicalObject<T extends HierarchicalObject<T>> extends Describ
 
 	protected List<T> children = null;
 
+	public void setParentId(String parentId) {
+		this.parentId = parentId;
+	}
+	
 	public T getParent() {
 		return parent;
 	}
@@ -113,5 +119,14 @@ public class HierarchicalObject<T extends HierarchicalObject<T>> extends Describ
 
 		this.parentId = XMLUtil.getAttrValue(objNode, ParserConstant.Attr_Parent);
 
+	}
+
+	@Override
+	public Element outputType(Document document, String name) {
+		Element element = super.outputType(document, name);
+		if (parentId != null) {
+			element.setAttribute(ParserConstant.Attr_Parent, parentId);
+		}
+		return element;
 	}
 }

@@ -3,6 +3,8 @@ package edu.thu.ss.spec.lang.pojo;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**

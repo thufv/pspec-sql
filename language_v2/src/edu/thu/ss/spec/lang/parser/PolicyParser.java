@@ -13,10 +13,7 @@ import org.w3c.dom.NodeList;
 import edu.thu.ss.spec.global.PolicyManager;
 import edu.thu.ss.spec.lang.analyzer.PolicyAnalyzer;
 import edu.thu.ss.spec.lang.analyzer.global.GlobalExpander;
-import edu.thu.ss.spec.lang.analyzer.global.GlobalRedundancyAnalyzer;
-import edu.thu.ss.spec.lang.analyzer.local.ConsistencyAnalyzer;
 import edu.thu.ss.spec.lang.analyzer.local.LocalExpander;
-import edu.thu.ss.spec.lang.analyzer.local.LocalRedundancyAnalyzer;
 import edu.thu.ss.spec.lang.analyzer.rule.RuleConstraintAnalyzer;
 import edu.thu.ss.spec.lang.analyzer.rule.RuleResolver;
 import edu.thu.ss.spec.lang.analyzer.rule.RuleSimplifier;
@@ -52,14 +49,13 @@ public class PolicyParser implements ParserConstant {
 		if (global) {
 			//online
 			analyzers.add(new GlobalExpander());
-			analyzers.add(new GlobalRedundancyAnalyzer());
+			//analyzers.add(new GlobalRedundancyAnalyzer());
 		} else {
 			//offline
 			analyzers.add(new LocalExpander());
-			analyzers.add(new LocalRedundancyAnalyzer());
-			analyzers.add(new ConsistencyAnalyzer());
+			//	analyzers.add(new LocalRedundancyAnalyzer());
+			//analyzers.add(new ConsistencyAnalyzer());
 		}
-
 	}
 
 	public Policy parse(String path) throws Exception {

@@ -1,5 +1,7 @@
 package edu.thu.ss.spec.lang.pojo;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -26,9 +28,28 @@ public class Info extends DescribedObject {
 	}
 
 	@Override
+	public Element outputType(Document document, String name) {
+		Element element = super.outputType(document, name);
+
+		if (this.contact != null) {
+			Element tmp = contact.output(document, ParserConstant.Ele_Policy_Issuer);
+			element.appendChild(tmp);
+		}
+		if (this.location != null) {
+			Element tmp = contact.output(document, ParserConstant.Ele_Policy_Location);
+			element.appendChild(tmp);
+		}
+		return element;
+	}
+
+	@Override
+	public Element outputElement(Document document) {
+		return null;
+	}
+
+	@Override
 	public void parse(Node infoNode) {
 		super.parse(infoNode);
-
 		NodeList list = infoNode.getChildNodes();
 		for (int i = 0; i < list.getLength(); i++) {
 			Node node = list.item(i);

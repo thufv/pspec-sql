@@ -30,10 +30,17 @@ public class LocalExpander extends BasePolicyAnalyzer {
 		List<Rule> rules = policy.getRules();
 		for (Rule rule : rules) {
 			int index = 1;
-			Map<Action, Set<DataCategory>> datas = expandData(rule.getDataRefs());
-			for (Entry<Action, Set<DataCategory>> e : datas.entrySet()) {
-				DataRef ref = new DataRef(e.getKey(), e.getValue());
+			Map<Action, List<DataRef>> datas = expandData(rule.getDataRefs());
+			for (Entry<Action, List<DataRef>> e : datas.entrySet()) {
+				List<DataRef> list = e.getValue();
+
+				Set<DataCategory> set = new HashSet<>();
+				for (DataRef ref : list) {
+					set.addAll(ref.getMaterialized());
+				}
+				DataRef ref = new DataRef(e.getKey(), set);
 				ExpandedRule erule = new ExpandedRule(rule, ref, index++);
+				erule.setRawDataRefs(list);
 				expandedRules.add(erule);
 			}
 			if (rule.getAssociation() != null) {
@@ -46,15 +53,15 @@ public class LocalExpander extends BasePolicyAnalyzer {
 		return false;
 	}
 
-	private Map<Action, Set<DataCategory>> expandData(List<DataRef> dataRefs) {
-		Map<Action, Set<DataCategory>> result = new HashMap<>();
+	private Map<Action, List<DataRef>> expandData(List<DataRef> dataRefs) {
+		Map<Action, List<DataRef>> result = new HashMap<>();
 		for (DataRef ref : dataRefs) {
-			Set<DataCategory> set = result.get(ref.getAction());
-			if (set == null) {
-				set = new HashSet<>();
-				result.put(ref.getAction(), set);
+			List<DataRef> refs = result.get(ref.getAction());
+			if (refs == null) {
+				refs = new ArrayList<>();
+				result.put(ref.getAction(), refs);
 			}
-			set.addAll(ref.getMaterialized());
+			refs.add(ref);
 		}
 		return result;
 	}
