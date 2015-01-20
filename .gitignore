@@ -1,10 +1,12 @@
 *.class
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
 
+*.DS_Store
+
+spark-sql/lib_managed/*
+spark-sql/assembly/*
+spark-sql/**/*.jar
 # Package Files #
-*.jar
 *.war
 *.ear
 *.cache
