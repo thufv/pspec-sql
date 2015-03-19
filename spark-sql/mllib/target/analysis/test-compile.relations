@@ -1,4 +1,19 @@
 products:
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaLogisticRegressionSuite.java -> mllib/target/scala-2.10/test-classes/org/apache/spark/mllib/classification/JavaLogisticRegressionSuite.class
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaNaiveBayesSuite.java -> mllib/target/scala-2.10/test-classes/org/apache/spark/mllib/classification/JavaNaiveBayesSuite$1.class
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaNaiveBayesSuite.java -> mllib/target/scala-2.10/test-classes/org/apache/spark/mllib/classification/JavaNaiveBayesSuite.class
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaSVMSuite.java -> mllib/target/scala-2.10/test-classes/org/apache/spark/mllib/classification/JavaSVMSuite.class
+   mllib/src/test/java/org/apache/spark/mllib/clustering/JavaKMeansSuite.java -> mllib/target/scala-2.10/test-classes/org/apache/spark/mllib/clustering/JavaKMeansSuite.class
+   mllib/src/test/java/org/apache/spark/mllib/feature/JavaTfIdfSuite.java -> mllib/target/scala-2.10/test-classes/org/apache/spark/mllib/feature/JavaTfIdfSuite.class
+   mllib/src/test/java/org/apache/spark/mllib/feature/JavaWord2VecSuite.java -> mllib/target/scala-2.10/test-classes/org/apache/spark/mllib/feature/JavaWord2VecSuite.class
+   mllib/src/test/java/org/apache/spark/mllib/linalg/JavaVectorsSuite.java -> mllib/target/scala-2.10/test-classes/org/apache/spark/mllib/linalg/JavaVectorsSuite.class
+   mllib/src/test/java/org/apache/spark/mllib/random/JavaRandomRDDsSuite.java -> mllib/target/scala-2.10/test-classes/org/apache/spark/mllib/random/JavaRandomRDDsSuite.class
+   mllib/src/test/java/org/apache/spark/mllib/recommendation/JavaALSSuite.java -> mllib/target/scala-2.10/test-classes/org/apache/spark/mllib/recommendation/JavaALSSuite.class
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaLassoSuite.java -> mllib/target/scala-2.10/test-classes/org/apache/spark/mllib/regression/JavaLassoSuite.class
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaLinearRegressionSuite.java -> mllib/target/scala-2.10/test-classes/org/apache/spark/mllib/regression/JavaLinearRegressionSuite$1.class
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaLinearRegressionSuite.java -> mllib/target/scala-2.10/test-classes/org/apache/spark/mllib/regression/JavaLinearRegressionSuite.class
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaRidgeRegressionSuite.java -> mllib/target/scala-2.10/test-classes/org/apache/spark/mllib/regression/JavaRidgeRegressionSuite.class
+   mllib/src/test/java/org/apache/spark/mllib/tree/JavaDecisionTreeSuite.java -> mllib/target/scala-2.10/test-classes/org/apache/spark/mllib/tree/JavaDecisionTreeSuite.class
    mllib/src/test/scala/org/apache/spark/mllib/api/python/PythonMLLibAPISuite.scala -> mllib/target/scala-2.10/test-classes/org/apache/spark/mllib/api/python/PythonMLLibAPISuite$$anonfun$1$$anonfun$apply$mcV$sp$2.class
    mllib/src/test/scala/org/apache/spark/mllib/api/python/PythonMLLibAPISuite.scala -> mllib/target/scala-2.10/test-classes/org/apache/spark/mllib/api/python/PythonMLLibAPISuite$$anonfun$1.class
    mllib/src/test/scala/org/apache/spark/mllib/api/python/PythonMLLibAPISuite.scala -> mllib/target/scala-2.10/test-classes/org/apache/spark/mllib/api/python/PythonMLLibAPISuite$$anonfun$2$$anonfun$apply$mcV$sp$3.class
@@ -697,6 +712,55 @@ products:
    mllib/src/test/scala/org/apache/spark/mllib/util/TestingUtilsSuite.scala -> mllib/target/scala-2.10/test-classes/org/apache/spark/mllib/util/TestingUtilsSuite$$anonfun$4.class
    mllib/src/test/scala/org/apache/spark/mllib/util/TestingUtilsSuite.scala -> mllib/target/scala-2.10/test-classes/org/apache/spark/mllib/util/TestingUtilsSuite.class
 binary dependencies:
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaLogisticRegressionSuite.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaLogisticRegressionSuite.java -> /Users/luochen/.m2/repository/junit/junit/4.10/junit-4.10.jar
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaLogisticRegressionSuite.java -> core/target/spark-core_2.10-1.1.0.jar
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaNaiveBayesSuite.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaNaiveBayesSuite.java -> /Users/luochen/.m2/repository/junit/junit/4.10/junit-4.10.jar
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaNaiveBayesSuite.java -> core/target/spark-core_2.10-1.1.0.jar
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaSVMSuite.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaSVMSuite.java -> /Users/luochen/.m2/repository/junit/junit/4.10/junit-4.10.jar
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaSVMSuite.java -> core/target/spark-core_2.10-1.1.0.jar
+   mllib/src/test/java/org/apache/spark/mllib/clustering/JavaKMeansSuite.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   mllib/src/test/java/org/apache/spark/mllib/clustering/JavaKMeansSuite.java -> /Users/luochen/.m2/repository/com/google/guava/guava/14.0.1/guava-14.0.1.jar
+   mllib/src/test/java/org/apache/spark/mllib/clustering/JavaKMeansSuite.java -> /Users/luochen/.m2/repository/junit/junit/4.10/junit-4.10.jar
+   mllib/src/test/java/org/apache/spark/mllib/clustering/JavaKMeansSuite.java -> core/target/spark-core_2.10-1.1.0.jar
+   mllib/src/test/java/org/apache/spark/mllib/feature/JavaTfIdfSuite.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   mllib/src/test/java/org/apache/spark/mllib/feature/JavaTfIdfSuite.java -> /Users/luochen/.m2/repository/com/google/guava/guava/14.0.1/guava-14.0.1.jar
+   mllib/src/test/java/org/apache/spark/mllib/feature/JavaTfIdfSuite.java -> /Users/luochen/.m2/repository/junit/junit/4.10/junit-4.10.jar
+   mllib/src/test/java/org/apache/spark/mllib/feature/JavaTfIdfSuite.java -> core/target/spark-core_2.10-1.1.0.jar
+   mllib/src/test/java/org/apache/spark/mllib/feature/JavaWord2VecSuite.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   mllib/src/test/java/org/apache/spark/mllib/feature/JavaWord2VecSuite.java -> /Users/luochen/.m2/repository/com/google/guava/guava/14.0.1/guava-14.0.1.jar
+   mllib/src/test/java/org/apache/spark/mllib/feature/JavaWord2VecSuite.java -> /Users/luochen/.m2/repository/junit/junit/4.10/junit-4.10.jar
+   mllib/src/test/java/org/apache/spark/mllib/feature/JavaWord2VecSuite.java -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
+   mllib/src/test/java/org/apache/spark/mllib/feature/JavaWord2VecSuite.java -> core/target/spark-core_2.10-1.1.0.jar
+   mllib/src/test/java/org/apache/spark/mllib/linalg/JavaVectorsSuite.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   mllib/src/test/java/org/apache/spark/mllib/linalg/JavaVectorsSuite.java -> /Users/luochen/.m2/repository/com/google/guava/guava/14.0.1/guava-14.0.1.jar
+   mllib/src/test/java/org/apache/spark/mllib/linalg/JavaVectorsSuite.java -> /Users/luochen/.m2/repository/junit/junit/4.10/junit-4.10.jar
+   mllib/src/test/java/org/apache/spark/mllib/linalg/JavaVectorsSuite.java -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
+   mllib/src/test/java/org/apache/spark/mllib/random/JavaRandomRDDsSuite.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   mllib/src/test/java/org/apache/spark/mllib/random/JavaRandomRDDsSuite.java -> /Users/luochen/.m2/repository/com/google/guava/guava/14.0.1/guava-14.0.1.jar
+   mllib/src/test/java/org/apache/spark/mllib/random/JavaRandomRDDsSuite.java -> /Users/luochen/.m2/repository/junit/junit/4.10/junit-4.10.jar
+   mllib/src/test/java/org/apache/spark/mllib/random/JavaRandomRDDsSuite.java -> core/target/spark-core_2.10-1.1.0.jar
+   mllib/src/test/java/org/apache/spark/mllib/recommendation/JavaALSSuite.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   mllib/src/test/java/org/apache/spark/mllib/recommendation/JavaALSSuite.java -> /Users/luochen/.m2/repository/junit/junit/4.10/junit-4.10.jar
+   mllib/src/test/java/org/apache/spark/mllib/recommendation/JavaALSSuite.java -> /Users/luochen/.m2/repository/org/jblas/jblas/1.2.3/jblas-1.2.3.jar
+   mllib/src/test/java/org/apache/spark/mllib/recommendation/JavaALSSuite.java -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
+   mllib/src/test/java/org/apache/spark/mllib/recommendation/JavaALSSuite.java -> core/target/spark-core_2.10-1.1.0.jar
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaLassoSuite.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaLassoSuite.java -> /Users/luochen/.m2/repository/junit/junit/4.10/junit-4.10.jar
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaLassoSuite.java -> core/target/spark-core_2.10-1.1.0.jar
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaLinearRegressionSuite.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaLinearRegressionSuite.java -> /Users/luochen/.m2/repository/junit/junit/4.10/junit-4.10.jar
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaLinearRegressionSuite.java -> core/target/spark-core_2.10-1.1.0.jar
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaRidgeRegressionSuite.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaRidgeRegressionSuite.java -> /Users/luochen/.m2/repository/junit/junit/4.10/junit-4.10.jar
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaRidgeRegressionSuite.java -> /Users/luochen/.m2/repository/org/jblas/jblas/1.2.3/jblas-1.2.3.jar
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaRidgeRegressionSuite.java -> core/target/spark-core_2.10-1.1.0.jar
+   mllib/src/test/java/org/apache/spark/mllib/tree/JavaDecisionTreeSuite.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   mllib/src/test/java/org/apache/spark/mllib/tree/JavaDecisionTreeSuite.java -> /Users/luochen/.m2/repository/junit/junit/4.10/junit-4.10.jar
+   mllib/src/test/java/org/apache/spark/mllib/tree/JavaDecisionTreeSuite.java -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
+   mllib/src/test/java/org/apache/spark/mllib/tree/JavaDecisionTreeSuite.java -> core/target/spark-core_2.10-1.1.0.jar
    mllib/src/test/scala/org/apache/spark/mllib/api/python/PythonMLLibAPISuite.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
    mllib/src/test/scala/org/apache/spark/mllib/api/python/PythonMLLibAPISuite.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
    mllib/src/test/scala/org/apache/spark/mllib/api/python/PythonMLLibAPISuite.scala -> /Users/luochen/.m2/repository/org/scalatest/scalatest_2.10/2.1.5/scalatest_2.10-2.1.5.jar
@@ -876,6 +940,23 @@ binary dependencies:
    mllib/src/test/scala/org/apache/spark/mllib/util/TestingUtilsSuite.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
    mllib/src/test/scala/org/apache/spark/mllib/util/TestingUtilsSuite.scala -> /Users/luochen/.m2/repository/org/scalatest/scalatest_2.10/2.1.5/scalatest_2.10-2.1.5.jar
 source dependencies:
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaLogisticRegressionSuite.java -> mllib/src/test/java/org/apache/spark/mllib/classification/JavaLogisticRegressionSuite.java
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaLogisticRegressionSuite.java -> mllib/src/test/scala/org/apache/spark/mllib/classification/LogisticRegressionSuite.scala
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaNaiveBayesSuite.java -> mllib/src/test/java/org/apache/spark/mllib/classification/JavaNaiveBayesSuite.java
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaSVMSuite.java -> mllib/src/test/java/org/apache/spark/mllib/classification/JavaSVMSuite.java
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaSVMSuite.java -> mllib/src/test/scala/org/apache/spark/mllib/classification/SVMSuite.scala
+   mllib/src/test/java/org/apache/spark/mllib/clustering/JavaKMeansSuite.java -> mllib/src/test/java/org/apache/spark/mllib/clustering/JavaKMeansSuite.java
+   mllib/src/test/java/org/apache/spark/mllib/feature/JavaTfIdfSuite.java -> mllib/src/test/java/org/apache/spark/mllib/feature/JavaTfIdfSuite.java
+   mllib/src/test/java/org/apache/spark/mllib/feature/JavaWord2VecSuite.java -> mllib/src/test/java/org/apache/spark/mllib/feature/JavaWord2VecSuite.java
+   mllib/src/test/java/org/apache/spark/mllib/linalg/JavaVectorsSuite.java -> mllib/src/test/java/org/apache/spark/mllib/linalg/JavaVectorsSuite.java
+   mllib/src/test/java/org/apache/spark/mllib/random/JavaRandomRDDsSuite.java -> mllib/src/test/java/org/apache/spark/mllib/random/JavaRandomRDDsSuite.java
+   mllib/src/test/java/org/apache/spark/mllib/recommendation/JavaALSSuite.java -> mllib/src/test/java/org/apache/spark/mllib/recommendation/JavaALSSuite.java
+   mllib/src/test/java/org/apache/spark/mllib/recommendation/JavaALSSuite.java -> mllib/src/test/scala/org/apache/spark/mllib/recommendation/ALSSuite.scala
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaLassoSuite.java -> mllib/src/test/java/org/apache/spark/mllib/regression/JavaLassoSuite.java
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaLinearRegressionSuite.java -> mllib/src/test/java/org/apache/spark/mllib/regression/JavaLinearRegressionSuite.java
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaRidgeRegressionSuite.java -> mllib/src/test/java/org/apache/spark/mllib/regression/JavaRidgeRegressionSuite.java
+   mllib/src/test/java/org/apache/spark/mllib/tree/JavaDecisionTreeSuite.java -> mllib/src/test/java/org/apache/spark/mllib/tree/JavaDecisionTreeSuite.java
+   mllib/src/test/java/org/apache/spark/mllib/tree/JavaDecisionTreeSuite.java -> mllib/src/test/scala/org/apache/spark/mllib/tree/DecisionTreeSuite.scala
    mllib/src/test/scala/org/apache/spark/mllib/classification/LogisticRegressionSuite.scala -> mllib/src/test/scala/org/apache/spark/mllib/util/LocalClusterSparkContext.scala
    mllib/src/test/scala/org/apache/spark/mllib/classification/LogisticRegressionSuite.scala -> mllib/src/test/scala/org/apache/spark/mllib/util/LocalSparkContext.scala
    mllib/src/test/scala/org/apache/spark/mllib/classification/LogisticRegressionSuite.scala -> mllib/src/test/scala/org/apache/spark/mllib/util/TestingUtils.scala
@@ -929,6 +1010,58 @@ source dependencies:
    mllib/src/test/scala/org/apache/spark/mllib/util/MLUtilsSuite.scala -> mllib/src/test/scala/org/apache/spark/mllib/util/LocalSparkContext.scala
    mllib/src/test/scala/org/apache/spark/mllib/util/TestingUtilsSuite.scala -> mllib/src/test/scala/org/apache/spark/mllib/util/TestingUtils.scala
 external dependencies:
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaLogisticRegressionSuite.java -> org.apache.spark.mllib.classification.LogisticRegressionModel
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaLogisticRegressionSuite.java -> org.apache.spark.mllib.classification.LogisticRegressionWithSGD
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaLogisticRegressionSuite.java -> org.apache.spark.mllib.optimization.GradientDescent
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaLogisticRegressionSuite.java -> org.apache.spark.mllib.regression.LabeledPoint
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaNaiveBayesSuite.java -> org.apache.spark.mllib.classification.NaiveBayes
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaNaiveBayesSuite.java -> org.apache.spark.mllib.classification.NaiveBayesModel
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaNaiveBayesSuite.java -> org.apache.spark.mllib.linalg.Vector
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaNaiveBayesSuite.java -> org.apache.spark.mllib.linalg.Vectors
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaNaiveBayesSuite.java -> org.apache.spark.mllib.regression.LabeledPoint
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaSVMSuite.java -> org.apache.spark.mllib.classification.SVMModel
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaSVMSuite.java -> org.apache.spark.mllib.classification.SVMWithSGD
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaSVMSuite.java -> org.apache.spark.mllib.optimization.GradientDescent
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaSVMSuite.java -> org.apache.spark.mllib.regression.LabeledPoint
+   mllib/src/test/java/org/apache/spark/mllib/clustering/JavaKMeansSuite.java -> org.apache.spark.mllib.clustering.KMeans
+   mllib/src/test/java/org/apache/spark/mllib/clustering/JavaKMeansSuite.java -> org.apache.spark.mllib.clustering.KMeansModel
+   mllib/src/test/java/org/apache/spark/mllib/clustering/JavaKMeansSuite.java -> org.apache.spark.mllib.linalg.Vector
+   mllib/src/test/java/org/apache/spark/mllib/clustering/JavaKMeansSuite.java -> org.apache.spark.mllib.linalg.Vectors
+   mllib/src/test/java/org/apache/spark/mllib/feature/JavaTfIdfSuite.java -> org.apache.spark.mllib.feature.HashingTF
+   mllib/src/test/java/org/apache/spark/mllib/feature/JavaTfIdfSuite.java -> org.apache.spark.mllib.feature.IDF
+   mllib/src/test/java/org/apache/spark/mllib/feature/JavaTfIdfSuite.java -> org.apache.spark.mllib.feature.IDFModel
+   mllib/src/test/java/org/apache/spark/mllib/feature/JavaTfIdfSuite.java -> org.apache.spark.mllib.linalg.Vector
+   mllib/src/test/java/org/apache/spark/mllib/feature/JavaWord2VecSuite.java -> org.apache.spark.mllib.feature.Word2Vec
+   mllib/src/test/java/org/apache/spark/mllib/feature/JavaWord2VecSuite.java -> org.apache.spark.mllib.feature.Word2VecModel
+   mllib/src/test/java/org/apache/spark/mllib/linalg/JavaVectorsSuite.java -> org.apache.spark.mllib.linalg.Vector
+   mllib/src/test/java/org/apache/spark/mllib/linalg/JavaVectorsSuite.java -> org.apache.spark.mllib.linalg.Vectors
+   mllib/src/test/java/org/apache/spark/mllib/random/JavaRandomRDDsSuite.java -> org.apache.spark.mllib.linalg.Vector
+   mllib/src/test/java/org/apache/spark/mllib/random/JavaRandomRDDsSuite.java -> org.apache.spark.mllib.random.RandomRDDs
+   mllib/src/test/java/org/apache/spark/mllib/recommendation/JavaALSSuite.java -> org.apache.spark.mllib.recommendation.ALS
+   mllib/src/test/java/org/apache/spark/mllib/recommendation/JavaALSSuite.java -> org.apache.spark.mllib.recommendation.MatrixFactorizationModel
+   mllib/src/test/java/org/apache/spark/mllib/recommendation/JavaALSSuite.java -> org.apache.spark.mllib.recommendation.Rating
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaLassoSuite.java -> org.apache.spark.mllib.optimization.GradientDescent
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaLassoSuite.java -> org.apache.spark.mllib.regression.LabeledPoint
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaLassoSuite.java -> org.apache.spark.mllib.regression.LassoModel
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaLassoSuite.java -> org.apache.spark.mllib.regression.LassoWithSGD
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaLassoSuite.java -> org.apache.spark.mllib.util.LinearDataGenerator
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaLinearRegressionSuite.java -> org.apache.spark.mllib.linalg.Vector
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaLinearRegressionSuite.java -> org.apache.spark.mllib.regression.LabeledPoint
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaLinearRegressionSuite.java -> org.apache.spark.mllib.regression.LinearRegressionModel
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaLinearRegressionSuite.java -> org.apache.spark.mllib.regression.LinearRegressionWithSGD
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaLinearRegressionSuite.java -> org.apache.spark.mllib.util.LinearDataGenerator
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaRidgeRegressionSuite.java -> org.apache.spark.mllib.optimization.GradientDescent
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaRidgeRegressionSuite.java -> org.apache.spark.mllib.regression.LabeledPoint
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaRidgeRegressionSuite.java -> org.apache.spark.mllib.regression.RidgeRegressionModel
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaRidgeRegressionSuite.java -> org.apache.spark.mllib.regression.RidgeRegressionWithSGD
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaRidgeRegressionSuite.java -> org.apache.spark.mllib.util.LinearDataGenerator
+   mllib/src/test/java/org/apache/spark/mllib/tree/JavaDecisionTreeSuite.java -> org.apache.spark.mllib.regression.LabeledPoint
+   mllib/src/test/java/org/apache/spark/mllib/tree/JavaDecisionTreeSuite.java -> org.apache.spark.mllib.tree.DecisionTree
+   mllib/src/test/java/org/apache/spark/mllib/tree/JavaDecisionTreeSuite.java -> org.apache.spark.mllib.tree.DecisionTree$
+   mllib/src/test/java/org/apache/spark/mllib/tree/JavaDecisionTreeSuite.java -> org.apache.spark.mllib.tree.configuration.Algo
+   mllib/src/test/java/org/apache/spark/mllib/tree/JavaDecisionTreeSuite.java -> org.apache.spark.mllib.tree.configuration.Strategy
+   mllib/src/test/java/org/apache/spark/mllib/tree/JavaDecisionTreeSuite.java -> org.apache.spark.mllib.tree.impurity.Gini
+   mllib/src/test/java/org/apache/spark/mllib/tree/JavaDecisionTreeSuite.java -> org.apache.spark.mllib.tree.model.DecisionTreeModel
    mllib/src/test/scala/org/apache/spark/mllib/api/python/PythonMLLibAPISuite.scala -> org.apache.spark.mllib.api.python.SerDe$
    mllib/src/test/scala/org/apache/spark/mllib/api/python/PythonMLLibAPISuite.scala -> org.apache.spark.mllib.linalg.Matrices$
    mllib/src/test/scala/org/apache/spark/mllib/api/python/PythonMLLibAPISuite.scala -> org.apache.spark.mllib.linalg.Vectors$
@@ -1148,6 +1281,21 @@ external dependencies:
    mllib/src/test/scala/org/apache/spark/mllib/util/TestingUtils.scala -> org.apache.spark.mllib.linalg.Vector
    mllib/src/test/scala/org/apache/spark/mllib/util/TestingUtilsSuite.scala -> org.apache.spark.mllib.linalg.Vectors$
 class names:
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaLogisticRegressionSuite.java -> org.apache.spark.mllib.classification.JavaLogisticRegressionSuite
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaNaiveBayesSuite.java -> org.apache.spark.mllib.classification.JavaNaiveBayesSuite
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaNaiveBayesSuite.java -> org.apache.spark.mllib.classification.JavaNaiveBayesSuite$1
+   mllib/src/test/java/org/apache/spark/mllib/classification/JavaSVMSuite.java -> org.apache.spark.mllib.classification.JavaSVMSuite
+   mllib/src/test/java/org/apache/spark/mllib/clustering/JavaKMeansSuite.java -> org.apache.spark.mllib.clustering.JavaKMeansSuite
+   mllib/src/test/java/org/apache/spark/mllib/feature/JavaTfIdfSuite.java -> org.apache.spark.mllib.feature.JavaTfIdfSuite
+   mllib/src/test/java/org/apache/spark/mllib/feature/JavaWord2VecSuite.java -> org.apache.spark.mllib.feature.JavaWord2VecSuite
+   mllib/src/test/java/org/apache/spark/mllib/linalg/JavaVectorsSuite.java -> org.apache.spark.mllib.linalg.JavaVectorsSuite
+   mllib/src/test/java/org/apache/spark/mllib/random/JavaRandomRDDsSuite.java -> org.apache.spark.mllib.random.JavaRandomRDDsSuite
+   mllib/src/test/java/org/apache/spark/mllib/recommendation/JavaALSSuite.java -> org.apache.spark.mllib.recommendation.JavaALSSuite
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaLassoSuite.java -> org.apache.spark.mllib.regression.JavaLassoSuite
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaLinearRegressionSuite.java -> org.apache.spark.mllib.regression.JavaLinearRegressionSuite
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaLinearRegressionSuite.java -> org.apache.spark.mllib.regression.JavaLinearRegressionSuite$1
+   mllib/src/test/java/org/apache/spark/mllib/regression/JavaRidgeRegressionSuite.java -> org.apache.spark.mllib.regression.JavaRidgeRegressionSuite
+   mllib/src/test/java/org/apache/spark/mllib/tree/JavaDecisionTreeSuite.java -> org.apache.spark.mllib.tree.JavaDecisionTreeSuite
    mllib/src/test/scala/org/apache/spark/mllib/api/python/PythonMLLibAPISuite.scala -> org.apache.spark.mllib.api.python.PythonMLLibAPISuite
    mllib/src/test/scala/org/apache/spark/mllib/api/python/PythonMLLibAPISuite.scala -> org.apache.spark.mllib.api.python.PythonMLLibAPISuite$$anonfun$1
    mllib/src/test/scala/org/apache/spark/mllib/api/python/PythonMLLibAPISuite.scala -> org.apache.spark.mllib.api.python.PythonMLLibAPISuite$$anonfun$1$$anonfun$apply$mcV$sp$2

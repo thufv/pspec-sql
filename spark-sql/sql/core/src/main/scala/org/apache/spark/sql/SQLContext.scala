@@ -407,6 +407,7 @@ class SQLContext(@transient val sparkContext: SparkContext)
     lazy val optimizedPlan = optimizer(analyzed)
     // TODO: Don't just pick the first one...
     lazy val sparkPlan = {
+      //added by luochen
       //check logical plan
       SparkChecker(optimizedPlan);
       SparkPlan.currentContext.set(self)

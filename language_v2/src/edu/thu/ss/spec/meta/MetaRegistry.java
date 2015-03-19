@@ -41,7 +41,8 @@ public interface MetaRegistry {
 	 * @param column
 	 * @return {@link DesensitizeOperation}
 	 */
-	public DesensitizeOperation lookup(DataCategory data, String udf, String database, String table, String column);
+	public DesensitizeOperation lookup(DataCategory data, String udf, String database, String table,
+			String column);
 
 	public Map<String, Database> getDatabases();
 

@@ -45,6 +45,14 @@ products:
    external/flume-sink/src/main/scala/org/apache/spark/streaming/flume/sink/TransactionProcessor.scala -> external/flume-sink/target/scala-2.10/classes/org/apache/spark/streaming/flume/sink/TransactionProcessor$$anonfun$processAckOrNack$1.class
    external/flume-sink/src/main/scala/org/apache/spark/streaming/flume/sink/TransactionProcessor.scala -> external/flume-sink/target/scala-2.10/classes/org/apache/spark/streaming/flume/sink/TransactionProcessor$$anonfun$shutdown$1.class
    external/flume-sink/src/main/scala/org/apache/spark/streaming/flume/sink/TransactionProcessor.scala -> external/flume-sink/target/scala-2.10/classes/org/apache/spark/streaming/flume/sink/TransactionProcessor.class
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/EventBatch.java -> external/flume-sink/target/scala-2.10/classes/org/apache/spark/streaming/flume/sink/EventBatch$1.class
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/EventBatch.java -> external/flume-sink/target/scala-2.10/classes/org/apache/spark/streaming/flume/sink/EventBatch$Builder.class
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/EventBatch.java -> external/flume-sink/target/scala-2.10/classes/org/apache/spark/streaming/flume/sink/EventBatch.class
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/SparkFlumeProtocol.java -> external/flume-sink/target/scala-2.10/classes/org/apache/spark/streaming/flume/sink/SparkFlumeProtocol$Callback.class
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/SparkFlumeProtocol.java -> external/flume-sink/target/scala-2.10/classes/org/apache/spark/streaming/flume/sink/SparkFlumeProtocol.class
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/SparkSinkEvent.java -> external/flume-sink/target/scala-2.10/classes/org/apache/spark/streaming/flume/sink/SparkSinkEvent$1.class
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/SparkSinkEvent.java -> external/flume-sink/target/scala-2.10/classes/org/apache/spark/streaming/flume/sink/SparkSinkEvent$Builder.class
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/SparkSinkEvent.java -> external/flume-sink/target/scala-2.10/classes/org/apache/spark/streaming/flume/sink/SparkSinkEvent.class
 binary dependencies:
    external/flume-sink/src/main/scala/org/apache/spark/streaming/flume/sink/Logging.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
    external/flume-sink/src/main/scala/org/apache/spark/streaming/flume/sink/Logging.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
@@ -65,6 +73,13 @@ binary dependencies:
    external/flume-sink/src/main/scala/org/apache/spark/streaming/flume/sink/TransactionProcessor.scala -> /Users/luochen/.m2/repository/org/apache/flume/flume-ng-core/1.4.0/flume-ng-core-1.4.0.jar
    external/flume-sink/src/main/scala/org/apache/spark/streaming/flume/sink/TransactionProcessor.scala -> /Users/luochen/.m2/repository/org/apache/flume/flume-ng-sdk/1.4.0/flume-ng-sdk-1.4.0.jar
    external/flume-sink/src/main/scala/org/apache/spark/streaming/flume/sink/TransactionProcessor.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/EventBatch.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/EventBatch.java -> /Users/luochen/.m2/repository/org/apache/avro/avro/1.7.6/avro-1.7.6.jar
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/SparkFlumeProtocol.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/SparkFlumeProtocol.java -> /Users/luochen/.m2/repository/org/apache/avro/avro-ipc/1.7.6/avro-ipc-1.7.6.jar
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/SparkFlumeProtocol.java -> /Users/luochen/.m2/repository/org/apache/avro/avro/1.7.6/avro-1.7.6.jar
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/SparkSinkEvent.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/SparkSinkEvent.java -> /Users/luochen/.m2/repository/org/apache/avro/avro/1.7.6/avro-1.7.6.jar
 source dependencies:
    external/flume-sink/src/main/scala/org/apache/spark/streaming/flume/sink/SparkAvroCallbackHandler.scala -> external/flume-sink/src/main/scala/org/apache/spark/streaming/flume/sink/Logging.scala
    external/flume-sink/src/main/scala/org/apache/spark/streaming/flume/sink/SparkAvroCallbackHandler.scala -> external/flume-sink/src/main/scala/org/apache/spark/streaming/flume/sink/SparkSinkUtils.scala
@@ -79,6 +94,10 @@ source dependencies:
    external/flume-sink/src/main/scala/org/apache/spark/streaming/flume/sink/TransactionProcessor.scala -> external/flume-sink/src/main/scala/org/apache/spark/streaming/flume/sink/SparkAvroCallbackHandler.scala
    external/flume-sink/src/main/scala/org/apache/spark/streaming/flume/sink/TransactionProcessor.scala -> external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/EventBatch.java
    external/flume-sink/src/main/scala/org/apache/spark/streaming/flume/sink/TransactionProcessor.scala -> external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/SparkSinkEvent.java
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/EventBatch.java -> external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/EventBatch.java
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/SparkFlumeProtocol.java -> external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/EventBatch.java
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/SparkFlumeProtocol.java -> external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/SparkFlumeProtocol.java
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/SparkSinkEvent.java -> external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/SparkSinkEvent.java
 external dependencies:
 class names:
    external/flume-sink/src/main/scala/org/apache/spark/streaming/flume/sink/Logging.scala -> org.apache.spark.streaming.flume.sink.Logging
@@ -127,3 +146,11 @@ class names:
    external/flume-sink/src/main/scala/org/apache/spark/streaming/flume/sink/TransactionProcessor.scala -> org.apache.spark.streaming.flume.sink.TransactionProcessor$$anonfun$processAckOrNack$1$$anonfun$apply$4
    external/flume-sink/src/main/scala/org/apache/spark/streaming/flume/sink/TransactionProcessor.scala -> org.apache.spark.streaming.flume.sink.TransactionProcessor$$anonfun$processAckOrNack$1$$anonfun$apply$5
    external/flume-sink/src/main/scala/org/apache/spark/streaming/flume/sink/TransactionProcessor.scala -> org.apache.spark.streaming.flume.sink.TransactionProcessor$$anonfun$shutdown$1
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/EventBatch.java -> org.apache.spark.streaming.flume.sink.EventBatch
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/EventBatch.java -> org.apache.spark.streaming.flume.sink.EventBatch$1
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/EventBatch.java -> org.apache.spark.streaming.flume.sink.EventBatch$Builder
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/SparkFlumeProtocol.java -> org.apache.spark.streaming.flume.sink.SparkFlumeProtocol
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/SparkFlumeProtocol.java -> org.apache.spark.streaming.flume.sink.SparkFlumeProtocol$Callback
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/SparkSinkEvent.java -> org.apache.spark.streaming.flume.sink.SparkSinkEvent
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/SparkSinkEvent.java -> org.apache.spark.streaming.flume.sink.SparkSinkEvent$1
+   external/flume-sink/target/scala-2.10/src_managed/main/compiled_avro/org/apache/spark/streaming/flume/sink/SparkSinkEvent.java -> org.apache.spark.streaming.flume.sink.SparkSinkEvent$Builder

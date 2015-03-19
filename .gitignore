@@ -2,7 +2,10 @@
 
 
 *.DS_Store
-
+*/assembly/*
+*/target/*
+*/*/target/*
+*/bin/*
 spark-sql/lib_managed/*
 spark-sql/assembly/*
 spark-sql/**/*.jar

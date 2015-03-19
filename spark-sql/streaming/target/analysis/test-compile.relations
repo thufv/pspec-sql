@@ -1,4 +1,54 @@
 products:
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$1.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$10.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$11.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$12.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$13.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$14.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$15.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$16.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$17.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$18.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$19.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$1Converter.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$2.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$20.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$21.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$22.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$23$1.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$23.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$24.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$25.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$26.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$27.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$28.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$29.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$3.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$30.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$31.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$32.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$33.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$34.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$35$1.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$35.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$36.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$37.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$38.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$4$1.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$4.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$5.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$6.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$7.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$8.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$9.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$IntegerDifference.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite$IntegerSum.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaAPISuite.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaReceiverAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaReceiverAPISuite$1.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaReceiverAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaReceiverAPISuite$2.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaReceiverAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaReceiverAPISuite.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaReceiverAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaSocketReceiver$1.class
+   streaming/src/test/java/org/apache/spark/streaming/JavaReceiverAPISuite.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaSocketReceiver.class
    streaming/src/test/java/org/apache/spark/streaming/JavaTestUtils.scala -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaCheckpointTestUtils$.class
    streaming/src/test/java/org/apache/spark/streaming/JavaTestUtils.scala -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaCheckpointTestUtils.class
    streaming/src/test/java/org/apache/spark/streaming/JavaTestUtils.scala -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaTestBase$$anonfun$1.class
@@ -9,6 +59,7 @@ products:
    streaming/src/test/java/org/apache/spark/streaming/JavaTestUtils.scala -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaTestBase.class
    streaming/src/test/java/org/apache/spark/streaming/JavaTestUtils.scala -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaTestUtils$.class
    streaming/src/test/java/org/apache/spark/streaming/JavaTestUtils.scala -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/JavaTestUtils.class
+   streaming/src/test/java/org/apache/spark/streaming/LocalJavaStreamingContext.java -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/LocalJavaStreamingContext.class
    streaming/src/test/scala/org/apache/spark/streaming/BasicOperationsSuite.scala -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/BasicOperationsSuite$$anonfun$1$$anonfun$apply$mcV$sp$2$$anonfun$apply$17.class
    streaming/src/test/scala/org/apache/spark/streaming/BasicOperationsSuite.scala -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/BasicOperationsSuite$$anonfun$1$$anonfun$apply$mcV$sp$2.class
    streaming/src/test/scala/org/apache/spark/streaming/BasicOperationsSuite.scala -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/BasicOperationsSuite$$anonfun$1$$anonfun$apply$mcV$sp$3$$anonfun$apply$18.class
@@ -499,10 +550,20 @@ products:
    streaming/src/test/scala/org/apache/spark/streaming/util/RateLimitedOutputStreamSuite.scala -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/util/RateLimitedOutputStreamSuite$$anonfun$1.class
    streaming/src/test/scala/org/apache/spark/streaming/util/RateLimitedOutputStreamSuite.scala -> streaming/target/scala-2.10/test-classes/org/apache/spark/streaming/util/RateLimitedOutputStreamSuite.class
 binary dependencies:
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> /Users/luochen/.m2/repository/com/google/guava/guava/14.0.1/guava-14.0.1.jar
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> /Users/luochen/.m2/repository/junit/junit/4.10/junit-4.10.jar
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> core/target/spark-core_2.10-1.1.0.jar
+   streaming/src/test/java/org/apache/spark/streaming/JavaReceiverAPISuite.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   streaming/src/test/java/org/apache/spark/streaming/JavaReceiverAPISuite.java -> /Users/luochen/.m2/repository/junit/junit/4.10/junit-4.10.jar
+   streaming/src/test/java/org/apache/spark/streaming/JavaReceiverAPISuite.java -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
+   streaming/src/test/java/org/apache/spark/streaming/JavaReceiverAPISuite.java -> core/target/spark-core_2.10-1.1.0.jar
    streaming/src/test/java/org/apache/spark/streaming/JavaTestUtils.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
    streaming/src/test/java/org/apache/spark/streaming/JavaTestUtils.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
    streaming/src/test/java/org/apache/spark/streaming/JavaTestUtils.scala -> /Users/luochen/.m2/repository/org/scalatest/scalatest_2.10/2.1.5/scalatest_2.10-2.1.5.jar
    streaming/src/test/java/org/apache/spark/streaming/JavaTestUtils.scala -> core/target/spark-core_2.10-1.1.0.jar
+   streaming/src/test/java/org/apache/spark/streaming/LocalJavaStreamingContext.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
    streaming/src/test/scala/org/apache/spark/streaming/BasicOperationsSuite.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
    streaming/src/test/scala/org/apache/spark/streaming/BasicOperationsSuite.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
    streaming/src/test/scala/org/apache/spark/streaming/BasicOperationsSuite.scala -> /Users/luochen/.m2/repository/org/scalatest/scalatest_2.10/2.1.5/scalatest_2.10-2.1.5.jar
@@ -552,7 +613,13 @@ binary dependencies:
    streaming/src/test/scala/org/apache/spark/streaming/util/RateLimitedOutputStreamSuite.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
    streaming/src/test/scala/org/apache/spark/streaming/util/RateLimitedOutputStreamSuite.scala -> /Users/luochen/.m2/repository/org/scalatest/scalatest_2.10/2.1.5/scalatest_2.10-2.1.5.jar
 source dependencies:
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/src/test/java/org/apache/spark/streaming/JavaTestUtils.scala
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> streaming/src/test/java/org/apache/spark/streaming/LocalJavaStreamingContext.java
+   streaming/src/test/java/org/apache/spark/streaming/JavaReceiverAPISuite.java -> streaming/src/test/java/org/apache/spark/streaming/JavaReceiverAPISuite.java
+   streaming/src/test/java/org/apache/spark/streaming/JavaReceiverAPISuite.java -> streaming/src/test/scala/org/apache/spark/streaming/InputStreamsSuite.scala
    streaming/src/test/java/org/apache/spark/streaming/JavaTestUtils.scala -> streaming/src/test/scala/org/apache/spark/streaming/TestSuiteBase.scala
+   streaming/src/test/java/org/apache/spark/streaming/LocalJavaStreamingContext.java -> streaming/src/test/java/org/apache/spark/streaming/LocalJavaStreamingContext.java
    streaming/src/test/scala/org/apache/spark/streaming/BasicOperationsSuite.scala -> streaming/src/test/scala/org/apache/spark/streaming/InputStreamsSuite.scala
    streaming/src/test/scala/org/apache/spark/streaming/BasicOperationsSuite.scala -> streaming/src/test/scala/org/apache/spark/streaming/TestSuiteBase.scala
    streaming/src/test/scala/org/apache/spark/streaming/CheckpointSuite.scala -> streaming/src/test/scala/org/apache/spark/streaming/TestSuiteBase.scala
@@ -562,10 +629,24 @@ source dependencies:
    streaming/src/test/scala/org/apache/spark/streaming/StreamingListenerSuite.scala -> streaming/src/test/scala/org/apache/spark/streaming/TestSuiteBase.scala
    streaming/src/test/scala/org/apache/spark/streaming/WindowOperationsSuite.scala -> streaming/src/test/scala/org/apache/spark/streaming/TestSuiteBase.scala
 external dependencies:
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.Duration
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.StreamingContext
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.Time
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.api.java.JavaDStream
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.api.java.JavaDStreamLike
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.api.java.JavaPairDStream
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.api.java.JavaStreamingContext
+   streaming/src/test/java/org/apache/spark/streaming/JavaReceiverAPISuite.java -> org.apache.spark.streaming.Duration
+   streaming/src/test/java/org/apache/spark/streaming/JavaReceiverAPISuite.java -> org.apache.spark.streaming.api.java.JavaDStream
+   streaming/src/test/java/org/apache/spark/streaming/JavaReceiverAPISuite.java -> org.apache.spark.streaming.api.java.JavaReceiverInputDStream
+   streaming/src/test/java/org/apache/spark/streaming/JavaReceiverAPISuite.java -> org.apache.spark.streaming.api.java.JavaStreamingContext
+   streaming/src/test/java/org/apache/spark/streaming/JavaReceiverAPISuite.java -> org.apache.spark.streaming.receiver.Receiver
    streaming/src/test/java/org/apache/spark/streaming/JavaTestUtils.scala -> org.apache.spark.streaming.api.java.JavaDStream
    streaming/src/test/java/org/apache/spark/streaming/JavaTestUtils.scala -> org.apache.spark.streaming.api.java.JavaDStreamLike
    streaming/src/test/java/org/apache/spark/streaming/JavaTestUtils.scala -> org.apache.spark.streaming.api.java.JavaStreamingContext
    streaming/src/test/java/org/apache/spark/streaming/JavaTestUtils.scala -> org.apache.spark.streaming.dstream.DStream
+   streaming/src/test/java/org/apache/spark/streaming/LocalJavaStreamingContext.java -> org.apache.spark.streaming.Duration
+   streaming/src/test/java/org/apache/spark/streaming/LocalJavaStreamingContext.java -> org.apache.spark.streaming.api.java.JavaStreamingContext
    streaming/src/test/scala/org/apache/spark/streaming/BasicOperationsSuite.scala -> org.apache.spark.streaming.DStreamGraph
    streaming/src/test/scala/org/apache/spark/streaming/BasicOperationsSuite.scala -> org.apache.spark.streaming.Duration
    streaming/src/test/scala/org/apache/spark/streaming/BasicOperationsSuite.scala -> org.apache.spark.streaming.Seconds$
@@ -643,6 +724,56 @@ external dependencies:
    streaming/src/test/scala/org/apache/spark/streaming/WindowOperationsSuite.scala -> org.apache.spark.streaming.dstream.PairDStreamFunctions
    streaming/src/test/scala/org/apache/spark/streaming/util/RateLimitedOutputStreamSuite.scala -> org.apache.spark.streaming.util.RateLimitedOutputStream
 class names:
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$1
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$10
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$11
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$12
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$13
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$14
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$15
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$16
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$17
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$18
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$19
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$1Converter
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$2
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$20
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$21
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$22
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$23
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$23$1
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$24
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$25
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$26
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$27
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$28
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$29
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$3
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$30
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$31
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$32
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$33
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$34
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$35
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$35$1
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$36
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$37
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$38
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$4
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$4$1
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$5
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$6
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$7
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$8
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$9
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$IntegerDifference
+   streaming/src/test/java/org/apache/spark/streaming/JavaAPISuite.java -> org.apache.spark.streaming.JavaAPISuite$IntegerSum
+   streaming/src/test/java/org/apache/spark/streaming/JavaReceiverAPISuite.java -> org.apache.spark.streaming.JavaReceiverAPISuite
+   streaming/src/test/java/org/apache/spark/streaming/JavaReceiverAPISuite.java -> org.apache.spark.streaming.JavaReceiverAPISuite$1
+   streaming/src/test/java/org/apache/spark/streaming/JavaReceiverAPISuite.java -> org.apache.spark.streaming.JavaReceiverAPISuite$2
+   streaming/src/test/java/org/apache/spark/streaming/JavaReceiverAPISuite.java -> org.apache.spark.streaming.JavaSocketReceiver
+   streaming/src/test/java/org/apache/spark/streaming/JavaReceiverAPISuite.java -> org.apache.spark.streaming.JavaSocketReceiver$1
    streaming/src/test/java/org/apache/spark/streaming/JavaTestUtils.scala -> org.apache.spark.streaming.JavaCheckpointTestUtils
    streaming/src/test/java/org/apache/spark/streaming/JavaTestUtils.scala -> org.apache.spark.streaming.JavaCheckpointTestUtils$
    streaming/src/test/java/org/apache/spark/streaming/JavaTestUtils.scala -> org.apache.spark.streaming.JavaTestBase
@@ -653,6 +784,7 @@ class names:
    streaming/src/test/java/org/apache/spark/streaming/JavaTestUtils.scala -> org.apache.spark.streaming.JavaTestBase$class
    streaming/src/test/java/org/apache/spark/streaming/JavaTestUtils.scala -> org.apache.spark.streaming.JavaTestUtils
    streaming/src/test/java/org/apache/spark/streaming/JavaTestUtils.scala -> org.apache.spark.streaming.JavaTestUtils$
+   streaming/src/test/java/org/apache/spark/streaming/LocalJavaStreamingContext.java -> org.apache.spark.streaming.LocalJavaStreamingContext
    streaming/src/test/scala/org/apache/spark/streaming/BasicOperationsSuite.scala -> org.apache.spark.streaming.BasicOperationsSuite
    streaming/src/test/scala/org/apache/spark/streaming/BasicOperationsSuite.scala -> org.apache.spark.streaming.BasicOperationsSuite$$anonfun$1
    streaming/src/test/scala/org/apache/spark/streaming/BasicOperationsSuite.scala -> org.apache.spark.streaming.BasicOperationsSuite$$anonfun$1$$anonfun$apply$mcV$sp$2

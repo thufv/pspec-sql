@@ -113,11 +113,8 @@ products:
    sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveMetastoreCatalog.scala -> sql/hive/target/scala-2.10/classes/org/apache/spark/sql/hive/MetastoreRelation$$anonfun$7.class
    sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveMetastoreCatalog.scala -> sql/hive/target/scala-2.10/classes/org/apache/spark/sql/hive/MetastoreRelation$$anonfun$8.class
    sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveMetastoreCatalog.scala -> sql/hive/target/scala-2.10/classes/org/apache/spark/sql/hive/MetastoreRelation$$anonfun$9.class
-   sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveMetastoreCatalog.scala -> sql/hive/target/scala-2.10/classes/org/apache/spark/sql/hive/MetastoreRelation$$anonfun$attributeNames$1.class
    sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveMetastoreCatalog.scala -> sql/hive/target/scala-2.10/classes/org/apache/spark/sql/hive/MetastoreRelation$$anonfun$calculateLabels$1.class
    sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveMetastoreCatalog.scala -> sql/hive/target/scala-2.10/classes/org/apache/spark/sql/hive/MetastoreRelation$$anonfun$calculateLabels$2.class
-   sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveMetastoreCatalog.scala -> sql/hive/target/scala-2.10/classes/org/apache/spark/sql/hive/MetastoreRelation$$anonfun$checkMeta$1$$anonfun$apply$16.class
-   sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveMetastoreCatalog.scala -> sql/hive/target/scala-2.10/classes/org/apache/spark/sql/hive/MetastoreRelation$$anonfun$checkMeta$1.class
    sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveMetastoreCatalog.scala -> sql/hive/target/scala-2.10/classes/org/apache/spark/sql/hive/MetastoreRelation$$anonfun$statistics$1.class
    sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveMetastoreCatalog.scala -> sql/hive/target/scala-2.10/classes/org/apache/spark/sql/hive/MetastoreRelation$$anonfun$statistics$2.class
    sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveMetastoreCatalog.scala -> sql/hive/target/scala-2.10/classes/org/apache/spark/sql/hive/MetastoreRelation$.class
@@ -693,11 +690,8 @@ class names:
    sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveMetastoreCatalog.scala -> org.apache.spark.sql.hive.MetastoreRelation$$anonfun$7
    sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveMetastoreCatalog.scala -> org.apache.spark.sql.hive.MetastoreRelation$$anonfun$8
    sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveMetastoreCatalog.scala -> org.apache.spark.sql.hive.MetastoreRelation$$anonfun$9
-   sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveMetastoreCatalog.scala -> org.apache.spark.sql.hive.MetastoreRelation$$anonfun$attributeNames$1
    sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveMetastoreCatalog.scala -> org.apache.spark.sql.hive.MetastoreRelation$$anonfun$calculateLabels$1
    sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveMetastoreCatalog.scala -> org.apache.spark.sql.hive.MetastoreRelation$$anonfun$calculateLabels$2
-   sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveMetastoreCatalog.scala -> org.apache.spark.sql.hive.MetastoreRelation$$anonfun$checkMeta$1
-   sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveMetastoreCatalog.scala -> org.apache.spark.sql.hive.MetastoreRelation$$anonfun$checkMeta$1$$anonfun$apply$16
    sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveMetastoreCatalog.scala -> org.apache.spark.sql.hive.MetastoreRelation$$anonfun$statistics$1
    sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveMetastoreCatalog.scala -> org.apache.spark.sql.hive.MetastoreRelation$$anonfun$statistics$2
    sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveMetastoreCatalog.scala -> org.apache.spark.sql.hive.MetastoreRelation$SchemaAttribute

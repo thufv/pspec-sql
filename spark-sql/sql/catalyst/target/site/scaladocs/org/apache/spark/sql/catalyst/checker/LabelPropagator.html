@@ -39,7 +39,9 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Perform label propagation on logical plan,
+used for calculating projections and conditions used in the logical plan
+</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="org.apache.spark.Logging">Logging</span>, <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -178,7 +180,8 @@
         <span class="name">apply</span><span class="params">(<span name="plan">plan: <a href="../plans/logical/LogicalPlan.html" class="extype" name="org.apache.spark.sql.catalyst.plans.logical.LogicalPlan">LogicalPlan</a></span>)</span><span class="result">: <span class="extype" name="scala.collection.mutable.Set">Set</span>[<span class="extype" name="edu.thu.ss.spec.lang.pojo.Policy">Policy</span>]</span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">performs label propagation, and collects all applicable policy
+</p>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -249,7 +252,8 @@
         <span class="name">equiEdges</span><span class="result">: <span class="extype" name="scala.collection.mutable.HashMap">HashMap</span>[<a href="EquiVertex.html" class="extype" name="org.apache.spark.sql.catalyst.checker.EquiVertex">EquiVertex</a>, <span class="extype" name="scala.collection.mutable.Set">Set</span>[<a href="EquiVertex.html" class="extype" name="org.apache.spark.sql.catalyst.checker.EquiVertex">EquiVertex</a>]]</span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">equi-graph for all equi conditions
+</p>
     </li><li name="org.apache.spark.sql.catalyst.checker.LabelPropagator#equis" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="equis:scala.collection.mutable.HashMap[org.apache.spark.sql.catalyst.checker.EquiVertex,scala.collection.mutable.Set[org.apache.spark.sql.catalyst.checker.EquiVertex]]"></a>
       <a id="equis:HashMap[EquiVertex,Set[EquiVertex]]"></a>
@@ -262,7 +266,8 @@
         <span class="name">equis</span><span class="result">: <span class="extype" name="scala.collection.mutable.HashMap">HashMap</span>[<a href="EquiVertex.html" class="extype" name="org.apache.spark.sql.catalyst.checker.EquiVertex">EquiVertex</a>, <span class="extype" name="scala.collection.mutable.Set">Set</span>[<a href="EquiVertex.html" class="extype" name="org.apache.spark.sql.catalyst.checker.EquiVertex">EquiVertex</a>]]</span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">all equi-relations after performing reachbility analysis
+</p>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -541,7 +546,8 @@
         <span class="name">policies</span><span class="result">: <span class="extype" name="scala.collection.mutable.HashSet">HashSet</span>[<span class="extype" name="edu.thu.ss.spec.lang.pojo.Policy">Policy</span>]</span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">a set of applicable policies on the logical plan
+</p>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -555,7 +561,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="org.apache.spark.sql.catalyst.checker.LabelPropagator#tables" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="org.apache.spark.sql.catalyst.checker.LabelPropagator#tables" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="tables:scala.collection.mutable.HashMap[org.apache.spark.sql.catalyst.checker.ColumnLabel,Map[String,org.apache.spark.sql.catalyst.checker.ColumnLabel]]"></a>
       <a id="tables:HashMap[ColumnLabel,Map[String,ColumnLabel]]"></a>
       <h4 class="signature">
@@ -567,7 +573,11 @@
         <span class="name">tables</span><span class="result">: <span class="extype" name="scala.collection.mutable.HashMap">HashMap</span>[<a href="ColumnLabel.html" class="extype" name="org.apache.spark.sql.catalyst.checker.ColumnLabel">ColumnLabel</a>, <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="ColumnLabel.html" class="extype" name="org.apache.spark.sql.catalyst.checker.ColumnLabel">ColumnLabel</a>]]</span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">column_labal -&gt; (column_name -&gt; column_label)
+for each column label, we can find the corresponding table (column_name -&gt; column_label).</p><div class="fullcomment"><div class="comment cmt"><p>column_labal -&gt; (column_name -&gt; column_label)
+for each column label, we can find the corresponding table (column_name -&gt; column_label).
+table is actually a set of columns.
+</p></div></div>
     </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>

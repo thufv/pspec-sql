@@ -630,8 +630,10 @@ products:
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/ConstantVertex.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/EquiVertex.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$10.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$14.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$15.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$11.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$12.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$16.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$17.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$3.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$4.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$5.class
@@ -642,10 +644,10 @@ products:
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$addTable$1.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$apply$1.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$apply$2.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$fulfillCondition$1$$anonfun$11$$anonfun$apply$5$$anonfun$12.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$fulfillCondition$1$$anonfun$11$$anonfun$apply$5$$anonfun$13.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$fulfillCondition$1$$anonfun$11$$anonfun$apply$5.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$fulfillCondition$1$$anonfun$11.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$fulfillCondition$1$$anonfun$13$$anonfun$apply$5$$anonfun$14.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$fulfillCondition$1$$anonfun$13$$anonfun$apply$5$$anonfun$15.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$fulfillCondition$1$$anonfun$13$$anonfun$apply$5.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$fulfillCondition$1$$anonfun$13.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$fulfillCondition$1$$anonfun$apply$4.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$fulfillCondition$1$$anonfun$apply$6.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$fulfillCondition$1.class
@@ -661,62 +663,76 @@ products:
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$propagateUnary$1.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$propagateUnary$2.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$propagateUnary$3.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$propagateUnary$4.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$propogateSetOperators$1$$anonfun$1.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$propogateSetOperators$1$$anonfun$2.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$propogateSetOperators$1.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$resolveJoinCondition$1$$anonfun$apply$3.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator$$anonfun$resolveJoinCondition$1.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/LabelPropagator.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/Path$.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/Path.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/PathBuilder$$anonfun$1.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/PathBuilder$$anonfun$2.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/PathBuilder$$anonfun$3.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/PathBuilder$$anonfun$apply$1.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/PathBuilder$$anonfun$apply$2.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/PathBuilder$$anonfun$org$apache$spark$sql$catalyst$checker$PathBuilder$$addPath$1.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/PathBuilder$$anonfun$org$apache$spark$sql$catalyst$checker$PathBuilder$$buildPath$1.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/PathBuilder$$anonfun$org$apache$spark$sql$catalyst$checker$PathBuilder$$buildPath$2.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/PathBuilder$$anonfun$org$apache$spark$sql$catalyst$checker$PathBuilder$$buildPath$3.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/PathBuilder$$anonfun$org$apache$spark$sql$catalyst$checker$PathBuilder$$resolvePaths$1.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/PathBuilder$$anonfun$printPaths$1.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/PathBuilder$$anonfun$printPaths$2.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/PathBuilder$$anonfun$printPaths$3$$anonfun$apply$3$$anonfun$apply$4.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/PathBuilder$$anonfun$printPaths$3$$anonfun$apply$3.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/PathBuilder$$anonfun$printPaths$3.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/PathBuilder$$anonfun$printPaths$4$$anonfun$apply$5$$anonfun$apply$6.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/PathBuilder$$anonfun$printPaths$4$$anonfun$apply$5.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/PathBuilder$$anonfun$printPaths$4.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/PathBuilder.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PrivacyChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/PrivacyChecker.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$1.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$2.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$3.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$4.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$5.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$6.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$7.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$check$1$$anonfun$apply$1.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$check$1.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$check$2.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$check$3$$anonfun$apply$2.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$check$3.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$11$$anonfun$apply$12.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$11$$anonfun$apply$13$$anonfun$8.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$11$$anonfun$apply$13$$anonfun$apply$14.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$11$$anonfun$apply$13$$anonfun$apply$15.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$11$$anonfun$apply$13.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$11.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$4$$anonfun$apply$5.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$4$$anonfun$apply$6.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$4$$anonfun$apply$7$$anonfun$apply$8.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$4$$anonfun$apply$7.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$4$$anonfun$apply$9$$anonfun$5.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$4$$anonfun$apply$9$$anonfun$apply$10.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$4$$anonfun$apply$9$$anonfun$apply$11.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$4$$anonfun$apply$9$$anonfun$apply$12.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$4$$anonfun$apply$9.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$4.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$checkMeta$1.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$checkOperations$1.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$checkRestriction$1.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$checkRestrictions$1.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$collectDatas$1$$anonfun$apply$8.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$collectDatas$1$$anonfun$apply$2.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$collectDatas$1.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$collectDatas$2.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$loadMeta$1.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$loadPolicy$1.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$addPath$1$$anonfun$3.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$addPath$1$$anonfun$apply$7.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$addPath$1.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$buildPath$1.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$buildPath$2.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$buildPath$3.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkOperations$1$$anonfun$apply$10.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkColumn$1.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkColumn$2.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkOperations$1$$anonfun$apply$3.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkOperations$1.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkRestrictions$1$$anonfun$apply$9$$anonfun$apply$1.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkRestrictions$1$$anonfun$apply$9.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkRestrictions$1.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkRestrictions$2.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkRule$1.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$printPaths$1.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$printPaths$2.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$printPaths$3$$anonfun$apply$3$$anonfun$apply$4.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$printPaths$3$$anonfun$apply$3.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$printPaths$3.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$printPaths$4$$anonfun$apply$5$$anonfun$apply$6.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$printPaths$4$$anonfun$apply$5.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$printPaths$4.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkRule$2.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkType$1$$anonfun$8.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkType$1$$anonfun$9.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkType$1.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkType$2.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$satisfyRestriction$1.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$satisfyRestrictions$1.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$satisfyRestrictions$2.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$Path$.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker$Path.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/SparkChecker.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/exception.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/PrivacyException$.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/exception.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/checker/PrivacyException.class
@@ -1365,11 +1381,9 @@ products:
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/joinTypes.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/plans/RightOuter.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/plans/logical/BinaryNode.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/plans/logical/LeafNode.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan$$anonfun$1.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan$$anonfun$childLabel$1$$anonfun$apply$1.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan$$anonfun$2.class
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan$$anonfun$childLabel$1$$anonfun$1.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan$$anonfun$childLabel$1.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan$$anonfun$childLabel$2.class
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan$$anonfun$childLabel$3.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan$$anonfun$childrenResolved$1.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan$$anonfun$inputSet$1.class
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala -> sql/catalyst/target/scala-2.10/classes/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan$$anonfun$resolveChildren$1.class
@@ -1687,6 +1701,9 @@ binary dependencies:
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> core/target/spark-core_2.10-1.1.0.jar
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> lib_managed/jars/privacy.jar
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> lib_managed/jars/privacy.jar
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PrivacyChecker.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PrivacyChecker.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PrivacyChecker.scala -> core/target/spark-core_2.10-1.1.0.jar
@@ -1916,19 +1933,25 @@ source dependencies:
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/ExpressionRegistry.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/aggregates.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/ExpressionRegistry.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/arithmetic.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/ExpressionRegistry.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/complexTypes.scala
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/ExpressionRegistry.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/literals.scala
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/ExpressionRegistry.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/nullFunctions.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/ExpressionRegistry.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/predicates.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/ExpressionRegistry.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/sets.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/ExpressionRegistry.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/stringOperations.scala
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/ExpressionRegistry.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/types/dataTypes.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/ExpressionRegistry.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelConstants.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/exception.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/label.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/Expression.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/ScalaUdf.scala
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/SortOrder.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/aggregates.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/arithmetic.scala
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/complexTypes.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/literals.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/namedExpressions.scala
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/nullFunctions.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/predicates.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/stringOperations.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/QueryPlan.scala
@@ -1936,16 +1959,22 @@ source dependencies:
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/ScriptTransformation.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/basicOperators.scala
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/commands.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/partitioning.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/trees/TreeNode.scala
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PrivacyChecker.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/label.scala
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelConstants.scala
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/label.scala
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PrivacyChecker.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/analysis/Catalog.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PrivacyChecker.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/exception.scala
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/label.scala
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/Expression.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/namedExpressions.scala
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/QueryPlan.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/types/dataTypes.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/label.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/expressions/namedExpressions.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/dsl/package.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/analysis/Analyzer.scala
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/dsl/package.scala -> sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/analysis/unresolved.scala
@@ -2860,8 +2889,10 @@ class names:
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.EquiVertex
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$10
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$14
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$15
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$11
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$12
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$16
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$17
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$3
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$4
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$5
@@ -2873,10 +2904,10 @@ class names:
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$apply$1
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$apply$2
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$fulfillCondition$1
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$fulfillCondition$1$$anonfun$11
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$fulfillCondition$1$$anonfun$11$$anonfun$apply$5
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$fulfillCondition$1$$anonfun$11$$anonfun$apply$5$$anonfun$12
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$fulfillCondition$1$$anonfun$11$$anonfun$apply$5$$anonfun$13
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$fulfillCondition$1$$anonfun$13
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$fulfillCondition$1$$anonfun$13$$anonfun$apply$5
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$fulfillCondition$1$$anonfun$13$$anonfun$apply$5$$anonfun$14
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$fulfillCondition$1$$anonfun$13$$anonfun$apply$5$$anonfun$15
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$fulfillCondition$1$$anonfun$apply$4
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$fulfillCondition$1$$anonfun$apply$6
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$org$apache$spark$sql$catalyst$checker$LabelPropagator$$fulfillConditions$1
@@ -2891,62 +2922,76 @@ class names:
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$propagateUnary$1
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$propagateUnary$2
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$propagateUnary$3
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$propagateUnary$4
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$propogateSetOperators$1
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$propogateSetOperators$1$$anonfun$1
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$propogateSetOperators$1$$anonfun$2
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$resolveJoinCondition$1
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/LabelPropagator.scala -> org.apache.spark.sql.catalyst.checker.LabelPropagator$$anonfun$resolveJoinCondition$1$$anonfun$apply$3
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> org.apache.spark.sql.catalyst.checker.Path
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> org.apache.spark.sql.catalyst.checker.Path$
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> org.apache.spark.sql.catalyst.checker.PathBuilder
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> org.apache.spark.sql.catalyst.checker.PathBuilder$$anonfun$1
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> org.apache.spark.sql.catalyst.checker.PathBuilder$$anonfun$2
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> org.apache.spark.sql.catalyst.checker.PathBuilder$$anonfun$3
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> org.apache.spark.sql.catalyst.checker.PathBuilder$$anonfun$apply$1
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> org.apache.spark.sql.catalyst.checker.PathBuilder$$anonfun$apply$2
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> org.apache.spark.sql.catalyst.checker.PathBuilder$$anonfun$org$apache$spark$sql$catalyst$checker$PathBuilder$$addPath$1
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> org.apache.spark.sql.catalyst.checker.PathBuilder$$anonfun$org$apache$spark$sql$catalyst$checker$PathBuilder$$buildPath$1
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> org.apache.spark.sql.catalyst.checker.PathBuilder$$anonfun$org$apache$spark$sql$catalyst$checker$PathBuilder$$buildPath$2
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> org.apache.spark.sql.catalyst.checker.PathBuilder$$anonfun$org$apache$spark$sql$catalyst$checker$PathBuilder$$buildPath$3
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> org.apache.spark.sql.catalyst.checker.PathBuilder$$anonfun$org$apache$spark$sql$catalyst$checker$PathBuilder$$resolvePaths$1
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> org.apache.spark.sql.catalyst.checker.PathBuilder$$anonfun$printPaths$1
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> org.apache.spark.sql.catalyst.checker.PathBuilder$$anonfun$printPaths$2
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> org.apache.spark.sql.catalyst.checker.PathBuilder$$anonfun$printPaths$3
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> org.apache.spark.sql.catalyst.checker.PathBuilder$$anonfun$printPaths$3$$anonfun$apply$3
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> org.apache.spark.sql.catalyst.checker.PathBuilder$$anonfun$printPaths$3$$anonfun$apply$3$$anonfun$apply$4
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> org.apache.spark.sql.catalyst.checker.PathBuilder$$anonfun$printPaths$4
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> org.apache.spark.sql.catalyst.checker.PathBuilder$$anonfun$printPaths$4$$anonfun$apply$5
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PathBuilder.scala -> org.apache.spark.sql.catalyst.checker.PathBuilder$$anonfun$printPaths$4$$anonfun$apply$5$$anonfun$apply$6
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/PrivacyChecker.scala -> org.apache.spark.sql.catalyst.checker.PrivacyChecker
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$1
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$2
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$3
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$4
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$5
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$6
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$7
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$check$1
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$check$2
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$check$3
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$check$3$$anonfun$apply$2
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$check$1$$anonfun$apply$1
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$checkMeta$1
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$11
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$11$$anonfun$apply$12
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$11$$anonfun$apply$13
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$11$$anonfun$apply$13$$anonfun$8
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$11$$anonfun$apply$13$$anonfun$apply$14
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$11$$anonfun$apply$13$$anonfun$apply$15
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$4
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$4$$anonfun$apply$5
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$4$$anonfun$apply$6
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$4$$anonfun$apply$7
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$4$$anonfun$apply$7$$anonfun$apply$8
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$4$$anonfun$apply$9
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$4$$anonfun$apply$9$$anonfun$5
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$4$$anonfun$apply$9$$anonfun$apply$10
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$4$$anonfun$apply$9$$anonfun$apply$11
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$checkMeta$1$$anonfun$apply$4$$anonfun$apply$9$$anonfun$apply$12
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$checkOperations$1
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$checkRestriction$1
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$checkRestrictions$1
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$collectDatas$1
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$collectDatas$1$$anonfun$apply$8
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$collectDatas$1$$anonfun$apply$2
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$collectDatas$2
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$loadMeta$1
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$loadPolicy$1
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$addPath$1
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$addPath$1$$anonfun$3
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$addPath$1$$anonfun$apply$7
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$buildPath$1
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$buildPath$2
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$buildPath$3
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkColumn$1
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkColumn$2
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkOperations$1
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkOperations$1$$anonfun$apply$10
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkRestrictions$1
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkRestrictions$1$$anonfun$apply$9
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkRestrictions$1$$anonfun$apply$9$$anonfun$apply$1
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkRestrictions$2
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkOperations$1$$anonfun$apply$3
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkRule$1
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$printPaths$1
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$printPaths$2
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$printPaths$3
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$printPaths$3$$anonfun$apply$3
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$printPaths$3$$anonfun$apply$3$$anonfun$apply$4
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$printPaths$4
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$printPaths$4$$anonfun$apply$5
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$printPaths$4$$anonfun$apply$5$$anonfun$apply$6
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$Path
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$Path$
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkRule$2
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkType$1
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkType$1$$anonfun$8
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkType$1$$anonfun$9
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$checkType$2
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$satisfyRestriction$1
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$satisfyRestrictions$1
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/SparkChecker.scala -> org.apache.spark.sql.catalyst.checker.SparkChecker$$anonfun$org$apache$spark$sql$catalyst$checker$SparkChecker$$satisfyRestrictions$2
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/exception.scala -> org.apache.spark.sql.catalyst.checker.PrivacyException
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/exception.scala -> org.apache.spark.sql.catalyst.checker.PrivacyException$
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/checker/exception.scala -> org.apache.spark.sql.catalyst.checker.UnsupportedPlanException
@@ -3595,11 +3640,9 @@ class names:
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala -> org.apache.spark.sql.catalyst.plans.logical.BinaryNode
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala -> org.apache.spark.sql.catalyst.plans.logical.LeafNode
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala -> org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala -> org.apache.spark.sql.catalyst.plans.logical.LogicalPlan$$anonfun$1
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala -> org.apache.spark.sql.catalyst.plans.logical.LogicalPlan$$anonfun$2
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala -> org.apache.spark.sql.catalyst.plans.logical.LogicalPlan$$anonfun$childLabel$1
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala -> org.apache.spark.sql.catalyst.plans.logical.LogicalPlan$$anonfun$childLabel$1$$anonfun$apply$1
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala -> org.apache.spark.sql.catalyst.plans.logical.LogicalPlan$$anonfun$childLabel$2
-   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala -> org.apache.spark.sql.catalyst.plans.logical.LogicalPlan$$anonfun$childLabel$3
+   sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala -> org.apache.spark.sql.catalyst.plans.logical.LogicalPlan$$anonfun$childLabel$1$$anonfun$1
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala -> org.apache.spark.sql.catalyst.plans.logical.LogicalPlan$$anonfun$childrenResolved$1
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala -> org.apache.spark.sql.catalyst.plans.logical.LogicalPlan$$anonfun$inputSet$1
    sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/LogicalPlan.scala -> org.apache.spark.sql.catalyst.plans.logical.LogicalPlan$$anonfun$resolveChildren$1

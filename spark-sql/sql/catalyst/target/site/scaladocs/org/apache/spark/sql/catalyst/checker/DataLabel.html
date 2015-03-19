@@ -35,11 +35,12 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">DataLabel</span><span class="params">(<span name="data">data: <span class="extype" name="edu.thu.ss.spec.lang.pojo.DataCategory">DataCategory</span></span>, <span name="database">database: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="table">table: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="attr">attr: <a href="../expressions/AttributeReference.html" class="extype" name="org.apache.spark.sql.catalyst.expressions.AttributeReference">AttributeReference</a></span>)</span><span class="result"> extends <a href="ColumnLabel.html" class="extype" name="org.apache.spark.sql.catalyst.checker.ColumnLabel">ColumnLabel</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">DataLabel</span><span class="params">(<span name="labelType">labelType: <span class="extype" name="edu.thu.ss.spec.meta.BaseType">BaseType</span></span>, <span name="database">database: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="table">table: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="attr">attr: <a href="../expressions/AttributeReference.html" class="extype" name="org.apache.spark.sql.catalyst.expressions.AttributeReference">AttributeReference</a></span>)</span><span class="result"> extends <a href="ColumnLabel.html" class="extype" name="org.apache.spark.sql.catalyst.checker.ColumnLabel">ColumnLabel</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>class for data category node (leaf) in lineage tree
+</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="ColumnLabel.html" class="extype" name="org.apache.spark.sql.catalyst.checker.ColumnLabel">ColumnLabel</a>, <a href="Label.html" class="extype" name="org.apache.spark.sql.catalyst.checker.Label">Label</a>, <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -80,7 +81,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.apache.spark.sql.catalyst.checker.DataLabel#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(data:edu.thu.ss.spec.lang.pojo.DataCategory,database:String,table:String,attr:org.apache.spark.sql.catalyst.expressions.AttributeReference):org.apache.spark.sql.catalyst.checker.DataLabel"></a>
+      <a id="&lt;init&gt;(labelType:edu.thu.ss.spec.meta.BaseType,database:String,table:String,attr:org.apache.spark.sql.catalyst.expressions.AttributeReference):org.apache.spark.sql.catalyst.checker.DataLabel"></a>
       <a id="&lt;init&gt;:DataLabel"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -88,7 +89,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">DataLabel</span><span class="params">(<span name="data">data: <span class="extype" name="edu.thu.ss.spec.lang.pojo.DataCategory">DataCategory</span></span>, <span name="database">database: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="table">table: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="attr">attr: <a href="../expressions/AttributeReference.html" class="extype" name="org.apache.spark.sql.catalyst.expressions.AttributeReference">AttributeReference</a></span>)</span>
+        <span class="name">DataLabel</span><span class="params">(<span name="labelType">labelType: <span class="extype" name="edu.thu.ss.spec.meta.BaseType">BaseType</span></span>, <span name="database">database: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="table">table: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="attr">attr: <a href="../expressions/AttributeReference.html" class="extype" name="org.apache.spark.sql.catalyst.expressions.AttributeReference">AttributeReference</a></span>)</span>
       </span>
       </h4>
       
@@ -211,19 +212,6 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="org.apache.spark.sql.catalyst.checker.DataLabel#data" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="data:edu.thu.ss.spec.lang.pojo.DataCategory"></a>
-      <a id="data:DataCategory"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">data</span><span class="result">: <span class="extype" name="edu.thu.ss.spec.lang.pojo.DataCategory">DataCategory</span></span>
-      </span>
-      </h4>
-      
     </li><li name="org.apache.spark.sql.catalyst.checker.DataLabel#database" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="database:String"></a>
       <a id="database:String"></a>
@@ -295,6 +283,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="org.apache.spark.sql.catalyst.checker.DataLabel#labelType" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="labelType:edu.thu.ss.spec.meta.BaseType"></a>
+      <a id="labelType:BaseType"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">labelType</span><span class="result">: <span class="extype" name="edu.thu.ss.spec.meta.BaseType">BaseType</span></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>

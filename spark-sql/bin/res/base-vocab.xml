@@ -12,16 +12,12 @@
 		</issuer>
 	</vocabulary-information>
 	<user-category-container id="default-user">
-		<user-category id="app" />
+		<user-category id="analyst" />
 	</user-category-container>
 
 	<data-category-container id="default-data">
 		<data-category id="ka"></data-category>
 		<data-category id="qi"></data-category>
 		<data-category id="sa"></data-category>
-
-
-		<data-category id="sk" parent="ka"></data-category>
-		<data-category id="id" parent="ka"></data-category>
 	</data-category-container>
 </vocabulary>

@@ -35,7 +35,7 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">SparkChecker</span><span class="result"> extends <a href="PrivacyChecker.html" class="extype" name="org.apache.spark.sql.catalyst.checker.PrivacyChecker">PrivacyChecker</a></span>
+        <span class="name">SparkChecker</span><span class="result"> extends <a href="PrivacyChecker.html" class="extype" name="org.apache.spark.sql.catalyst.checker.PrivacyChecker">PrivacyChecker</a> with <span class="extype" name="org.apache.spark.Logging">Logging</span></span>
       </span>
       </h4>
       
@@ -95,23 +95,7 @@
     </li></ol>
             </div>
 
-        <div id="types" class="types members">
-              <h3>Type Members</h3>
-              <ol><li name="org.apache.spark.sql.catalyst.checker.SparkChecker.Path" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="PathextendsProductwithSerializable"></a>
-      <a id="Path:Path"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="SparkChecker$Path.html"><span class="name">Path</span></a><span class="params">(<span name="ops">ops: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="edu.thu.ss.spec.lang.pojo.DesensitizeOperation">DesensitizeOperation</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      
-    </li></ol>
-            </div>
+        
 
         
 
@@ -196,15 +180,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="org.apache.spark.sql.catalyst.checker.SparkChecker#check" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="check(projections:scala.collection.Set[org.apache.spark.sql.catalyst.checker.Label],conditions:scala.collection.Set[org.apache.spark.sql.catalyst.checker.Label],policies:scala.collection.Set[edu.thu.ss.spec.lang.pojo.Policy]):Unit"></a>
-      <a id="check(Set[Label],Set[Label],Set[Policy]):Unit"></a>
+      <a id="check(projectionPaths:scala.collection.mutable.Map[edu.thu.ss.spec.lang.pojo.Policy,scala.collection.mutable.Map[edu.thu.ss.spec.lang.pojo.DataCategory,scala.collection.mutable.Set[org.apache.spark.sql.catalyst.checker.Path]]],conditionPaths:scala.collection.mutable.Map[edu.thu.ss.spec.lang.pojo.Policy,scala.collection.mutable.Map[edu.thu.ss.spec.lang.pojo.DataCategory,scala.collection.mutable.Set[org.apache.spark.sql.catalyst.checker.Path]]],policies:scala.collection.Set[edu.thu.ss.spec.lang.pojo.Policy]):Unit"></a>
+      <a id="check(Map[Policy,Map[DataCategory,Set[Path]]],Map[Policy,Map[DataCategory,Set[Path]]],Set[Policy]):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">check</span><span class="params">(<span name="projections">projections: <span class="extype" name="scala.collection.Set">Set</span>[<a href="Label.html" class="extype" name="org.apache.spark.sql.catalyst.checker.Label">Label</a>]</span>, <span name="conditions">conditions: <span class="extype" name="scala.collection.Set">Set</span>[<a href="Label.html" class="extype" name="org.apache.spark.sql.catalyst.checker.Label">Label</a>]</span>, <span name="policies">policies: <span class="extype" name="scala.collection.Set">Set</span>[<span class="extype" name="edu.thu.ss.spec.lang.pojo.Policy">Policy</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">check</span><span class="params">(<span name="projectionPaths">projectionPaths: <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="edu.thu.ss.spec.lang.pojo.Policy">Policy</span>, <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="edu.thu.ss.spec.lang.pojo.DataCategory">DataCategory</span>, <span class="extype" name="scala.collection.mutable.Set">Set</span>[<a href="Path.html" class="extype" name="org.apache.spark.sql.catalyst.checker.Path">Path</a>]]]</span>, <span name="conditionPaths">conditionPaths: <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="edu.thu.ss.spec.lang.pojo.Policy">Policy</span>, <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="edu.thu.ss.spec.lang.pojo.DataCategory">DataCategory</span>, <span class="extype" name="scala.collection.mutable.Set">Set</span>[<a href="Path.html" class="extype" name="org.apache.spark.sql.catalyst.checker.Path">Path</a>]]]</span>, <span name="policies">policies: <span class="extype" name="scala.collection.Set">Set</span>[<span class="extype" name="edu.thu.ss.spec.lang.pojo.Policy">Policy</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="org.apache.spark.sql.catalyst.checker.SparkChecker">SparkChecker</a> → <a href="PrivacyChecker.html" class="extype" name="org.apache.spark.sql.catalyst.checker.PrivacyChecker">PrivacyChecker</a></dd></dl></div>
@@ -228,7 +212,7 @@
               
         </dd></dl></div>
     </li><li name="org.apache.spark.sql.catalyst.checker.SparkChecker#conditionPaths" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="conditionPaths:scala.collection.mutable.Map[edu.thu.ss.spec.lang.pojo.Policy,scala.collection.mutable.Map[edu.thu.ss.spec.lang.pojo.DataCategory,scala.collection.mutable.Set[SparkChecker.this.Path]]]"></a>
+      <a id="conditionPaths:scala.collection.mutable.Map[edu.thu.ss.spec.lang.pojo.Policy,scala.collection.mutable.Map[edu.thu.ss.spec.lang.pojo.DataCategory,scala.collection.mutable.Set[org.apache.spark.sql.catalyst.checker.Path]]]"></a>
       <a id="conditionPaths:Map[Policy,Map[DataCategory,Set[Path]]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -236,7 +220,7 @@
         <span class="kind">var</span>
       </span>
       <span class="symbol">
-        <span class="name">conditionPaths</span><span class="result">: <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="edu.thu.ss.spec.lang.pojo.Policy">Policy</span>, <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="edu.thu.ss.spec.lang.pojo.DataCategory">DataCategory</span>, <span class="extype" name="scala.collection.mutable.Set">Set</span>[<a href="SparkChecker$Path.html" class="extype" name="org.apache.spark.sql.catalyst.checker.SparkChecker.Path">Path</a>]]]</span>
+        <span class="name">conditionPaths</span><span class="result">: <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="edu.thu.ss.spec.lang.pojo.Policy">Policy</span>, <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="edu.thu.ss.spec.lang.pojo.DataCategory">DataCategory</span>, <span class="extype" name="scala.collection.mutable.Set">Set</span>[<a href="Path.html" class="extype" name="org.apache.spark.sql.catalyst.checker.Path">Path</a>]]]</span>
       </span>
       </h4>
       
@@ -546,7 +530,7 @@
       </h4>
       
     </li><li name="org.apache.spark.sql.catalyst.checker.SparkChecker#projectionPaths" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="projectionPaths:scala.collection.mutable.Map[edu.thu.ss.spec.lang.pojo.Policy,scala.collection.mutable.Map[edu.thu.ss.spec.lang.pojo.DataCategory,scala.collection.mutable.Set[SparkChecker.this.Path]]]"></a>
+      <a id="projectionPaths:scala.collection.mutable.Map[edu.thu.ss.spec.lang.pojo.Policy,scala.collection.mutable.Map[edu.thu.ss.spec.lang.pojo.DataCategory,scala.collection.mutable.Set[org.apache.spark.sql.catalyst.checker.Path]]]"></a>
       <a id="projectionPaths:Map[Policy,Map[DataCategory,Set[Path]]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -554,7 +538,7 @@
         <span class="kind">var</span>
       </span>
       <span class="symbol">
-        <span class="name">projectionPaths</span><span class="result">: <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="edu.thu.ss.spec.lang.pojo.Policy">Policy</span>, <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="edu.thu.ss.spec.lang.pojo.DataCategory">DataCategory</span>, <span class="extype" name="scala.collection.mutable.Set">Set</span>[<a href="SparkChecker$Path.html" class="extype" name="org.apache.spark.sql.catalyst.checker.SparkChecker.Path">Path</a>]]]</span>
+        <span class="name">projectionPaths</span><span class="result">: <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="edu.thu.ss.spec.lang.pojo.Policy">Policy</span>, <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="edu.thu.ss.spec.lang.pojo.DataCategory">DataCategory</span>, <span class="extype" name="scala.collection.mutable.Set">Set</span>[<a href="Path.html" class="extype" name="org.apache.spark.sql.catalyst.checker.Path">Path</a>]]]</span>
       </span>
       </h4>
       
@@ -594,6 +578,19 @@
       </span>
       <span class="symbol">
         <span class="name">user</span><span class="result">: <span class="extype" name="edu.thu.ss.spec.lang.pojo.UserCategory">UserCategory</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="org.apache.spark.sql.catalyst.checker.SparkChecker#violated" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="violated:Boolean"></a>
+      <a id="violated:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">var</span>
+      </span>
+      <span class="symbol">
+        <span class="name">violated</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       

@@ -1,4 +1,12 @@
 products:
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaAPISuite.java -> sql/core/target/scala-2.10/test-classes/org/apache/spark/sql/api/java/JavaAPISuite$1.class
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaAPISuite.java -> sql/core/target/scala-2.10/test-classes/org/apache/spark/sql/api/java/JavaAPISuite$2.class
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaAPISuite.java -> sql/core/target/scala-2.10/test-classes/org/apache/spark/sql/api/java/JavaAPISuite.class
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaApplySchemaSuite.java -> sql/core/target/scala-2.10/test-classes/org/apache/spark/sql/api/java/JavaApplySchemaSuite$1.class
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaApplySchemaSuite.java -> sql/core/target/scala-2.10/test-classes/org/apache/spark/sql/api/java/JavaApplySchemaSuite$Person.class
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaApplySchemaSuite.java -> sql/core/target/scala-2.10/test-classes/org/apache/spark/sql/api/java/JavaApplySchemaSuite.class
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaRowSuite.java -> sql/core/target/scala-2.10/test-classes/org/apache/spark/sql/api/java/JavaRowSuite.class
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaSideDataTypeConversionSuite.java -> sql/core/target/scala-2.10/test-classes/org/apache/spark/sql/api/java/JavaSideDataTypeConversionSuite.class
    sql/core/src/test/scala/org/apache/spark/sql/CachedTableSuite.scala -> sql/core/target/scala-2.10/test-classes/org/apache/spark/sql/BigData$.class
    sql/core/src/test/scala/org/apache/spark/sql/CachedTableSuite.scala -> sql/core/target/scala-2.10/test-classes/org/apache/spark/sql/BigData.class
    sql/core/src/test/scala/org/apache/spark/sql/CachedTableSuite.scala -> sql/core/target/scala-2.10/test-classes/org/apache/spark/sql/CachedTableSuite$$anonfun$1$$anonfun$apply$mcV$sp$2.class
@@ -563,6 +571,15 @@ products:
    sql/core/src/test/scala/org/apache/spark/sql/parquet/ParquetQuerySuite.scala -> sql/core/target/scala-2.10/test-classes/org/apache/spark/sql/parquet/TestRDDEntry$.class
    sql/core/src/test/scala/org/apache/spark/sql/parquet/ParquetQuerySuite.scala -> sql/core/target/scala-2.10/test-classes/org/apache/spark/sql/parquet/TestRDDEntry.class
 binary dependencies:
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaAPISuite.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaAPISuite.java -> core/target/spark-core_2.10-1.1.0.jar
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaApplySchemaSuite.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaApplySchemaSuite.java -> /Users/luochen/.m2/repository/junit/junit/4.10/junit-4.10.jar
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaApplySchemaSuite.java -> core/target/spark-core_2.10-1.1.0.jar
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaRowSuite.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaRowSuite.java -> /Users/luochen/.m2/repository/junit/junit/4.10/junit-4.10.jar
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaSideDataTypeConversionSuite.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaSideDataTypeConversionSuite.java -> /Users/luochen/.m2/repository/junit/junit/4.10/junit-4.10.jar
    sql/core/src/test/scala/org/apache/spark/sql/CachedTableSuite.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
    sql/core/src/test/scala/org/apache/spark/sql/CachedTableSuite.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
    sql/core/src/test/scala/org/apache/spark/sql/CachedTableSuite.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-reflect/2.10.4/scala-reflect-2.10.4.jar
@@ -714,6 +731,10 @@ binary dependencies:
    sql/core/src/test/scala/org/apache/spark/sql/parquet/ParquetQuerySuite.scala -> sql/catalyst/target/spark-catalyst_2.10-1.1.0-tests.jar
    sql/core/src/test/scala/org/apache/spark/sql/parquet/ParquetQuerySuite.scala -> sql/catalyst/target/spark-catalyst_2.10-1.1.0.jar
 source dependencies:
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaAPISuite.java -> sql/core/src/test/java/org/apache/spark/sql/api/java/JavaAPISuite.java
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaApplySchemaSuite.java -> sql/core/src/test/java/org/apache/spark/sql/api/java/JavaApplySchemaSuite.java
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaRowSuite.java -> sql/core/src/test/java/org/apache/spark/sql/api/java/JavaRowSuite.java
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaSideDataTypeConversionSuite.java -> sql/core/src/test/java/org/apache/spark/sql/api/java/JavaSideDataTypeConversionSuite.java
    sql/core/src/test/scala/org/apache/spark/sql/CachedTableSuite.scala -> sql/core/src/test/scala/org/apache/spark/sql/QueryTest.scala
    sql/core/src/test/scala/org/apache/spark/sql/CachedTableSuite.scala -> sql/core/src/test/scala/org/apache/spark/sql/TestData.scala
    sql/core/src/test/scala/org/apache/spark/sql/DslQuerySuite.scala -> sql/core/src/test/scala/org/apache/spark/sql/QueryTest.scala
@@ -748,6 +769,19 @@ source dependencies:
    sql/core/src/test/scala/org/apache/spark/sql/parquet/ParquetQuerySuite.scala -> sql/core/src/test/scala/org/apache/spark/sql/QueryTest.scala
    sql/core/src/test/scala/org/apache/spark/sql/parquet/ParquetQuerySuite.scala -> sql/core/src/test/scala/org/apache/spark/sql/TestData.scala
 external dependencies:
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaAPISuite.java -> org.apache.spark.sql.api.java.DataType
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaAPISuite.java -> org.apache.spark.sql.api.java.JavaSQLContext
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaAPISuite.java -> org.apache.spark.sql.api.java.JavaSchemaRDD
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaAPISuite.java -> org.apache.spark.sql.api.java.Row
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaAPISuite.java -> org.apache.spark.sql.api.java.UDF1
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaAPISuite.java -> org.apache.spark.sql.api.java.UDF2
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaApplySchemaSuite.java -> org.apache.spark.sql.api.java.DataType
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaApplySchemaSuite.java -> org.apache.spark.sql.api.java.JavaSQLContext
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaApplySchemaSuite.java -> org.apache.spark.sql.api.java.JavaSchemaRDD
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaApplySchemaSuite.java -> org.apache.spark.sql.api.java.Row
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaRowSuite.java -> org.apache.spark.sql.api.java.Row
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaSideDataTypeConversionSuite.java -> org.apache.spark.sql.api.java.DataType
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaSideDataTypeConversionSuite.java -> org.apache.spark.sql.types.util.DataTypeConversions
    sql/core/src/test/scala/org/apache/spark/sql/CachedTableSuite.scala -> org.apache.spark.sql.SQLContext
    sql/core/src/test/scala/org/apache/spark/sql/CachedTableSuite.scala -> org.apache.spark.sql.SchemaRDD
    sql/core/src/test/scala/org/apache/spark/sql/CachedTableSuite.scala -> org.apache.spark.sql.SchemaRDDLike
@@ -994,6 +1028,14 @@ external dependencies:
    sql/core/src/test/scala/org/apache/spark/sql/parquet/ParquetQuerySuite.scala -> org.apache.spark.sql.parquet.ParquetTypesConverter$
    sql/core/src/test/scala/org/apache/spark/sql/parquet/ParquetQuerySuite.scala -> org.apache.spark.sql.test.TestSQLContext$
 class names:
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaAPISuite.java -> org.apache.spark.sql.api.java.JavaAPISuite
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaAPISuite.java -> org.apache.spark.sql.api.java.JavaAPISuite$1
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaAPISuite.java -> org.apache.spark.sql.api.java.JavaAPISuite$2
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaApplySchemaSuite.java -> org.apache.spark.sql.api.java.JavaApplySchemaSuite
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaApplySchemaSuite.java -> org.apache.spark.sql.api.java.JavaApplySchemaSuite$1
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaApplySchemaSuite.java -> org.apache.spark.sql.api.java.JavaApplySchemaSuite$Person
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaRowSuite.java -> org.apache.spark.sql.api.java.JavaRowSuite
+   sql/core/src/test/java/org/apache/spark/sql/api/java/JavaSideDataTypeConversionSuite.java -> org.apache.spark.sql.api.java.JavaSideDataTypeConversionSuite
    sql/core/src/test/scala/org/apache/spark/sql/CachedTableSuite.scala -> org.apache.spark.sql.BigData
    sql/core/src/test/scala/org/apache/spark/sql/CachedTableSuite.scala -> org.apache.spark.sql.BigData$
    sql/core/src/test/scala/org/apache/spark/sql/CachedTableSuite.scala -> org.apache.spark.sql.CachedTableSuite

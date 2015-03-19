@@ -167,6 +167,15 @@
  </file>
  <file name="/Users/luochen/Documents/Research/privacy/spark-sql/core/src/main/scala/org/apache/spark/SparkContext.scala">
   <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>
+  <error line="509" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="589" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="610" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="614" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="708" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="792" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="1337" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="1372" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
+  <error line="1380" source="org.scalastyle.file.FileLineLengthChecker" severity="error" message="File line length exceeds 100 characters"></error>
  </file>
  <file name="/Users/luochen/Documents/Research/privacy/spark-sql/core/src/main/scala/org/apache/spark/storage/PutResult.scala">
   <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="error" message="Header does not match expected text"></error>

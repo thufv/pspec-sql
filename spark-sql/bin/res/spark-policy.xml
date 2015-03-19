@@ -1,59 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <privacy-policy xmlns="http://www.example.org/privacy"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.example.org/privacy privacy.xsd">
-	<policy-information id="spark-policy">
+	xsi:schemaLocation="http://www.example.org/privacy ../res/privacy.xsd">
+	<policy-information id="tpcds-policy">
 		<issuer>
-			<name>luochen</name>
-			<organization>Tsinghua</organization>
+			<name>Luo Chen</name>
+			<organization>Tsinghua University</organization>
 			<e-mail>luochen01@vip.qq.com</e-mail>
-			<address>Tsinghua</address>
+			<address>Beijing</address>
 			<country>China</country>
 		</issuer>
 	</policy-information>
 	<vocabulary-ref location="res/spark-vocab.xml">
 		<user-category-container refid="default-user" />
-		<data-category-container refid="store-data" />
+		<data-category-container refid="tpcds-data" />
 	</vocabulary-ref>
 	<rules>
-		<rule id="forbid_project">
-			<user-category-ref refid="app"></user-category-ref>
-			<data-category-ref refid="ka" action="projection"></data-category-ref>
-			<data-category-ref refid="name" action="projection"></data-category-ref>
-			<data-category-ref refid="customer_suite" action="projection"></data-category-ref>
-			<data-category-ref refid="customer_sa" action="projection"></data-category-ref>
+		<rule id="rule123">
+			<user-category-ref refid="analyst"></user-category-ref>
+			<data-category-ref refid="email" action="all" />
+			<data-category-ref refid="name" action="all"></data-category-ref>
+			<data-category-ref refid="street" action="all"></data-category-ref>
 			<restriction>
 				<forbid></forbid>
 			</restriction>
 		</rule>
 
-		<rule id="forbid_name_customer_sa">
-			<user-category-ref refid="app"></user-category-ref>
+		<rule id="rule4">
+			<user-category-ref refid="analyst"></user-category-ref>
 			<data-association>
-				<data-category-ref refid="name"></data-category-ref>
-				<data-category-ref refid="customer_sa"></data-category-ref>
+				<data-category-ref refid="birth" action="all"></data-category-ref>
+				<data-category-ref refid="address" action="all"></data-category-ref>
+				<data-category-ref refid="gender" action="all"></data-category-ref>
 			</data-association>
 			<restriction>
 				<forbid></forbid>
 			</restriction>
 		</rule>
 
-		<rule id="forbid_id_customer_sa">
-			<user-category-ref refid="app"></user-category-ref>
+		<rule id="rule5">
+			<user-category-ref refid="analyst"></user-category-ref>
 			<data-association>
-				<data-category-ref refid="id"></data-category-ref>
-				<data-category-ref refid="customer_sa"></data-category-ref>
+				<data-category-ref refid="birth" action="all"></data-category-ref>
+				<data-category-ref refid="address" action="all"></data-category-ref>
+				<data-category-ref refid="marital" action="all"></data-category-ref>
 			</data-association>
 			<restriction>
 				<forbid></forbid>
 			</restriction>
 		</rule>
 
-		<rule id="forbid_ka_qi_project">
-			<user-category-ref refid="app"></user-category-ref>
+		<rule id="rule6">
+			<user-category-ref refid="analyst"></user-category-ref>
 			<data-association>
-				<data-category-ref refid="ka"></data-category-ref>
-				<data-category-ref refid="qi" action="projection"></data-category-ref>
+				<data-category-ref refid="birth" action="all"></data-category-ref>
+				<data-category-ref refid="address" action="all"></data-category-ref>
+				<data-category-ref refid="education" action="all"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+
+		<rule id="rule7">
+			<user-category-ref refid="analyst"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="f_name" action="all"></data-category-ref>
+				<data-category-ref refid="l_name" action="all"></data-category-ref>
 			</data-association>
 			<restriction>
 				<forbid></forbid>
@@ -61,9 +74,22 @@
 		</rule>
 
 
-		<rule id="truncate_zip">
-			<user-category-ref refid="app"></user-category-ref>
-			<data-category-ref refid="customer_zip"></data-category-ref>
+
+		<rule id="rule9">
+			<user-category-ref refid="analyst"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="b_day" action="all"></data-category-ref>
+				<data-category-ref refid="b_month" action="all"></data-category-ref>
+				<data-category-ref refid="b_year" action="all"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+
+		<rule id="rule10">
+			<user-category-ref refid="analyst"></user-category-ref>
+			<data-category-ref refid="zip" action="all"></data-category-ref>
 			<restriction>
 				<desensitize>
 					<operation>truncate</operation>
@@ -71,17 +97,51 @@
 			</restriction>
 		</rule>
 
-		<rule id="agg_financial">
-			<user-category-ref refid="app"></user-category-ref>
-			<data-category-ref refid="financial"></data-category-ref>
+		<rule id="rule11">
+			<user-category-ref refid="analyst"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="qi" action="all"></data-category-ref>
+				<data-category-ref refid="vehicle" action="all"></data-category-ref>
+			</data-association>
 			<restriction>
 				<desensitize>
-					<operation>sum</operation>
-					<operation>avg</operation>
+					<data-category-ref refid="vehicle"></data-category-ref>
+					<operation>isZero</operation>
 				</desensitize>
 			</restriction>
 		</rule>
 
+		<rule id="rule12">
+			<user-category-ref refid="analyst"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="qi" action="all"></data-category-ref>
+				<data-category-ref refid="income" action="all"></data-category-ref>
+			</data-association>
+			<restriction>
+				<desensitize>
+					<data-category-ref refid="income"></data-category-ref>
+					<operation>range</operation>
+				</desensitize>
+			</restriction>
+		</rule>
 
+		<rule id="rule13">
+			<user-category-ref refid="analyst"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="qi" action="all"></data-category-ref>
+				<data-category-ref refid="price" action="all"></data-category-ref>
+			</data-association>
+			<restriction>
+				<desensitize>
+					<data-category-ref refid="price"></data-category-ref>
+					<operation>sum</operation>
+					<operation>count</operation>
+					<operation>avg</operation>
+					<operation>min</operation>
+					<operation>max</operation>
+				</desensitize>
+			</restriction>
+		</rule>
+		
 	</rules>
 </privacy-policy>

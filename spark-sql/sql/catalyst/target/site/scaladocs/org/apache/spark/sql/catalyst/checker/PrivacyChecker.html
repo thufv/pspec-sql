@@ -39,7 +39,8 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>interface for privacy checker
+</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="org.apache.spark.Logging">Logging</span>, <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
@@ -87,15 +88,15 @@
         <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
               <ol><li name="org.apache.spark.sql.catalyst.checker.PrivacyChecker#check" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="check(projections:scala.collection.Set[org.apache.spark.sql.catalyst.checker.Label],conditions:scala.collection.Set[org.apache.spark.sql.catalyst.checker.Label],policies:scala.collection.Set[edu.thu.ss.spec.lang.pojo.Policy]):Unit"></a>
-      <a id="check(Set[Label],Set[Label],Set[Policy]):Unit"></a>
+      <a id="check(projectionPaths:scala.collection.mutable.Map[edu.thu.ss.spec.lang.pojo.Policy,scala.collection.mutable.Map[edu.thu.ss.spec.lang.pojo.DataCategory,scala.collection.mutable.Set[org.apache.spark.sql.catalyst.checker.Path]]],conditionPaths:scala.collection.mutable.Map[edu.thu.ss.spec.lang.pojo.Policy,scala.collection.mutable.Map[edu.thu.ss.spec.lang.pojo.DataCategory,scala.collection.mutable.Set[org.apache.spark.sql.catalyst.checker.Path]]],policies:scala.collection.Set[edu.thu.ss.spec.lang.pojo.Policy]):Unit"></a>
+      <a id="check(Map[Policy,Map[DataCategory,Set[Path]]],Map[Policy,Map[DataCategory,Set[Path]]],Set[Policy]):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">check</span><span class="params">(<span name="projections">projections: <span class="extype" name="scala.collection.Set">Set</span>[<a href="Label.html" class="extype" name="org.apache.spark.sql.catalyst.checker.Label">Label</a>]</span>, <span name="conditions">conditions: <span class="extype" name="scala.collection.Set">Set</span>[<a href="Label.html" class="extype" name="org.apache.spark.sql.catalyst.checker.Label">Label</a>]</span>, <span name="policies">policies: <span class="extype" name="scala.collection.Set">Set</span>[<span class="extype" name="edu.thu.ss.spec.lang.pojo.Policy">Policy</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">check</span><span class="params">(<span name="projectionPaths">projectionPaths: <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="edu.thu.ss.spec.lang.pojo.Policy">Policy</span>, <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="edu.thu.ss.spec.lang.pojo.DataCategory">DataCategory</span>, <span class="extype" name="scala.collection.mutable.Set">Set</span>[<a href="Path.html" class="extype" name="org.apache.spark.sql.catalyst.checker.Path">Path</a>]]]</span>, <span name="conditionPaths">conditionPaths: <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="edu.thu.ss.spec.lang.pojo.Policy">Policy</span>, <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="edu.thu.ss.spec.lang.pojo.DataCategory">DataCategory</span>, <span class="extype" name="scala.collection.mutable.Set">Set</span>[<a href="Path.html" class="extype" name="org.apache.spark.sql.catalyst.checker.Path">Path</a>]]]</span>, <span name="policies">policies: <span class="extype" name="scala.collection.Set">Set</span>[<span class="extype" name="edu.thu.ss.spec.lang.pojo.Policy">Policy</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       

@@ -1,4 +1,6 @@
 products:
+   external/flume/src/test/java/org/apache/spark/streaming/flume/JavaFlumePollingStreamSuite.java -> external/flume/target/scala-2.10/test-classes/org/apache/spark/streaming/flume/JavaFlumePollingStreamSuite.class
+   external/flume/src/test/java/org/apache/spark/streaming/flume/JavaFlumeStreamSuite.java -> external/flume/target/scala-2.10/test-classes/org/apache/spark/streaming/flume/JavaFlumeStreamSuite.class
    external/flume/src/test/scala/org/apache/spark/streaming/flume/FlumePollingStreamSuite.scala -> external/flume/target/scala-2.10/test-classes/org/apache/spark/streaming/flume/FlumePollingStreamSuite$$anon$1.class
    external/flume/src/test/scala/org/apache/spark/streaming/flume/FlumePollingStreamSuite.scala -> external/flume/target/scala-2.10/test-classes/org/apache/spark/streaming/flume/FlumePollingStreamSuite$$anon$2.class
    external/flume/src/test/scala/org/apache/spark/streaming/flume/FlumePollingStreamSuite.scala -> external/flume/target/scala-2.10/test-classes/org/apache/spark/streaming/flume/FlumePollingStreamSuite$$anonfun$1$$anonfun$apply$mcV$sp$1.class
@@ -27,6 +29,12 @@ products:
    external/flume/src/test/scala/org/apache/spark/streaming/flume/FlumeStreamSuite.scala -> external/flume/target/scala-2.10/test-classes/org/apache/spark/streaming/flume/FlumeStreamSuite$CompressionChannelFactory.class
    external/flume/src/test/scala/org/apache/spark/streaming/flume/FlumeStreamSuite.scala -> external/flume/target/scala-2.10/test-classes/org/apache/spark/streaming/flume/FlumeStreamSuite.class
 binary dependencies:
+   external/flume/src/test/java/org/apache/spark/streaming/flume/JavaFlumePollingStreamSuite.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   external/flume/src/test/java/org/apache/spark/streaming/flume/JavaFlumePollingStreamSuite.java -> core/target/spark-core_2.10-1.1.0.jar
+   external/flume/src/test/java/org/apache/spark/streaming/flume/JavaFlumePollingStreamSuite.java -> streaming/target/spark-streaming_2.10-1.1.0-tests.jar
+   external/flume/src/test/java/org/apache/spark/streaming/flume/JavaFlumeStreamSuite.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   external/flume/src/test/java/org/apache/spark/streaming/flume/JavaFlumeStreamSuite.java -> core/target/spark-core_2.10-1.1.0.jar
+   external/flume/src/test/java/org/apache/spark/streaming/flume/JavaFlumeStreamSuite.java -> streaming/target/spark-streaming_2.10-1.1.0-tests.jar
    external/flume/src/test/scala/org/apache/spark/streaming/flume/FlumePollingStreamSuite.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
    external/flume/src/test/scala/org/apache/spark/streaming/flume/FlumePollingStreamSuite.scala -> /Users/luochen/.m2/repository/org/apache/flume/flume-ng-configuration/1.4.0/flume-ng-configuration-1.4.0.jar
    external/flume/src/test/scala/org/apache/spark/streaming/flume/FlumePollingStreamSuite.scala -> /Users/luochen/.m2/repository/org/apache/flume/flume-ng-core/1.4.0/flume-ng-core-1.4.0.jar
@@ -47,12 +55,18 @@ binary dependencies:
    external/flume/src/test/scala/org/apache/spark/streaming/flume/FlumeStreamSuite.scala -> streaming/target/spark-streaming_2.10-1.1.0-tests.jar
    external/flume/src/test/scala/org/apache/spark/streaming/flume/FlumeStreamSuite.scala -> streaming/target/spark-streaming_2.10-1.1.0.jar
 source dependencies:
+   external/flume/src/test/java/org/apache/spark/streaming/flume/JavaFlumePollingStreamSuite.java -> external/flume/src/test/java/org/apache/spark/streaming/flume/JavaFlumePollingStreamSuite.java
+   external/flume/src/test/java/org/apache/spark/streaming/flume/JavaFlumeStreamSuite.java -> external/flume/src/test/java/org/apache/spark/streaming/flume/JavaFlumeStreamSuite.java
 external dependencies:
+   external/flume/src/test/java/org/apache/spark/streaming/flume/JavaFlumePollingStreamSuite.java -> org.apache.spark.streaming.flume.FlumeUtils
+   external/flume/src/test/java/org/apache/spark/streaming/flume/JavaFlumeStreamSuite.java -> org.apache.spark.streaming.flume.FlumeUtils
    external/flume/src/test/scala/org/apache/spark/streaming/flume/FlumePollingStreamSuite.scala -> org.apache.spark.streaming.flume.FlumeUtils$
    external/flume/src/test/scala/org/apache/spark/streaming/flume/FlumePollingStreamSuite.scala -> org.apache.spark.streaming.flume.SparkFlumeEvent
    external/flume/src/test/scala/org/apache/spark/streaming/flume/FlumeStreamSuite.scala -> org.apache.spark.streaming.flume.FlumeUtils$
    external/flume/src/test/scala/org/apache/spark/streaming/flume/FlumeStreamSuite.scala -> org.apache.spark.streaming.flume.SparkFlumeEvent
 class names:
+   external/flume/src/test/java/org/apache/spark/streaming/flume/JavaFlumePollingStreamSuite.java -> org.apache.spark.streaming.flume.JavaFlumePollingStreamSuite
+   external/flume/src/test/java/org/apache/spark/streaming/flume/JavaFlumeStreamSuite.java -> org.apache.spark.streaming.flume.JavaFlumeStreamSuite
    external/flume/src/test/scala/org/apache/spark/streaming/flume/FlumePollingStreamSuite.scala -> org.apache.spark.streaming.flume.FlumePollingStreamSuite
    external/flume/src/test/scala/org/apache/spark/streaming/flume/FlumePollingStreamSuite.scala -> org.apache.spark.streaming.flume.FlumePollingStreamSuite$$anon$1
    external/flume/src/test/scala/org/apache/spark/streaming/flume/FlumePollingStreamSuite.scala -> org.apache.spark.streaming.flume.FlumePollingStreamSuite$$anon$2

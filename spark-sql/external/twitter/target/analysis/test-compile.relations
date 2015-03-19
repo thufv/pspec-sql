@@ -1,7 +1,12 @@
 products:
+   external/twitter/src/test/java/org/apache/spark/streaming/twitter/JavaTwitterStreamSuite.java -> external/twitter/target/scala-2.10/test-classes/org/apache/spark/streaming/twitter/JavaTwitterStreamSuite.class
    external/twitter/src/test/scala/org/apache/spark/streaming/twitter/TwitterStreamSuite.scala -> external/twitter/target/scala-2.10/test-classes/org/apache/spark/streaming/twitter/TwitterStreamSuite$$anonfun$1.class
    external/twitter/src/test/scala/org/apache/spark/streaming/twitter/TwitterStreamSuite.scala -> external/twitter/target/scala-2.10/test-classes/org/apache/spark/streaming/twitter/TwitterStreamSuite.class
 binary dependencies:
+   external/twitter/src/test/java/org/apache/spark/streaming/twitter/JavaTwitterStreamSuite.java -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
+   external/twitter/src/test/java/org/apache/spark/streaming/twitter/JavaTwitterStreamSuite.java -> /Users/luochen/.m2/repository/org/twitter4j/twitter4j-core/3.0.3/twitter4j-core-3.0.3.jar
+   external/twitter/src/test/java/org/apache/spark/streaming/twitter/JavaTwitterStreamSuite.java -> core/target/spark-core_2.10-1.1.0.jar
+   external/twitter/src/test/java/org/apache/spark/streaming/twitter/JavaTwitterStreamSuite.java -> streaming/target/spark-streaming_2.10-1.1.0-tests.jar
    external/twitter/src/test/scala/org/apache/spark/streaming/twitter/TwitterStreamSuite.scala -> /Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar
    external/twitter/src/test/scala/org/apache/spark/streaming/twitter/TwitterStreamSuite.scala -> /Users/luochen/.m2/repository/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar
    external/twitter/src/test/scala/org/apache/spark/streaming/twitter/TwitterStreamSuite.scala -> /Users/luochen/.m2/repository/org/scalatest/scalatest_2.10/2.1.5/scalatest_2.10-2.1.5.jar
@@ -10,8 +15,11 @@ binary dependencies:
    external/twitter/src/test/scala/org/apache/spark/streaming/twitter/TwitterStreamSuite.scala -> streaming/target/spark-streaming_2.10-1.1.0-tests.jar
    external/twitter/src/test/scala/org/apache/spark/streaming/twitter/TwitterStreamSuite.scala -> streaming/target/spark-streaming_2.10-1.1.0.jar
 source dependencies:
+   external/twitter/src/test/java/org/apache/spark/streaming/twitter/JavaTwitterStreamSuite.java -> external/twitter/src/test/java/org/apache/spark/streaming/twitter/JavaTwitterStreamSuite.java
 external dependencies:
+   external/twitter/src/test/java/org/apache/spark/streaming/twitter/JavaTwitterStreamSuite.java -> org.apache.spark.streaming.twitter.TwitterUtils
    external/twitter/src/test/scala/org/apache/spark/streaming/twitter/TwitterStreamSuite.scala -> org.apache.spark.streaming.twitter.TwitterUtils$
 class names:
+   external/twitter/src/test/java/org/apache/spark/streaming/twitter/JavaTwitterStreamSuite.java -> org.apache.spark.streaming.twitter.JavaTwitterStreamSuite
    external/twitter/src/test/scala/org/apache/spark/streaming/twitter/TwitterStreamSuite.scala -> org.apache.spark.streaming.twitter.TwitterStreamSuite
    external/twitter/src/test/scala/org/apache/spark/streaming/twitter/TwitterStreamSuite.scala -> org.apache.spark.streaming.twitter.TwitterStreamSuite$$anonfun$1

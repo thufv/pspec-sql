@@ -35,11 +35,12 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">ConditionalLabel</span><span class="params">(<span name="conds">conds: <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="edu.thu.ss.spec.meta.JoinCondition">JoinCondition</span>, <span class="extype" name="edu.thu.ss.spec.lang.pojo.DataCategory">DataCategory</span>]</span>, <span name="database">database: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="table">table: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="attr">attr: <a href="../expressions/AttributeReference.html" class="extype" name="org.apache.spark.sql.catalyst.expressions.AttributeReference">AttributeReference</a></span>)</span><span class="result"> extends <a href="ColumnLabel.html" class="extype" name="org.apache.spark.sql.catalyst.checker.ColumnLabel">ColumnLabel</a> with <span class="extype" name="scala.Equals">Equals</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">ConditionalLabel</span><span class="params">(<span name="conds">conds: <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="edu.thu.ss.spec.meta.JoinCondition">JoinCondition</span>, <span class="extype" name="edu.thu.ss.spec.meta.BaseType">BaseType</span>]</span>, <span name="database">database: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="table">table: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="attr">attr: <a href="../expressions/AttributeReference.html" class="extype" name="org.apache.spark.sql.catalyst.expressions.AttributeReference">AttributeReference</a></span>)</span><span class="result"> extends <a href="ColumnLabel.html" class="extype" name="org.apache.spark.sql.catalyst.checker.ColumnLabel">ColumnLabel</a> with <span class="extype" name="scala.Equals">Equals</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>class for conditional category attribute (leaf) in lineage tree</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><code> ConditionalColumn</code>
+</p></span></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="ColumnLabel.html" class="extype" name="org.apache.spark.sql.catalyst.checker.ColumnLabel">ColumnLabel</a>, <a href="Label.html" class="extype" name="org.apache.spark.sql.catalyst.checker.Label">Label</a>, <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -80,7 +81,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="org.apache.spark.sql.catalyst.checker.ConditionalLabel#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(conds:scala.collection.mutable.Map[edu.thu.ss.spec.meta.JoinCondition,edu.thu.ss.spec.lang.pojo.DataCategory],database:String,table:String,attr:org.apache.spark.sql.catalyst.expressions.AttributeReference):org.apache.spark.sql.catalyst.checker.ConditionalLabel"></a>
+      <a id="&lt;init&gt;(conds:scala.collection.mutable.Map[edu.thu.ss.spec.meta.JoinCondition,edu.thu.ss.spec.meta.BaseType],database:String,table:String,attr:org.apache.spark.sql.catalyst.expressions.AttributeReference):org.apache.spark.sql.catalyst.checker.ConditionalLabel"></a>
       <a id="&lt;init&gt;:ConditionalLabel"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -88,7 +89,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">ConditionalLabel</span><span class="params">(<span name="conds">conds: <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="edu.thu.ss.spec.meta.JoinCondition">JoinCondition</span>, <span class="extype" name="edu.thu.ss.spec.lang.pojo.DataCategory">DataCategory</span>]</span>, <span name="database">database: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="table">table: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="attr">attr: <a href="../expressions/AttributeReference.html" class="extype" name="org.apache.spark.sql.catalyst.expressions.AttributeReference">AttributeReference</a></span>)</span>
+        <span class="name">ConditionalLabel</span><span class="params">(<span name="conds">conds: <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="edu.thu.ss.spec.meta.JoinCondition">JoinCondition</span>, <span class="extype" name="edu.thu.ss.spec.meta.BaseType">BaseType</span>]</span>, <span name="database">database: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="table">table: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="attr">attr: <a href="../expressions/AttributeReference.html" class="extype" name="org.apache.spark.sql.catalyst.expressions.AttributeReference">AttributeReference</a></span>)</span>
       </span>
       </h4>
       
@@ -225,15 +226,15 @@
               
         </dd></dl></div>
     </li><li name="org.apache.spark.sql.catalyst.checker.ConditionalLabel#conds" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="conds:scala.collection.mutable.Map[edu.thu.ss.spec.meta.JoinCondition,edu.thu.ss.spec.lang.pojo.DataCategory]"></a>
-      <a id="conds:Map[JoinCondition,DataCategory]"></a>
+      <a id="conds:scala.collection.mutable.Map[edu.thu.ss.spec.meta.JoinCondition,edu.thu.ss.spec.meta.BaseType]"></a>
+      <a id="conds:Map[JoinCondition,BaseType]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">conds</span><span class="result">: <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="edu.thu.ss.spec.meta.JoinCondition">JoinCondition</span>, <span class="extype" name="edu.thu.ss.spec.lang.pojo.DataCategory">DataCategory</span>]</span>
+        <span class="name">conds</span><span class="result">: <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="edu.thu.ss.spec.meta.JoinCondition">JoinCondition</span>, <span class="extype" name="edu.thu.ss.spec.meta.BaseType">BaseType</span>]</span>
       </span>
       </h4>
       
@@ -296,15 +297,15 @@
               
         </dd></dl></div>
     </li><li name="org.apache.spark.sql.catalyst.checker.ConditionalLabel#fulfilled" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="fulfilled:scala.collection.mutable.Set[edu.thu.ss.spec.lang.pojo.DataCategory]"></a>
-      <a id="fulfilled:Set[DataCategory]"></a>
+      <a id="fulfilled:scala.collection.mutable.Set[edu.thu.ss.spec.meta.BaseType]"></a>
+      <a id="fulfilled:Set[BaseType]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">var</span>
       </span>
       <span class="symbol">
-        <span class="name">fulfilled</span><span class="result">: <span class="extype" name="scala.collection.mutable.Set">Set</span>[<span class="extype" name="edu.thu.ss.spec.lang.pojo.DataCategory">DataCategory</span>]</span>
+        <span class="name">fulfilled</span><span class="result">: <span class="extype" name="scala.collection.mutable.Set">Set</span>[<span class="extype" name="edu.thu.ss.spec.meta.BaseType">BaseType</span>]</span>
       </span>
       </h4>
       
