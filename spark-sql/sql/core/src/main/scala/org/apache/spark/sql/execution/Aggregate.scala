@@ -19,12 +19,27 @@ package org.apache.spark.sql.execution
 
 import java.util.HashMap
 
+import scala.Array.canBuildFrom
+import scala.Array.fallbackCanBuildFrom
+
 import org.apache.spark.annotation.DeveloperApi
-import org.apache.spark.SparkContext
-import org.apache.spark.sql.catalyst.errors._
-import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.plans.physical._
-import org.apache.spark.sql.SQLContext
+import org.apache.spark.sql.catalyst.errors.attachTree
+import org.apache.spark.sql.catalyst.expressions.AggregateExpression
+import org.apache.spark.sql.catalyst.expressions.AggregateFunction
+import org.apache.spark.sql.catalyst.expressions.Alias
+import org.apache.spark.sql.catalyst.expressions.AttributeReference
+import org.apache.spark.sql.catalyst.expressions.BindReferences
+import org.apache.spark.sql.catalyst.expressions.EmptyRow
+import org.apache.spark.sql.catalyst.expressions.Expression
+import org.apache.spark.sql.catalyst.expressions.GenericMutableRow
+import org.apache.spark.sql.catalyst.expressions.InterpretedMutableProjection
+import org.apache.spark.sql.catalyst.expressions.InterpretedProjection
+import org.apache.spark.sql.catalyst.expressions.JoinedRow4
+import org.apache.spark.sql.catalyst.expressions.NamedExpression
+import org.apache.spark.sql.catalyst.expressions.Row
+import org.apache.spark.sql.catalyst.plans.physical.AllTuples
+import org.apache.spark.sql.catalyst.plans.physical.ClusteredDistribution
+import org.apache.spark.sql.catalyst.plans.physical.UnspecifiedDistribution
 
 /**
  * :: DeveloperApi ::
@@ -39,10 +54,10 @@ import org.apache.spark.sql.SQLContext
  */
 @DeveloperApi
 case class Aggregate(
-    partial: Boolean,
-    groupingExpressions: Seq[Expression],
-    aggregateExpressions: Seq[NamedExpression],
-    child: SparkPlan)
+  partial: Boolean,
+  groupingExpressions: Seq[Expression],
+  aggregateExpressions: Seq[NamedExpression],
+  child: SparkPlan)
   extends UnaryNode {
 
   override def requiredChildDistribution =
@@ -71,9 +86,9 @@ case class Aggregate(
    *                        output.
    */
   case class ComputedAggregate(
-      unbound: AggregateExpression,
-      aggregate: AggregateExpression,
-      resultAttribute: AttributeReference)
+    unbound: AggregateExpression,
+    aggregate: AggregateExpression,
+    resultAttribute: AttributeReference)
 
   /** A list of aggregates that need to be computed for each group. */
   private[this] val computedAggregates = aggregateExpressions.flatMap { agg =>
@@ -81,7 +96,7 @@ case class Aggregate(
       case a: AggregateExpression =>
         ComputedAggregate(
           a,
-          BindReferences.bindReference(a, childOutput),
+          a.copyDP(BindReferences.bindReference(a, childOutput)),
           AttributeReference(s"aggResult:$a", a.dataType, a.nullable)())
     }
   }.toArray
@@ -143,7 +158,7 @@ case class Aggregate(
         while (i < buffer.length) {
           aggregateResults(i) = buffer(i).eval(EmptyRow)
           i += 1
-        }
+        } 
 
         Iterator(resultProjection(aggregateResults))
       }

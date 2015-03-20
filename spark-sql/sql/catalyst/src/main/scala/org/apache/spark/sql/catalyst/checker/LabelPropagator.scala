@@ -284,7 +284,7 @@ class LabelPropagator extends Logging {
     for (i <- 0 to binary.output.length - 1) {
       val leftLabel = binary.left.projections.getOrElse(binary.left.output(i), null);
       val rightLabel = binary.right.projections.getOrElse(binary.right.output(i), null);
-      binary.projections.put(binary.output(i), Function(List(leftLabel, rightLabel), name));
+      binary.projections.put(binary.output(i), Function(List(leftLabel, rightLabel), name, null));
     }
     binary.conditions ++= binary.left.conditions ++= binary.right.conditions;
   }
@@ -395,7 +395,7 @@ class LabelPropagator extends Logging {
         count.child match {
           case IntegerLiteral(1) => {
             val labels = plan.children.flatMap(_.projections.values.toSeq);
-            Function(labels, ExpressionRegistry.resolveFunction(expression));
+            Function(labels, ExpressionRegistry.resolveFunction(expression), count);
           }
           case _ => resolveTermFunction(expression, plan);
         }
@@ -423,7 +423,7 @@ class LabelPropagator extends Logging {
       }
       case udf: ScalaUdf => {
         val labels = udf.children.map(resolveTerm(_, plan));
-        return Function(labels, udf.name);
+        return Function(labels, udf.name, udf);
       }
       case when: CaseWhen => {
         //collect all predicates in conditions
@@ -431,8 +431,8 @@ class LabelPropagator extends Logging {
         //build a lineage tree that is combination of all values
         val labels = when.values.map(resolveTerm(_, plan));
         when.elseValue match {
-          case Some(expr) => Function(labels :+ (resolveTerm(expr, plan)), ExpressionRegistry.resolveFunction(when));
-          case None => Function(labels, ExpressionRegistry.resolveFunction(when));
+          case Some(expr) => Function(labels :+ (resolveTerm(expr, plan)), ExpressionRegistry.resolveFunction(when), when);
+          case None => Function(labels, ExpressionRegistry.resolveFunction(when), when);
         }
       }
       case i: If => {
@@ -440,10 +440,10 @@ class LabelPropagator extends Logging {
         resolveExpression(i.predicate, plan);
         val tLabel = resolveTerm(i.trueValue, plan);
         val fLabel = resolveTerm(i.falseValue, plan);
-        Function(List(tLabel, fLabel), ExpressionRegistry.resolveFunction(i));
+        Function(List(tLabel, fLabel), ExpressionRegistry.resolveFunction(i), i);
       }
 
-      case _ => Function(expression.children.map(resolveExpression(_, plan)), expression.getName);
+      case _ => Function(expression.children.map(resolveExpression(_, plan)), expression.getName, expression);
     }
   }
 
@@ -452,7 +452,7 @@ class LabelPropagator extends Logging {
    */
   private def resolveTermFunction(expression: Expression, plan: LogicalPlan): Function = {
     val labels = expression.children.map(resolveTerm(_, plan));
-    Function(labels, ExpressionRegistry.resolveFunction(expression));
+    Function(labels, ExpressionRegistry.resolveFunction(expression), expression);
   }
 
   /**

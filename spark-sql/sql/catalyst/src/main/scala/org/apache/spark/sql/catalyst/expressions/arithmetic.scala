@@ -19,6 +19,7 @@ package org.apache.spark.sql.catalyst.expressions
 
 import org.apache.spark.sql.catalyst.analysis.UnresolvedException
 import org.apache.spark.sql.catalyst.types._
+import org.apache.spark.sql.catalyst.checker.DPHelper
 
 case class UnaryMinus(child: Expression) extends UnaryExpression {
   type EvaluatedType = Any
@@ -70,12 +71,12 @@ case class Multiply(left: Expression, right: Expression) extends BinaryArithmeti
   override def eval(input: Row): Any = n2(input, left, right, _.times(_, _))
 }
 
-case class Divide(left: Expression, right: Expression) extends BinaryArithmetic {
+case class Divide(left: Expression, right: Expression) extends BinaryArithmetic with Serializable {
   def symbol = "/"
 
   override def eval(input: Row): Any = dataType match {
     case _: FractionalType => f2(input, left, right, _.div(_, _))
-    case _: IntegralType => i2(input, left , right, _.quot(_, _))
+    case _: IntegralType => i2(input, left, right, _.quot(_, _))
   }
 
 }

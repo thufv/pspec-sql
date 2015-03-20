@@ -13,6 +13,7 @@ import org.apache.spark.sql.catalyst.expressions.AttributeReference
 import org.apache.spark.sql.catalyst.expressions.AttributeReference
 import org.apache.spark.sql.catalyst.expressions.AttributeReference
 import edu.thu.ss.spec.meta.BaseType
+import org.apache.spark.sql.catalyst.expressions.Expression
 
 /**
  * base class for lineage tree
@@ -65,7 +66,7 @@ case class ConditionalLabel(conds: Map[JoinCondition, BaseType], override val da
 /**
  * class for function node (non-leaf) in lineage tree
  */
-case class Function(val children: Seq[Label], val udf: String) extends Label;
+case class Function(val children: Seq[Label], val udf: String, val expression: Expression) extends Label;
 
 /**
  * class for constant node (leaf) in lineage tree

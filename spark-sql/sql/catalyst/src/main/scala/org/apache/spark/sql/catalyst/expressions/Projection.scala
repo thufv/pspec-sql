@@ -17,15 +17,17 @@
 
 package org.apache.spark.sql.catalyst.expressions
 
-
 /**
  * A [[Projection]] that is calculated by calling the `eval` of each of the specified expressions.
  * @param expressions a sequence of expressions that determine the value of each column of the
  *                    output row.
  */
 class InterpretedProjection(expressions: Seq[Expression]) extends Projection {
-  def this(expressions: Seq[Expression], inputSchema: Seq[Attribute]) =
+
+  def this(expressions: Seq[Expression], inputSchema: Seq[Attribute]) {
+    //modified by luochen
     this(expressions.map(BindReferences.bindReference(_, inputSchema)))
+  }
 
   // null check is required for when Kryo invokes the no-arg constructor.
   protected val exprArray = if (expressions != null) expressions.toArray else null
@@ -141,7 +143,7 @@ class JoinedRow extends Row {
     val totalSize = row1.size + row2.size
     val copiedValues = new Array[Any](totalSize)
     var i = 0
-    while(i < totalSize) {
+    while (i < totalSize) {
       copiedValues(i) = apply(i)
       i += 1
     }
@@ -230,7 +232,7 @@ class JoinedRow2 extends Row {
     val totalSize = row1.size + row2.size
     val copiedValues = new Array[Any](totalSize)
     var i = 0
-    while(i < totalSize) {
+    while (i < totalSize) {
       copiedValues(i) = apply(i)
       i += 1
     }
@@ -313,7 +315,7 @@ class JoinedRow3 extends Row {
     val totalSize = row1.size + row2.size
     val copiedValues = new Array[Any](totalSize)
     var i = 0
-    while(i < totalSize) {
+    while (i < totalSize) {
       copiedValues(i) = apply(i)
       i += 1
     }
@@ -396,7 +398,7 @@ class JoinedRow4 extends Row {
     val totalSize = row1.size + row2.size
     val copiedValues = new Array[Any](totalSize)
     var i = 0
-    while(i < totalSize) {
+    while (i < totalSize) {
       copiedValues(i) = apply(i)
       i += 1
     }
@@ -479,7 +481,7 @@ class JoinedRow5 extends Row {
     val totalSize = row1.size + row2.size
     val copiedValues = new Array[Any](totalSize)
     var i = 0
-    while(i < totalSize) {
+    while (i < totalSize) {
       copiedValues(i) = apply(i)
       i += 1
     }

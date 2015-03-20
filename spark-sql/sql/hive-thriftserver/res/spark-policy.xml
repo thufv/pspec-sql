@@ -16,7 +16,7 @@
 		<data-category-container refid="tpcds-data" />
 	</vocabulary-ref>
 	<rules>
-		<rule id="rule123">
+	<!-- 	<rule id="rule123">
 			<user-category-ref refid="analyst"></user-category-ref>
 			<data-category-ref refid="email" action="all" />
 			<data-category-ref refid="name" action="all"></data-category-ref>
@@ -142,6 +142,6 @@
 				</desensitize>
 			</restriction>
 		</rule>
-
+ -->
 	</rules>
 </privacy-policy>

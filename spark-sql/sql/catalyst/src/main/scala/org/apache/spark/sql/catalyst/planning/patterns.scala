@@ -73,8 +73,7 @@ object PhysicalOperation extends PredicateHelper {
    *   SELECT key AS c2 FROM t1 WHERE key > 10
    * }}}
    */
-  def collectProjectsAndFilters(plan: LogicalPlan):
-      (Option[Seq[NamedExpression]], Seq[Expression], LogicalPlan, Map[Attribute, Expression]) =
+  def collectProjectsAndFilters(plan: LogicalPlan): (Option[Seq[NamedExpression]], Seq[Expression], LogicalPlan, Map[Attribute, Expression]) =
     plan match {
       case Project(fields, child) =>
         val (_, filters, other, aliases) = collectProjectsAndFilters(child)
@@ -119,17 +118,16 @@ object PhysicalOperation extends PredicateHelper {
  *  - Input to the aggregation.
  */
 object PartialAggregation {
-  type ReturnType =
-    (Seq[Attribute], Seq[NamedExpression], Seq[Expression], Seq[NamedExpression], LogicalPlan)
+  type ReturnType = (Seq[Attribute], Seq[NamedExpression], Seq[Expression], Seq[NamedExpression], LogicalPlan)
 
   def unapply(plan: LogicalPlan): Option[ReturnType] = plan match {
     case logical.Aggregate(groupingExpressions, aggregateExpressions, child) =>
       // Collect all aggregate expressions.
       val allAggregates =
-        aggregateExpressions.flatMap(_ collect { case a: AggregateExpression => a})
+        aggregateExpressions.flatMap(_ collect { case a: AggregateExpression => a })
       // Collect all aggregate expressions that can be computed partially.
       val partialAggregates =
-        aggregateExpressions.flatMap(_ collect { case p: PartialAggregate => p})
+        aggregateExpressions.flatMap(_ collect { case p: PartialAggregate => p })
 
       // Only do partial aggregation if supported by all aggregate expressions.
       if (allAggregates.size == partialAggregates.size) {
@@ -160,12 +158,16 @@ object PartialAggregation {
 
         val namedGroupingAttributes = namedGroupingExpressions.values.map(_.toAttribute).toSeq
 
+        //added by luochen
+        //rewrittenAggregateExpression should inherit aggregateExpressions
+        //should disable DP for partialComputation(seems automatically disabled)
+        
         Some(
           (namedGroupingAttributes,
-           rewrittenAggregateExpressions,
-           groupingExpressions,
-           partialComputation,
-           child))
+            rewrittenAggregateExpressions,
+            groupingExpressions,
+            partialComputation,
+            child))
       } else {
         None
       }
@@ -173,21 +175,19 @@ object PartialAggregation {
   }
 }
 
-
 /**
  * A pattern that finds joins with equality conditions that can be evaluated using equi-join.
  */
 object ExtractEquiJoinKeys extends Logging with PredicateHelper {
   /** (joinType, rightKeys, leftKeys, condition, leftChild, rightChild) */
-  type ReturnType =
-    (JoinType, Seq[Expression], Seq[Expression], Option[Expression], LogicalPlan, LogicalPlan)
+  type ReturnType = (JoinType, Seq[Expression], Seq[Expression], Option[Expression], LogicalPlan, LogicalPlan)
 
   def unapply(plan: LogicalPlan): Option[ReturnType] = plan match {
     case join @ Join(left, right, joinType, condition) =>
       logDebug(s"Considering join on: $condition")
       // Find equi-join predicates that can be evaluated before the join, and thus can be used
       // as join keys.
-      val (joinPredicates, otherPredicates) = 
+      val (joinPredicates, otherPredicates) =
         condition.map(splitConjunctivePredicates).getOrElse(Nil).partition {
           case EqualTo(l, r) if (canEvaluate(l, left) && canEvaluate(r, right)) ||
             (canEvaluate(l, right) && canEvaluate(r, left)) => true

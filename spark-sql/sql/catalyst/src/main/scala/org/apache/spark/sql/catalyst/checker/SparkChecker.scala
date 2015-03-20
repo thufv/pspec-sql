@@ -265,8 +265,6 @@ class SparkChecker extends PrivacyChecker with Logging {
 
 object SparkChecker extends Logging {
 
-  val checker = new SparkChecker();
-
   /**
    * load policy and meta during startup.
    * may need to be modified in a pluggable way.
@@ -311,6 +309,8 @@ object SparkChecker extends Logging {
       val checker = new SparkChecker;
       checker.check(projectionPaths, conditionPaths, policies);
 
+      val dpEnforcer = new DPEnforcer();
+      dpEnforcer.enforce(plan);
     } finally {
       val end = System.currentTimeMillis();
       val time = end - begin;
