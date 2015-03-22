@@ -18,33 +18,45 @@ import org.apache.spark.sql.catalyst.expressions.Expression
 /**
  * base class for lineage tree
  */
-sealed abstract class Label;
+sealed abstract class Label {
+  def sensitive(): Boolean;
+}
 
 /**
  * base class for column node in lineage tree
  */
-abstract class ColumnLabel(val database: String, val table: String, val attr: AttributeReference) extends Label;
+abstract class ColumnLabel extends Label {
+  val database: String;
+  val table: String;
+  val attr: AttributeReference;
+}
 
 /**
  * class for data category node (leaf) in lineage tree
  */
-case class DataLabel(labelType: BaseType, override val database: String, override val table: String, override val attr: AttributeReference)
-  extends ColumnLabel(database, table, attr);
+case class DataLabel(labelType: BaseType, database: String, table: String, attr: AttributeReference)
+  extends ColumnLabel {
+  def sensitive(): Boolean = true;
+}
 
 /**
  * class for insensitive attribute (leaf) in lineage tree
  */
-case class Insensitive(override val database: String, override val table: String, override val attr: AttributeReference)
-  extends ColumnLabel(database, table, attr);
+case class Insensitive(database: String, table: String, attr: AttributeReference)
+  extends ColumnLabel {
+  def sensitive(): Boolean = false;
+}
 
 /**
  * class for conditional category attribute (leaf) in lineage tree
  * @see {@link ConditionalColumn}
  */
-case class ConditionalLabel(conds: Map[JoinCondition, BaseType], override val database: String, override val table: String, override val attr: AttributeReference)
-  extends ColumnLabel(database, table, attr) with Equals {
+case class ConditionalLabel(conds: Map[JoinCondition, BaseType], database: String, table: String, attr: AttributeReference)
+  extends ColumnLabel with Equals {
 
   var fulfilled: Set[BaseType] = null;
+
+  def sensitive(): Boolean = true;
 
   def canEqual(other: Any) = {
     other.isInstanceOf[org.apache.spark.sql.catalyst.checker.ConditionalLabel]
@@ -66,15 +78,21 @@ case class ConditionalLabel(conds: Map[JoinCondition, BaseType], override val da
 /**
  * class for function node (non-leaf) in lineage tree
  */
-case class Function(val children: Seq[Label], val udf: String, val expression: Expression) extends Label;
+case class Function(val children: Seq[Label], val udf: String, val expression: Expression) extends Label {
+  def sensitive(): Boolean = children.exists(_.sensitive);
+}
 
 /**
  * class for constant node (leaf) in lineage tree
  */
-case class Constant(val value: Any) extends Label;
+case class Constant(val value: Any) extends Label {
+  def sensitive(): Boolean = false;
+}
 
 /**
  * class for predicate node (non-leaf, root) in lineage tree
  * predicate node only appears in condition lineage trees
  */
-case class Predicate(val children: Seq[Label], val operation: String) extends Label;
+case class Predicate(val children: Seq[Label], val operation: String) extends Label {
+  def sensitive(): Boolean = children.exists(_.sensitive);
+}

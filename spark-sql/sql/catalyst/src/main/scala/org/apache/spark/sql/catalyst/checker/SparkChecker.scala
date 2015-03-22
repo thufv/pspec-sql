@@ -265,6 +265,8 @@ class SparkChecker extends PrivacyChecker with Logging {
 
 object SparkChecker extends Logging {
 
+  var tableStat: TableStat = null;
+  var budget: DPBudget = null;
   /**
    * load policy and meta during startup.
    * may need to be modified in a pluggable way.
@@ -272,6 +274,10 @@ object SparkChecker extends Logging {
   def init(catalog: Catalog, policyPath: String, metaPath: String): Unit = {
     loadPolicy(policyPath);
     loadMeta(metaPath, catalog);
+  }
+
+  def setTableStat(stat: TableStat) {
+    tableStat = stat;
   }
 
   def loadPolicy(path: String): Unit = {
@@ -309,8 +315,13 @@ object SparkChecker extends Logging {
       val checker = new SparkChecker;
       checker.check(projectionPaths, conditionPaths, policies);
 
-      val dpEnforcer = new DPEnforcer();
-      dpEnforcer.enforce(plan);
+      if (DPHelper.initialized) {
+        if (tableStat == null) {
+          throw new PrivacyException("TableStat has not been initialized yet");
+        }
+        val dpEnforcer = new DPEnforcer(tableStat, budget);
+        dpEnforcer.enforce(plan);
+      }
     } finally {
       val end = System.currentTimeMillis();
       val time = end - begin;

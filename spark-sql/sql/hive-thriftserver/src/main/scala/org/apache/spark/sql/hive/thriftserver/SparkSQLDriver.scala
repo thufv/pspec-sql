@@ -62,6 +62,7 @@ private[hive] class SparkSQLDriver(val context: HiveContext = SparkSQLEnv.hiveCo
       case e: PrivacyException => {
         //added by luochen
         //not print stack trace when privacy exception occur
+        //logError(s"Failed in [$command]", e)
         new CommandProcessorResponse(-10, e.getMessage(), null);
       }
       case cause: Throwable =>

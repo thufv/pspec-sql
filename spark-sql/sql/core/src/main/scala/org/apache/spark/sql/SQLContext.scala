@@ -57,10 +57,9 @@ class SQLContext(@transient val sparkContext: SparkContext)
 
   self =>
 
-    
   /**
    * added by luochen
-   * load policy during startups 
+   * load policy during startups
    */
   private val policyPath = sparkContext.conf.get("spark.privacy.policy", "res/spark-policy.xml");
   private val metaPath = sparkContext.conf.get("spark.privacy.meta", "res/spark-meta.xml");
@@ -296,7 +295,7 @@ class SQLContext(@transient val sparkContext: SparkContext)
     table(tableName).queryExecution.analyzed match {
       // This is kind of a hack to make sure that if this was just an RDD registered as a table,
       // we reregister the RDD as a table.
-      case inMem@InMemoryRelation(_, _, _, e: ExistingRdd) =>
+      case inMem @ InMemoryRelation(_, _, _, e: ExistingRdd) =>
         inMem.cachedColumnBuffers.unpersist()
         catalog.unregisterTable(None, tableName)
         catalog.registerTable(None, tableName, SparkLogicalPlan(e)(self))
@@ -418,7 +417,11 @@ class SQLContext(@transient val sparkContext: SparkContext)
     lazy val executedPlan: SparkPlan = prepareForExecution(sparkPlan)
 
     /** Internal version of the RDD. Avoids copies and has no schema */
-    lazy val toRdd: RDD[Row] = executedPlan.execute()
+    lazy val toRdd: RDD[Row] = {
+      val result = executedPlan.execute();
+      SparkChecker.budget.commit;
+      result;
+    }
 
     protected def stringOrError[A](f: => A): String =
       try f.toString catch { case e: Throwable => e.toString }

@@ -44,6 +44,7 @@ import org.apache.spark.sql.execution.QueryExecutionException
 import org.apache.spark.sql.execution.{ Command => PhysicalCommand }
 import org.apache.spark.sql.hive.execution.DescribeHiveTableCommand
 import org.apache.spark.sql.catalyst.checker.LabelPropagator
+import org.apache.spark.sql.catalyst.checker.SparkChecker
 
 /**
  * DEPRECATED: Use HiveContext instead.
@@ -425,4 +426,8 @@ class HiveContext(sc: SparkContext) extends SQLContext(sc) {
         case _ => super.simpleString
       }
   }
+
+  val hiveStat: HiveTableStat = new HiveTableStat();
+  hiveStat.initialize(this);
+  SparkChecker.setTableStat(hiveStat);
 }
