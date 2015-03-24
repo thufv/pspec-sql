@@ -183,7 +183,7 @@
 						<element name="data-category-ref" type="tns:objectRefType"
 							maxOccurs="unbounded" minOccurs="0">
 						</element>
-						<element name="operation" type="string" minOccurs="0"
+						<element name="operation" type="string" minOccurs="1"
 							maxOccurs="unbounded"></element>
 					</sequence>
 				</complexType>
@@ -253,6 +253,26 @@
 		</complexType>
 	</element>
 
+	<simpleType name="budgetType">
+		<restriction base="double">
+			<minInclusive value="0"></minInclusive>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="ratioType">
+		<restriction base="double">
+			<minInclusive value="0"></minInclusive>
+			<maxInclusive value="1"></maxInclusive>
+		</restriction>
+	</simpleType>
+
+	<complexType name="accuracyType">
+		<sequence>
+			<element name="probability" type="tns:ratioType">
+			</element>
+			<element name="noise-ratio" type="tns:ratioType"></element>
+		</sequence>
+	</complexType>
 
 	<element name="privacy-policy">
 		<complexType>
@@ -268,6 +288,15 @@
 						<attribute name="location" type="anyURI"></attribute>
 					</complexType>
 				</element>
+				<element name="privacy-parameters">
+					<complexType>
+						<sequence>
+							<element name="budget" type="tns:budgetType"></element>
+							<element name="accuracy" type="tns:accuracyType"></element>
+						</sequence>
+					</complexType>
+				</element>
+
 				<element name="rules">
 					<complexType>
 						<sequence>

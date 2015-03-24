@@ -45,6 +45,7 @@ import org.apache.spark.sql.execution.{ Command => PhysicalCommand }
 import org.apache.spark.sql.hive.execution.DescribeHiveTableCommand
 import org.apache.spark.sql.catalyst.checker.LabelPropagator
 import org.apache.spark.sql.catalyst.checker.SparkChecker
+import org.apache.spark.sql.catalyst.checker.SparkChecker
 
 /**
  * DEPRECATED: Use HiveContext instead.
@@ -356,7 +357,7 @@ class HiveContext(sc: SparkContext) extends SQLContext(sc) {
     override lazy val optimizedPlan =
       optimizer(ExtractPythonUdfs(catalog.PreInsertionCasts(catalog.CreateTables(analyzed))))
 
-    override lazy val toRdd: RDD[Row] = executedPlan.execute().map(_.copy())
+    override lazy val toRdd: RDD[Row] = executedPlan.execute().map(_.copy());
 
     protected val primitiveTypes =
       Seq(StringType, IntegerType, LongType, DoubleType, FloatType, BooleanType, ByteType,
@@ -412,6 +413,7 @@ class HiveContext(sc: SparkContext) extends SQLContext(sc) {
 
       case other =>
         val result: Seq[Seq[Any]] = toRdd.collect().toSeq
+        SparkChecker.commit;
         // We need the types so we can output struct field names
         val types = analyzed.output.map(_.dataType)
         // Reformat to match hive tab delimited output.
@@ -427,7 +429,16 @@ class HiveContext(sc: SparkContext) extends SQLContext(sc) {
       }
   }
 
-  val hiveStat: HiveTableStat = new HiveTableStat();
-  hiveStat.initialize(this);
-  SparkChecker.setTableStat(hiveStat);
+  /**
+   * added by luochen
+   * load policy during startups
+   */
+  private val policyPath = sparkContext.conf.get("spark.privacy.policy", "res/spark-policy.xml");
+  private val metaPath = sparkContext.conf.get("spark.privacy.meta", "res/spark-meta.xml");
+  SparkChecker.init(catalog, policyPath, metaPath);
+
+  val hiveInfo: HiveTableInfo = new HiveTableInfo(this);
+  hiveInfo.initialize;
+
+  SparkChecker.start(hiveInfo);
 }

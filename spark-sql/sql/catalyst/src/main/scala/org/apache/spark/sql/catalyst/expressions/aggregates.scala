@@ -25,7 +25,7 @@ import org.apache.spark.util.collection.OpenHashSet
 import org.apache.spark.sql.catalyst.checker.UnsupportedPlanException
 import org.apache.spark.sql.catalyst.checker.DPHelper
 
-abstract class AggregateExpression extends Expression with Serializable{
+abstract class AggregateExpression extends Expression with Serializable {
   self: Product =>
 
   /**
@@ -101,9 +101,9 @@ abstract class AggregateFunction
   // Do we really need this?
   override def newInstance() = makeCopy(productIterator.map { case a: AnyRef => a }.toArray)
 
-  protected def addDP(result: Any): Any = {
+  protected def enforceDP(result: Any): Any = {
     if (base.enableDP) {
-      DPHelper.addNoise(result, base.epsilon, base.sensitivity);
+      DPHelper.calibrateNoise(result, base.epsilon, base.sensitivity);
     } else {
       result;
     }
@@ -140,7 +140,7 @@ case class MinFunction(expr: Expression, base: AggregateExpression) extends Aggr
   }
 
   //modified by luochen
-  override def eval(input: Row): Any = addDP(currentMin.value)
+  override def eval(input: Row): Any = enforceDP(currentMin.value)
 }
 
 case class Max(child: Expression) extends PartialAggregate with trees.UnaryNode[Expression] {
@@ -171,7 +171,7 @@ case class MaxFunction(expr: Expression, base: AggregateExpression) extends Aggr
     }
   }
 
-  override def eval(input: Row): Any = addDP(currentMax.value)
+  override def eval(input: Row): Any = enforceDP(currentMax.value)
 }
 
 case class Count(child: Expression) extends PartialAggregate with trees.UnaryNode[Expression] {
@@ -266,7 +266,7 @@ case class CombineSetsAndCountFunction(
     }
   }
   //modified by luochen
-  override def eval(input: Row): Any = addDP(seen.size.toLong);
+  override def eval(input: Row): Any = enforceDP(seen.size.toLong);
 }
 
 case class ApproxCountDistinctPartition(child: Expression, relativeSD: Double)
@@ -381,7 +381,7 @@ case class AverageFunction(expr: Expression, base: AggregateExpression)
 
   //modified by luochen
   override def eval(input: Row): Any =
-    addDP(sumAsDouble.eval(EmptyRow).asInstanceOf[Double] / count.toDouble)
+    enforceDP(sumAsDouble.eval(EmptyRow).asInstanceOf[Double] / count.toDouble)
 
   override def update(input: Row): Unit = {
     val evaluatedExpr = expr.eval(input)
@@ -404,7 +404,7 @@ case class CountFunction(expr: Expression, base: AggregateExpression) extends Ag
     }
   }
   //modified by luochen
-  override def eval(input: Row): Any = addDP(count)
+  override def eval(input: Row): Any = enforceDP(count)
 }
 
 case class ApproxCountDistinctPartitionFunction(
@@ -457,7 +457,7 @@ case class SumFunction(expr: Expression, base: AggregateExpression) extends Aggr
   }
 
   //modified by luochen
-  override def eval(input: Row): Any = addDP(sum.eval(null));
+  override def eval(input: Row): Any = enforceDP(sum.eval(null));
 
 }
 
@@ -476,7 +476,7 @@ case class SumDistinctFunction(expr: Expression, base: AggregateExpression)
   }
 
   //modified by luochen
-  override def eval(input: Row): Any = addDP(seen.reduceLeft(base.dataType.asInstanceOf[NumericType].numeric.asInstanceOf[Numeric[Any]].plus));
+  override def eval(input: Row): Any = enforceDP(seen.reduceLeft(base.dataType.asInstanceOf[NumericType].numeric.asInstanceOf[Numeric[Any]].plus));
 
 }
 
@@ -499,7 +499,7 @@ case class CountDistinctFunction(
     }
   }
   //modified by luochen
-  override def eval(input: Row): Any = addDP(seen.size.toLong)
+  override def eval(input: Row): Any = enforceDP(seen.size.toLong)
 }
 
 case class FirstFunction(expr: Expression, base: AggregateExpression) extends AggregateFunction {

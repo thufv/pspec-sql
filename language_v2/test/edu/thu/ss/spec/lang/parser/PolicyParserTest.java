@@ -2,12 +2,8 @@ package edu.thu.ss.spec.lang.parser;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
-
-import org.junit.Test;
 
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.meta.MetaRegistry;

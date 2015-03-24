@@ -7,12 +7,12 @@ class DPBudget(var budget: Double) extends Logging {
   var tmpBudget: Double = budget;
 
   def commit() {
-    logInfo(s"commit privacy budget $tmpBudget");
+    logWarning(s"commit privacy budget, buget left: $tmpBudget");
     budget = tmpBudget;
   }
 
   def rollback() {
-    logInfo(s"rollback privacy budget to $budget");
+    logWarning(s"rollback privacy budget to $budget");
     tmpBudget = budget;
   }
 

@@ -2,7 +2,6 @@ package edu.thu.ss.spec.lang.analyzer.rule;
 
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

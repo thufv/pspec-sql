@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.thu.ss.spec.meta.StructType.FieldType;
 import edu.thu.ss.spec.util.SetUtil;
 
 public class MapType extends BaseType {

@@ -56,8 +56,7 @@ case class ConditionalLabel(conds: Map[JoinCondition, BaseType], database: Strin
 
   var fulfilled: Set[BaseType] = null;
 
-  def sensitive(): Boolean = true;
-
+  def sensitive(): Boolean = fulfilled != null && fulfilled.size > 0;
   def canEqual(other: Any) = {
     other.isInstanceOf[org.apache.spark.sql.catalyst.checker.ConditionalLabel]
   }

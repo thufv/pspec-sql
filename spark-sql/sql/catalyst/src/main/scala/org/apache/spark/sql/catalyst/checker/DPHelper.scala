@@ -1,12 +1,15 @@
 package org.apache.spark.sql.catalyst.checker
 
-import scala.util.Random
 import scala.math.BigDecimal
+import scala.util.Random
+
 import org.apache.spark.Logging
 
 object DPHelper extends Logging {
 
-  var initialized = false;
+  val Conf_Epsilon = "epsilon";
+
+  val Default_Epsilon = "0.5";
 
   def laplace(stddev: Double): Double = {
     val uniform = Random.nextDouble() - 0.5;
@@ -19,31 +22,6 @@ object DPHelper extends Logging {
 
   def lapNoise(epsilon: Double, sensitivity: Double): Double = {
     return laplace(sensitivity / epsilon);
-  }
-
-  def checkUtility(result: Any, epsilon: Double, sensitivity: Double) {
-    //TODO
-    if (false) {
-      SparkChecker.budget.rollback;
-    }
-  }
-
-  def addNoise(result: Any, epsilon: Double, sensitivity: Double): Any = {
-    if (!initialized) {
-      return result;
-    }
-    logWarning(s"calibrating noise, epsilon:$epsilon, sensitivity:$sensitivity");
-    val noise = lapNoise(epsilon, sensitivity);
-    result match {
-      case long: Long => long + noise.toLong;
-      case int: Int => int + noise.toInt;
-      case double: Double => double + noise.toDouble;
-      case float: Float => float + noise.toFloat;
-      case short: Short => short + noise.toShort;
-      case big: BigDecimal => big + BigDecimal(noise);
-      case null => null;
-      case _ => throw new RuntimeException(s"invalid argument: $result.");
-    }
   }
 
   def toDouble(value: Any): Double = {
@@ -83,6 +61,40 @@ object DPHelper extends Logging {
     val d1 = DPHelper.toDouble(v1);
     val d2 = DPHelper.toDouble(v2);
     return d1 < d2;
+  }
+
+  def checkUtility(result: Any, epsilon: Double, sensitivity: Double): Boolean = {
+    val value = toDouble(result);
+    val stddev = sensitivity / epsilon;
+    val noise = -stddev * Math.log(1 - SparkChecker.accuracyProb);
+
+    logWarning(s"estimated noise range [-$noise, $noise] with probability ${SparkChecker.accuracyProb}");
+
+    if (result == null || noise / value > SparkChecker.accurcayNoise) {
+      //SparkChecker.rollback;
+      //throw new PrivacyException("accuracy bound violated, please revise your query");
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  def calibrateNoise(result: Any, epsilon: Double, sensitivity: Double): Any = {
+    logWarning(s"calibrating noise, epsilon:$epsilon, sensitivity:$sensitivity");
+    if (!checkUtility(result, epsilon, sensitivity)) {
+      return null;
+    }
+    val noise = lapNoise(epsilon, sensitivity);
+    result match {
+      case long: Long => long + noise.toLong;
+      case int: Int => int + noise.toInt;
+      case double: Double => double + noise.toDouble;
+      case float: Float => float + noise.toFloat;
+      case short: Short => short + noise.toShort;
+      case big: BigDecimal => big + BigDecimal(noise);
+      case null => null;
+      case _ => throw new PrivacyException(s"invalid argument: $result.");
+    }
   }
 
 }

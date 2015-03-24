@@ -10,183 +10,193 @@ import java.util.Map;
  *
  */
 public class Policy {
-	protected Info info;
+  protected Info info;
 
-	protected String vocabularyLocation;
+  protected String vocabularyLocation;
 
-	protected String userContainerRef;
-	protected String dataContainerRef;
+  protected String userContainerRef;
+  protected String dataContainerRef;
 
-	/**
-	 * {@link UserContainer} of id {@link #userContainerRef}
-	 */
-	protected UserContainer userContainer;
+  /**
+   * {@link UserContainer} of id {@link #userContainerRef}
+   */
+  protected UserContainer userContainer;
 
-	/**
-	 * {@link DataContainer} of id {@link #dataContainerRef}
-	 */
-	protected DataContainer dataContainer;
+  /**
+   * {@link DataContainer} of id {@link #dataContainerRef}
+   */
+  protected DataContainer dataContainer;
 
-	/**
-	 * all referenced {@link UserContainer}
-	 */
-	protected Map<String, UserContainer> userContainers;
+  /**
+   * all referenced {@link UserContainer}
+   */
+  protected Map<String, UserContainer> userContainers;
 
-	/**
-	 * all referenced {@link DataContainer}
-	 */
-	protected Map<String, DataContainer> dataContainers;
+  /**
+   * all referenced {@link DataContainer}
+   */
+  protected Map<String, DataContainer> dataContainers;
 
-	protected List<Rule> rules;
+  protected List<Rule> rules;
 
-	protected List<ExpandedRule> expandedRules;
+  protected List<ExpandedRule> expandedRules;
 
-	protected URI path;
+  protected PrivacyParams privacyBudget;
 
-	public void setPath(URI path) {
-		this.path = path;
-	}
+  protected URI path;
 
-	public URI getPath() {
-		return path;
-	}
+  public void setPath(URI path) {
+    this.path = path;
+  }
 
-	public void setExpandedRules(List<ExpandedRule> expandedRule) {
-		this.expandedRules = expandedRule;
-	}
+  public URI getPath() {
+    return path;
+  }
 
-	public List<ExpandedRule> getExpandedRules() {
-		return expandedRules;
-	}
+  public void setExpandedRules(List<ExpandedRule> expandedRule) {
+    this.expandedRules = expandedRule;
+  }
 
-	public String getVocabularyLocation() {
-		return vocabularyLocation;
-	}
+  public List<ExpandedRule> getExpandedRules() {
+    return expandedRules;
+  }
 
-	public void setVocabularyLocation(String vocabularyLocation) {
-		this.vocabularyLocation = vocabularyLocation;
-	}
+  public String getVocabularyLocation() {
+    return vocabularyLocation;
+  }
 
-	public String getUserRef() {
-		return userContainerRef;
-	}
+  public void setVocabularyLocation(String vocabularyLocation) {
+    this.vocabularyLocation = vocabularyLocation;
+  }
 
-	public void setUserRef(String userRef) {
-		this.userContainerRef = userRef;
-	}
+  public PrivacyParams getPrivacyBudget() {
+    return privacyBudget;
+  }
 
-	public String getDataRef() {
-		return dataContainerRef;
-	}
+  public void setPrivacyBudget(PrivacyParams privacyBudget) {
+    this.privacyBudget = privacyBudget;
+  }
 
-	public void setDataRef(String dataRef) {
-		this.dataContainerRef = dataRef;
-	}
+  public String getUserRef() {
+    return userContainerRef;
+  }
 
-	public Info getInfo() {
-		return info;
-	}
+  public void setUserRef(String userRef) {
+    this.userContainerRef = userRef;
+  }
 
-	public void setInfo(Info info) {
-		this.info = info;
-	}
+  public String getDataRef() {
+    return dataContainerRef;
+  }
 
-	public List<Rule> getRules() {
-		return rules;
-	}
+  public void setDataRef(String dataRef) {
+    this.dataContainerRef = dataRef;
+  }
 
-	public void setRules(List<Rule> rules) {
-		this.rules = rules;
-	}
+  public Info getInfo() {
+    return info;
+  }
 
-	public UserContainer getUserContainer() {
-		return userContainer;
-	}
+  public void setInfo(Info info) {
+    this.info = info;
+  }
 
-	public DataContainer getDataContainer() {
-		return dataContainer;
-	}
+  public List<Rule> getRules() {
+    return rules;
+  }
 
-	public void setUserContainer(UserContainer userContainer) {
-		this.userContainer = userContainer;
-	}
+  public void setRules(List<Rule> rules) {
+    this.rules = rules;
+  }
 
-	public void setDataContainer(DataContainer dataContainer) {
-		this.dataContainer = dataContainer;
-	}
+  public UserContainer getUserContainer() {
+    return userContainer;
+  }
 
-	public void setDataContainers(Map<String, DataContainer> dataContainers) {
-		this.dataContainers = dataContainers;
-	}
+  public DataContainer getDataContainer() {
+    return dataContainer;
+  }
 
-	public void setUserContainers(Map<String, UserContainer> userContainers) {
-		this.userContainers = userContainers;
-	}
+  public void setUserContainer(UserContainer userContainer) {
+    this.userContainer = userContainer;
+  }
 
-	public void setUserContainerRef(String userContainerRef) {
-		this.userContainerRef = userContainerRef;
-	}
+  public void setDataContainer(DataContainer dataContainer) {
+    this.dataContainer = dataContainer;
+  }
 
-	public void setDataContainerRef(String dataContainerRef) {
-		this.dataContainerRef = dataContainerRef;
-	}
+  public void setDataContainers(Map<String, DataContainer> dataContainers) {
+    this.dataContainers = dataContainers;
+  }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((path == null) ? 0 : path.hashCode());
-		return result;
-	}
+  public void setUserContainers(Map<String, UserContainer> userContainers) {
+    this.userContainers = userContainers;
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Policy other = (Policy) obj;
-		if (path == null) {
-			if (other.path != null)
-				return false;
-		} else if (!path.equals(other.path))
-			return false;
-		return true;
-	}
+  public void setUserContainerRef(String userContainerRef) {
+    this.userContainerRef = userContainerRef;
+  }
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("Policy Info: \n");
-		sb.append(info);
+  public void setDataContainerRef(String dataContainerRef) {
+    this.dataContainerRef = dataContainerRef;
+  }
 
-		sb.append("\n");
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((path == null) ? 0 : path.hashCode());
+    return result;
+  }
 
-		sb.append("User Categories: ");
-		sb.append(userContainerRef);
-		sb.append("\n");
-		sb.append(userContainer.toString());
-		sb.append("\n");
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Policy other = (Policy) obj;
+    if (path == null) {
+      if (other.path != null)
+        return false;
+    } else if (!path.equals(other.path))
+      return false;
+    return true;
+  }
 
-		sb.append("Data Categories: ");
-		sb.append(dataContainerRef);
-		sb.append("\n");
-		sb.append(dataContainer.toString());
-		sb.append("\n");
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("Policy Info: \n");
+    sb.append(info);
 
-		sb.append("Expanded Rules:\n");
-		for (ExpandedRule rule : expandedRules) {
-			sb.append(rule);
-			sb.append("\n");
-		}
+    sb.append("\n");
 
-		return sb.toString();
+    sb.append("User Categories: ");
+    sb.append(userContainerRef);
+    sb.append("\n");
+    sb.append(userContainer.toString());
+    sb.append("\n");
 
-	}
+    sb.append("Data Categories: ");
+    sb.append(dataContainerRef);
+    sb.append("\n");
+    sb.append(dataContainer.toString());
+    sb.append("\n");
 
-	public DataCategory getDataCategory(String id) {
-		return dataContainer.get(id);
-	}
+    sb.append("Expanded Rules:\n");
+    for (ExpandedRule rule : expandedRules) {
+      sb.append(rule);
+      sb.append("\n");
+    }
+
+    return sb.toString();
+
+  }
+
+  public DataCategory getDataCategory(String id) {
+    return dataContainer.get(id);
+  }
 }

@@ -68,7 +68,7 @@ object ExpressionRegistry extends LabelConstants {
 
   private def resolve(unary: UnaryExpression): String = {
     unary match {
-      case _: Cast => Func_Cast;
+      case _: Cast => null;
       case _: CountSet => Func_Dummy;
       case _: Lower => Func_Lower;
       case _: Not => Func_Dummy;

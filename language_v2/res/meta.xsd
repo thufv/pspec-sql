@@ -92,6 +92,14 @@
 		<complexContent>
 			<extension base="tns:baseType">
 				<attribute name="name" type="NCName" use="required"></attribute>
+				<attribute name="joinable" type="boolean" use="optional"></attribute>
+				<attribute name="multiplicity" use="optional">
+					<simpleType>
+						<restriction base="int">
+							<minExclusive value="0"></minExclusive>
+						</restriction>
+					</simpleType>
+				</attribute>
 			</extension>
 		</complexContent>
 	</complexType>

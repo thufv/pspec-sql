@@ -4,7 +4,6 @@ import edu.thu.ss.spec.lang.pojo.Action;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DataRef;
 import edu.thu.ss.spec.lang.pojo.Desensitization;
-import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.Restriction;
 import edu.thu.ss.spec.lang.pojo.UserRef;
 
@@ -121,18 +120,6 @@ public class InclusionUtil {
 		return SetUtil.contains(de1.getOperations(), de2.getOperations());
 	}
 
-	/**
-	 * test restrictions in rule1 is stricter than rule2.
-	 * @param rule1
-	 * @param rule2, not single
-	 * @return boolean
-	 */
-	public boolean stricterThan(ExpandedRule rule1, ExpandedRule rule2, int[][] dataIncludes, int[] dataLength) {
-		Restriction[] res1 = rule1.getRestrictions();
-		Restriction[] res2 = rule2.getRestrictions();
-
-		return false;
-	}
 
 	/**
 	 * test whether list1 is stricter than list2,

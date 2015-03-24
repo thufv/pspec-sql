@@ -5,7 +5,6 @@ import org.junit.Test;
 import edu.thu.ss.spec.global.CategoryManager;
 import edu.thu.ss.spec.global.PolicyManager;
 import edu.thu.ss.spec.lang.analyzer.PolicyAnalyzer;
-import edu.thu.ss.spec.lang.analyzer.local.CachedConsistencySearcher;
 import edu.thu.ss.spec.lang.analyzer.local.ConsistencyAnalyzer;
 import edu.thu.ss.spec.lang.analyzer.local.LocalRedundancyAnalyzer;
 import edu.thu.ss.spec.lang.parser.PolicyParser;

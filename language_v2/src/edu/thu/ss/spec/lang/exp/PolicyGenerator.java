@@ -2,9 +2,6 @@ package edu.thu.ss.spec.lang.exp;
 
 import java.util.List;
 
-import edu.thu.ss.spec.lang.analyzer.PolicyAnalyzer;
-import edu.thu.ss.spec.lang.analyzer.local.ConsistencyAnalyzer;
-import edu.thu.ss.spec.lang.parser.PolicyParser;
 import edu.thu.ss.spec.lang.parser.PolicyWriter;
 import edu.thu.ss.spec.lang.parser.VocabularyParser;
 import edu.thu.ss.spec.lang.pojo.ContactInfo;

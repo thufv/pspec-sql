@@ -158,7 +158,7 @@ case class Aggregate(
         while (i < buffer.length) {
           aggregateResults(i) = buffer(i).eval(EmptyRow)
           i += 1
-        } 
+        }
 
         Iterator(resultProjection(aggregateResults))
       }

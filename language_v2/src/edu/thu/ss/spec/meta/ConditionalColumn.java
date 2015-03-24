@@ -2,7 +2,6 @@ package edu.thu.ss.spec.meta;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import edu.thu.ss.spec.util.SetUtil;

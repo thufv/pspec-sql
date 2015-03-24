@@ -450,9 +450,15 @@ class LabelPropagator extends Logging {
   /**
    * return a lineage tree for function
    */
-  private def resolveTermFunction(expression: Expression, plan: LogicalPlan): Function = {
+  private def resolveTermFunction(expression: Expression, plan: LogicalPlan): Label = {
     val labels = expression.children.map(resolveTerm(_, plan));
-    Function(labels, ExpressionRegistry.resolveFunction(expression), expression);
+
+    val func = ExpressionRegistry.resolveFunction(expression);
+    if (func != null) {
+      Function(labels, ExpressionRegistry.resolveFunction(expression), expression);
+    } else {
+      labels(0);
+    }
   }
 
   /**

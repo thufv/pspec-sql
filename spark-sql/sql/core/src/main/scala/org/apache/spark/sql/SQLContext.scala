@@ -37,6 +37,7 @@ import org.apache.spark.sql.parquet.ParquetRelation
 import org.apache.spark.{ Logging, SparkContext }
 import org.apache.spark.sql.catalyst.checker.LabelPropagator
 import org.apache.spark.sql.execution.AddExchange
+import org.apache.spark.sql.catalyst.checker.DPHelper
 import org.apache.spark.sql.catalyst.checker.SparkChecker
 
 /**
@@ -56,14 +57,6 @@ class SQLContext(@transient val sparkContext: SparkContext)
   with Serializable {
 
   self =>
-
-  /**
-   * added by luochen
-   * load policy during startups
-   */
-  private val policyPath = sparkContext.conf.get("spark.privacy.policy", "res/spark-policy.xml");
-  private val metaPath = sparkContext.conf.get("spark.privacy.meta", "res/spark-meta.xml");
-  SparkChecker.init(catalog, policyPath, metaPath);
 
   @transient
   protected[sql] lazy val catalog: Catalog = new SimpleCatalog(true)
@@ -408,7 +401,8 @@ class SQLContext(@transient val sparkContext: SparkContext)
     lazy val sparkPlan = {
       //added by luochen
       //check logical plan
-      SparkChecker(optimizedPlan);
+      val epsilon = getConf(DPHelper.Conf_Epsilon, DPHelper.Default_Epsilon).toDouble;
+      SparkChecker(optimizedPlan, epsilon);
       SparkPlan.currentContext.set(self)
       planner(optimizedPlan).next()
     }
@@ -417,11 +411,7 @@ class SQLContext(@transient val sparkContext: SparkContext)
     lazy val executedPlan: SparkPlan = prepareForExecution(sparkPlan)
 
     /** Internal version of the RDD. Avoids copies and has no schema */
-    lazy val toRdd: RDD[Row] = {
-      val result = executedPlan.execute();
-      SparkChecker.budget.commit;
-      result;
-    }
+    lazy val toRdd: RDD[Row] = executedPlan.execute();
 
     protected def stringOrError[A](f: => A): String =
       try f.toString catch { case e: Throwable => e.toString }

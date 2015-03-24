@@ -15,6 +15,15 @@
 		<user-category-container refid="default-user" />
 		<data-category-container refid="store-data" />
 	</vocabulary-ref>
+	<privacy-parameters>
+		<budget>5</budget>
+		<!-- with probability (greater than) 0.9, the noise ratio should within 
+			0.1 w.r.t. the real answer -->
+		<accuracy>
+			<probability>0.9</probability>
+			<noise-ratio>0.1</noise-ratio>
+		</accuracy>
+	</privacy-parameters>
 	<rules>
 		<rule id="forbid_project">
 			<user-category-ref refid="app"></user-category-ref>
@@ -23,9 +32,9 @@
 			<data-category-ref refid="name" action="projection"></data-category-ref>
 			<data-category-ref refid="customer_suite" action="projection"></data-category-ref>
 			<data-category-ref refid="customer_sa" action="projection"></data-category-ref>
-      <restriction>
-        <forbid></forbid>
-      </restriction>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
 		</rule>
 
 		<rule id="forbid_name_customer_sa">

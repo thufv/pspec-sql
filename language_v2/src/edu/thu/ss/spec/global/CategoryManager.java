@@ -4,9 +4,6 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import edu.thu.ss.spec.lang.pojo.DataContainer;
 import edu.thu.ss.spec.lang.pojo.UserContainer;
 import edu.thu.ss.spec.lang.pojo.Vocabulary;
@@ -19,7 +16,7 @@ import edu.thu.ss.spec.util.XMLUtil;
  * 
  */
 public class CategoryManager {
-	private static Logger logger = LoggerFactory.getLogger(CategoryManager.class);
+	//private static Logger logger = LoggerFactory.getLogger(CategoryManager.class);
 
 	/**
 	 * stores vocabulary, differentiated by unique URI.
