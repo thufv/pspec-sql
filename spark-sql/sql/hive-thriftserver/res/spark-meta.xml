@@ -58,11 +58,21 @@
 		</table>
 
 		<table name="store_sales">
-			<column name="ss_customer_sk" data-category="sk"></column>
-			<column name="ss_cdemo_sk" data-category="sk"></column>
-			<column name="ss_hdemo_sk" data-category="sk"></column>
-			<column name="ss_addr_sk" data-category="sk"></column>
-			<column name="ss_item_sk" data-category="sk"></column>
+			<column name="ss_customer_sk" data-category="sk" joinable="true"
+				multiplicity="1"></column>
+			<column name="ss_cdemo_sk" data-category="sk" joinable="true"
+				multiplicity="1"></column>
+			<column name="ss_hdemo_sk" data-category="sk" joinable="true"
+				multiplicity="1"></column>
+			<column name="ss_addr_sk" data-category="sk" joinable="true"
+				multiplicity="1"></column>
+			<column name="ss_item_sk" data-category="sk" joinable="true"
+				multiplicity="1"></column>
+			<column name="ss_store_sk" data-category="sk" joinable="true"
+				multiplicity="1"></column>
+			<column name="ss_sold_date_sk" data-category="sk" joinable="true"
+				multiplicity="1"></column>
+			<column name="ss_ticket_number" joinable="true" multiplicity="1"></column>
 			<column name="ss_wholesale_cost" data-category="price"></column>
 			<column name="ss_list_price" data-category="price"></column>
 			<column name="ss_sales_price" data-category="price"></column>
@@ -73,20 +83,28 @@
 		</table>
 
 		<table name="store_returns">
-			<column name="sr_customer_sk" data-category="sk"></column>
-			<column name="sr_cdemo_sk" data-category="sk"></column>
-			<column name="sr_hdemo_sk" data-category="sk"></column>
-			<column name="sr_addr_sk" data-category="sk"></column>
-			<column name="sr_item_sk" data-category="sk"></column>
+			<column name="sr_customer_sk" data-category="sk" joinable="true"
+				multiplicity="1"></column>
+			<column name="sr_cdemo_sk" data-category="sk" joinable="true"
+				multiplicity="1"></column>
+			<column name="sr_hdemo_sk" data-category="sk" joinable="true"
+				multiplicity="1"></column>
+			<column name="sr_addr_sk" data-category="sk" joinable="true"
+				multiplicity="1"></column>
+			<column name="sr_item_sk" data-category="sk" joinable="true"
+				multiplicity="1"></column>
+			<column name="sr_returned_date_sk" data-category="sk"
+				joinable="true" multiplicity="1"></column>
+			<column name="sr_ticket_number" joinable="true" multiplicity="1"></column>
 
 			<column name="sr_fee" data-category="price"></column>
 			<column name="sr_refunded_cash" data-category="price"></column>
 			<column name="sr_reversed_charge" data-category="price"></column>
 			<column name="sr_net_loss" data-category="price"></column>
 		</table>
-
 		<table name="catalog_returns">
-			<column name="cr_item_sk" data-category="sk" />
+			<column name="cr_item_sk" data-category="sk" joinable="true"
+				multiplicity="1" />
 			<column name="cr_refunded_customer_sk" data-category="sk" />
 			<column name="cr_refunded_cdemo_sk" data-category="sk" />
 			<column name="cr_refunded_hdemo_sk" data-category="sk" />
@@ -102,7 +120,8 @@
 		</table>
 
 		<table name="catalog_sales">
-			<column name="cs_bill_customer_sk" data-category="sk" />
+			<column name="cs_bill_customer_sk" data-category="sk"
+				joinable="true" multiplicity="1" />
 			<column name="cs_bill_cdemo_sk" data-category="sk" />
 			<column name="cs_bill_hdemo_sk" data-category="sk" />
 			<column name="cs_bill_addr_sk" data-category="sk" />
@@ -110,7 +129,10 @@
 			<column name="cs_ship_cdemo_sk" data-category="sk" />
 			<column name="cs_ship_hdemo_sk" data-category="sk" />
 			<column name="cs_ship_addr_sk" data-category="sk" />
-			<column name="cs_item_sk" data-category="sk" />
+			<column name="cs_item_sk" data-category="sk" joinable="true"
+				multiplicity="1" />
+			<column name="cs_sold_date_sk" data-category="sk" joinable="true"
+				multiplicity="1" />
 			<column name="cs_wholesale_cost" data-category="price" />
 			<column name="cs_list_price" data-category="price" />
 			<column name="cs_sales_price" data-category="price" />
@@ -157,7 +179,8 @@
 		</table>
 
 		<table name="item">
-			<column name="i_item_sk" data-category="sk"></column>
+			<column name="i_item_sk" data-category="sk" joinable="true"
+				multiplicity="1"></column>
 			<column name="i_item_id" data-category="sk"></column>
 			<condition>
 				<join table="store_sales">
@@ -187,5 +210,14 @@
 			</condition>
 		</table>
 
+		<table name="store">
+			<column name="s_store_sk" data-category="sk" joinable="true"
+				multiplicity="1"></column>
+		</table>
+
+		<table name="date_dim">
+			<column name="d_date_sk" data-category="sk" joinable="true"
+				multiplicity="1"></column>
+		</table>
 	</database>
 </meta-mapping>

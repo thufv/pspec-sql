@@ -112,7 +112,7 @@ object SparkChecker extends Logging {
       checker.check(projectionPaths, conditionPaths, policies);
 
       val dpEnforcer = new DPEnforcer(tableInfo, budget, epsilon);
-      dpEnforcer.enforce(plan);
+      dpEnforcer(plan);
     } finally {
       val end = System.currentTimeMillis();
       val time = end - begin;

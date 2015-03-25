@@ -241,12 +241,12 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
         type = parseCompositeType(node, columnName);
       }
     }
-    if (type == null) {
-      logger.error(
-          "one of data-category attribute or struct/map/array element should exist in column: {} ",
-          columnName);
-      error = true;
-    }
+    /*    if (type == null) {
+          logger.error(
+              "one of data-category attribute or struct/map/array element should exist in column: {} ",
+              columnName);
+          error = true;
+        }*/
     return type;
   }
 

@@ -1,48 +1,59 @@
 package org.apache.spark.sql.catalyst.checker
 
-import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
-import org.apache.spark.sql.catalyst.plans.logical.Aggregate
-import org.apache.spark.sql.catalyst.expressions.Expression
-import org.apache.spark.sql.catalyst.expressions.Alias
-import org.apache.spark.sql.catalyst.expressions.BinaryExpression
-import org.apache.spark.sql.catalyst.expressions.UnaryExpression
-import org.apache.spark.sql.catalyst.expressions.Sum
-import org.apache.spark.sql.catalyst.expressions.Average
-import org.apache.spark.sql.catalyst.expressions.SumDistinct
-import org.apache.spark.sql.catalyst.expressions.CountDistinct
-import org.apache.spark.sql.catalyst.expressions.Min
-import org.apache.spark.sql.catalyst.expressions.Max
-import org.apache.spark.sql.catalyst.expressions.Count
-import org.apache.spark.sql.catalyst.expressions.AggregateExpression
-import org.apache.spark.sql.catalyst.plans.logical.BinaryNode
-import org.apache.spark.sql.catalyst.plans.logical.LeafNode
-import org.apache.spark.sql.catalyst.plans.logical.Project
-import org.apache.spark.sql.catalyst.plans.logical.Generate
-import org.apache.spark.sql.catalyst.plans.logical.Join
-import org.apache.spark.sql.catalyst.plans.logical.Union
-import org.apache.spark.sql.catalyst.plans.logical.Intersect
-import org.apache.spark.sql.catalyst.plans.logical.Except
-import org.apache.spark.sql.catalyst.expressions.Attribute
-import org.apache.spark.sql.catalyst.plans.logical.UnaryNode
-import org.apache.spark.sql.catalyst.trees
-import org.apache.spark.sql.catalyst.expressions.AttributeReference
-import org.apache.spark.sql.catalyst.checker.LabelConstants._
-import org.apache.spark.sql.catalyst.plans.logical.Aggregate
-import org.apache.spark.sql.catalyst.plans.logical.Aggregate
-import org.apache.spark.sql.catalyst.expressions.Cast
-import org.apache.spark.Logging
-import scala.collection.JavaConverters._
-import scala.collection.immutable.List
-import scala.collection.mutable.Buffer
-import scala.collection.mutable.ListBuffer
 import scala.collection.mutable.HashMap
-import org.apache.spark.sql.catalyst.graph._
-import org.apache.spark.sql.catalyst.plans.logical.Join
+import scala.collection.mutable.ListBuffer
+import org.apache.spark.Logging
+import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Avg
+import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Cast
+import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Count
+import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Except
+import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Intersect
+import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Max
+import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Min
+import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Sum
+import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Union
+import org.apache.spark.sql.catalyst.expressions.AggregateExpression
+import org.apache.spark.sql.catalyst.expressions.Alias
 import org.apache.spark.sql.catalyst.expressions.And
-import org.apache.spark.sql.catalyst.expressions.Or
-import org.apache.spark.sql.catalyst.expressions.EqualNullSafe
+import org.apache.spark.sql.catalyst.expressions.Attribute
+import org.apache.spark.sql.catalyst.expressions.AttributeReference
+import org.apache.spark.sql.catalyst.expressions.Average
+import org.apache.spark.sql.catalyst.expressions.BinaryExpression
+import org.apache.spark.sql.catalyst.expressions.Cast
+import org.apache.spark.sql.catalyst.expressions.Count
+import org.apache.spark.sql.catalyst.expressions.CountDistinct
 import org.apache.spark.sql.catalyst.expressions.EqualTo
+import org.apache.spark.sql.catalyst.expressions.Expression
+import org.apache.spark.sql.catalyst.expressions.Max
+import org.apache.spark.sql.catalyst.expressions.Min
+import org.apache.spark.sql.catalyst.expressions.Or
+import org.apache.spark.sql.catalyst.expressions.Sum
+import org.apache.spark.sql.catalyst.expressions.SumDistinct
+import org.apache.spark.sql.catalyst.expressions.UnaryExpression
+import org.apache.spark.sql.catalyst.graph.AdjacencyList
+import org.apache.spark.sql.catalyst.graph.EdmondsChuLiu
+import org.apache.spark.sql.catalyst.graph.Node
+import org.apache.spark.sql.catalyst.plans.logical.Aggregate
+import org.apache.spark.sql.catalyst.plans.logical.BinaryNode
+import org.apache.spark.sql.catalyst.plans.logical.Except
+import org.apache.spark.sql.catalyst.plans.logical.Filter
+import org.apache.spark.sql.catalyst.plans.logical.Generate
+import org.apache.spark.sql.catalyst.plans.logical.Intersect
+import org.apache.spark.sql.catalyst.plans.logical.Join
+import org.apache.spark.sql.catalyst.plans.logical.LeafNode
+import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
 import org.apache.spark.sql.catalyst.plans.logical.Project
+import org.apache.spark.sql.catalyst.plans.logical.UnaryNode
+import org.apache.spark.sql.catalyst.plans.logical.Union
+import scala.collection.immutable.Seq
+import scala.collection.mutable.HashSet
+import scala.collection.mutable
+import scala.collection.Set
+import org.apache.spark.sql.catalyst.plans.logical.Limit
+import org.apache.spark.sql.catalyst.plans.logical.Union
+import org.apache.spark.sql.catalyst.plans.logical.Aggregate
+import org.hsqldb.types.Binary
+import org.apache.spark.sql.catalyst.expressions.Literal
 
 object AggregateType extends Enumeration {
   type AggregateType = Value
@@ -59,8 +70,31 @@ class DPEnforcer(val tableInfo: TableInfo, val budget: DPBudget, val epsilon: Do
     val nodes = new HashMap[String, Node[String]];
     val edges = new AdjacencyList[String];
 
-    def addTable(table: String) {
-      nodes.put(table, new Node(table));
+    private val tables = new HashMap[String, mutable.Set[Attribute]];
+    private val tableSizes = new HashMap[String, Int];
+    private val tableMapping = new HashMap[String, Int];
+
+    def addTable(table: String, attrs: Set[Attribute], tableSize: Option[Int] = None) {
+      val count = tableMapping.get(table);
+      var name: String = null;
+      //renaming table with unique id
+      count match {
+        case Some(i) => {
+          name = table + s"#$i";
+          tableMapping.put(table, i + 1);
+        }
+        case None => {
+          name = table + "#0";
+          tableMapping.put(table, 1);
+        }
+      }
+      nodes.put(name, new Node(name));
+      val set = new HashSet[Attribute];
+      attrs.foreach(set.add(_));
+      tables.put(name, set);
+      if (tableSize.isDefined) {
+        tableSizes.put(name, tableSize.get);
+      }
     }
 
     def initializeEdges() {
@@ -71,9 +105,21 @@ class DPEnforcer(val tableInfo: TableInfo, val budget: DPBudget, val epsilon: Do
           }
         }
       }
+      for (t <- tableSizes) {
+        for (n <- nodes.values) {
+          if (t._1 != n.getName()) {
+            this.edges.updateEdge(nodes.getOrElse(t._1, null), n, t._2);
+            this.edges.updateEdge(n, nodes.getOrElse(t._1, null), t._2);
+          }
+        }
+      }
+
     }
 
-    def updateEdge(table1: String, table2: String, weight: Double) {
+    def updateEdge(attr1: Attribute, attr2: Attribute, weight: Double) {
+      val table1 = lookupTable(attr1);
+      val table2 = lookupTable(attr2);
+
       val node1 = nodes.getOrElse(table1, null);
       val node2 = nodes.getOrElse(table2, null);
       this.edges.updateEdge(node1, node2, weight);
@@ -84,18 +130,43 @@ class DPEnforcer(val tableInfo: TableInfo, val budget: DPBudget, val epsilon: Do
       val weights = nodes.values.map(node => alg.getMinBranching(node, edges).weightProducts(node));
       weights.max;
     }
+
+    private def lookupTable(attr: Attribute): String = {
+      for ((table, set) <- tables) {
+        if (set.contains(attr)) {
+          return table;
+        }
+      }
+      return null;
+    }
   }
 
-  def enforce(plan: LogicalPlan): Int = {
+  def apply(plan: LogicalPlan) {
+    if (!fastCheck(plan)) {
+      return ;
+    }
+    enforce(plan);
+  }
+
+  private def enforce(plan: LogicalPlan, dp: Boolean = false): Int = {
     plan match {
       case join: Join => {
-        enforceJoin(join);
+        if (dp) {
+          enforceJoin(join);
+        } else {
+          join.children.map(enforce(_, dp)).max;
+        }
+      }
+      case agg: Aggregate => {
+        val scale = enforce(agg.child, true);
+        agg.aggregateExpressions.foreach(enforceAggregate(_, agg, scale));
+        scale;
       }
       case unary: UnaryNode => {
-        enforceUnary(unary);
+        enforceUnary(unary, dp);
       }
       case binary: BinaryNode => {
-        enforceBinary(binary);
+        enforceBinary(binary, dp);
       }
       case leaf: LeafNode => {
         enforceLeaf(leaf);
@@ -104,13 +175,18 @@ class DPEnforcer(val tableInfo: TableInfo, val budget: DPBudget, val epsilon: Do
     }
   }
 
-  private def enforceUnary(unary: UnaryNode): Int = {
-    val scale = enforce(unary.child);
+  private def fastCheck(plan: LogicalPlan): Boolean = {
+    plan match {
+      case agg: Aggregate => true;
+      case unary: UnaryNode => fastCheck(unary.child);
+      case binary: BinaryNode => fastCheck(binary.left) || fastCheck(binary.right);
+      case _ => false;
+    }
+  }
+
+  private def enforceUnary(unary: UnaryNode, dp: Boolean): Int = {
+    val scale = enforce(unary.child, dp);
     unary match {
-      case agg: Aggregate => {
-        agg.aggregateExpressions.foreach(enforceAggregate(_, agg, scale));
-        return scale;
-      }
       case generate: Generate => {
         //TODO
         return scale;
@@ -119,9 +195,9 @@ class DPEnforcer(val tableInfo: TableInfo, val budget: DPBudget, val epsilon: Do
     }
   }
 
-  private def enforceBinary(binary: BinaryNode): Int = {
-    val scale1 = enforce(binary.left);
-    val scale2 = enforce(binary.right);
+  private def enforceBinary(binary: BinaryNode, dp: Boolean): Int = {
+    val scale1 = enforce(binary.left, dp);
+    val scale2 = enforce(binary.right, dp);
     binary match {
       case union: Union => {
         Math.max(scale1, scale2);
@@ -160,6 +236,7 @@ class DPEnforcer(val tableInfo: TableInfo, val budget: DPBudget, val epsilon: Do
 
   private def collectJoinTables(plan: LogicalPlan, graph: JoinGraph, conditions: ListBuffer[(Expression, Join)]) {
     plan match {
+      //only limited operators can appear inside join.
       case join: Join => {
         join.condition match {
           case Some(cond) => conditions.append((cond, join));
@@ -170,10 +247,29 @@ class DPEnforcer(val tableInfo: TableInfo, val budget: DPBudget, val epsilon: Do
 
       case project: Project => collectJoinTables(project.child, graph, conditions);
 
+      case filter: Filter => collectJoinTables(filter.child, graph, conditions);
+
+      case limit: Limit => collectJoinTables(limit.child, graph, conditions);
+
+      case aggregate: Aggregate => {
+        enforce(aggregate, true);
+        //treat aggregate as a new table
+        if (aggregate.groupingExpressions.size == 0) {
+          graph.addTable(s"aggregate#${aggregate.id}", aggregate.projections.keySet, Some(1));
+        } else {
+          graph.addTable(s"aggregate#${aggregate.id}", aggregate.projections.keySet);
+        }
+      }
+
+      case binary: BinaryNode => {
+        enforceBinary(binary, true);
+        graph.addTable(s"${binary.nodeName}#${binary.id}", binary.projections.keySet);
+      }
+
       case leaf: LeafNode => {
         //must be table
         val label = leaf.projections.valuesIterator.next.asInstanceOf[ColumnLabel];
-        graph.addTable(label.table);
+        graph.addTable(label.table, leaf.projections.keySet);
       }
       //TODO relax the restrictions
       case _ => throw new PrivacyException("only direct join on tables are supported");
@@ -190,18 +286,14 @@ class DPEnforcer(val tableInfo: TableInfo, val budget: DPBudget, val epsilon: Do
         try {
           val left = resolveAttribute(equal.left);
           val right = resolveAttribute(equal.right);
-          val llabel = plan.childLabel(left).asInstanceOf[ColumnLabel];
-          val rlabel = plan.childLabel(right).asInstanceOf[ColumnLabel];
-          if (llabel.table != rlabel.table) {
-            //   graph.updateEdge(lLabel.table, rLabel.table, stat.get(rLabel.database, rLabel.table, right.name));
-            val lmulti = tableInfo.get(llabel.database, llabel.table, left.name).multiplicity;
-            val rmulti = tableInfo.get(rlabel.database, rlabel.table, right.name).multiplicity;
-            if (!lmulti.isDefined || !rmulti.isDefined) {
-              throw new PrivacyException(s"join condition $equal is not allowed");
-            }
-            graph.updateEdge(llabel.table, rlabel.table, rmulti.get);
-            graph.updateEdge(rlabel.table, llabel.table, lmulti.get);
+          val lmulti = resolveAttributeInfo(left, plan).multiplicity;
+          val rmulti = resolveAttributeInfo(right, plan).multiplicity;
+          //   graph.updateEdge(lLabel.table, rLabel.table, stat.get(rLabel.database, rLabel.table, right.name));
+          if (!lmulti.isDefined || !rmulti.isDefined) {
+            throw new PrivacyException(s"join condition $equal is not allowed");
           }
+          graph.updateEdge(left, right, rmulti.get);
+          graph.updateEdge(right, left, lmulti.get);
         } catch {
           case e: ClassCastException =>
             throw new PrivacyException(s"join condition $equal is invalid, only equi-join is supported");
@@ -236,6 +328,7 @@ class DPEnforcer(val tableInfo: TableInfo, val budget: DPBudget, val epsilon: Do
       case max: Max => {
         enforceDP(max, plan, scale, (min, max) => max - min);
       }
+
       case _ => expression.children.foreach(enforceAggregate(_, plan, scale));
     }
   }
@@ -245,9 +338,9 @@ class DPEnforcer(val tableInfo: TableInfo, val budget: DPBudget, val epsilon: Do
     if (types.exists(_ == AggregateType.Invalid_Aggregate)) {
       throw new PrivacyException("only aggregate directly on sensitive attributes are allowed");
     } else if (types.exists(_ == AggregateType.Direct_Aggregate)) {
-      val range = resolveAttributeRange(agg.children(0), plan);
+      val range = resolveAttributeInfo(agg.children(0), plan);
       if (range == null) {
-        agg.sensitivity = 0;
+        agg.sensitivity = func(0, 0);
       } else {
         agg.sensitivity = func(DPHelper.toDouble(range.low), DPHelper.toDouble(range.up));
       }
@@ -273,6 +366,13 @@ class DPEnforcer(val tableInfo: TableInfo, val budget: DPBudget, val epsilon: Do
       }
       case cast: Cast => {
         return resolveAggregateType(cast.child, plan);
+      }
+      case literal: Literal => {
+        if (plan.child.projections.values.exists(_.sensitive) || plan.conditions.exists(_.sensitive)) {
+          return AggregateType.Direct_Aggregate;
+        } else {
+          return AggregateType.Insensitive_Aggregate;
+        }
       }
       case alias: Alias => {
         return resolveAggregateType(alias.child, plan);
@@ -351,23 +451,23 @@ class DPEnforcer(val tableInfo: TableInfo, val budget: DPBudget, val epsilon: Do
     }
   }
 
-  private def resolveAttributeRange(expr: Expression, plan: Aggregate): ColumnInfo = {
+  private def resolveAttributeInfo(expr: Expression, plan: LogicalPlan): ColumnInfo = {
     expr match {
       case attr: AttributeReference => {
         val label = plan.childLabel(attr);
-        resolveLabelRange(label);
+        resolveLabelInfo(label);
       }
       case alias: Alias => {
-        resolveAttributeRange(alias.child, plan);
+        resolveAttributeInfo(alias.child, plan);
       }
       case cast: Cast => {
-        resolveAttributeRange(cast.child, plan);
+        resolveAttributeInfo(cast.child, plan);
       }
-      case _ => throw new RuntimeException("should not reach here.");
+      case _ => null;
     }
   }
 
-  private def resolveLabelRange(label: Label): ColumnInfo = {
+  private def resolveLabelInfo(label: Label): ColumnInfo = {
     label match {
       case data: DataLabel => {
         tableInfo.get(data.database, data.table, data.attr.name);
@@ -403,13 +503,13 @@ class DPEnforcer(val tableInfo: TableInfo, val budget: DPBudget, val epsilon: Do
           }
         }
       }
-      case _ => null;
+      case _ => throw new PrivacyException(s"invalid attribute used in query: $label");
     }
   }
 
   private def resolveFuncRange(label: Function, func: (ColumnInfo, ColumnInfo) => ColumnInfo): ColumnInfo = {
-    val r1 = resolveLabelRange(label.children(0));
-    val r2 = resolveLabelRange(label.children(1));
+    val r1 = resolveLabelInfo(label.children(0));
+    val r2 = resolveLabelInfo(label.children(1));
     func(r1, r2);
   }
 
