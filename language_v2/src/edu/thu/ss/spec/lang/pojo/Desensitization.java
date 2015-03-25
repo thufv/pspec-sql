@@ -2,17 +2,13 @@ package edu.thu.ss.spec.lang.pojo;
 
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import edu.thu.ss.spec.lang.parser.ParserConstant;
 import edu.thu.ss.spec.util.SetUtil;
-import edu.thu.ss.spec.util.XMLUtil;
 
 /**
  * class for desensitization, requires some data categories must be desensitized with

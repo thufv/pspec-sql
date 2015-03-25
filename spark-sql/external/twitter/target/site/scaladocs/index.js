@@ -1,1 +1,0 @@
-Index.PACKAGES = {"org.apache.spark.streaming" : [], "org.apache.spark" : [], "org.apache" : [], "org" : [], "org.apache.spark.streaming.twitter" : [{"object" : "org\/apache\/spark\/streaming\/twitter\/TwitterUtils$.html", "name" : "org.apache.spark.streaming.twitter.TwitterUtils"}]};
