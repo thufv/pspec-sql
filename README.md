@@ -10,16 +10,16 @@ tpc-ds/ contains the tpc-ds benchmark and transformed sql querues suitable for s
 More information will be available soon.
 
 
-Development with Eclipse
-Prerequisites:
-Eclipse Kepler 4.3
-Eclipse Scala Plugin for Scala 2.10
-Scala 2.10
-sbt
-
-Steps:
-1. clone project
-2. cd project dir, run "sbt/sbt eclipse -Phive-thriftserver" (this may download a lot of jars...)
-3. discard changes of .classpath files for eclipse projects (with git discard)
-4. import projects into Eclipse, including language v2, spark-core, spark-sql, spark-hive, spark-catalyst, spark-network-common, spark-network-shuffle
-5. fix any potential build problems in eclipse...
+Development with Eclipse  
+Prerequisites:  
+Eclipse Kepler 4.3  
+Eclipse Scala Plugin for Scala 2.10  
+Scala 2.10  
+sbt  
+   
+Steps:  
+1. clone project  
+2. cd project dir, run "sbt/sbt eclipse -Phive-thriftserver" (this may download a lot of jars...)  
+3. discard changes of .classpath files for eclipse projects (with git discard)  
+4. import projects into Eclipse, including language v2, spark-core, spark-sql, spark-hive, spark-catalys, spark-network-common, spark-network-shuffle  
+5. fix any potential build problems in eclipse...    
