@@ -25,11 +25,10 @@ case class Project(projectList: Seq[NamedExpression], child: LogicalPlan) extend
   def output = projectList.map(_.toAttribute)
 
   override lazy val resolved: Boolean = {
-    val containsAggregatesOrGenerators = projectList.exists ( _.collect {
-        case agg: AggregateExpression => agg
-        case generator: Generator => generator
-      }.nonEmpty
-    )
+    val containsAggregatesOrGenerators = projectList.exists(_.collect {
+      case agg: AggregateExpression => agg
+      case generator: Generator => generator
+    }.nonEmpty)
 
     !expressions.exists(!_.resolved) && childrenResolved && !containsAggregatesOrGenerators
   }
@@ -48,11 +47,11 @@ case class Project(projectList: Seq[NamedExpression], child: LogicalPlan) extend
  *              as a qualifier.
  */
 case class Generate(
-    generator: Generator,
-    join: Boolean,
-    outer: Boolean,
-    alias: Option[String],
-    child: LogicalPlan)
+  generator: Generator,
+  join: Boolean,
+  outer: Boolean,
+  alias: Option[String],
+  child: LogicalPlan)
   extends UnaryNode {
 
   protected def generatorOutput: Seq[Attribute] = {
@@ -80,7 +79,7 @@ case class Union(left: LogicalPlan, right: LogicalPlan) extends BinaryNode {
 
   override lazy val resolved =
     childrenResolved &&
-    !left.output.zip(right.output).exists { case (l,r) => l.dataType != r.dataType }
+      !left.output.zip(right.output).exists { case (l, r) => l.dataType != r.dataType }
 }
 
 case class Join(
@@ -110,10 +109,10 @@ case class Except(left: LogicalPlan, right: LogicalPlan) extends BinaryNode {
 }
 
 case class InsertIntoTable(
-    table: LogicalPlan,
-    partition: Map[String, Option[String]],
-    child: LogicalPlan,
-    overwrite: Boolean)
+  table: LogicalPlan,
+  partition: Map[String, Option[String]],
+  child: LogicalPlan,
+  overwrite: Boolean)
   extends LogicalPlan {
 
   override def children = child :: Nil
@@ -126,38 +125,38 @@ case class InsertIntoTable(
 }
 
 case class CreateTableAsSelect[T](
-    databaseName: Option[String],
-    tableName: String,
-    child: LogicalPlan,
-    allowExisting: Boolean,
-    desc: Option[T] = None) extends UnaryNode {
+  databaseName: Option[String],
+  tableName: String,
+  child: LogicalPlan,
+  allowExisting: Boolean,
+  desc: Option[T] = None) extends UnaryNode {
   override def output = Seq.empty[Attribute]
   override lazy val resolved = databaseName != None && childrenResolved
 }
 
 case class WriteToFile(
-    path: String,
-    child: LogicalPlan) extends UnaryNode {
+  path: String,
+  child: LogicalPlan) extends UnaryNode {
   override def output = child.output
 }
 
 /**
- * @param order  The ordering expressions 
- * @param global True means global sorting apply for entire data set, 
+ * @param order  The ordering expressions
+ * @param global True means global sorting apply for entire data set,
  *               False means sorting only apply within the partition.
- * @param child  Child logical plan              
+ * @param child  Child logical plan
  */
 case class Sort(
-    order: Seq[SortOrder],
-    global: Boolean,
-    child: LogicalPlan) extends UnaryNode {
+  order: Seq[SortOrder],
+  global: Boolean,
+  child: LogicalPlan) extends UnaryNode {
   override def output = child.output
 }
 
 case class Aggregate(
-    groupingExpressions: Seq[Expression],
-    aggregateExpressions: Seq[NamedExpression],
-    child: LogicalPlan)
+  groupingExpressions: Seq[Expression],
+  aggregateExpressions: Seq[NamedExpression],
+  child: LogicalPlan)
   extends UnaryNode {
 
   override def output = aggregateExpressions.map(_.toAttribute)
@@ -172,9 +171,9 @@ case class Aggregate(
  * @param child       Child operator
  */
 case class Expand(
-    projections: Seq[GroupExpression],
-    output: Seq[Attribute],
-    child: LogicalPlan) extends UnaryNode
+  projections: Seq[GroupExpression],
+  output: Seq[Attribute],
+  child: LogicalPlan) extends UnaryNode
 
 trait GroupingAnalytics extends UnaryNode {
   self: Product =>
@@ -203,11 +202,11 @@ trait GroupingAnalytics extends UnaryNode {
  *                     The associated output will be one of the value in `bitmasks`
  */
 case class GroupingSets(
-    bitmasks: Seq[Int],
-    groupByExprs: Seq[Expression],
-    child: LogicalPlan,
-    aggregations: Seq[NamedExpression],
-    gid: AttributeReference = VirtualColumn.newGroupingId) extends GroupingAnalytics
+  bitmasks: Seq[Int],
+  groupByExprs: Seq[Expression],
+  child: LogicalPlan,
+  aggregations: Seq[NamedExpression],
+  gid: AttributeReference = VirtualColumn.newGroupingId) extends GroupingAnalytics
 
 /**
  * Cube is a syntactic sugar for GROUPING SETS, and will be transformed to GroupingSets,
@@ -222,10 +221,10 @@ case class GroupingSets(
  *                     aggregating output row.
  */
 case class Cube(
-    groupByExprs: Seq[Expression],
-    child: LogicalPlan,
-    aggregations: Seq[NamedExpression],
-    gid: AttributeReference = VirtualColumn.newGroupingId) extends GroupingAnalytics
+  groupByExprs: Seq[Expression],
+  child: LogicalPlan,
+  aggregations: Seq[NamedExpression],
+  gid: AttributeReference = VirtualColumn.newGroupingId) extends GroupingAnalytics
 
 /**
  * Rollup is a syntactic sugar for GROUPING SETS, and will be transformed to GroupingSets,
@@ -241,10 +240,10 @@ case class Cube(
  *                     aggregating output row.
  */
 case class Rollup(
-    groupByExprs: Seq[Expression],
-    child: LogicalPlan,
-    aggregations: Seq[NamedExpression],
-    gid: AttributeReference = VirtualColumn.newGroupingId) extends GroupingAnalytics
+  groupByExprs: Seq[Expression],
+  child: LogicalPlan,
+  aggregations: Seq[NamedExpression],
+  gid: AttributeReference = VirtualColumn.newGroupingId) extends GroupingAnalytics
 
 case class Limit(limitExpr: Expression, child: LogicalPlan) extends UnaryNode {
   override def output = child.output
@@ -261,7 +260,7 @@ case class Subquery(alias: String, child: LogicalPlan) extends UnaryNode {
 }
 
 case class Sample(fraction: Double, withReplacement: Boolean, seed: Long, child: LogicalPlan)
-    extends UnaryNode {
+  extends UnaryNode {
 
   override def output = child.output
 }

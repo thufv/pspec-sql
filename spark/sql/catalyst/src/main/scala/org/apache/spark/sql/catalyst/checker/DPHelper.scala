@@ -2,8 +2,16 @@ package org.apache.spark.sql.catalyst.checker
 
 import scala.math.BigDecimal
 import scala.util.Random
-
 import org.apache.spark.Logging
+import org.apache.spark.sql.catalyst.expressions.AggregateExpression
+import org.apache.spark.sql.catalyst.expressions.Sum
+import org.apache.spark.sql.catalyst.expressions.SumDistinct
+import org.apache.spark.sql.catalyst.expressions.CountDistinct
+import org.apache.spark.sql.catalyst.expressions.Min
+import org.apache.spark.sql.catalyst.expressions.Max
+import org.apache.spark.sql.catalyst.expressions.Average
+import org.apache.spark.sql.catalyst.expressions.CountDistinct
+import org.apache.spark.sql.catalyst.expressions.Count
 
 object DPHelper extends Logging {
 
@@ -24,6 +32,19 @@ object DPHelper extends Logging {
     return laplace(sensitivity / epsilon);
   }
 
+  def supported(agg: AggregateExpression): Boolean = {
+    agg match {
+      case _: Sum => true;
+      case _: SumDistinct => true;
+      case _: Count => true;
+      case _: CountDistinct => true;
+      case _: Min => true;
+      case _: Max => true;
+      case _: Average => true;
+      case _ => false;
+    }
+  }
+
   def toDouble(value: Any): Double = {
     value match {
       case long: Long => long.toDouble;
@@ -32,6 +53,7 @@ object DPHelper extends Logging {
       case float: Float => float.toDouble;
       case short: Short => short.toDouble;
       case big: BigDecimal => big.toDouble;
+      case str: String => str.toDouble;
       case null => null.asInstanceOf[Double];
       case _ => throw new RuntimeException(s"invalid argument: $value.");
     }

@@ -27,7 +27,7 @@ public class MetaManager {
   private static Map<String, Map<String, MetaRegistry>> registryIndex = new HashMap<>();
 
   /**
-   * TODO
+   * TODO: determine proper user category
    * @return current user category, unfinished implementation.
    */
   public static synchronized UserCategory currentUser() {

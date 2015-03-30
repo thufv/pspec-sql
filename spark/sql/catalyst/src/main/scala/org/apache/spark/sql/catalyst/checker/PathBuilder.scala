@@ -89,7 +89,7 @@ class PathBuilder {
         func.children.foreach(buildPath(_, paths, list));
         list.remove(0);
       }
-      case pred: Predicate => {
+      case pred: PredicateLabel => {
         pred.children.foreach(buildPath(_, paths, list));
       }
       case _ =>

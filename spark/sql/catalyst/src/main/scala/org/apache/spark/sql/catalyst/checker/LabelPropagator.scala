@@ -81,8 +81,13 @@ import org.apache.spark.sql.catalyst.expressions.Coalesce
 import org.apache.spark.sql.catalyst.expressions.Alias
 import org.apache.spark.sql.catalyst.expressions.IsNotNull
 import org.apache.spark.sql.catalyst.expressions.Count
+import org.apache.spark.sql.catalyst.expressions
 import org.apache.spark.sql.catalyst.expressions.IntegerLiteral
 import org.apache.spark.sql.catalyst.plans.logical.InsertIntoTable
+import org.apache.spark.sql.catalyst.plans.logical.Expand
+import org.jgrapht.graph.DefaultEdge
+import org.jgrapht.graph.SimpleGraph
+import org.jgrapht.alg.ConnectivityInspector
 
 /**
  * vertex class for equi-graph
@@ -113,15 +118,9 @@ class LabelPropagator extends Logging {
    */
   lazy val tables = new mutable.HashMap[ColumnLabel, Map[String, ColumnLabel]];
 
-  /**
-   * equi-graph for all equi condLabels
-   */
-  lazy val equiEdges = new mutable.HashMap[EquiVertex, mutable.Set[EquiVertex]];
+  lazy val equiGraph = new SimpleGraph[EquiVertex, DefaultEdge](classOf[DefaultEdge]);
 
-  /**
-   * all equi-relations after performing reachbility analysis
-   */
-  lazy val equis = new mutable.HashMap[EquiVertex, mutable.Set[EquiVertex]];
+  lazy val alg = new ConnectivityInspector[EquiVertex, DefaultEdge](equiGraph);
 
   /**
    * a set of applicable policies on the logical plan
@@ -189,6 +188,10 @@ class LabelPropagator extends Logging {
         //resolve projection list
         project.projectList.foreach(resolveNamedExpression(_, unary));
         project.condLabels ++= childConds;
+      }
+      case expand: Expand => {
+        expand.output.foreach(resolveNamedExpression(_, unary));
+        expand.condLabels ++= childConds;
       }
       case subquery: Subquery => {
         //renaming attribute names
@@ -365,7 +368,7 @@ class LabelPropagator extends Logging {
    */
   private def resolvePredicate(predicate: Expression, plan: LogicalPlan): Label = {
     val labels = predicate.children.map(resolveTerm(_, plan));
-    plan.condLabels.add(Predicate(labels, ExpressionRegistry.resolvePredicate(predicate)));
+    plan.condLabels.add(PredicateLabel(labels, ExpressionRegistry.resolvePredicate(predicate)));
     return null;
   }
 
@@ -529,8 +532,9 @@ class LabelPropagator extends Logging {
   }
 
   private def addEquiEdge(a: EquiVertex, b: EquiVertex): Unit = {
-    val set = equiEdges.getOrElseUpdate(a, new mutable.HashSet[EquiVertex]);
-    set.add(b);
+    equiGraph.addVertex(a);
+    equiGraph.addVertex(b);
+    equiGraph.addEdge(a, b);
   }
 
   /**
@@ -540,7 +544,7 @@ class LabelPropagator extends Logging {
     label match {
       case cond: ConditionalLabel => fulfillCondition(cond);
       case func: Function => func.children.foreach(fulfillConditions(_));
-      case pred: Predicate => pred.children.foreach(fulfillConditions(_));
+      case pred: PredicateLabel => pred.children.foreach(fulfillConditions(_));
       case _ =>
     }
   }
@@ -585,31 +589,7 @@ class LabelPropagator extends Logging {
    * performs reachability analysis on equi-graph
    */
   private def getEquis(v: EquiVertex): mutable.Set[EquiVertex] = {
-    var reach = equis.getOrElse(v, null);
-    if (reach != null) {
-      return reach;
-    }
-    reach = new mutable.HashSet[EquiVertex];
-    equis.put(v, reach);
-
-    val processed = new mutable.HashSet[EquiVertex];
-    val queue = new mutable.Queue[EquiVertex];
-    queue.enqueue(v);
-    processed.add(v);
-    while (!queue.isEmpty) {
-      val cur = queue.dequeue;
-      val edge = equiEdges.getOrElse(cur, null);
-      if (edge != null) {
-        edge.foreach(e => {
-          reach.add(e);
-          if (!processed.contains(e)) {
-            processed.add(e);
-            queue.enqueue(e);
-          }
-        });
-      }
-    }
-    return reach;
+    return alg.connectedSetOf(v).asScala;
   }
 
 }

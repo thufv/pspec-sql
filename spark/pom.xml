@@ -309,13 +309,6 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>edu.thss</groupId>
-        <artifactId>privacy</artifactId>
-        <version>1.0</version>
-        <scope>system</scope>
-        <systemPath>${root.basedir}/privacy.jar</systemPath>
-      </dependency>
-      <dependency>
         <groupId>${jline.groupid}</groupId>
         <artifactId>jline</artifactId>
         <version>${jline.version}</version>

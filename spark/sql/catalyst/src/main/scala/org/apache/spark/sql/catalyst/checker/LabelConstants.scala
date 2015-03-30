@@ -12,6 +12,7 @@ trait LabelConstants {
   val Arithmetic_Remainder = "%";
   val Arithmetic_Subtract = "-";
   val Arithmetic_UnaryMinus = "UnaryMinus";
+  val Arithmetic_Abs = "Abs";
 
   val Func_Dummy = "";
 

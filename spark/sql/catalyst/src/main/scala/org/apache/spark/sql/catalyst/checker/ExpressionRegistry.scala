@@ -74,6 +74,7 @@ object ExpressionRegistry extends LabelConstants {
       case _: Not => Func_Dummy;
       case _: Upper => Func_Upper;
       case _: UnaryMinus => Arithmetic_UnaryMinus;
+      case _:Abs=>Arithmetic_Abs;
     }
   }
 

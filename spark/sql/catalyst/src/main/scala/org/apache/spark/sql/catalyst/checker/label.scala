@@ -20,6 +20,8 @@ import org.apache.spark.sql.catalyst.expressions.Expression
  */
 sealed abstract class Label {
   def sensitive(): Boolean;
+
+  val attributes: Seq[Attribute];
 }
 
 /**
@@ -29,6 +31,8 @@ abstract class ColumnLabel extends Label {
   val database: String;
   val table: String;
   val attr: AttributeReference;
+
+  lazy val attributes = List(attr);
 }
 
 /**
@@ -37,6 +41,7 @@ abstract class ColumnLabel extends Label {
 case class DataLabel(labelType: BaseType, database: String, table: String, attr: AttributeReference)
   extends ColumnLabel {
   def sensitive(): Boolean = true;
+
 }
 
 /**
@@ -79,6 +84,8 @@ case class ConditionalLabel(conds: Map[JoinCondition, BaseType], database: Strin
  */
 case class Function(val children: Seq[Label], val udf: String, val expression: Expression) extends Label {
   def sensitive(): Boolean = children.exists(_.sensitive);
+
+  lazy val attributes = children.flatMap(_.attributes);
 }
 
 /**
@@ -86,12 +93,18 @@ case class Function(val children: Seq[Label], val udf: String, val expression: E
  */
 case class Constant(val value: Any) extends Label {
   def sensitive(): Boolean = false;
+
+  lazy val attributes = Nil;
+
 }
 
 /**
  * class for predicate node (non-leaf, root) in lineage tree
  * predicate node only appears in condition lineage trees
  */
-case class Predicate(val children: Seq[Label], val operation: String) extends Label {
+case class PredicateLabel(val children: Seq[Label], val operation: String) extends Label {
   def sensitive(): Boolean = children.exists(_.sensitive);
+
+  lazy val attributes = children.flatMap(_.attributes);
+
 }

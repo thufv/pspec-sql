@@ -54,6 +54,8 @@ import org.apache.spark.sql.catalyst.plans.logical.Union
 import org.apache.spark.sql.catalyst.plans.logical.Aggregate
 import org.hsqldb.types.Binary
 import org.apache.spark.sql.catalyst.expressions.Literal
+import org.apache.spark.sql.catalyst.expressions.CaseWhen
+import org.apache.spark.sql.catalyst.plans.logical.Expand
 
 object AggregateType extends Enumeration {
   type AggregateType = Value
@@ -65,6 +67,10 @@ object AggregateType extends Enumeration {
  */
 class DPEnforcer(val tableInfo: TableInfo, val budget: DPBudget, val epsilon: Double) extends Logging {
   private val MaxWeight = 10000;
+
+  private var currentRefiner: AttributeRangeRefiner = null;
+
+  private var currentAggPlan: Aggregate = null;
 
   private class JoinGraph {
     val nodes = new HashMap[String, Node[String]];
@@ -187,9 +193,13 @@ class DPEnforcer(val tableInfo: TableInfo, val budget: DPBudget, val epsilon: Do
   private def enforceUnary(unary: UnaryNode, dp: Boolean): Int = {
     val scale = enforce(unary.child, dp);
     unary match {
+
       case generate: Generate => {
         //TODO
         return scale;
+      }
+      case expand: Expand => {
+        return scale * expand.projections.size;
       }
       case _ => return scale;
     }
@@ -308,36 +318,43 @@ class DPEnforcer(val tableInfo: TableInfo, val budget: DPBudget, val epsilon: Do
       case alias: Alias => enforceAggregate(alias.child, plan, scale);
       //estimate sensitivity based on range for each functions
       case sum: Sum => {
-        enforceDP(sum, plan, scale, (min, max) => max - min);
+        enforceDP(sum, plan, scale, true, (min, max) => Math.max(Math.abs(min), Math.abs(max)));
       }
       case sum: SumDistinct => {
-        enforceDP(sum, plan, scale, (min, max) => max - min);
+        enforceDP(sum, plan, scale, true, (min, max) => max - min);
       }
       case count: Count => {
-        enforceDP(count, plan, scale, (min, max) => 1);
+        enforceDP(count, plan, scale, false, (min, max) => 1);
       }
       case count: CountDistinct => {
-        enforceDP(count, plan, scale, (min, max) => 1);
+        enforceDP(count, plan, scale, false, (min, max) => 1);
       }
       case avg: Average => {
-        enforceDP(avg, plan, scale, (min, max) => max - min);
+        enforceDP(avg, plan, scale, true, (min, max) => max - min);
       }
       case min: Min => {
-        enforceDP(min, plan, scale, (min, max) => max - min);
+        enforceDP(min, plan, 1, true, (min, max) => max - min);
       }
       case max: Max => {
-        enforceDP(max, plan, scale, (min, max) => max - min);
+        enforceDP(max, plan, 1, true, (min, max) => max - min);
       }
 
       case _ => expression.children.foreach(enforceAggregate(_, plan, scale));
     }
   }
 
-  private def enforceDP(agg: AggregateExpression, plan: Aggregate, scale: Int, func: (Double, Double) => Double) {
+  private def enforceDP(agg: AggregateExpression, plan: Aggregate, scale: Int, refine: Boolean, func: (Double, Double) => Double) {
     val types = agg.children.map(resolveAggregateType(_, plan));
+
     if (types.exists(_ == AggregateType.Invalid_Aggregate)) {
       throw new PrivacyException("only aggregate directly on sensitive attributes are allowed");
-    } else if (types.exists(_ == AggregateType.Direct_Aggregate)) {
+    }
+
+    if (types.exists(_ == AggregateType.Direct_Aggregate)) {
+      if (currentAggPlan != plan) {
+        currentAggPlan = plan;
+        currentRefiner = new AttributeRangeRefiner(tableInfo, plan);
+      }
       val range = resolveAttributeInfo(agg.children(0), plan);
       if (range == null) {
         agg.sensitivity = func(0, 0);
@@ -377,16 +394,8 @@ class DPEnforcer(val tableInfo: TableInfo, val budget: DPBudget, val epsilon: Do
       case alias: Alias => {
         return resolveAggregateType(alias.child, plan);
       }
-      case unary: UnaryExpression => {
-        val aggType = resolveAggregateType(unary.child, plan);
-        if (aggType == AggregateType.Invalid_Aggregate || aggType == AggregateType.Insensitive_Aggregate || aggType == AggregateType.Derived_Aggregate) {
-          return aggType;
-        } else {
-          return AggregateType.Invalid_Aggregate;
-        }
-      }
-      case binary: BinaryExpression => {
-        val types = binary.children.map(resolveAggregateType(_, plan));
+      case _ => {
+        val types = expr.children.map(resolveAggregateType(_, plan));
         if (types.exists(t => t == AggregateType.Invalid_Aggregate || t == AggregateType.Direct_Aggregate)) {
           return AggregateType.Invalid_Aggregate;
         } else if (types.exists(_ == AggregateType.Derived_Aggregate)) {
@@ -470,7 +479,7 @@ class DPEnforcer(val tableInfo: TableInfo, val budget: DPBudget, val epsilon: Do
   private def resolveLabelInfo(label: Label): ColumnInfo = {
     label match {
       case data: DataLabel => {
-        tableInfo.get(data.database, data.table, data.attr.name);
+        currentRefiner.get(data.database, data.table, data.attr);
       }
       case func: Function => {
         func.udf match {
