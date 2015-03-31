@@ -1,19 +1,21 @@
-package org.apache.spark.sql.catalyst.checker
+package org.apache.spark.sql.catalyst.dp
 
 import scala.math.BigDecimal
 import scala.util.Random
 import org.apache.spark.Logging
-import org.apache.spark.sql.catalyst.expressions.AggregateExpression
 import org.apache.spark.sql.catalyst.expressions.Sum
 import org.apache.spark.sql.catalyst.expressions.SumDistinct
 import org.apache.spark.sql.catalyst.expressions.CountDistinct
-import org.apache.spark.sql.catalyst.expressions.Min
-import org.apache.spark.sql.catalyst.expressions.Max
 import org.apache.spark.sql.catalyst.expressions.Average
 import org.apache.spark.sql.catalyst.expressions.CountDistinct
 import org.apache.spark.sql.catalyst.expressions.Count
+import org.apache.spark.sql.catalyst.checker.PrivacyException
+import org.apache.spark.sql.catalyst.checker.SparkChecker
+import org.apache.spark.sql.catalyst.expressions.AggregateExpression
+import org.apache.spark.sql.catalyst.expressions.Min
+import org.apache.spark.sql.catalyst.expressions.Max
 
-object DPHelper extends Logging {
+object DPUtil extends Logging {
 
   val Conf_Epsilon = "epsilon";
 
@@ -60,8 +62,8 @@ object DPHelper extends Logging {
   }
 
   def min(v1: Any, v2: Any): Any = {
-    val d1 = DPHelper.toDouble(v1);
-    val d2 = DPHelper.toDouble(v2);
+    val d1 = DPUtil.toDouble(v1);
+    val d2 = DPUtil.toDouble(v2);
     if (d1 <= d2) {
       return v1;
     } else {
@@ -70,8 +72,8 @@ object DPHelper extends Logging {
   }
 
   def max(v1: Any, v2: Any): Any = {
-    val d1 = DPHelper.toDouble(v1);
-    val d2 = DPHelper.toDouble(v2);
+    val d1 = DPUtil.toDouble(v1);
+    val d2 = DPUtil.toDouble(v2);
     if (d1 <= d2) {
       return v2;
     } else {
@@ -80,8 +82,8 @@ object DPHelper extends Logging {
   }
 
   def lessThan(v1: Any, v2: Any): Boolean = {
-    val d1 = DPHelper.toDouble(v1);
-    val d2 = DPHelper.toDouble(v2);
+    val d1 = DPUtil.toDouble(v1);
+    val d2 = DPUtil.toDouble(v2);
     return d1 < d2;
   }
 
@@ -120,4 +122,107 @@ object DPHelper extends Logging {
     }
   }
 
+  def rangeUnion(left: (Int, Int), right: (Int, Int)): (Int, Int) = {
+    if (left == null) {
+      return right;
+    } else if (right == null) {
+      return left;
+    } else {
+      val min = Math.min(left._1, right._1);
+      val max = Math.max(left._2, right._2);
+      return (min, max);
+    }
+  }
+  def rangeIntersect(left: (Int, Int), right: (Int, Int)): (Int, Int) = {
+    if (left == null) {
+      return right;
+    } else if (right == null) {
+      return left;
+    } else {
+      val min = Math.max(left._1, right._1);
+      val max = Math.min(left._2, right._2);
+      if (min > max) {
+        return null;
+      } else {
+        return (min, max);
+      }
+    }
+  }
+  def rangeExcept(left: (Int, Int), right: (Int, Int)): (Int, Int) = {
+    left;
+  }
+
+  def rangeAdd(range: (Int, Int)*): (Int, Int) = {
+    range.reduce((left, right) => (left._1 + right._1, left._2 + right._2));
+  }
+
+  def rangeSubtract(range: (Int, Int)*): (Int, Int) = {
+    var i = 0;
+    val newRange = range.map(r => {
+      i += 1;
+      if (i > 1) {
+        rangeMinus(r);
+      } else {
+        r
+      }
+    });
+    rangeAdd(newRange: _*);
+  }
+
+  def rangeTimes(left: (Int, Int), right: (Int, Int)): (Int, Int) = {
+    val list = List(left._1 * right._1, left._1 * right._2, left._2 * right._1, left._2 * right._2);
+    val min = list.reduce(Math.min(_, _));
+    val max = list.reduce(Math.max(_, _));
+    (min, max);
+  }
+
+  def rangeDivide(left: (Int, Int), right: (Int, Int)): (Int, Int) = {
+    val rounded = rangeRound(right);
+    val list = List(left._1 / rounded._1, left._1 / rounded._2, left._2 / rounded._1, left._2 / rounded._2);
+    val min = list.reduce(Math.min(_, _));
+    val max = list.reduce(Math.max(_, _));
+    (min, max);
+  }
+
+  def rangeRemainder(left: (Int, Int), right: (Int, Int)): (Int, Int) = {
+    if (right._1 > 0) {
+      (0, right._2);
+    } else if (right._2 < 0) {
+      (right._1, 0);
+    } else {
+      right;
+    }
+  }
+
+  def rangeMinus(range: (Int, Int)): (Int, Int) = {
+    (-range._2, -range._1);
+  }
+
+  def multiplicityUnion(left: Option[Int], right: Option[Int]): Option[Int] = {
+    if (left.isEmpty) {
+      right;
+    } else if (right.isEmpty) {
+      left;
+    } else {
+      Some(left.get + right.get);
+    }
+  }
+
+  def multiplicityIntersect(left: Option[Int], right: Option[Int]): Option[Int] = {
+    if (left.isEmpty || right.isEmpty) {
+      None;
+    } else {
+      Some(Math.min(left.get, right.get));
+    }
+  }
+
+  def multiplicityExcept(left: Option[Int], right: Option[Int]): Option[Int] = {
+    left;
+  }
+
+  private def rangeRound(range: (Int, Int)): (Int, Int) = {
+    val min = if (range._1 == 0) 1 else range._1;
+    val max = if (range._2 == 0) 1 else range._2;
+    (min, max);
+  }
 }

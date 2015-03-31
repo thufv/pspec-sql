@@ -1,6 +1,7 @@
-package org.apache.spark.sql.catalyst.checker
+package org.apache.spark.sql.catalyst.dp
 
 import org.apache.spark.Logging
+import org.apache.spark.sql.catalyst.checker.PrivacyException
 
 class DPBudget(var budget: Double) extends Logging {
 

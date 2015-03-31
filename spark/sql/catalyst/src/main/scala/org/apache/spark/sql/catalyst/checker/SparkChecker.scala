@@ -29,6 +29,9 @@ import edu.thu.ss.spec.meta.ArrayType
 import edu.thu.ss.spec.meta.StructType
 import edu.thu.ss.spec.meta.MapType
 import edu.thu.ss.spec.lang.pojo.Restriction
+import org.apache.spark.sql.catalyst.dp.TableInfo
+import org.apache.spark.sql.catalyst.dp.DPEnforcer
+import org.apache.spark.sql.catalyst.dp.DPBudget
 
 /**
  * entrance class for spark privacy checker

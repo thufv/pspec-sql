@@ -1,4 +1,4 @@
-package org.apache.spark.sql.catalyst.checker
+package org.apache.spark.sql.catalyst.dp
 
 import org.apache.spark.sql.catalyst.expressions.Expression
 import org.apache.spark.sql.catalyst.expressions._

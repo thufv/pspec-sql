@@ -2,20 +2,20 @@ package org.apache.spark.sql.hive
 
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.Map
-
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.SchemaRDD
 import org.apache.spark.sql.SchemaRDD
 import org.apache.spark.sql.SchemaRDD
-import org.apache.spark.sql.catalyst.checker.ColumnInfo
 import org.apache.spark.sql.catalyst.checker.PrivacyException
 import org.apache.spark.sql.catalyst.checker.PrivacyException
-import org.apache.spark.sql.catalyst.checker.TableInfo
 import org.apache.spark.sql.catalyst.expressions.AttributeReference
 import org.apache.spark.sql.types.DataType
 import org.apache.spark.sql.types.NumericType
-
 import edu.thu.ss.spec.global.MetaManager
+import org.apache.spark.sql.catalyst.dp.TableInfo
+import org.apache.spark.sql.catalyst.dp.ColumnInfo
+import org.apache.spark.sql.catalyst.dp.TableInfo
+import org.apache.spark.sql.catalyst.dp.ColumnInfo
 
 class HiveTableInfo(val hive: HiveContext) extends TableInfo {
   private class Table {

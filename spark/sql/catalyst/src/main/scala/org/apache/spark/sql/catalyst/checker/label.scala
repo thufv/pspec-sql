@@ -22,6 +22,8 @@ sealed abstract class Label {
   def sensitive(): Boolean;
 
   val attributes: Seq[Attribute];
+
+  def contains(trans: String*): Boolean;
 }
 
 /**
@@ -33,6 +35,8 @@ abstract class ColumnLabel extends Label {
   val attr: AttributeReference;
 
   lazy val attributes = List(attr);
+
+  def contains(trans: String*) = false;
 }
 
 /**
@@ -86,6 +90,13 @@ case class Function(val children: Seq[Label], val udf: String, val expression: E
   def sensitive(): Boolean = children.exists(_.sensitive);
 
   lazy val attributes = children.flatMap(_.attributes);
+
+  def contains(trans: String*): Boolean = {
+    if (trans.contains(udf)) {
+      return true;
+    }
+    return children.exists(_.contains(trans: _*));
+  }
 }
 
 /**
@@ -96,6 +107,7 @@ case class Constant(val value: Any) extends Label {
 
   lazy val attributes = Nil;
 
+  def contains(trans: String*) = false;
 }
 
 /**
@@ -106,5 +118,7 @@ case class PredicateLabel(val children: Seq[Label], val operation: String) exten
   def sensitive(): Boolean = children.exists(_.sensitive);
 
   lazy val attributes = children.flatMap(_.attributes);
+
+  def contains(trans: String*) = false;
 
 }

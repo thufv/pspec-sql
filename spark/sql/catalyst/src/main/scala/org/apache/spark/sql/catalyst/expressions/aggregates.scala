@@ -18,12 +18,11 @@
 package org.apache.spark.sql.catalyst.expressions
 
 import com.clearspring.analytics.stream.cardinality.HyperLogLog
-
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.catalyst.trees
 import org.apache.spark.sql.catalyst.errors.TreeNodeException
 import org.apache.spark.util.collection.OpenHashSet
-import org.apache.spark.sql.catalyst.checker.DPHelper
+import org.apache.spark.sql.catalyst.dp.DPUtil
 
 abstract class AggregateExpression extends Expression with Serializable {
   self: Product =>
@@ -104,7 +103,7 @@ abstract class AggregateFunction
   //added by luochen
   protected def enforceDP(result: Any): Any = {
     if (base.enableDP) {
-      DPHelper.calibrateNoise(result, base.epsilon, base.sensitivity);
+      DPUtil.calibrateNoise(result, base.epsilon, base.sensitivity);
     } else {
       result;
     }
@@ -621,10 +620,10 @@ case class SumDistinctFunction(expr: Expression, base: AggregateExpression)
       null
     } else {
       enforceDP(
-      new Cast(Literal(
-        seen.reduceLeft(
-          dataType.asInstanceOf[NumericType].numeric.asInstanceOf[Numeric[Any]].plus)),
-        dataType).eval(null))
+        new Cast(Literal(
+          seen.reduceLeft(
+            dataType.asInstanceOf[NumericType].numeric.asInstanceOf[Numeric[Any]].plus)),
+          dataType).eval(null))
     }
   }
 }
