@@ -16,7 +16,9 @@ Eclipse Kepler 4.3
 Eclipse Scala Plugin for Scala 2.10  
 Scala 2.10  
 sbt  
-   
+maven  
+ivy  
+
 Steps:  
 1. clone project  
 2. cd project dir, run "sbt/sbt eclipse -Phive-thriftserver" (this may download a lot of jars...)  
