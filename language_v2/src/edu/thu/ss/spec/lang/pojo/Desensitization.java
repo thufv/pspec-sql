@@ -54,11 +54,13 @@ public class Desensitization implements Writable {
 			refEle.setAttribute(ParserConstant.Attr_Refid, this.dataRef.refid);
 			element.appendChild(refEle);
 		}
-
-		for (DesensitizeOperation op : operations) {
-			Element opEle = document.createElement(ParserConstant.Ele_Policy_Rule_Desensitize_Operation);
-			opEle.appendChild(document.createTextNode(op.name));
-			element.appendChild(opEle);
+		if (this.operations != null) {
+			for (DesensitizeOperation op : operations) {
+				Element opEle = document
+						.createElement(ParserConstant.Ele_Policy_Rule_Desensitize_Operation);
+				opEle.appendChild(document.createTextNode(op.name));
+				element.appendChild(opEle);
+			}
 		}
 
 		return element;

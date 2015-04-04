@@ -44,9 +44,9 @@ object ExpressionRegistry extends LabelConstants {
         }
       }
 
-      case arith: BinaryArithmetic => resolve(arith);
-      case unary: UnaryExpression => resolve(unary);
-      case agg: AggregateExpression => resolve(agg);
+      case arith: BinaryArithmetic => resolveArithmetic(arith);
+      case unary: UnaryExpression => resolveUnary(unary);
+      case agg: AggregateExpression => resolveAggregate(agg);
       case _: MaxOf => Func_MaxOf;
       case _: Substring => Func_Substr;
       case _: CaseWhen => Func_Case;
@@ -55,7 +55,7 @@ object ExpressionRegistry extends LabelConstants {
     }
   }
 
-  private def resolve(arithmetic: BinaryArithmetic): String = {
+  private def resolveArithmetic(arithmetic: BinaryArithmetic): String = {
     arithmetic match {
       case _: Add => Arithmetic_Add;
       case _: Divide => Arithmetic_Divide;
@@ -66,7 +66,7 @@ object ExpressionRegistry extends LabelConstants {
     }
   }
 
-  private def resolve(unary: UnaryExpression): String = {
+  private def resolveUnary(unary: UnaryExpression): String = {
     unary match {
       case _: Cast => null;
       case _: CountSet => Func_Dummy;
@@ -74,11 +74,11 @@ object ExpressionRegistry extends LabelConstants {
       case _: Not => Func_Dummy;
       case _: Upper => Func_Upper;
       case _: UnaryMinus => Arithmetic_UnaryMinus;
-      case _:Abs=>Arithmetic_Abs;
+      case _: Abs => Arithmetic_Abs;
     }
   }
 
-  private def resolve(aggregate: AggregateExpression): String = {
+  private def resolveAggregate(aggregate: AggregateExpression): String = {
     aggregate match {
       case _: ApproxCountDistinctMerge => Func_ApproximateCount;
       case _: ApproxCountDistinctPartition => Func_ApproximateCount;

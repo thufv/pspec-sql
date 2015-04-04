@@ -212,7 +212,7 @@ public class PolicyTest {
 			LineCounter.count(outputPath, stat, i);
 			PolicyManager.clear();
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse(outputPath, false);
+			Policy policy = parser.parse(outputPath, false, true);
 			PolicyAnalyzer timingAnalyzer = new TiminingAnalyzer(analyzer, stat, i);
 			timingAnalyzer.analyze(policy);
 

@@ -11,40 +11,47 @@ import edu.thu.ss.spec.meta.StructType
 import edu.thu.ss.spec.meta.PrimitiveType
 import edu.thu.ss.spec.meta.CompositeType
 import edu.thu.ss.spec.meta.MapType
-import scala.collection
 import scala.collection.mutable.HashMap
-import scala.collection.mutable.Map
 import scala.collection.mutable.HashSet
-import scala.collection.mutable.Set
+import edu.thu.ss.spec.lang.pojo.Action
+import org.apache.spark.sql.catalyst.checker.LabelConstants._
 
-case class Path(val ops: Seq[DesensitizeOperation]);
+case class Path(func: Function, path: Seq[Function], op: DesensitizeOperation) {
+
+  override def toString(): String = {
+    op.toString();
+  }
+}
+
+case class Flow(action: Action, data: DataCategory, path: Path) {
+
+}
 
 /**
  * used to build paths from a set of lineage trees
  */
 class PathBuilder {
 
+  private val flows = new HashMap[Policy, Set[Flow]];
+
   /**
    * path is essential a list of desensitize operations
    */
 
-  def apply(projections: collection.Set[Label], conditions: collection.Set[Label]): (Map[Policy, Map[DataCategory, Set[Path]]], Map[Policy, Map[DataCategory, Set[Path]]]) = {
-    val projectionPaths: Map[Policy, Map[DataCategory, Set[Path]]] = new HashMap;
-    val conditionPaths: Map[Policy, Map[DataCategory, Set[Path]]] = new HashMap;
-
+  def apply(projections: Set[Label], conditions: Set[Label]): Map[Policy, Set[Flow]] = {
     //first calculate all paths for data categories
-    projections.foreach(buildPath(_, projectionPaths));
-    conditions.foreach(buildPath(_, conditionPaths));
+    projections.foreach(label => buildPath(label, Action.Projection));
+    conditions.foreach(label => buildPath(label, Action.Condition));
 
-    printPaths(projections, conditions, projectionPaths, conditionPaths);
+    printPaths(projections, conditions, flows);
 
-    (projectionPaths, conditionPaths);
+    return flows;
   }
 
   /**
    * should be turn off in production
    */
-  private def printPaths(projections: collection.Set[Label], conditions: collection.Set[Label], projectionPaths: Map[Policy, Map[DataCategory, Set[Path]]], conditionPaths: Map[Policy, Map[DataCategory, Set[Path]]]) {
+  private def printPaths(projections: Set[Label], conditions: Set[Label], flow: Map[Policy, Set[Flow]]) {
 
     println("projections:");
     projections.foreach(t => {
@@ -56,41 +63,30 @@ class PathBuilder {
       println(t);
     });
     println();
-    println("\nprojection paths:");
-    projectionPaths.foreach(p => {
-      p._2.foreach(
-        t => t._2.foreach(path => println(s"${t._1}\t$path")))
-    })
-
-    println("\ncondition paths:");
-
-    conditionPaths.foreach(p => {
-      p._2.foreach(
-        t => t._2.foreach(path => println(s"${t._1}\t$path")))
-    })
-
+    println("data category paths:");
+    flows.foreach(p => { p._2.foreach(println(_)) });
   }
 
   /**
    * build paths for each data category recursively.
    */
-  private def buildPath(label: Label, paths: Map[Policy, Map[DataCategory, Set[Path]]], list: ListBuffer[String] = new ListBuffer): Unit = {
+  private def buildPath(label: Label, action: Action, list: ListBuffer[Function] = new ListBuffer): Unit = {
     label match {
       case data: DataLabel => {
-        resolvePaths(data.labelType, data, list, paths);
+        resolvePaths(data.labelType, data, action, list);
       }
       case cond: ConditionalLabel => {
         cond.fulfilled.foreach(labelType => {
-          resolvePaths(labelType, cond, list, paths);
+          resolvePaths(labelType, cond, action, list);
         });
       }
       case func: Function => {
-        list.prepend(func.udf);
-        func.children.foreach(buildPath(_, paths, list));
+        list.prepend(func);
+        func.children.foreach(buildPath(_, action, list));
         list.remove(0);
       }
       case pred: PredicateLabel => {
-        pred.children.foreach(buildPath(_, paths, list));
+        pred.children.foreach(buildPath(_, action, list));
       }
       case _ =>
     }
@@ -100,7 +96,7 @@ class PathBuilder {
    * first calculate real data categories for data types
    * then map transformations to real data categories.
    */
-  private def resolvePaths(labelType: BaseType, label: ColumnLabel, transforms: ListBuffer[String], paths: Map[Policy, Map[DataCategory, Set[Path]]]): Unit = {
+  private def resolvePaths(labelType: BaseType, label: ColumnLabel, action: Action, transforms: ListBuffer[Function]): Unit = {
 
     val meta = MetaManager.get(label.database, label.table);
     val policy = meta.getPolicy();
@@ -115,14 +111,14 @@ class PathBuilder {
       matched = false;
       curType match {
         case array: ArrayType => {
-          if (it.hasNext && it.next == LabelConstants.Func_GetItem) {
+          if (it.hasNext && it.next.udf == LabelConstants.Func_GetItem) {
             curType = array.getItemType();
             matched = true;
           }
         }
         case struct: StructType => {
           if (it.hasNext) {
-            val transform = it.next;
+            val transform = it.next.udf;
             if (transform.startsWith(LabelConstants.Func_GetField)) {
               val field = transform.split("\\.")(1);
               curType = struct.getFieldType(field);
@@ -132,7 +128,7 @@ class PathBuilder {
         }
         case map: MapType => {
           if (it.hasNext) {
-            val transform = it.next;
+            val transform = it.next.udf;
             if (transform.startsWith(LabelConstants.Func_GetEntry)) {
               val key = transform.split("\\.")(1);
               curType = map.getEntryType(key);
@@ -142,7 +138,7 @@ class PathBuilder {
         }
         case composite: CompositeType => {
           if (it.hasNext) {
-            val transform = it.next;
+            val transform = it.next.udf;
             curType = composite.getExtractOperation(transform).getType();
             matched = true;
           }
@@ -162,21 +158,28 @@ class PathBuilder {
       transforms;
     }
     val primitives = curType.toPrimitives();
-    primitives.foreach(addPath(_, dropped, paths, policy));
+    primitives.foreach(addPath(_, dropped, action, policy));
   }
 
   /**
    * first calculate real data categories for data types
    * then map transformations to real data categories.
    */
-  private def addPath(primitive: PrimitiveType, transforms: ListBuffer[String], paths: Map[Policy, Map[DataCategory, Set[Path]]], policy: Policy): Unit = {
-    val ops = transforms.map(lookupOperation(primitive, _)).filter(_ != null);
-    val map = paths.getOrElseUpdate(policy, new HashMap[DataCategory, Set[Path]]);
-    map.getOrElseUpdate(primitive.getDataCategory(), new HashSet[Path]).add(Path(ops));
+  private def addPath(primitive: PrimitiveType, transforms: ListBuffer[Function], action: Action, policy: Policy): Unit = {
+
+    val set = flows.getOrElseUpdate(policy, new HashSet[Flow]);
+
+    transforms.foreach(tran => {
+      if (!Func_SetOperations.contains(tran.udf)) {
+        val op = getOperation(primitive, tran.udf);
+        val flow = Flow(action, primitive.getDataCategory, Path(tran, transforms.toList, op));
+        set.add(flow);
+      }
+    });
   }
 
-  private def lookupOperation(primitive: PrimitiveType, transform: String): DesensitizeOperation = {
-    var operation: DesensitizeOperation = primitive.getDesensitizeOperation(transform);
+  private def getOperation(primitive: PrimitiveType, transform: String): DesensitizeOperation = {
+    val operation: DesensitizeOperation = primitive.getDesensitizeOperation(transform);
     if (operation != null) {
       return operation;
     } else {

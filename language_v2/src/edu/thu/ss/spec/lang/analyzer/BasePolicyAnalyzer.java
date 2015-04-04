@@ -26,4 +26,5 @@ public abstract class BasePolicyAnalyzer implements PolicyAnalyzer {
 		return false;
 	}
 
+
 }

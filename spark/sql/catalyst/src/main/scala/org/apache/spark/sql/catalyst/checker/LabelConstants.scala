@@ -1,5 +1,7 @@
 package org.apache.spark.sql.catalyst.checker
 
+import edu.thu.ss.spec.lang.pojo.DesensitizeOperation
+
 object LabelConstants extends LabelConstants {
 
 }
@@ -56,4 +58,9 @@ trait LabelConstants {
   val Pred_IsNull = "IsNull";
   val Pred_IsNotNull = "IsNotNull";
 
+  val Func_Aggregates = Set(Func_Count, Func_Sum, Func_Avg, Func_Min, Func_Max);
+
+  val Op_Aggregates = Func_Aggregates.map(DesensitizeOperation.get(_));
+
+  val Func_SetOperations = Set(Func_Intersect, Func_Union, Func_Except);
 }

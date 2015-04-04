@@ -2,17 +2,14 @@ package org.apache.spark.sql.catalyst.dp
 
 import org.apache.spark.sql.catalyst.expressions.Expression
 import org.apache.spark.sql.catalyst.expressions._
+import org.apache.spark.sql.catalyst.checker.CheckerUtil._
 import scala.collection.mutable.ListBuffer
 
 object DNFRewriter {
   def apply(expr: Expression): Seq[Expression] = {
-
     val newExpr = pushNot(expr);
-
     val dnf = rewrite(newExpr);
-    val list = new ListBuffer[Expression];
-    collect(expr, list);
-    return list;
+    return collect(dnf, classOf[Or]);
   }
 
   private def pushNot(expr: Expression): Expression = {
@@ -68,13 +65,6 @@ object DNFRewriter {
         }
       }
       case _ => expr;
-    }
-  }
-
-  private def collect(expr: Expression, list: ListBuffer[Expression]) {
-    expr match {
-      case or: Or => expr.children.foreach(collect(_, list));
-      case _ => list.append(expr);
     }
   }
 

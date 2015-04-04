@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+import org.junit.Test;
+
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.meta.MetaRegistry;
 import edu.thu.ss.spec.meta.xml.XMLMetaRegistryParser;
@@ -14,7 +16,7 @@ public class PolicyParserTest {
 	public void testPaper() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse("paper/spark-policy.xml", false);
+			Policy policy = parser.parse("paper/spark-policy.xml", false, true);
 			System.out.println(policy);
 
 			XMLMetaRegistryParser metaParser = new XMLMetaRegistryParser();
@@ -28,7 +30,7 @@ public class PolicyParserTest {
 	public void testMeta() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse("res/spark-policy.xml", false);
+			Policy policy = parser.parse("res/spark-policy.xml", false, false);
 			System.out.println(policy);
 
 			XMLMetaRegistryParser metaParser = new XMLMetaRegistryParser();
@@ -43,7 +45,7 @@ public class PolicyParserTest {
 	public void testConflict() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse("test/res/conflict-policy.xml", false);
+			Policy policy = parser.parse("test/res/conflict-policy.xml", false, true);
 			System.out.println(policy);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -53,8 +55,8 @@ public class PolicyParserTest {
 	public void testRedundancy() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse("test/res/redundancy-policy.xml", false);
-			//	System.out.println(policy);
+			Policy policy = parser.parse("test/res/redundancy-policy.xml", false, true);
+			System.out.println(policy);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -63,7 +65,7 @@ public class PolicyParserTest {
 	public void testGlobalRedundancy() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse("test/res/global-redundancy-policy.xml", true);
+			Policy policy = parser.parse("test/res/global-redundancy-policy.xml", true, true);
 			System.out.println(policy);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -73,7 +75,29 @@ public class PolicyParserTest {
 	public void testIntel() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse("intel/spark-policy.xml", false);
+			Policy policy = parser.parse("intel/spark-policy.xml", false, true);
+			System.out.println(policy);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void testGlobalDP() {
+		try {
+			PolicyParser parser = new PolicyParser();
+			Policy policy = parser.parse("test/res/dp-global-policy.xml", false, false);
+			System.out.println(policy);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void testFineDP() {
+		try {
+			PolicyParser parser = new PolicyParser();
+			Policy policy = parser.parse("test/res/dp-fine-policy.xml", false, false);
 			System.out.println(policy);
 		} catch (Exception e) {
 			e.printStackTrace();

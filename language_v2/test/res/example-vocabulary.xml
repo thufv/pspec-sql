@@ -58,7 +58,7 @@
 		<data-category id="health-test" parent="health" />
 		<data-category id="income" parent="financial" />
 		<data-category id="tax" parent="financial" />
-		<data-category id="salary" parent="tax">
+		<data-category id="salary" parent="financial">
 			<desensitize-operations>
 				<operation>range</operation>
 			</desensitize-operations>

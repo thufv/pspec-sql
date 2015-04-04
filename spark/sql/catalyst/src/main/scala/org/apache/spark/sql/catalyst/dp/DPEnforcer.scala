@@ -5,7 +5,6 @@ import scala.collection.mutable
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.HashSet
 import scala.collection.mutable.ListBuffer
-
 import org.apache.spark.Logging
 import org.apache.spark.sql.catalyst.checker.ColumnLabel
 import org.apache.spark.sql.catalyst.checker.ConditionalLabel
@@ -14,15 +13,7 @@ import org.apache.spark.sql.catalyst.checker.DataLabel
 import org.apache.spark.sql.catalyst.checker.Function
 import org.apache.spark.sql.catalyst.checker.Insensitive
 import org.apache.spark.sql.catalyst.checker.Label
-import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Avg
-import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Cast
-import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Count
-import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Except
-import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Intersect
-import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Max
-import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Min
-import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Sum
-import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Union
+import org.apache.spark.sql.catalyst.checker.LabelConstants._
 import org.apache.spark.sql.catalyst.checker.PrivacyException
 import org.apache.spark.sql.catalyst.expressions.AggregateExpression
 import org.apache.spark.sql.catalyst.expressions.Alias
@@ -59,16 +50,15 @@ import org.apache.spark.sql.catalyst.plans.logical.Project
 import org.apache.spark.sql.catalyst.plans.logical.UnaryNode
 import org.apache.spark.sql.catalyst.plans.logical.Union
 import org.apache.spark.sql.catalyst.dp.DPUtil._
+import org.apache.spark.sql.catalyst.checker.CheckerUtil._
+import org.apache.spark.sql.catalyst.checker.AggregateType._
+import org.apache.spark.sql.catalyst.plans.logical.Aggregate
 
-object AggregateType extends Enumeration {
-  type AggregateType = Value
-  val Direct_Aggregate, Derived_Aggregate, Invalid_Aggregate, Insensitive_Aggregate = Value
-}
 /**
  * enforce dp for a query logical plan
  * should be in the last phase of query checking
  */
-class DPEnforcer(val tableInfo: TableInfo, val budget: DPBudget, val epsilon: Double) extends Logging {
+class DPEnforcer(val tableInfo: TableInfo, val budgetManager: DPBudgetManager, val epsilon: Double) extends Logging {
   private class JoinGraph {
     val nodes = new HashMap[String, Node[String]];
     val edges = new AdjacencyList[String];
@@ -150,17 +140,8 @@ class DPEnforcer(val tableInfo: TableInfo, val budget: DPBudget, val epsilon: Do
 
   private var currentAggPlan: Aggregate = null;
 
-  private def fastCheck(plan: LogicalPlan): Boolean = {
-    plan match {
-      case agg: Aggregate => true;
-      case unary: UnaryNode => fastCheck(unary.child);
-      case binary: BinaryNode => fastCheck(binary.left) || fastCheck(binary.right);
-      case _ => false;
-    }
-  }
-
   def apply(plan: LogicalPlan) {
-    if (!fastCheck(plan)) {
+    if (!exists(plan, classOf[Aggregate])) {
       return ;
     }
     enforce(plan);
@@ -178,6 +159,7 @@ class DPEnforcer(val tableInfo: TableInfo, val budget: DPBudget, val epsilon: Do
       case agg: Aggregate => {
         val scale = enforce(agg.child, true);
         agg.aggregateExpressions.foreach(enforceAggregate(_, agg, scale));
+        budgetManager.consume(agg, epsilon);
         scale;
       }
       case unary: UnaryNode => {
@@ -344,11 +326,11 @@ class DPEnforcer(val tableInfo: TableInfo, val budget: DPBudget, val epsilon: Do
   private def enforceDP(agg: AggregateExpression, plan: Aggregate, scale: Int, refine: Boolean, func: (Double, Double) => Double) {
     val types = agg.children.map(resolveAggregateType(_, plan));
 
-    if (types.exists(_ == AggregateType.Invalid_Aggregate)) {
+    if (types.exists(_ == Invalid_Aggregate)) {
       throw new PrivacyException("only aggregate directly on sensitive attributes are allowed");
     }
 
-    if (types.exists(_ == AggregateType.Direct_Aggregate)) {
+    if (types.exists(_ == Direct_Aggregate)) {
       if (currentAggPlan != plan) {
         currentAggPlan = plan;
         currentRefiner = new AttributeRangeRefiner(tableInfo, plan);
@@ -360,102 +342,11 @@ class DPEnforcer(val tableInfo: TableInfo, val budget: DPBudget, val epsilon: Do
         agg.sensitivity = func(DPUtil.toDouble(range._1), DPUtil.toDouble(range._2));
       }
       //TODO
-      budget.consume(epsilon);
       agg.epsilon = epsilon / scale;
       agg.enableDP = true;
       logWarning(s"enable dp for $agg with sensitivity = ${agg.sensitivity}, epsilon = $epsilon, scale = $scale, and result epsilon = ${agg.epsilon}");
     } else {
       logWarning(s"insensitive or derived aggregation $agg, dp disabled");
-    }
-  }
-
-  private def resolveAggregateType(expr: Expression, plan: Aggregate): AggregateType.Value = {
-    expr match {
-      case attr: Attribute => {
-        val label = plan.childLabel(attr);
-        if (!label.sensitive) {
-          return AggregateType.Insensitive_Aggregate;
-        } else {
-          return checkLabelType(label);
-        }
-      }
-      case cast: Cast => {
-        return resolveAggregateType(cast.child, plan);
-      }
-      case literal: Literal => {
-        if (plan.child.projectLabels.values.exists(_.sensitive) || plan.condLabels.exists(_.sensitive)) {
-          return AggregateType.Direct_Aggregate;
-        } else {
-          return AggregateType.Insensitive_Aggregate;
-        }
-      }
-      case alias: Alias => {
-        return resolveAggregateType(alias.child, plan);
-      }
-      case _ => {
-        val types = expr.children.map(resolveAggregateType(_, plan));
-        if (types.exists(t => t == AggregateType.Invalid_Aggregate || t == AggregateType.Direct_Aggregate)) {
-          return AggregateType.Invalid_Aggregate;
-        } else if (types.exists(_ == AggregateType.Derived_Aggregate)) {
-          return AggregateType.Derived_Aggregate;
-        } else {
-          return AggregateType.Insensitive_Aggregate;
-        }
-      }
-    }
-  }
-
-  private def checkLabelType(label: Label): AggregateType.Value = {
-    label match {
-      case data: DataLabel => AggregateType.Direct_Aggregate;
-      case cons: Constant => AggregateType.Direct_Aggregate;
-      case in: Insensitive => AggregateType.Direct_Aggregate;
-
-      case cond: ConditionalLabel => AggregateType.Direct_Aggregate;
-
-      case func: Function => {
-        val types = func.children.map(checkLabelType(_));
-        if (types.exists(_ == AggregateType.Invalid_Aggregate)) {
-          return AggregateType.Invalid_Aggregate;
-        }
-        func.udf match {
-          case Func_Cast => {
-            return checkLabelType(func.children(0));
-          }
-          case Func_Union | Func_Except | Func_Intersect => {
-            if (types.forall(_ == AggregateType.Direct_Aggregate)) {
-              return AggregateType.Direct_Aggregate;
-            } else {
-              return AggregateType.Derived_Aggregate;
-            }
-          }
-          case Func_Sum | Func_Count | Func_Min | Func_Max | Func_Avg => {
-            return AggregateType.Derived_Aggregate;
-          }
-          case _ => {
-            if (types.exists(_ != AggregateType.Derived_Aggregate)) {
-              return AggregateType.Invalid_Aggregate;
-            } else {
-              return AggregateType.Derived_Aggregate;
-            }
-          }
-        }
-      }
-      case _ => null;
-    }
-  }
-
-  private def resolveAttribute(expr: Expression): Attribute = {
-    expr match {
-      case attr: Attribute => attr;
-      case alias: Alias => {
-        val child = alias.child;
-        child match {
-          case cast: Cast => resolveAttribute(expr);
-          case _ => alias.toAttribute;
-        }
-      }
-      case _ => expr.asInstanceOf[Attribute];
     }
   }
 

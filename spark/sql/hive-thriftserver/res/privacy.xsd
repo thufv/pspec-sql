@@ -266,6 +266,50 @@
 		</restriction>
 	</simpleType>
 
+	<complexType name="globalBudgetType">
+		<sequence>
+			<element name="user-category-ref" minOccurs="1" maxOccurs="unbounded">
+				<complexType>
+					<complexContent>
+						<extension base="tns:userCategoryRefType">
+							<attribute name="budget" type="tns:budgetType"></attribute>
+						</extension>
+					</complexContent>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="fineBudgetType">
+		<sequence>
+			<element name="budget-allocation" minOccurs="1" maxOccurs="unbounded">
+				<complexType>
+					<sequence>
+						<element name="user-category-ref" type="tns:userCategoryRefType"
+							minOccurs="1" maxOccurs="unbounded"></element>
+						<element name="data-category-ref" minOccurs="1" maxOccurs="unbounded">
+							<complexType>
+								<complexContent>
+									<extension base="tns:dataCategoryRefType">
+										<attribute name="budget" type="tns:budgetType"></attribute>
+									</extension>
+								</complexContent>
+							</complexType>
+						</element>
+					</sequence>
+				</complexType>
+				<unique name="uniqueAllocateUser">
+					<selector xpath="tns:user-category-ref"></selector>
+					<field xpath="@refid"></field>
+				</unique>
+				<unique name="uniqueAllocateData">
+					<selector xpath="tns:data-category-ref"></selector>
+					<field xpath="@refid"></field>
+				</unique>
+			</element>
+		</sequence>
+	</complexType>
+
 	<complexType name="accuracyType">
 		<sequence>
 			<element name="probability" type="tns:ratioType">
@@ -291,7 +335,10 @@
 				<element name="privacy-parameters">
 					<complexType>
 						<sequence>
-							<element name="budget" type="tns:budgetType"></element>
+							<choice>
+								<element name="global-budget" type="tns:globalBudgetType"></element>
+								<element name="fine-budget" type="tns:fineBudgetType"></element>
+							</choice>
 							<element name="accuracy" type="tns:accuracyType"></element>
 						</sequence>
 					</complexType>

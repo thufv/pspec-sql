@@ -25,22 +25,25 @@ import edu.thu.ss.spec.util.SetUtil;
 public class RuleConstraintAnalyzer extends BaseRuleAnalyzer {
 	private static Logger logger = LoggerFactory.getLogger(RuleConstraintAnalyzer.class);
 	private String ruleId;
+	private boolean error = false;;
 
 	@Override
 	public boolean analyzeRule(Rule rule, UserContainer users, DataContainer datas) {
+		error = false;
+
 		if (rule.getDataRefs().size() == 0 && rule.getAssociation() == null) {
-			logger.error("At least one data-category-ref or data-association should appear in rule: {}", rule.getId());
+			logger.error("At least one data-category-ref or data-association should appear in rule: {}",
+					rule.getId());
 			return true;
 		}
 		this.ruleId = rule.getId();
-		boolean error = false;
 
-		error |= checkAssociaiton(rule);
+		checkAssociaiton(rule);
 
 		if (rule.getDataRefs().size() > 0) {
-			error |= checkSingleRestirction(rule);
+			checkSingleRestirction(rule);
 		} else {
-			error |= checkAssociationRestriction(rule);
+			checkAssociationRestriction(rule);
 		}
 
 		return error;
@@ -56,11 +59,10 @@ public class RuleConstraintAnalyzer extends BaseRuleAnalyzer {
 		return "Error detected when checking constraints of restricted data categories, see error messages above.";
 	}
 
-	private boolean checkAssociaiton(Rule rule) {
-		boolean error = false;
+	private void checkAssociaiton(Rule rule) {
 		DataAssociation association = rule.getAssociation();
 		if (association == null) {
-			return error;
+			return;
 		}
 		List<DataRef> set = association.getDataRefs();
 
@@ -71,37 +73,37 @@ public class RuleConstraintAnalyzer extends BaseRuleAnalyzer {
 				DataRef ref2 = refs[j];
 				if (SetUtil.bottom(ref1.getAction(), ref2.getAction()) != null
 						&& SetUtil.intersects(ref1.getMaterialized(), ref2.getMaterialized())) {
-					logger.error("Overlap of data category: {} and {} detected in data association in rule: {}.",
+					logger.error(
+							"Overlap of data category: {} and {} detected in data association in rule: {}.",
 							ref1.getRefid(), ref2.getRefid(), ruleId);
 					error = true;
 				}
 			}
 		}
-		return error;
 	}
 
-	private boolean checkSingleRestirction(Rule rule) {
+	private void checkSingleRestirction(Rule rule) {
 		List<Restriction> restrictions = rule.getRestrictions();
 		if (restrictions.size() > 1) {
-			logger.error("Only one restriction should appear in rule when only data categories are referenced by rule: {}",
-					rule.getId());
-			return true;
+			logger
+					.error(
+							"Only one restriction should appear in rule when only data categories are referenced by rule: {}",
+							rule.getId());
+			error = true;
+			return;
 		}
 		Restriction restriction = restrictions.get(0);
 		if (restriction.isForbid()) {
-			return false;
+			return;
 		}
 
-		boolean error = false;
 		Desensitization de = restriction.getDesensitization();
 		for (DataRef ref : rule.getDataRefs()) {
-			error |= checkInclusion(ref.getData(), de.getOperations());
+			checkInclusion(ref.getData(), de.getOperations());
 		}
-		return error;
 	}
 
-	private boolean checkAssociationRestriction(Rule rule) {
-		boolean error = false;
+	private void checkAssociationRestriction(Rule rule) {
 		List<Restriction> restrictions = rule.getRestrictions();
 		for (Restriction restriction : restrictions) {
 			if (restriction.isForbid()) {
@@ -112,25 +114,22 @@ public class RuleConstraintAnalyzer extends BaseRuleAnalyzer {
 					continue;
 				}
 				DataRef ref = de.getDataRef();
-				error |= checkInclusion(ref.getCategory(), de.getOperations());
+				checkInclusion(ref.getCategory(), de.getOperations());
 			}
 		}
-		return error;
 	}
 
-	private boolean checkInclusion(DataCategory data, Set<DesensitizeOperation> operations) {
-		boolean error = false;
+	private void checkInclusion(DataCategory data, Set<DesensitizeOperation> operations) {
 		if (operations == null) {
-			return error;
+			return;
 		}
 		for (DesensitizeOperation op : operations) {
 			if (!data.getOperations().contains(op)) {
-				logger.error("Desensitize operation: {} is not supported by data category: {} in rule: {}", op.getName(),
-						data.getId(), ruleId);
+				logger.error("Desensitize operation: {} is not supported by data category: {} in rule: {}",
+						op.getName(), data.getId(), ruleId);
 				error = true;
 			}
 		}
 
-		return error;
 	}
 }

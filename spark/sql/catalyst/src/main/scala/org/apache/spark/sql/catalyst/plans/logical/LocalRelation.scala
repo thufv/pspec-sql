@@ -20,7 +20,7 @@ package org.apache.spark.sql.catalyst.plans.logical
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.catalyst.analysis
 import org.apache.spark.sql.catalyst.expressions.Attribute
-import org.apache.spark.sql.types.{DataTypeConversions, StructType, StructField}
+import org.apache.spark.sql.types.{ DataTypeConversions, StructType, StructField }
 
 object LocalRelation {
   def apply(output: Attribute*): LocalRelation = new LocalRelation(output)
@@ -54,4 +54,6 @@ case class LocalRelation(output: Seq[Attribute], data: Seq[Row] = Nil)
       otherOutput.map(_.dataType) == output.map(_.dataType) && otherData == data
     case _ => false
   }
+
+  override def calculateLabels = null;
 }

@@ -15,6 +15,16 @@ import edu.thu.ss.spec.util.XMLUtil;
 public class ObjectRef implements Parsable, Writable {
 	protected String refid;
 
+	protected boolean resolved = false;
+
+	public boolean isResolved() {
+		return resolved;
+	}
+
+	public void setResolved(boolean resolved) {
+		this.resolved = resolved;
+	}
+
 	@Override
 	public void parse(Node node) {
 		this.refid = XMLUtil.getAttrValue(node, ParserConstant.Ele_Policy_Refid);

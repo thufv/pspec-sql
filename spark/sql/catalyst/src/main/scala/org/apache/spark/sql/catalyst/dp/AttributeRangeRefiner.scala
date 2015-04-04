@@ -63,6 +63,7 @@ import org.apache.spark.sql.catalyst.checker.Label
 import solver.constraints._
 import solver.variables._
 import org.apache.spark.sql.catalyst.checker.Constant
+import org.apache.spark.sql.catalyst.checker.CheckerUtil._
 
 class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) extends Logging {
 
@@ -780,23 +781,6 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
   private def nextId(): Int = {
     id += 1;
     id;
-  }
-
-  private def collect(expr: Expression, clazz: Class[_ <: Expression]): Seq[Expression] = {
-    if (clazz.isInstance(expr)) {
-      expr.children.flatMap(collect(_, clazz));
-    } else {
-      List(expr);
-    }
-  }
-
-  private def collect(label: Label, udf: String): Seq[Label] = {
-    label match {
-      case func: Function if (func.udf == udf) => {
-        func.children.flatMap(collect(_, udf));
-      }
-      case _ => List(label);
-    }
   }
 
   private def newTmpVar(min: Int, max: Int): IntVar = {

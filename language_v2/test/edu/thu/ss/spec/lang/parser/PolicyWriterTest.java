@@ -11,7 +11,7 @@ public class PolicyWriterTest {
 	public void testPaper() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse("paper/spark-policy.xml", false);
+			Policy policy = parser.parse("paper/spark-policy.xml", false, true);
 			//System.out.println(policy);
 
 			PolicyWriter writer = new PolicyWriter();
@@ -30,12 +30,12 @@ public class PolicyWriterTest {
 	public void testMeta() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse("res/spark-policy.xml", false);
+			Policy policy = parser.parse("res/spark-policy.xml", false, true);
 			//System.out.println(policy);
 			PolicyWriter writer = new PolicyWriter();
 			writer.output(policy, "tmp/spark-policy.xml");
 
-			policy = parser.parse("tmp/spark-policy.xml", false);
+			policy = parser.parse("tmp/spark-policy.xml", false, true);
 			System.out.println(policy);
 
 		} catch (Exception e) {
@@ -47,12 +47,12 @@ public class PolicyWriterTest {
 	public void testConflict() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse("test/res/conflict-policy.xml", false);
+			Policy policy = parser.parse("test/res/conflict-policy.xml", false, true);
 			//System.out.println(policy);
 			PolicyWriter writer = new PolicyWriter();
 			writer.output(policy, "tmp/conflict-policy.xml");
 
-			policy = parser.parse("tmp/conflict-policy.xml", false);
+			policy = parser.parse("tmp/conflict-policy.xml", false, true);
 			System.out.println(policy);
 
 		} catch (Exception e) {

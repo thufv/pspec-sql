@@ -177,6 +177,16 @@ object DPUtil extends Logging {
   }
 
   def rangeDivide(left: (Int, Int), right: (Int, Int)): (Int, Int) = {
+    if (right._2 < 0 || right._1 > 0) {
+      val list = List(left._1 / right._1, left._1 / right._2, left._2 / right._1, left._2 / right._2);
+      val min = list.reduce(Math.min(_, _));
+      val max = list.reduce(Math.max(_, _));
+      (min, max);
+    } else {
+      val max = Math.max(Math.abs(left._1), Math.abs(left._2));
+      val min = Math.min(-Math.abs(left._1), -Math.abs(left._2));
+    }
+
     val rounded = rangeRound(right);
     val list = List(left._1 / rounded._1, left._1 / rounded._2, left._2 / rounded._1, left._2 / rounded._2);
     val min = list.reduce(Math.min(_, _));
@@ -225,4 +235,5 @@ object DPUtil extends Logging {
     val max = if (range._2 == 0) 1 else range._2;
     (min, max);
   }
+
 }

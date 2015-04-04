@@ -3,35 +3,29 @@ package org.apache.spark.sql.catalyst.checker
 import scala.collection.JavaConverters.asScalaBufferConverter
 import scala.collection.JavaConverters.asScalaSetConverter
 import scala.collection.JavaConverters.mapAsScalaMapConverter
-import scala.collection.mutable.Map
-import scala.collection.mutable.Set
 import org.apache.spark.Logging
 import org.apache.spark.sql.catalyst.analysis.Catalog
+import org.apache.spark.sql.catalyst.dp.DPBudgetManager
+import org.apache.spark.sql.catalyst.dp.DPEnforcer
+import org.apache.spark.sql.catalyst.dp.TableInfo
+import org.apache.spark.sql.catalyst.expressions.Attribute
 import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
+import org.apache.spark.sql.types
+import org.apache.spark.sql.types.DataType
 import edu.thu.ss.spec.global.MetaManager
 import edu.thu.ss.spec.lang.parser.PolicyParser
-import edu.thu.ss.spec.lang.pojo.Action
-import edu.thu.ss.spec.lang.pojo.DataCategory
-import edu.thu.ss.spec.lang.pojo.DataRef
-import edu.thu.ss.spec.lang.pojo.Desensitization
-import edu.thu.ss.spec.lang.pojo.ExpandedRule
 import edu.thu.ss.spec.lang.pojo.Policy
+import edu.thu.ss.spec.lang.pojo.UserCategory
+import edu.thu.ss.spec.meta.ArrayType
+import edu.thu.ss.spec.meta.BaseType
+import edu.thu.ss.spec.meta.CompositeType
+import edu.thu.ss.spec.meta.MapType
 import edu.thu.ss.spec.meta.MetaRegistry
+import edu.thu.ss.spec.meta.PrimitiveType
+import edu.thu.ss.spec.meta.StructType
 import edu.thu.ss.spec.meta.xml.XMLMetaRegistryParser
 import scala.collection.mutable.HashSet
-import edu.thu.ss.spec.meta.BaseType
-import org.apache.spark.sql.catalyst.expressions.Attribute
-import org.apache.spark.sql.types.DataType
-import edu.thu.ss.spec.meta.PrimitiveType
-import edu.thu.ss.spec.meta.CompositeType
-import org.apache.spark.sql.types
-import edu.thu.ss.spec.meta.ArrayType
-import edu.thu.ss.spec.meta.StructType
-import edu.thu.ss.spec.meta.MapType
-import edu.thu.ss.spec.lang.pojo.Restriction
-import org.apache.spark.sql.catalyst.dp.TableInfo
-import org.apache.spark.sql.catalyst.dp.DPEnforcer
-import org.apache.spark.sql.catalyst.dp.DPBudget
+import scala.collection.mutable.HashSet
 
 /**
  * entrance class for spark privacy checker
@@ -39,11 +33,12 @@ import org.apache.spark.sql.catalyst.dp.DPBudget
 object SparkChecker extends Logging {
 
   private var tableInfo: TableInfo = null;
-  private var budget: DPBudget = null;
+  private var budgetManager: DPBudgetManager = null;
   private var initialized = false;
-
+  private var error = false;
   var accuracyProb: Double = 0;
   var accurcayNoise: Double = 0;
+  lazy val user: UserCategory = MetaManager.currentUser();
 
   /**
    * load policy and meta during startup.
@@ -52,24 +47,29 @@ object SparkChecker extends Logging {
   def init(catalog: Catalog, policyPath: String, metaPath: String): Unit = {
     loadPolicy(policyPath);
     loadMeta(metaPath, catalog);
+
   }
 
   def start(info: TableInfo) {
-    this.tableInfo = info;
-    this.initialized = true;
-    logWarning("SparkChecker successfully initialized");
+    if (error) {
+      logError("SparkChecker fail to initialize, see messages above");
+    } else {
+      this.tableInfo = info;
+      this.initialized = true;
+      logWarning("SparkChecker successfully initialized");
+    }
+
   }
 
   def loadPolicy(path: String): Unit = {
     val parser = new PolicyParser;
     try {
-      val policy = parser.parse(path, true);
-      budget = new DPBudget(policy.getPrivacyBudget().getBudget());
-      accuracyProb = policy.getPrivacyBudget().getProbability();
-      accurcayNoise = policy.getPrivacyBudget().getNoiseRatio();
-
+      val policy = parser.parse(path, true, false);
+      budgetManager = DPBudgetManager(policy.getPrivacyParams(), user);
+      accuracyProb = policy.getPrivacyParams().getProbability();
+      accurcayNoise = policy.getPrivacyParams().getNoiseRatio();
     } catch {
-      case e: Exception => logError(e.getMessage, e);
+      case e: Exception => error = true; logError(e.getMessage, e);
     }
   }
 
@@ -79,19 +79,19 @@ object SparkChecker extends Logging {
       val meta = parser.parse(path);
       checkMeta(meta, catalog);
     } catch {
-      case e: Exception => logError(e.getMessage, e);
+      case e: Exception => error = true; logError(e.getMessage, e);
     }
   }
 
   def commit(): Unit = {
     if (initialized) {
-      budget.commit;
+      budgetManager.commit;
     }
   }
 
   def rollback(): Unit = {
     if (initialized) {
-      budget.rollback;
+      budgetManager.rollback;
     }
   }
 
@@ -109,13 +109,15 @@ object SparkChecker extends Logging {
       val policies = propagator(plan);
 
       val builder = new PathBuilder;
-      val (projectionPaths, conditionPaths) = builder(plan.projectLabels.values.toSet, plan.condLabels);
+      val projects = new HashSet[Label];
+      projects.++=(plan.projectLabels.values);
+      val flows = builder(projects, plan.condLabels);
 
       val checker = new SparkPolicyChecker;
-      checker.check(projectionPaths, conditionPaths, policies);
+      checker.check(flows, policies);
 
-      val dpEnforcer = new DPEnforcer(tableInfo, budget, epsilon);
-      dpEnforcer(plan);
+      val dpEnforcer = new DPEnforcer(tableInfo, budgetManager, epsilon);
+      //  dpEnforcer(plan);
     } finally {
       val end = System.currentTimeMillis();
       val time = end - begin;

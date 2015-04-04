@@ -1,49 +1,102 @@
 package org.apache.spark.sql.catalyst.checker
 
-import scala.collection.mutable.Set
-import scala.collection.mutable.Map
-import org.apache.spark.Logging
 import scala.collection.JavaConverters._
-import edu.thu.ss.spec.meta.MetaRegistry
-import edu.thu.ss.spec.lang.pojo.ExpandedRule
-import edu.thu.ss.spec.lang.pojo.Policy
-import edu.thu.ss.spec.lang.parser.PolicyParser
-import edu.thu.ss.spec.meta.xml.XMLMetaRegistryParser
+import scala.collection.mutable.ListBuffer
+import org.apache.spark.Logging
 import org.apache.spark.sql.catalyst.analysis.Catalog
 import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
-import edu.thu.ss.spec.lang.pojo.DataCategory
-import edu.thu.ss.spec.lang.pojo.Restriction
 import edu.thu.ss.spec.global.MetaManager
+import edu.thu.ss.spec.lang.pojo.Action
+import edu.thu.ss.spec.lang.pojo.DataCategory
 import edu.thu.ss.spec.lang.pojo.DataRef
 import edu.thu.ss.spec.lang.pojo.Desensitization
-import scala.collection.mutable.HashSet
-import edu.thu.ss.spec.lang.pojo.Action
+import edu.thu.ss.spec.lang.pojo.ExpandedRule
+import edu.thu.ss.spec.lang.pojo.Policy
+import edu.thu.ss.spec.lang.pojo.Restriction
+import scala.collection.mutable.HashMap
+import edu.thu.ss.spec.lang.pojo.DataRef
+import scala.collection.mutable.HashMap
+import org.apache.spark.sql.catalyst.checker.LabelConstants._
+import org.apache.spark.sql.catalyst.expressions.AggregateExpression
 
 /**
  * interface for privacy checker
  */
 trait PolicyChecker extends Logging {
 
-  def check(projectionPaths: Map[Policy, Map[DataCategory, Set[Path]]], conditionPaths: Map[Policy, Map[DataCategory, Set[Path]]], policies: collection.Set[Policy]): Unit;
+  def check(flows: Map[Policy, Set[Flow]], policies: Set[Policy]): Unit;
+}
+private class IndexEntry(val projects: Map[DataCategory, Set[Flow]], val conds: Map[DataCategory, Set[Flow]]) {
+
+}
+
+private class FlowIndex(val flows: Map[Policy, Set[Flow]]) {
+
+  private val index = new HashMap[Policy, IndexEntry];
+
+  def collect(policy: Policy, ref: DataRef): Seq[Flow] = {
+    val action = ref.getAction();
+    val list = new ListBuffer[Flow];
+    if (ref.isGlobal()) {
+      index.values.foreach(collect(_, ref, list));
+    } else {
+      val entry = index.getOrElse(policy, null);
+      if (entry != null) {
+        collect(entry, ref, list);
+      }
+
+      val set = flows.getOrElse(policy, null);
+      if (set != null) {
+        set.foreach(flow =>
+          if (flow.action.ancestorOf(action) && ref.contains(flow.data)) {
+            list.append(flow);
+          });
+      }
+    }
+
+    return list;
+  }
+
+  private def collect(entry: IndexEntry, ref: DataRef, list: ListBuffer[Flow]) {
+    ref.getAction() match {
+      case Action.Projection => {
+        collect(entry.projects, ref, list);
+      }
+      case Action.Condition => {
+        collect(entry.conds, ref, list);
+      }
+      case Action.All => {
+        collect(entry.projects, ref, list);
+        collect(entry.conds, ref, list);
+      }
+    }
+  }
+
+  private def collect(index: Map[DataCategory, Set[Flow]], ref: DataRef, list: ListBuffer[Flow]) {
+    ref.getMaterialized().asScala.foreach(data => {
+      val set = index.get(data);
+      set match {
+        case Some(s) => list ++= s;
+        case None =>
+      }
+    });
+
+  }
 }
 
 class SparkPolicyChecker extends PolicyChecker with Logging {
 
   lazy val user = MetaManager.currentUser();
-  var policies: collection.Set[Policy] = null;
 
-  var projectionPaths: Map[Policy, Map[DataCategory, Set[Path]]] = null;
-  var conditionPaths: Map[Policy, Map[DataCategory, Set[Path]]] = null;
-  var violated = false;
+  private var violated = false;
 
-  def check(projectionPaths: Map[Policy, Map[DataCategory, Set[Path]]], conditionPaths: Map[Policy, Map[DataCategory, Set[Path]]], policies: collection.Set[Policy]): Unit = {
+  private var flowIndex: FlowIndex = null;
+
+  def check(flows: Map[Policy, Set[Flow]], policies: Set[Policy]): Unit = {
     if (policies.size == 0) {
       return ;
     }
-    this.policies = policies;
-    this.projectionPaths = projectionPaths;
-    this.conditionPaths = conditionPaths;
-    //check each rule
+    this.flowIndex = new FlowIndex(flows);
 
     policies.foreach(p => p.getExpandedRules().asScala.foreach(checkRule(_, p)));
     if (violated) {
@@ -56,128 +109,83 @@ class SparkPolicyChecker extends PolicyChecker with Logging {
    *
    * @throws PrivacyException
    */
-  private def checkRule(rule: ExpandedRule, policy: Policy): Unit = {
+  private def checkRule(rule: ExpandedRule, policy: Policy) {
     // check user
     if (!rule.contains(user)) {
       return ;
     }
-    var error = false;
+    val accesses = new Array[Seq[Flow]](rule.getDimension());
     if (rule.isSingle()) {
-      //single rule
-      val access = new HashSet[DataCategory];
       val dataRef = rule.getDataRef();
       //collect all applicable data categories
-      collectDatas(dataRef, access, policy);
-      error = checkRestriction(rule, access, policy);
+      accesses(0) = flowIndex.collect(policy, dataRef);
     } else {
-      //association rule
       val association = rule.getAssociation();
-      val accesses = Array.fill(association.getDimension())(new HashSet[DataCategory]);
       val dataRefs = association.getDataRefs();
-      //collect all applicable data categories
       for (i <- 0 to dataRefs.size - 1) {
-        collectDatas(dataRefs.get(i), accesses(i), policy);
+        accesses(i) = flowIndex.collect(policy, dataRefs.get(i));
       }
-      error = checkRestrictions(rule, accesses, policy);
     }
-    if (error) {
+    if (accesses.exists(_.size == 0)) {
+      return ;
+    }
+
+    val sat = checkFlows(rule, accesses, policy);
+
+    if (!sat) {
       violated = true;
       logError(s"The SQL query violates the rule: #${rule.getRuleId()}.");
     }
   }
 
   /**
-   * collect all applicable data categories into access.
-   * note that data ref/ association is essentially treated as n (>=1) buckets,
-   * and we fill these buckets based on data categories accessed by the query.
-   */
-  private def collectDatas(ref: DataRef, access: Set[DataCategory], policy: Policy) {
-    ref.getAction() match {
-      case Action.All => {
-        collectDatas(ref, projectionPaths, access, policy);
-        collectDatas(ref, conditionPaths, access, policy);
-      }
-      case Action.Projection => collectDatas(ref, projectionPaths, access, policy);
-      case Action.Condition => collectDatas(ref, conditionPaths, access, policy);
-    }
-  }
-
-  private def collectDatas(ref: DataRef, paths: Map[Policy, Map[DataCategory, Set[Path]]], access: Set[DataCategory], policy: Policy): Unit = {
-    if (ref.isGlobal()) {
-      // all data categories are applicable
-      paths.values.foreach(_.keys.foreach(data => {
-        if (ref.contains(data)) {
-          access.add(data);
-        }
-      }));
-    } else {
-      //only collect data categories that for current policy
-      val map = paths.getOrElse(policy, null);
-      if (map != null) {
-        ref.getMaterialized().asScala.foreach(data => {
-          if (map.contains(data)) {
-            access.add(data);
-          }
-        });
-      }
-    }
-  }
-
-  /**
-   * check restriction for single rule
-   * only 1 restriction, and only 1 desensitization
-   */
-  private def checkRestriction(rule: ExpandedRule, access: HashSet[DataCategory], policy: Policy): Boolean = {
-    if (access.size == 0) {
-      return false;
-    }
-
-    val restriction = rule.getRestriction();
-    if (restriction.isForbid()) {
-      return true;
-    }
-    val de = restriction.getDesensitization();
-    val ref = rule.getDataRef();
-    for (data <- access) {
-      if (checkDesensitization(ref, data, de, policy, ref.isGlobal())) {
-        return true;
-      }
-    }
-
-    false;
-  }
-
-  /**
    * check restriction for association rule
+   * return flows satisfy the rule
    */
-  private def checkRestrictions(rule: ExpandedRule, accesses: Array[HashSet[DataCategory]], policy: Policy): Boolean = {
+  private def checkFlows(rule: ExpandedRule, accesses: Array[Seq[Flow]], policy: Policy): Boolean = {
     //if any bucket is empty, then return.
-    if (accesses.exists(_.size == 0)) {
+    if (rule.getRestriction().isForbid()) {
       return false;
     }
-    if (rule.getRestriction().isForbid()) {
-      return true;
-    }
-    val array = new Array[DataCategory](accesses.length);
-    return satisfyRestrictions(array, 0, rule, accesses, policy);
+    val array = new Array[Flow](accesses.length);
+    return checkFlows(array, 0, rule, accesses, policy);
   }
 
   /**
    * check restrictions recursively.
    * for buckets with m1, m2, ..., mn elements, we need to check m1 * m2 *... mn combinations.
    */
-  private def satisfyRestrictions(array: Array[DataCategory], i: Int, rule: ExpandedRule, accesses: Array[HashSet[DataCategory]], policy: Policy): Boolean = {
+  private def checkFlows(flows: Array[Flow], i: Int, rule: ExpandedRule, accesses: Array[Seq[Flow]], policy: Policy): Boolean = {
     if (i == accesses.length) {
       val restrictions = rule.getRestrictions();
       val association = rule.getAssociation();
-      //a combination of element, and check whether exist a satisfied restriction
-
-      return restrictions.exists(satisfyRestriction(_, array, rule, policy));
+      //a combination of flows, and check whether exist a satisfied restriction
+      //if exist, then no error (false)
+      var minCost = Double.MaxValue;
+      var minRes: Restriction = null;
+      for (res <- restrictions) {
+        //choose a restriction 
+        if (checkRestriction(res, flows, rule, policy)) {
+          val cost = estimateCost(res, flows);
+          if (cost < minCost) {
+            minCost = cost;
+            minRes = res;
+          }
+        }
+      }
+      if (minRes == null) {
+        //unsatisfy
+        return false;
+      } else {
+        setDP(minRes, flows);
+        return true;
+      }
     } else {
-      val access = accesses(i);
-      for (data <- access) {
-        array(i) = data;
-        if (!satisfyRestrictions(array, i + 1, rule, accesses, policy)) {
+      val seq = accesses(i);
+      for (flow <- seq) {
+        flows(i) = flow;
+        if (!checkFlows(flows, i + 1, rule, accesses, policy)) {
+          //error
           return false;
         }
       }
@@ -185,76 +193,55 @@ class SparkPolicyChecker extends PolicyChecker with Logging {
     }
   }
 
-  private def satisfyRestriction(res: Restriction, array: Array[DataCategory], rule: ExpandedRule, policy: Policy): Boolean = {
-    if (res.isForbid()) {
-      return false;
-    }
+  private def checkRestriction(res: Restriction, flows: Array[Flow], rule: ExpandedRule, policy: Policy): Boolean = {
     val des = res.getDesensitizations();
-
     var i = 0;
     for (de <- res.getDesensitizations()) {
       if (de != null) {
         val ref = rule.getAssociation().get(i);
-        val data = array(i);
-        val global = ref.isGlobal();
-        if (!checkDesensitization(ref, data, de, policy, global)) {
+        val flow = flows(i);
+        if (!checkDesensitization(flow, de)) {
           return false;
         }
       }
       i += 1;
     }
     return true;
-
   }
 
   /**
    * check whether a desensitization is satisfied
    */
-  private def checkDesensitization(ref: DataRef, data: DataCategory, de: Desensitization, policy: Policy, global: Boolean): Boolean = {
-    ref.getAction() match {
-      case Action.All => if (checkOperations(de, data, projectionPaths, policy, global) || checkOperations(de, data, conditionPaths, policy, global)) {
-        return true;
+  private def checkDesensitization(flow: Flow, de: Desensitization): Boolean = {
+    val required =
+      if (de.getOperations() != null) {
+        de.getOperations();
+      } else {
+        flow.data.getOperations();
       }
-      case Action.Projection => if (checkOperations(de, data, projectionPaths, policy, global)) {
-        return true;
-      }
-      case Action.Condition => if (checkOperations(de, data, conditionPaths, policy, global)) {
-        return true;
-      }
-    }
-    false;
-  }
-
-  /**
-   * check all paths for a data category is desensitized with one of the operations
-   */
-  private def checkOperations(de: Desensitization, data: DataCategory, paths: Map[Policy, Map[DataCategory, Set[Path]]], policy: Policy, global: Boolean): Boolean = {
-    if (global) {
-      for (map <- paths.values) {
-        if (checkOperations(de, data, map)) {
-          return true;
-        }
-      }
-    } else {
-      val map = paths.getOrElse(policy, null);
-      if (map != null) {
-        return checkOperations(de, data, map);
-      }
-    }
-    return false;
-  }
-
-  private def checkOperations(de: Desensitization, data: DataCategory, paths: Map[DataCategory, Set[Path]]): Boolean = {
-    val set = paths.getOrElse(data, null);
-    if (set == null) {
+    if (!required.contains(flow.path.op)) {
       return false;
     }
-    var ops = de.getOperations();
-    if (ops == null) {
-      //fall back to default desensitize operations
-      ops = data.getOperations();
-    }
-    return !set.forall(path => path.ops.exists(ops.contains(_)));
+    return required.contains(flow.path.op);
   }
 
+  private def estimateCost(res: Restriction, flows: Array[Flow]): Double = {
+    //TODO finish cost estimation
+    0.0;
+  }
+
+  private def setDP(res: Restriction, flows: Array[Flow]) {
+    var i = 0;
+    res.getDesensitizations().foreach(de => {
+      val flow = flows(i);
+      if (de != null && Op_Aggregates.contains(flow.path.op)) {
+        val agg = asAggregate(flow.path.func);
+        agg.enableDP = true;
+        //TODO should consume epsilon for temporarily
+      }
+      i += 1;
+    });
+  }
+
+  private def asAggregate(func: Function): AggregateExpression = func.expression.asInstanceOf[AggregateExpression];
 }

@@ -1,19 +1,11 @@
 package org.apache.spark.sql.catalyst.checker
 
 import org.apache.spark.sql.catalyst.expressions.Attribute
-import edu.thu.ss.spec.lang.pojo.DataCategory
-import edu.thu.ss.spec.meta.JoinCondition
-import scala.collection.mutable.HashSet
-import scala.collection.mutable.Map
-import scala.collection.mutable.Set
-import scala.collection.JavaConverters._
-import edu.thu.ss.spec.meta.JoinCondition.ColumnEntry
-import scala.collection.mutable.HashMap
 import org.apache.spark.sql.catalyst.expressions.AttributeReference
-import org.apache.spark.sql.catalyst.expressions.AttributeReference
-import org.apache.spark.sql.catalyst.expressions.AttributeReference
-import edu.thu.ss.spec.meta.BaseType
 import org.apache.spark.sql.catalyst.expressions.Expression
+
+import edu.thu.ss.spec.meta.BaseType
+import edu.thu.ss.spec.meta.JoinCondition
 
 /**
  * base class for lineage tree

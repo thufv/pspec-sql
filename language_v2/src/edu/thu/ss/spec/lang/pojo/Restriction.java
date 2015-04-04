@@ -58,7 +58,9 @@ public class Restriction implements Parsable, Writable {
 		if (this.desensitizations != null) {
 			res.desensitizations = new Desensitization[desensitizations.length];
 			for (int i = 0; i < res.desensitizations.length; i++) {
-				res.desensitizations[i] = desensitizations[i].clone();
+				if (desensitizations[i] != null) {
+					res.desensitizations[i] = desensitizations[i].clone();
+				}
 			}
 		}
 		return res;

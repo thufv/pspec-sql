@@ -1,93 +1,22 @@
 package org.apache.spark.sql.catalyst.checker
 
-import org.apache.spark.sql.catalyst.expressions.AggregateExpression
-import org.apache.spark.sql.catalyst.expressions.Alias
-import org.apache.spark.sql.catalyst.expressions.And
-import org.apache.spark.sql.catalyst.expressions.AttributeReference
-import org.apache.spark.sql.catalyst.expressions.BinaryArithmetic
-import org.apache.spark.sql.catalyst.expressions.BinaryComparison
-import org.apache.spark.sql.catalyst.expressions.CaseWhen
-import org.apache.spark.sql.catalyst.expressions.Contains
-import org.apache.spark.sql.catalyst.expressions.EndsWith
-import org.apache.spark.sql.catalyst.expressions.Expression
-import org.apache.spark.sql.catalyst.expressions.If
-import org.apache.spark.sql.catalyst.expressions.LeafExpression
-import org.apache.spark.sql.catalyst.expressions.Like
-import org.apache.spark.sql.catalyst.expressions.Literal
-import org.apache.spark.sql.catalyst.expressions.MaxOf
-import org.apache.spark.sql.catalyst.expressions.MutableLiteral
-import org.apache.spark.sql.catalyst.expressions.NamedExpression
-import org.apache.spark.sql.catalyst.expressions.Not
-import org.apache.spark.sql.catalyst.expressions.Or
-import org.apache.spark.sql.catalyst.expressions.RLike
-import org.apache.spark.sql.catalyst.expressions.StartsWith
-import org.apache.spark.sql.catalyst.expressions.Substring
-import org.apache.spark.sql.catalyst.expressions.UnaryExpression
+import org.apache.spark.sql.catalyst.expressions._
 import org.apache.spark.sql.catalyst.plans.LeftSemi
-import org.apache.spark.sql.catalyst.plans.logical.Aggregate
-import org.apache.spark.sql.catalyst.plans.logical.BinaryNode
-import org.apache.spark.sql.catalyst.plans.logical.Distinct
-import org.apache.spark.sql.catalyst.plans.logical.Except
-import org.apache.spark.sql.catalyst.plans.logical.Filter
-import org.apache.spark.sql.catalyst.plans.logical.Generate
-import org.apache.spark.sql.catalyst.plans.logical.Intersect
-import org.apache.spark.sql.catalyst.plans.logical.Join
-import org.apache.spark.sql.catalyst.plans.logical.LeafNode
-import org.apache.spark.sql.catalyst.plans.logical.Limit
-import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
-import org.apache.spark.sql.catalyst.plans.logical.Project
-import org.apache.spark.sql.catalyst.plans.logical.RedistributeData
-import org.apache.spark.sql.catalyst.plans.logical.Sample
-import org.apache.spark.sql.catalyst.plans.logical.ScriptTransformation
-import org.apache.spark.sql.catalyst.plans.logical.Sort
-import org.apache.spark.sql.catalyst.plans.logical.Subquery
-import org.apache.spark.sql.catalyst.plans.logical.UnaryNode
-import org.apache.spark.sql.catalyst.plans.logical.Union
-import org.apache.spark.sql.catalyst.plans.logical.WriteToFile
-import org.apache.spark.sql.catalyst.expressions.In
-import org.apache.spark.sql.catalyst.expressions.ScalaUdf
-import org.apache.spark.sql.catalyst.expressions.Attribute
+import org.apache.spark.sql.catalyst.plans.logical._
 import org.apache.spark.Logging
-import org.apache.spark.sql.catalyst.expressions.In
 import org.apache.spark.sql.catalyst.plans.LeftSemi
 import org.apache.spark.sql.catalyst.plans.logical.ScriptTransformation
-import org.apache.spark.sql.catalyst.expressions.RLike
-import org.apache.spark.sql.catalyst.expressions.StartsWith
-import org.apache.spark.sql.catalyst.expressions.Substring
 import edu.thu.ss.spec.meta.MetaRegistry
-import org.apache.spark.sql.catalyst.expressions.CaseWhen
-import org.apache.spark.sql.catalyst.expressions.ScalaUdf
-import org.apache.spark.sql.catalyst.expressions.MutableLiteral
-import org.apache.spark.sql.catalyst.expressions.BinaryComparison
-import org.apache.spark.sql.catalyst.plans.logical.RedistributeData
-import org.apache.spark.sql.catalyst.expressions.Contains
-import org.apache.spark.sql.catalyst.expressions.EndsWith
-import org.apache.spark.sql.catalyst.expressions.AggregateExpression
-import org.apache.spark.sql.catalyst.expressions.EqualTo
-import org.apache.spark.sql.catalyst.expressions.EqualNullSafe
-import org.apache.spark.sql.catalyst.expressions.AttributeReference
-import org.apache.spark.sql.catalyst.expressions.BinaryExpression
-import org.apache.spark.sql.catalyst.expressions.AttributeReference
-import scala.collection.mutable
 import scala.collection.mutable.HashSet
 import scala.collection.JavaConverters._
 import scala.collection.mutable.ListBuffer
 import org.apache.spark.sql.catalyst.expressions.AttributeReference
 import edu.thu.ss.spec.lang.pojo.Policy
-import org.apache.spark.sql.catalyst.plans.logical.Command
-import org.apache.spark.sql.catalyst.expressions.GetItem
-import org.apache.spark.sql.catalyst.expressions.IsNull
-import org.apache.spark.sql.catalyst.expressions.Coalesce
-import org.apache.spark.sql.catalyst.expressions.Alias
-import org.apache.spark.sql.catalyst.expressions.IsNotNull
-import org.apache.spark.sql.catalyst.expressions.Count
-import org.apache.spark.sql.catalyst.expressions
-import org.apache.spark.sql.catalyst.expressions.IntegerLiteral
-import org.apache.spark.sql.catalyst.plans.logical.InsertIntoTable
-import org.apache.spark.sql.catalyst.plans.logical.Expand
 import org.jgrapht.graph.DefaultEdge
 import org.jgrapht.graph.SimpleGraph
 import org.jgrapht.alg.ConnectivityInspector
+import scala.collection.mutable.HashMap
+import scala.collection.mutable.HashMap
 
 /**
  * vertex class for equi-graph
@@ -116,7 +45,7 @@ class LabelPropagator extends Logging {
    * for each column label, we can find the corresponding table (column_name -> column_label).
    * table is actually a set of columns.
    */
-  lazy val tables = new mutable.HashMap[ColumnLabel, Map[String, ColumnLabel]];
+  lazy val tables = new HashMap[ColumnLabel, Map[String, ColumnLabel]];
 
   lazy val equiGraph = new SimpleGraph[EquiVertex, DefaultEdge](classOf[DefaultEdge]);
 
@@ -125,12 +54,12 @@ class LabelPropagator extends Logging {
   /**
    * a set of applicable policies on the logical plan
    */
-  lazy val policies = new mutable.HashSet[Policy];
+  lazy val policies = new HashSet[Policy];
 
   /**
    * performs label propagation, and collects all applicable policy
    */
-  def apply(plan: LogicalPlan): mutable.Set[Policy] = {
+  def apply(plan: LogicalPlan): Set[Policy] = {
     propagate(plan);
 
     //resolve conditional labels
@@ -299,11 +228,15 @@ class LabelPropagator extends Logging {
   /**
    * after resolve a relation, add all attributes and lineage trees to the table
    */
-  private def addTable(projectLabels: mutable.Map[Attribute, Label]): Unit = {
-    val table = projectLabels.values.map(label => {
-      val cond = label.asInstanceOf[ColumnLabel];
-      (cond.attr.name, cond);
-    }).toMap;
+  private def addTable(projectLabels: Map[Attribute, Label]): Unit = {
+
+    val table = new HashMap[String, ColumnLabel];
+    projectLabels.values.foreach(
+      label => {
+        val col = label.asInstanceOf[ColumnLabel];
+        table.put(col.attr.name, col);
+      });
+
     table.foreach(t => tables.put(t._2, table));
   }
 
@@ -464,8 +397,8 @@ class LabelPropagator extends Logging {
    * resolve join condition and update equi-graph
    */
   private def resolveJoinCondition(expression: BinaryComparison, plan: LogicalPlan): Unit = {
-    var lefts: mutable.Set[EquiVertex] = null;
-    var rights: mutable.Set[EquiVertex] = null;
+    var lefts: Set[EquiVertex] = null;
+    var rights: Set[EquiVertex] = null;
     //collect all stored attributes(column) in the left part and right part of the comparison
     expression match {
       case _: EqualTo | _: EqualNullSafe => {
@@ -490,7 +423,7 @@ class LabelPropagator extends Logging {
   /**
    * collect all stored attribute from the expression
    */
-  private def resolveJoinColumn(expr: Expression, plan: LogicalPlan, set: mutable.Set[EquiVertex] = new HashSet): mutable.Set[EquiVertex] = {
+  private def resolveJoinColumn(expr: Expression, plan: LogicalPlan, set: Set[EquiVertex] = new HashSet): Set[EquiVertex] = {
     expr match {
       case attr: AttributeReference => {
         val label = plan.childLabel(attr);
@@ -522,7 +455,7 @@ class LabelPropagator extends Logging {
   /**
    * given a lineage tree, collect all stored attributes (leaf nodes)
    */
-  private def resolveJoinLabel(label: Label, set: mutable.Set[EquiVertex]): Unit = {
+  private def resolveJoinLabel(label: Label, set: Set[EquiVertex]): Unit = {
     label match {
       case col: ColumnLabel => set.add(ColumnVertex(col.attr));
       case cons: Constant => set.add(ConstantVertex(cons.value));
@@ -588,7 +521,7 @@ class LabelPropagator extends Logging {
    * get all vertex that are equal to v.
    * performs reachability analysis on equi-graph
    */
-  private def getEquis(v: EquiVertex): mutable.Set[EquiVertex] = {
+  private def getEquis(v: EquiVertex): Set[EquiVertex] = {
     return alg.connectedSetOf(v).asScala;
   }
 
