@@ -162,7 +162,7 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
           rootAttributes.add(data.attr);
         }
         case func: Function => {
-          func.udf match {
+          func.transform match {
             case Func_Union | Func_Intersect | Func_Except => func.children.foreach(checkAggregateLabel(_));
             case _ =>
           }
@@ -299,6 +299,7 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
     resolvePlan(plan);
   }
 
+  //TODO luochen, add support for ignore refinement
   def get(attr: Attribute, plan: LogicalPlan): (Int, Int) = {
     val result = refinedRanges.getOrElse(attr, null);
     if (result != null) {
@@ -504,6 +505,7 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
 
   private def resolveTerm(term: Expression, plan: LogicalPlan): IntVar = {
     term match {
+      //add support for complex data types
       case attr: Attribute => {
         val attrVar = model.getVariable(attr);
         if (attrVar != null) {
@@ -673,7 +675,8 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
         VariableFactory.fixed(cons.value, solver);
       }
       case func: Function => {
-        func.udf match {
+        //TODO: luochen add support for complex data types
+        func.transform match {
           case Arithmetic_UnaryMinus if (arithm) => {
             unaryArithmHelper(func, VariableFactory.scale(_, -1));
           }
@@ -761,7 +764,7 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
         (info.low, info.up);
       }
       case func: Function => {
-        func.udf match {
+        func.transform match {
           case Func_Union => {
             rangeHelper(func, DPUtil.rangeUnion(_, _));
           }

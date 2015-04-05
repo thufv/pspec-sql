@@ -1,14 +1,6 @@
 package org.apache.spark.sql.catalyst.checker
 
-import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Avg
-import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Cast
-import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Count
-import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Except
-import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Intersect
-import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Max
-import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Min
-import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Sum
-import org.apache.spark.sql.catalyst.checker.LabelConstants.Func_Union
+import org.apache.spark.sql.catalyst.checker.LabelConstants._
 import org.apache.spark.sql.catalyst.expressions.Alias
 import org.apache.spark.sql.catalyst.expressions.Attribute
 import org.apache.spark.sql.catalyst.expressions.Cast
@@ -16,6 +8,11 @@ import org.apache.spark.sql.catalyst.expressions.Expression
 import org.apache.spark.sql.catalyst.expressions.Literal
 import org.apache.spark.sql.catalyst.plans.logical.Aggregate
 import org.apache.spark.sql.catalyst.trees.TreeNode
+import edu.thu.ss.spec.meta.BaseType
+import edu.thu.ss.spec.meta.CompositeType
+import edu.thu.ss.spec.meta.StructType
+import edu.thu.ss.spec.meta.ArrayType
+import edu.thu.ss.spec.meta.MapType
 
 object AggregateType extends Enumeration {
   type AggregateType = Value
@@ -72,7 +69,7 @@ object CheckerUtil {
         if (types.exists(_ == AggregateType.Invalid_Aggregate)) {
           return AggregateType.Invalid_Aggregate;
         }
-        func.udf match {
+        func.transform match {
           case Func_Cast => {
             return checkLabelType(func.children(0));
           }
@@ -103,11 +100,10 @@ object CheckerUtil {
     expr match {
       case attr: Attribute => attr;
       case alias: Alias => {
-        val child = alias.child;
-        child match {
-          case cast: Cast => resolveAttribute(expr);
-          case _ => alias.toAttribute;
-        }
+        resolveAttribute(alias.child);
+      }
+      case cast: Cast => {
+        resolveAttribute(cast.child);
       }
       case _ => expr.asInstanceOf[Attribute];
     }
@@ -128,12 +124,63 @@ object CheckerUtil {
     }
   }
 
-  def collect(label: Label, udf: String): Seq[Label] = {
+  def collect(label: Label, transform: String): Seq[Label] = {
     label match {
-      case func: Function if (func.udf == udf) => {
-        func.children.flatMap(collect(_, udf));
+      case func: Function if (func.transform == transform) => {
+        func.children.flatMap(collect(_, transform));
       }
       case _ => List(label);
+    }
+  }
+
+  def resolveType(t: BaseType, func: Function): Seq[BaseType] = {
+    val transform = func.transform;
+    if (ignorable(transform)) {
+      return Seq(t);
+    }
+    t match {
+      case comp: CompositeType => {
+        val subType = comp.getExtractOperation(transform);
+        if (subType != null) {
+          return Seq(subType.getType());
+        } else {
+          return comp.toPrimitives();
+        }
+      }
+      case struct: StructType => {
+        if (isGetField(transform)) {
+          val field = getSubType(transform);
+          val subType = struct.getField(field);
+          if (subType != null) {
+            Seq(subType.getType());
+          } else {
+            Nil;
+          }
+        } else {
+          return struct.toPrimitives();
+        }
+      }
+      case array: ArrayType => {
+        if (isGetItem(transform)) {
+          return Seq(array.getItemType());
+        } else {
+          return array.toPrimitives();
+        }
+      }
+      case map: MapType => {
+        if (isGetEntry(transform)) {
+          val key = getSubType(transform);
+          val subType = map.getEntry(key);
+          if (subType != null) {
+            Seq(subType.getType);
+          } else {
+            Nil;
+          }
+        } else {
+          return map.toPrimitives();
+        }
+      }
+      case _ => Seq(t);
     }
   }
 

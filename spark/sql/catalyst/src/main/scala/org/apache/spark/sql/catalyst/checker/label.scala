@@ -3,9 +3,13 @@ package org.apache.spark.sql.catalyst.checker
 import org.apache.spark.sql.catalyst.expressions.Attribute
 import org.apache.spark.sql.catalyst.expressions.AttributeReference
 import org.apache.spark.sql.catalyst.expressions.Expression
-
+import org.apache.spark.sql.catalyst.checker.LabelConstants._
+import org.apache.spark.sql.catalyst.checker.CheckerUtil._
 import edu.thu.ss.spec.meta.BaseType
 import edu.thu.ss.spec.meta.JoinCondition
+import edu.thu.ss.spec.lang.pojo.DataCategory
+import edu.thu.ss.spec.meta.StructType
+import edu.thu.ss.spec.meta.ArrayType
 
 /**
  * base class for lineage tree
@@ -16,6 +20,11 @@ sealed abstract class Label {
   val attributes: Seq[Attribute];
 
   def contains(trans: String*): Boolean;
+
+  def getDatas() = getTypes.flatMap(_.toPrimitives().map(_.getDataCategory));
+
+  def getTypes(): Seq[BaseType];
+
 }
 
 /**
@@ -29,6 +38,7 @@ abstract class ColumnLabel extends Label {
   lazy val attributes = List(attr);
 
   def contains(trans: String*) = false;
+
 }
 
 /**
@@ -38,6 +48,8 @@ case class DataLabel(labelType: BaseType, database: String, table: String, attr:
   extends ColumnLabel {
   def sensitive(): Boolean = true;
 
+  def getTypes = Seq(labelType);
+
 }
 
 /**
@@ -46,6 +58,8 @@ case class DataLabel(labelType: BaseType, database: String, table: String, attr:
 case class Insensitive(database: String, table: String, attr: AttributeReference)
   extends ColumnLabel {
   def sensitive(): Boolean = false;
+
+  def getTypes = Nil;
 }
 
 /**
@@ -61,6 +75,8 @@ case class ConditionalLabel(conds: Map[JoinCondition, BaseType], database: Strin
   def canEqual(other: Any) = {
     other.isInstanceOf[org.apache.spark.sql.catalyst.checker.ConditionalLabel]
   }
+
+  def getTypes = if (fulfilled != null) fulfilled.toSeq; else Nil;
 
   override def equals(other: Any) = {
     other match {
@@ -78,28 +94,35 @@ case class ConditionalLabel(conds: Map[JoinCondition, BaseType], database: Strin
 /**
  * class for function node (non-leaf) in lineage tree
  */
-case class Function(val children: Seq[Label], val udf: String, val expression: Expression) extends Label {
+case class Function(children: Seq[Label], transform: String, expression: Expression) extends Label {
   def sensitive(): Boolean = children.exists(_.sensitive);
 
   lazy val attributes = children.flatMap(_.attributes);
 
   def contains(trans: String*): Boolean = {
-    if (trans.contains(udf)) {
+    if (trans.contains(trans)) {
       return true;
     }
     return children.exists(_.contains(trans: _*));
   }
+
+  def getTypes: Seq[BaseType] = {
+    children.flatMap(_.getTypes).flatMap(resolveType(_, this)).filter(_ != null);
+  }
+
 }
 
 /**
  * class for constant node (leaf) in lineage tree
  */
-case class Constant(val value: Any) extends Label {
+case class Constant(value: Any) extends Label {
   def sensitive(): Boolean = false;
 
   lazy val attributes = Nil;
 
   def contains(trans: String*) = false;
+
+  def getTypes = Nil;
 }
 
 /**
@@ -112,5 +135,7 @@ case class PredicateLabel(val children: Seq[Label], val operation: String) exten
   lazy val attributes = children.flatMap(_.attributes);
 
   def contains(trans: String*) = false;
+
+  def getTypes = children.flatMap(_.getTypes);
 
 }

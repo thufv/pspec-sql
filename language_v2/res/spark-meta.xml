@@ -6,6 +6,7 @@
 		<table name="test">
 			<column name="c1">
 				<struct>
+
 					<field name="f1" data-category="name"></field>
 					<field name="f2">
 						<map>

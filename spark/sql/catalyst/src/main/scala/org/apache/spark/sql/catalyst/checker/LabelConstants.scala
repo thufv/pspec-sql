@@ -44,6 +44,14 @@ trait LabelConstants {
   val Func_GetItem = "GetItem";
   val Func_GetEntry = "GetEntry";
 
+  def isGetItem(trans: String) = trans == Func_GetItem;
+
+  def isGetField(trans: String) = trans.startsWith(Func_GetField);
+
+  def isGetEntry(trans: String) = trans.startsWith(Func_GetEntry);
+
+  def getSubType(trans: String) = trans.split("\\.")(1);
+
   val Pred_Equal = "=";
   val Pred_Greater = ">";
   val Pred_GreaterEqual = ">=";
@@ -63,4 +71,13 @@ trait LabelConstants {
   val Op_Aggregates = Func_Aggregates.map(DesensitizeOperation.get(_));
 
   val Func_SetOperations = Set(Func_Intersect, Func_Union, Func_Except);
+
+  private val Ignorables = Set(Func_Union, Func_Intersect, Func_Except);
+
+  private val Skippables = Ignorables ++ Set(Func_GetField, Func_GetItem, Func_GetEntry);
+
+  def ignorable(transform: String) = Ignorables.contains(transform);
+
+  def skippable(transform: String) = Skippables.contains(transform);
+
 }

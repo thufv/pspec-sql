@@ -87,7 +87,6 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 		}
 
 		if (this.dataRef != null) {
-			//TODO
 			if (this.rawDataRefs != null) {
 				for (DataRef ref : rawDataRefs) {
 					Element refEle = ref.outputElement(document);

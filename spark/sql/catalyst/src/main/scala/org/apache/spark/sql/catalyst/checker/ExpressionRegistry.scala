@@ -32,13 +32,14 @@ object ExpressionRegistry extends LabelConstants {
     func match {
       //special care for sub types operator
       case field: GetField => Func_GetField + "." + field.field.name;
+      
       case item: GetItem => {
         item.child.dataType match {
           case _: ArrayType => Func_GetItem;
           case _: MapType => {
             item.ordinal match {
               case literal: Literal => Func_GetEntry + "." + literal.value;
-              case _ => Func_GetEntry;
+              case _ => Func_GetEntry + "." + "$unkonwn";
             }
           }
         }

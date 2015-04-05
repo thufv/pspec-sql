@@ -13,15 +13,16 @@ import org.apache.spark.sql.types.DataType
 import org.apache.spark.sql.types.NumericType
 import edu.thu.ss.spec.global.MetaManager
 import org.apache.spark.sql.catalyst.dp.TableInfo
-import org.apache.spark.sql.catalyst.dp.ColumnInfo
+import org.apache.spark.sql.catalyst.dp.AttributeInfo
 import org.apache.spark.sql.catalyst.dp.TableInfo
-import org.apache.spark.sql.catalyst.dp.ColumnInfo
+import org.apache.spark.sql.catalyst.dp.AttributeInfo
+import org.apache.spark.sql.catalyst.dp.AttributeInfo
 
 class HiveTableInfo(val hive: HiveContext) extends TableInfo {
   private class Table {
-    private val infos: Map[String, ColumnInfo] = new HashMap;
+    private val infos: Map[String, AttributeInfo] = new HashMap;
 
-    def get(column: String): ColumnInfo = {
+    def get(column: String): AttributeInfo = {
       val range = infos.get(column);
       range match {
         case Some(r) => r
@@ -29,14 +30,14 @@ class HiveTableInfo(val hive: HiveContext) extends TableInfo {
       }
     }
 
-    def put(column: String, range: ColumnInfo) {
+    def put(column: String, range: AttributeInfo) {
       infos.put(column, range);
     }
   }
 
   private val tableInfos: Map[String, Map[String, Table]] = new HashMap;
 
-  def get(dbName: String, tableName: String, columnName: String): ColumnInfo = {
+  def get(dbName: String, tableName: String, columnName: String): AttributeInfo = {
     val database = tableInfos.get(dbName);
     database match {
       case Some(d) => {
@@ -50,11 +51,11 @@ class HiveTableInfo(val hive: HiveContext) extends TableInfo {
     }
   }
 
-  def get(tableName: String, columnName: String): ColumnInfo = {
+  def get(tableName: String, columnName: String): AttributeInfo = {
     get("default", tableName, columnName);
   }
 
-  private def put(dbName: String, tableName: String, columnName: String, info: ColumnInfo) {
+  private def put(dbName: String, tableName: String, columnName: String, info: AttributeInfo) {
     val db = tableInfos.getOrElseUpdate(dbName, new HashMap);
     val table = db.getOrElseUpdate(tableName, new Table);
     table.put(columnName, info);
@@ -71,6 +72,7 @@ class HiveTableInfo(val hive: HiveContext) extends TableInfo {
     hive.sql("use default");
   }
 
+  //TODO luochen add support for complex types, for map type, only predefined keys are queried
   private def queryDatabase(database: String) {
     val rdd = hive.sql("show tables").collect;
     rdd.foreach(row => {
@@ -99,7 +101,7 @@ class HiveTableInfo(val hive: HiveContext) extends TableInfo {
               multiplicity = Some(queryMultiplicity(table, column));
             }
           }
-          put(database, table, column, new ColumnInfo(row(2 * i), row(2 * i + 1), multiplicity, numerics(i).dataType.asInstanceOf[NumericType]));
+          put(database, table, column, new AttributeInfo(row(2 * i), row(2 * i + 1), multiplicity, numerics(i).dataType.asInstanceOf[NumericType]));
           i += 1;
         }
       }

@@ -23,7 +23,14 @@
 		<data-category id="education" parent="qi"></data-category>
 		<data-category id="name" parent="qi"></data-category>
 		<data-category id="marital" parent="qi"></data-category>
-		<data-category id="birth" parent="qi"></data-category>
+		<data-category id="birth" parent="qi">
+			<desensitize-operations>
+				<operation>min</operation>
+				<operation>max</operation>
+				<operation>sum</operation>
+				<operation>avg</operation>
+			</desensitize-operations>
+		</data-category>
 
 		<data-category id="country" parent="address"></data-category>
 		<data-category id="state" parent="address"></data-category>

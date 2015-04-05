@@ -41,7 +41,9 @@ public class DataCategory extends Category<DataCategory> {
 
 	public void inheritDesensitizeOperation(DataContainer container) {
 		if (parent != null) {
-			this.ops.addAll(parent.ops);
+			for (DesensitizeOperation op : parent.ops) {
+				this.addOperation(op);
+			}
 		}
 		if (children != null) {
 			for (DataCategory data : children) {

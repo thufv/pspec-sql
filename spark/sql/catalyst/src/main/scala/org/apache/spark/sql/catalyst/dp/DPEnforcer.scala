@@ -179,7 +179,7 @@ class DPEnforcer(val tableInfo: TableInfo, val budgetManager: DPBudgetManager, v
     val scale = enforce(unary.child, dp);
     unary match {
       case generate: Generate => {
-        //TODO
+        //TODO: luochen, compute scale for generate function?
         return scale;
       }
       case expand: Expand => {
@@ -261,7 +261,7 @@ class DPEnforcer(val tableInfo: TableInfo, val budgetManager: DPBudgetManager, v
         val label = leaf.projectLabels.valuesIterator.next.asInstanceOf[ColumnLabel];
         graph.addTable(label.table, leaf.projectLabels.keySet);
       }
-      //TODO relax the restrictions
+      //TODO: luochen relax the restrictions on join
       case _ => throw new PrivacyException("only direct join on tables are supported");
     }
   }
@@ -324,34 +324,27 @@ class DPEnforcer(val tableInfo: TableInfo, val budgetManager: DPBudgetManager, v
   }
 
   private def enforceDP(agg: AggregateExpression, plan: Aggregate, scale: Int, refine: Boolean, func: (Double, Double) => Double) {
-    val types = agg.children.map(resolveAggregateType(_, plan));
-
-    if (types.exists(_ == Invalid_Aggregate)) {
-      throw new PrivacyException("only aggregate directly on sensitive attributes are allowed");
+    if (!agg.enableDP) {
+      return ;
     }
-
-    if (types.exists(_ == Direct_Aggregate)) {
-      if (currentAggPlan != plan) {
-        currentAggPlan = plan;
-        currentRefiner = new AttributeRangeRefiner(tableInfo, plan);
-      }
+    if (currentAggPlan != plan) {
+      currentAggPlan = plan;
+      currentRefiner = new AttributeRangeRefiner(tableInfo, plan);
+    }
+    if (refine) {
       val range = resolveAttributeRange(agg.children(0), plan);
-      if (range == null) {
-        agg.sensitivity = func(0, 0);
-      } else {
-        agg.sensitivity = func(DPUtil.toDouble(range._1), DPUtil.toDouble(range._2));
-      }
-      //TODO
-      agg.epsilon = epsilon / scale;
-      agg.enableDP = true;
-      logWarning(s"enable dp for $agg with sensitivity = ${agg.sensitivity}, epsilon = $epsilon, scale = $scale, and result epsilon = ${agg.epsilon}");
+      agg.sensitivity = func(DPUtil.toDouble(range._1), DPUtil.toDouble(range._2));
     } else {
-      logWarning(s"insensitive or derived aggregation $agg, dp disabled");
+      agg.sensitivity = func(0, 0);
     }
+    agg.epsilon = epsilon / scale;
+
+    logWarning(s"enable dp for $agg with sensitivity = ${agg.sensitivity}, epsilon = $epsilon, scale = $scale, and result epsilon = ${agg.epsilon}");
   }
 
   private def resolveAttributeRange(expr: Expression, plan: LogicalPlan): (Int, Int) = {
     expr match {
+      //TODO: luochen support operators for complex data types
       case attr: AttributeReference => {
         return currentRefiner.get(attr, plan);
       }
@@ -379,7 +372,8 @@ class DPEnforcer(val tableInfo: TableInfo, val budgetManager: DPBudgetManager, v
           return info.multiplicity;
         }
         case func: Function => {
-          func.udf match {
+          func.transform match {
+            //TODO: luochen support operators for complex data types
             case Func_Union => {
               multiplicityHelper(func, multiplicityUnion(_, _));
             }

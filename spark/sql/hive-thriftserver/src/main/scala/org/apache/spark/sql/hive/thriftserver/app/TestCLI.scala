@@ -8,4 +8,5 @@ import org.apache.spark.sql.hive.thriftserver.SparkSQLCLIDriver
 object TestCLI extends App {
   System.setProperty("spark.master", "local");
   SparkSQLCLIDriver.main(args);
+
 }

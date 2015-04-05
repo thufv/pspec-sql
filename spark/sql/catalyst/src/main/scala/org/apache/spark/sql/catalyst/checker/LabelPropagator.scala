@@ -350,6 +350,7 @@ class LabelPropagator extends Logging {
       case _: GetItem => {
         resolveTermFunction(expression, plan);
       }
+
       case _: Coalesce => {
         resolveTermFunction(expression, plan);
       }

@@ -113,11 +113,11 @@ object SparkChecker extends Logging {
       projects.++=(plan.projectLabels.values);
       val flows = builder(projects, plan.condLabels);
 
-      val checker = new SparkPolicyChecker;
+      val checker = new SparkPolicyChecker(budgetManager, epsilon);
       checker.check(flows, policies);
 
       val dpEnforcer = new DPEnforcer(tableInfo, budgetManager, epsilon);
-      //  dpEnforcer(plan);
+      dpEnforcer(plan);
     } finally {
       val end = System.currentTimeMillis();
       val time = end - begin;

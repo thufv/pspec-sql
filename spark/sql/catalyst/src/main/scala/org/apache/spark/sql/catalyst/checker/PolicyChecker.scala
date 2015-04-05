@@ -18,6 +18,10 @@ import edu.thu.ss.spec.lang.pojo.DataRef
 import scala.collection.mutable.HashMap
 import org.apache.spark.sql.catalyst.checker.LabelConstants._
 import org.apache.spark.sql.catalyst.expressions.AggregateExpression
+import scala.collection.mutable.HashSet
+import org.apache.spark.sql.catalyst.dp.DPBudgetManager
+import org.apache.spark.sql.catalyst.dp.GlobalBudgetManager
+import org.apache.spark.sql.catalyst.dp.FineBudgetManager
 
 /**
  * interface for privacy checker
@@ -33,6 +37,30 @@ private class IndexEntry(val projects: Map[DataCategory, Set[Flow]], val conds: 
 private class FlowIndex(val flows: Map[Policy, Set[Flow]]) {
 
   private val index = new HashMap[Policy, IndexEntry];
+
+  initialize;
+
+  private def initialize() {
+    flows.foreach(t => {
+      val policy = t._1;
+      val set = t._2;
+      val projects = new HashMap[DataCategory, Set[Flow]];
+      val conds = new HashMap[DataCategory, Set[Flow]];
+      set.foreach(flow => {
+        flow.action match {
+          case Action.Projection => addFlow(flow, projects);
+          case Action.Condition => addFlow(flow, conds);
+        }
+      })
+      val entry = new IndexEntry(projects, conds);
+      index.put(policy, entry);
+    });
+  }
+
+  private def addFlow(flow: Flow, map: Map[DataCategory, Set[Flow]]) {
+    val set = map.getOrElseUpdate(flow.data, new HashSet[Flow]);
+    set.add(flow);
+  }
 
   def collect(policy: Policy, ref: DataRef): Seq[Flow] = {
     val action = ref.getAction();
@@ -84,13 +112,15 @@ private class FlowIndex(val flows: Map[Policy, Set[Flow]]) {
   }
 }
 
-class SparkPolicyChecker extends PolicyChecker with Logging {
+class SparkPolicyChecker(_budget: DPBudgetManager, val epsilon: Double) extends PolicyChecker with Logging {
 
   lazy val user = MetaManager.currentUser();
 
   private var violated = false;
 
   private var flowIndex: FlowIndex = null;
+
+  private val budget = _budget.copy;
 
   def check(flows: Map[Policy, Set[Flow]], policies: Set[Policy]): Unit = {
     if (policies.size == 0) {
@@ -198,7 +228,11 @@ class SparkPolicyChecker extends PolicyChecker with Logging {
     var i = 0;
     for (de <- res.getDesensitizations()) {
       if (de != null) {
-        val ref = rule.getAssociation().get(i);
+        val ref = if (rule.isSingle()) {
+          rule.getDataRef();
+        } else {
+          rule.getAssociation().get(i);
+        }
         val flow = flows(i);
         if (!checkDesensitization(flow, de)) {
           return false;
@@ -226,8 +260,46 @@ class SparkPolicyChecker extends PolicyChecker with Logging {
   }
 
   private def estimateCost(res: Restriction, flows: Array[Flow]): Double = {
-    //TODO finish cost estimation
-    0.0;
+    var total = 0.0;
+    for (i <- 0 to flows.length - 1) {
+      total += estimateCost(res.getDesensitizations()(i), flows(i));
+    }
+    return total;
+  }
+
+  private def estimateCost(de: Desensitization, flow: Flow): Double = {
+    if (de == null) {
+      return 0.0;
+    }
+    val op = flow.path.op;
+    if (!Op_Aggregates.contains(op)) {
+      return 0.0;
+    }
+    val agg = asAggregate(flow.path.func);
+    if (agg.enableDP) {
+      //already consumed
+      return 0.0;
+    }
+
+    budget match {
+      case global: GlobalBudgetManager => {
+        return epsilon;
+      }
+      case fine: FineBudgetManager => {
+        if (!budget.specified(flow.data)) {
+          return 0.0;
+        } else {
+          val left = budget.budget(flow.data);
+          if (left == 0.0) {
+            return Double.MaxValue;
+          } else {
+            return epsilon / left;
+          }
+        }
+
+      }
+    }
+
   }
 
   private def setDP(res: Restriction, flows: Array[Flow]) {
@@ -236,8 +308,10 @@ class SparkPolicyChecker extends PolicyChecker with Logging {
       val flow = flows(i);
       if (de != null && Op_Aggregates.contains(flow.path.op)) {
         val agg = asAggregate(flow.path.func);
-        agg.enableDP = true;
-        //TODO should consume epsilon for temporarily
+        if (!agg.enableDP) {
+          agg.enableDP = true;
+          budget.consume(flow.data, epsilon);
+        }
       }
       i += 1;
     });

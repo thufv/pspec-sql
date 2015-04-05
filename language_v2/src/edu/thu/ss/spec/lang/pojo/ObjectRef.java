@@ -55,7 +55,6 @@ public class ObjectRef implements Parsable, Writable {
 
 	@Override
 	public Element outputElement(Document document) {
-		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
 	}
 

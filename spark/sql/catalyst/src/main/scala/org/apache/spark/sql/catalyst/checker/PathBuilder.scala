@@ -15,11 +15,37 @@ import scala.collection.mutable.HashMap
 import scala.collection.mutable.HashSet
 import edu.thu.ss.spec.lang.pojo.Action
 import org.apache.spark.sql.catalyst.checker.LabelConstants._
+import org.apache.spark.sql.catalyst.checker.CheckerUtil._
 
-case class Path(func: Function, path: Seq[Function], op: DesensitizeOperation) {
+case class Path(func: Function, op: DesensitizeOperation, transforms: Seq[Function]) extends Equals {
 
   override def toString(): String = {
-    op.toString();
+    if (op != null) {
+      op.toString();
+    } else {
+      "NULL";
+    }
+  }
+
+  def canEqual(other: Any) = {
+    other.isInstanceOf[org.apache.spark.sql.catalyst.checker.Path]
+  }
+
+  override def equals(other: Any) = {
+    other match {
+      case that: org.apache.spark.sql.catalyst.checker.Path => that.canEqual(Path.this) && func == that.func && op == that.op
+      case _ => false
+    }
+  }
+
+  override def hashCode() = {
+    val prime = 41
+    var result = 1;
+    val hfunc = if (func != null) func.hashCode else 0;
+    result = prime * result + hfunc;
+    val hop = if (op != null) op.hashCode() else 0;
+    result = prime * result + hop;
+    result;
   }
 }
 
@@ -101,26 +127,41 @@ class PathBuilder {
     val meta = MetaManager.get(label.database, label.table);
     val policy = meta.getPolicy();
 
+    val index = transforms.indexWhere(func => !skippable(func.transform));
+    val (skipped, left) = transforms.splitAt(index);
+
+    var types = Seq(labelType);
+    skipped.foreach(func => {
+      types = types.flatMap(resolveType(_, func));
+    });
+    val primitives = types.flatMap(_.toPrimitives());
+    primitives.foreach(addPath(_, left, action, policy));
+
+    /*
     var data: DataCategory = null;
 
     var it = transforms.iterator;
     var i = 0;
     var curType = labelType;
     var matched = true;
+
     while (curType != null && matched) {
       matched = false;
       curType match {
         case array: ArrayType => {
-          if (it.hasNext && it.next.udf == LabelConstants.Func_GetItem) {
-            curType = array.getItemType();
-            matched = true;
+          if (it.hasNext) {
+            val transform = it.next.transform;
+            if (isGetItem(transform)) {
+              curType = array.getItemType();
+              matched = true;
+            }
           }
         }
         case struct: StructType => {
           if (it.hasNext) {
-            val transform = it.next.udf;
-            if (transform.startsWith(LabelConstants.Func_GetField)) {
-              val field = transform.split("\\.")(1);
+            val transform = it.next.transform;
+            if (isGetField(transform)) {
+              val field = getSubType(transform);
               curType = struct.getFieldType(field);
               matched = true;
             }
@@ -128,9 +169,9 @@ class PathBuilder {
         }
         case map: MapType => {
           if (it.hasNext) {
-            val transform = it.next.udf;
-            if (transform.startsWith(LabelConstants.Func_GetEntry)) {
-              val key = transform.split("\\.")(1);
+            val transform = it.next.transform;
+            if (isGetEntry(transform)) {
+              val key = getSubType(transform);
               curType = map.getEntryType(key);
               matched = true;
             }
@@ -138,7 +179,7 @@ class PathBuilder {
         }
         case composite: CompositeType => {
           if (it.hasNext) {
-            val transform = it.next.udf;
+            val transform = it.next.transform;
             curType = composite.getExtractOperation(transform).getType();
             matched = true;
           }
@@ -159,6 +200,7 @@ class PathBuilder {
     }
     val primitives = curType.toPrimitives();
     primitives.foreach(addPath(_, dropped, action, policy));
+  	*/
   }
 
   /**
@@ -170,10 +212,11 @@ class PathBuilder {
     val set = flows.getOrElseUpdate(policy, new HashSet[Flow]);
 
     transforms.foreach(tran => {
-      if (!Func_SetOperations.contains(tran.udf)) {
-        val op = getOperation(primitive, tran.udf);
-        val flow = Flow(action, primitive.getDataCategory, Path(tran, transforms.toList, op));
-        set.add(flow);
+      val op = getOperation(primitive, tran.transform);
+      if (op != null) {
+        set.add(Flow(action, primitive.getDataCategory, Path(tran, op, transforms.toList)));
+      } else {
+        set.add(Flow(action, primitive.getDataCategory, Path(null, null, transforms.toList)));
       }
     });
   }

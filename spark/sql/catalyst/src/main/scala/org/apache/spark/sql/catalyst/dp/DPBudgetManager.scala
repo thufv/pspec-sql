@@ -16,9 +16,10 @@ import org.apache.spark.sql.catalyst.expressions.Expression
 import org.apache.spark.sql.catalyst.expressions.Cast
 import org.apache.spark.sql.catalyst.expressions.Alias
 import org.apache.spark.sql.catalyst.expressions.AggregateExpression
+import scala.collection.mutable.HashSet
+import org.apache.spark.sql.catalyst.checker.CheckerUtil._
 
 object DPBudgetManager {
-
   def apply(param: PrivacyParams, user: UserCategory): DPBudgetManager = {
     val budget = param.getPrivacyBudget;
 
@@ -50,14 +51,18 @@ trait DPBudgetManager {
 
   def rollback: Unit;
 
+  def specified(data: DataCategory): Boolean;
+
   def consume(plan: Aggregate, epsilon: Double): Unit;
 
   def consume(data: DataCategory, epsilon: Double): Unit;
 
   def budget(data: DataCategory): Double;
+
+  def copy(): DPBudgetManager;
 }
 
-private class GlobalBudgetManager(var budget: Double) extends DPBudgetManager with Logging {
+class GlobalBudgetManager(var budget: Double) extends DPBudgetManager with Logging {
   var tmpBudget: Double = budget;
 
   def commit() {
@@ -70,8 +75,11 @@ private class GlobalBudgetManager(var budget: Double) extends DPBudgetManager wi
     tmpBudget = budget;
   }
 
+  def specified(data: DataCategory) = true;
+
   def consume(data: DataCategory, epsilon: Double) {
     if (tmpBudget - epsilon < 0) {
+      rollback;
       throw new PrivacyException(s"No enough global privacy budget for the query. Privacy budget left: $budget");
     }
     tmpBudget -= epsilon;
@@ -97,16 +105,29 @@ private class GlobalBudgetManager(var budget: Double) extends DPBudgetManager wi
 
   def budget(data: DataCategory) = tmpBudget;
 
+  def copy() = {
+    new GlobalBudgetManager(this.budget);
+  }
+
 }
 
-private class FineBudgetManager(val budgets: mutable.Map[DataCategory, Double]) extends DPBudgetManager with Logging {
+class FineBudgetManager(val budgets: mutable.Map[DataCategory, Double]) extends DPBudgetManager with Logging {
 
   val tmpBudgets = new HashMap[DataCategory, Double];
   sync(budgets, tmpBudgets);
 
   def commit() {
-    logWarning(s"commit fine privacy budget");
     sync(tmpBudgets, budgets);
+
+    val sb = new StringBuilder;
+    for (t <- budgets) {
+      sb.append(s"\tdata: ${t._1.getId()}, budget: ${t._2}\n");
+    }
+    logWarning(s"commit fine privacy budget, budget left:\n ${sb.toString}");
+  }
+
+  def specified(data: DataCategory): Boolean = {
+    return budgets.contains(data);
   }
 
   def rollback() {
@@ -115,8 +136,12 @@ private class FineBudgetManager(val budgets: mutable.Map[DataCategory, Double]) 
   }
 
   def consume(data: DataCategory, epsilon: Double) {
+    if (!specified(data)) {
+      return ;
+    }
     val budget = tmpBudgets.getOrElse(data, 0.0);
     if (budget - epsilon < 0) {
+      rollback;
       throw new PrivacyException(s"No enough privacy budget for ${data.getId}, privacy budget left: $budget");
     }
     tmpBudgets += ((data, budget - epsilon));
@@ -125,7 +150,31 @@ private class FineBudgetManager(val budgets: mutable.Map[DataCategory, Double]) 
   def budget(data: DataCategory) = tmpBudgets.getOrElse(data, 0.0);
 
   def consume(plan: Aggregate, epsilon: Double) {
-    //TODO add budget management for fine budget
+    plan.aggregateExpressions.foreach(consume(_, epsilon, plan));
+  }
+
+  private def consume(expr: Expression, epsilon: Double, plan: Aggregate) {
+    expr match {
+      case cast: Cast => consume(cast.child, epsilon, plan);
+      case alias: Alias => consume(alias.child, epsilon, plan);
+      case agg: AggregateExpression => {
+        if (agg.enableDP) {
+          val set = new HashSet[DataCategory];
+          val attr = resolveAttribute(agg.children(0));
+          val label = plan.childLabel(attr);
+          set ++= label.getDatas;
+          plan.condLabels.foreach(set ++= _.getDatas);
+          set.withFilter(specified(_)).foreach(consume(_, epsilon));
+        }
+      }
+
+    }
+  }
+
+  def copy(): DPBudgetManager = {
+    val map = new HashMap[DataCategory, Double];
+    sync(budgets, map);
+    return new FineBudgetManager(map);
   }
 
   private def sync(src: mutable.Map[DataCategory, Double], dest: mutable.Map[DataCategory, Double]) {
@@ -133,7 +182,6 @@ private class FineBudgetManager(val budgets: mutable.Map[DataCategory, Double]) 
     src.iterator.foreach(t => {
       dest += t;
     });
-
   }
 
 }

@@ -18,6 +18,10 @@ public class MapType extends BaseType {
 			this.valueType = valueType;
 		}
 
+		public BaseType getType(){
+			return valueType;
+		}
+		
 		@Override
 		public int hashCode() {
 			final int prime = 31;
