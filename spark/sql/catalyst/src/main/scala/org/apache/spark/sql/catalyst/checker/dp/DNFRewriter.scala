@@ -1,8 +1,8 @@
-package org.apache.spark.sql.catalyst.dp
+package org.apache.spark.sql.catalyst.checker.dp
 
 import org.apache.spark.sql.catalyst.expressions.Expression
 import org.apache.spark.sql.catalyst.expressions._
-import org.apache.spark.sql.catalyst.checker.CheckerUtil._
+import org.apache.spark.sql.catalyst.checker.util.CheckerUtil._
 import scala.collection.mutable.ListBuffer
 
 object DNFRewriter {
@@ -33,8 +33,8 @@ object DNFRewriter {
     expr match {
       case or: Or => Or(rewrite(or.left), rewrite(or.right));
       case and: And => {
-        val left = and.left;
-        val right = and.right;
+        val left = rewrite(and.left);
+        val right = rewrite(and.right);
         left match {
           case lor: Or => {
             right match {
@@ -59,13 +59,22 @@ object DNFRewriter {
                 val a2 = rewrite(And(left, ror.right));
                 Or(a1, a2);
               }
-              case _ => expr;
+              case _ => And(left, right);
             }
           }
         }
       }
       case _ => expr;
     }
+  }
+
+  def main(args: Array[String]) {
+    val t = Literal(true);
+    val f = Literal(false);
+    val expr = And(And(And(Or(t, f), t), Or(t, t)), t);
+
+    val exprs = apply(expr);
+    exprs.foreach(println(_));
   }
 
 }

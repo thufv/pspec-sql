@@ -15,9 +15,10 @@ import scala.collection.mutable.HashMap
 import scala.collection.mutable.HashSet
 import edu.thu.ss.spec.lang.pojo.Action
 import org.apache.spark.sql.catalyst.checker.LabelConstants._
-import org.apache.spark.sql.catalyst.checker.CheckerUtil._
+import org.apache.spark.sql.catalyst.checker.util.CheckerUtil._
+import org.apache.spark.sql.catalyst.checker.util.TypeUtil._
 
-case class Path(func: Function, op: DesensitizeOperation, transforms: Seq[Function]) extends Equals {
+case class Path(func: FunctionLabel, op: DesensitizeOperation, transforms: Seq[FunctionLabel]) extends Equals {
 
   override def toString(): String = {
     if (op != null) {
@@ -96,7 +97,7 @@ class PathBuilder {
   /**
    * build paths for each data category recursively.
    */
-  private def buildPath(label: Label, action: Action, list: ListBuffer[Function] = new ListBuffer): Unit = {
+  private def buildPath(label: Label, action: Action, list: ListBuffer[FunctionLabel] = new ListBuffer): Unit = {
     label match {
       case data: DataLabel => {
         resolvePaths(data.labelType, data, action, list);
@@ -106,7 +107,7 @@ class PathBuilder {
           resolvePaths(labelType, cond, action, list);
         });
       }
-      case func: Function => {
+      case func: FunctionLabel => {
         list.prepend(func);
         func.children.foreach(buildPath(_, action, list));
         list.remove(0);
@@ -122,7 +123,7 @@ class PathBuilder {
    * first calculate real data categories for data types
    * then map transformations to real data categories.
    */
-  private def resolvePaths(labelType: BaseType, label: ColumnLabel, action: Action, transforms: ListBuffer[Function]): Unit = {
+  private def resolvePaths(labelType: BaseType, label: ColumnLabel, action: Action, transforms: ListBuffer[FunctionLabel]): Unit = {
 
     val meta = MetaManager.get(label.database, label.table);
     val policy = meta.getPolicy();
@@ -207,7 +208,7 @@ class PathBuilder {
    * first calculate real data categories for data types
    * then map transformations to real data categories.
    */
-  private def addPath(primitive: PrimitiveType, transforms: ListBuffer[Function], action: Action, policy: Policy): Unit = {
+  private def addPath(primitive: PrimitiveType, transforms: ListBuffer[FunctionLabel], action: Action, policy: Policy): Unit = {
 
     val set = flows.getOrElseUpdate(policy, new HashSet[Flow]);
 

@@ -1,4 +1,4 @@
-package org.apache.spark.sql.catalyst.checker
+package org.apache.spark.sql.catalyst.checker.util
 
 import org.apache.spark.sql.catalyst.checker.LabelConstants._
 import org.apache.spark.sql.catalyst.expressions.Alias
@@ -13,6 +13,30 @@ import edu.thu.ss.spec.meta.CompositeType
 import edu.thu.ss.spec.meta.StructType
 import edu.thu.ss.spec.meta.ArrayType
 import edu.thu.ss.spec.meta.MapType
+import org.apache.spark.sql.catalyst.expressions.GetItem
+import org.apache.spark.sql.catalyst.expressions.GetField
+import scala.collection.mutable.ListBuffer
+import org.apache.spark.sql.catalyst.expressions.GetItem
+import org.apache.spark.sql.catalyst.expressions.BinaryArithmetic
+import org.apache.spark.sql.catalyst.expressions.UnaryMinus
+import org.apache.spark.sql.catalyst.expressions.Abs
+import org.apache.spark.sql.catalyst.expressions.BinaryComparison
+import org.apache.spark.sql.catalyst.expressions.In
+import org.apache.spark.sql.catalyst.expressions.InSet
+import org.apache.spark.sql.catalyst.expressions.GetItem
+import org.apache.spark.sql.catalyst.checker.ExpressionRegistry
+import org.apache.spark.sql.catalyst.expressions.Abs
+import org.apache.spark.sql.catalyst.expressions.BinaryArithmetic
+import org.apache.spark.sql.catalyst.expressions.BinaryComparison
+import org.apache.spark.sql.catalyst.expressions.In
+import org.apache.spark.sql.catalyst.expressions.InSet
+import org.apache.spark.sql.catalyst.expressions.UnaryMinus
+import org.apache.spark.sql.catalyst.checker.DataLabel
+import org.apache.spark.sql.catalyst.checker.Insensitive
+import org.apache.spark.sql.catalyst.checker.ConditionalLabel
+import org.apache.spark.sql.catalyst.checker.ConstantLabel
+import org.apache.spark.sql.catalyst.checker.Label
+import org.apache.spark.sql.catalyst.checker.FunctionLabel
 
 object AggregateType extends Enumeration {
   type AggregateType = Value
@@ -59,12 +83,12 @@ object CheckerUtil {
   def checkLabelType(label: Label): AggregateType.Value = {
     label match {
       case data: DataLabel => AggregateType.Direct_Aggregate;
-      case cons: Constant => AggregateType.Direct_Aggregate;
+      case cons: ConstantLabel => AggregateType.Direct_Aggregate;
       case in: Insensitive => AggregateType.Direct_Aggregate;
 
       case cond: ConditionalLabel => AggregateType.Direct_Aggregate;
 
-      case func: Function => {
+      case func: FunctionLabel => {
         val types = func.children.map(checkLabelType(_));
         if (types.exists(_ == AggregateType.Invalid_Aggregate)) {
           return AggregateType.Invalid_Aggregate;
@@ -96,19 +120,6 @@ object CheckerUtil {
     }
   }
 
-  def resolveAttribute(expr: Expression): Attribute = {
-    expr match {
-      case attr: Attribute => attr;
-      case alias: Alias => {
-        resolveAttribute(alias.child);
-      }
-      case cast: Cast => {
-        resolveAttribute(cast.child);
-      }
-      case _ => expr.asInstanceOf[Attribute];
-    }
-  }
-
   def exists[T <: TreeNode[T]](node: TreeNode[T], clazz: Class[_ <: T]): Boolean = {
     if (clazz.isInstance(node)) {
       return true;
@@ -126,62 +137,22 @@ object CheckerUtil {
 
   def collect(label: Label, transform: String): Seq[Label] = {
     label match {
-      case func: Function if (func.transform == transform) => {
+      case func: FunctionLabel if (func.transform == transform) => {
         func.children.flatMap(collect(_, transform));
       }
       case _ => List(label);
     }
   }
 
-  def resolveType(t: BaseType, func: Function): Seq[BaseType] = {
-    val transform = func.transform;
-    if (ignorable(transform)) {
-      return Seq(t);
-    }
-    t match {
-      case comp: CompositeType => {
-        val subType = comp.getExtractOperation(transform);
-        if (subType != null) {
-          return Seq(subType.getType());
-        } else {
-          return comp.toPrimitives();
-        }
-      }
-      case struct: StructType => {
-        if (isGetField(transform)) {
-          val field = getSubType(transform);
-          val subType = struct.getField(field);
-          if (subType != null) {
-            Seq(subType.getType());
-          } else {
-            Nil;
-          }
-        } else {
-          return struct.toPrimitives();
-        }
-      }
-      case array: ArrayType => {
-        if (isGetItem(transform)) {
-          return Seq(array.getItemType());
-        } else {
-          return array.toPrimitives();
-        }
-      }
-      case map: MapType => {
-        if (isGetEntry(transform)) {
-          val key = getSubType(transform);
-          val subType = map.getEntry(key);
-          if (subType != null) {
-            Seq(subType.getType);
-          } else {
-            Nil;
-          }
-        } else {
-          return map.toPrimitives();
-        }
-      }
-      case _ => Seq(t);
-    }
-  }
+
+
+  private val SupportedArithms = List(classOf[BinaryArithmetic], classOf[UnaryMinus], classOf[Abs]);
+
+  private val SupportedPredicates = List(classOf[BinaryComparison], classOf[In], classOf[InSet]);
+
+
+  def supportArithmetic(expr: Expression) = SupportedArithms.exists(_.isInstance(expr));
+
+  def supportPredicate(expr: Expression) = SupportedPredicates.exists(_.isInstance(expr));
 
 }

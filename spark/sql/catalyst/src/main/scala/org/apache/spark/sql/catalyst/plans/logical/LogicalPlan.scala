@@ -30,6 +30,7 @@ import scala.collection.mutable.Set
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.HashSet
 import edu.thu.ss.spec.lang.pojo.Policy
+import org.apache.spark.sql.catalyst.checker.util.TypeUtil
 
 abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
   self: Product =>
@@ -50,14 +51,11 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
    * added by luochen
    * lookup lineage tree for attr on child projections
    */
-  def childLabel(attr: Attribute): Label = {
-    children.foreach(c => {
-      val result = c.projectLabels.getOrElse(attr, null);
-      if (result != null) {
-        return result;
-      }
-    });
-    null;
+  def childLabel(expr: Expression): Label = {
+    val list = TypeUtil.getAttributeTypes(expr);
+    val child = children.find(_.projectLabels.contains(list.head.asInstanceOf[Attribute]));
+    val label = child.get.projectLabels.get(list.head.asInstanceOf[Attribute]);
+    TypeUtil.concatComplexLabel(label.get, list.tail);
   }
 
   /**

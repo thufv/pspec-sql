@@ -5,9 +5,9 @@ import scala.collection.JavaConverters.asScalaSetConverter
 import scala.collection.JavaConverters.mapAsScalaMapConverter
 import org.apache.spark.Logging
 import org.apache.spark.sql.catalyst.analysis.Catalog
-import org.apache.spark.sql.catalyst.dp.DPBudgetManager
-import org.apache.spark.sql.catalyst.dp.DPEnforcer
-import org.apache.spark.sql.catalyst.dp.TableInfo
+import org.apache.spark.sql.catalyst.checker.dp.DPBudgetManager
+import org.apache.spark.sql.catalyst.checker.dp.DPEnforcer
+import org.apache.spark.sql.catalyst.checker.dp.TableInfo
 import org.apache.spark.sql.catalyst.expressions.Attribute
 import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
 import org.apache.spark.sql.types

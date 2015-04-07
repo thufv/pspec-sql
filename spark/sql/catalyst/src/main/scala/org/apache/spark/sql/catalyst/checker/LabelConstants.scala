@@ -52,6 +52,8 @@ trait LabelConstants {
 
   def getSubType(trans: String) = trans.split("\\.")(1);
 
+  def isSubtype(trans: String) = isGetItem(trans) || isGetField(trans) || isGetEntry(trans);
+
   val Pred_Equal = "=";
   val Pred_Greater = ">";
   val Pred_GreaterEqual = ">=";
@@ -72,9 +74,11 @@ trait LabelConstants {
 
   val Func_SetOperations = Set(Func_Intersect, Func_Union, Func_Except);
 
-  private val Ignorables = Set(Func_Union, Func_Intersect, Func_Except);
+  val Func_SubTypeOperations = Set(Func_GetField, Func_GetItem, Func_GetEntry);
 
-  private val Skippables = Ignorables ++ Set(Func_GetField, Func_GetItem, Func_GetEntry);
+  private val Ignorables = Func_SetOperations;
+
+  private val Skippables = Func_SubTypeOperations ++ Func_SetOperations;
 
   def ignorable(transform: String) = Ignorables.contains(transform);
 

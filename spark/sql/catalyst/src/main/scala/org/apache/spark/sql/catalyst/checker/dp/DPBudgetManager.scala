@@ -1,4 +1,4 @@
-package org.apache.spark.sql.catalyst.dp
+package org.apache.spark.sql.catalyst.checker.dp
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable
@@ -17,7 +17,8 @@ import org.apache.spark.sql.catalyst.expressions.Cast
 import org.apache.spark.sql.catalyst.expressions.Alias
 import org.apache.spark.sql.catalyst.expressions.AggregateExpression
 import scala.collection.mutable.HashSet
-import org.apache.spark.sql.catalyst.checker.CheckerUtil._
+import org.apache.spark.sql.catalyst.checker.util.TypeUtil._
+import org.apache.spark.sql.catalyst.expressions.Attribute
 
 object DPBudgetManager {
   def apply(param: PrivacyParams, user: UserCategory): DPBudgetManager = {
@@ -160,7 +161,8 @@ class FineBudgetManager(val budgets: mutable.Map[DataCategory, Double]) extends 
       case agg: AggregateExpression => {
         if (agg.enableDP) {
           val set = new HashSet[DataCategory];
-          val attr = resolveAttribute(agg.children(0));
+          val attr = resolveSimpleAttribute(agg.children(0)).asInstanceOf[Attribute];
+          //TODO luochen add support for complex types
           val label = plan.childLabel(attr);
           set ++= label.getDatas;
           plan.condLabels.foreach(set ++= _.getDatas);

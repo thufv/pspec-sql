@@ -4,7 +4,7 @@ import org.apache.spark.sql.catalyst.expressions.Attribute
 import org.apache.spark.sql.catalyst.expressions.AttributeReference
 import org.apache.spark.sql.catalyst.expressions.Expression
 import org.apache.spark.sql.catalyst.checker.LabelConstants._
-import org.apache.spark.sql.catalyst.checker.CheckerUtil._
+import org.apache.spark.sql.catalyst.checker.util.TypeUtil._
 import edu.thu.ss.spec.meta.BaseType
 import edu.thu.ss.spec.meta.JoinCondition
 import edu.thu.ss.spec.lang.pojo.DataCategory
@@ -94,7 +94,7 @@ case class ConditionalLabel(conds: Map[JoinCondition, BaseType], database: Strin
 /**
  * class for function node (non-leaf) in lineage tree
  */
-case class Function(children: Seq[Label], transform: String, expression: Expression) extends Label {
+case class FunctionLabel(children: Seq[Label], transform: String, expression: Expression) extends Label {
   def sensitive(): Boolean = children.exists(_.sensitive);
 
   lazy val attributes = children.flatMap(_.attributes);
@@ -107,7 +107,7 @@ case class Function(children: Seq[Label], transform: String, expression: Express
   }
 
   def getTypes: Seq[BaseType] = {
-    children.flatMap(_.getTypes).flatMap(resolveType(_, this)).filter(_ != null);
+    children.flatMap(_.getTypes).flatMap(resolveType(_, FunctionLabel.this)).filter(_ != null);
   }
 
 }
@@ -115,7 +115,7 @@ case class Function(children: Seq[Label], transform: String, expression: Express
 /**
  * class for constant node (leaf) in lineage tree
  */
-case class Constant(value: Any) extends Label {
+case class ConstantLabel(value: Any) extends Label {
   def sensitive(): Boolean = false;
 
   lazy val attributes = Nil;

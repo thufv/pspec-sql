@@ -22,7 +22,7 @@ import org.apache.spark.sql.types._
 import org.apache.spark.sql.catalyst.trees
 import org.apache.spark.sql.catalyst.errors.TreeNodeException
 import org.apache.spark.util.collection.OpenHashSet
-import org.apache.spark.sql.catalyst.dp.DPUtil
+import org.apache.spark.sql.catalyst.checker.dp.DPUtil
 
 abstract class AggregateExpression extends Expression with Serializable {
   self: Product =>

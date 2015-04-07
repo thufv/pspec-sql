@@ -1,4 +1,4 @@
-package org.apache.spark.sql.catalyst.dp
+package org.apache.spark.sql.catalyst.checker.dp
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable.HashMap
@@ -56,31 +56,55 @@ import solver.variables.VariableFactory
 import solver.variables._
 import solver.search.loop.monitors.SearchMonitorFactory
 import org.apache.spark.sql.catalyst.checker.ColumnLabel
-import org.apache.spark.sql.catalyst.dp.DPUtil._
+import org.apache.spark.sql.catalyst.checker.dp.DPUtil._
 import org.apache.spark.sql.catalyst.checker.DataLabel
-import org.apache.spark.sql.catalyst.checker.Function
+import org.apache.spark.sql.catalyst.checker.FunctionLabel
 import org.apache.spark.sql.catalyst.checker.Label
 import solver.constraints._
 import solver.variables._
-import org.apache.spark.sql.catalyst.checker.Constant
-import org.apache.spark.sql.catalyst.checker.CheckerUtil._
+import org.apache.spark.sql.catalyst.checker.ConstantLabel
+import org.apache.spark.sql.catalyst.checker.util.CheckerUtil._
+import org.apache.spark.sql.catalyst.checker.util.TypeUtil._
+import scala.collection.mutable.ListBuffer
+import scala.collection.mutable.Set
+import org.apache.spark.sql.catalyst.expressions.Projection
+import org.apache.spark.sql.catalyst.plans.logical.Project
+import org.apache.spark.sql.catalyst.expressions.GetItem
+import org.apache.spark.sql.catalyst.expressions.GetField
+import org.apache.spark.sql.catalyst.expressions.GetItem
+import scala.collection.mutable.Queue
+import org.apache.spark.sql.catalyst.plans.logical.Aggregate
+import org.apache.spark.sql.catalyst.plans.logical.LeafNode
 
 class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) extends Logging {
 
   private class PredicateFilter {
-    private val attributes = new HashSet[Attribute];
+    private val attributes = new HashSet[String];
 
-    private val attributeGraph = new SimpleGraph[Attribute, DefaultEdge](classOf[DefaultEdge]);
+    private val relevantGraph = new SimpleGraph[String, DefaultEdge](classOf[DefaultEdge]);
 
-    private val rootAttributes = new HashSet[Attribute];
+    //TODO: possible problems for union on complex types
+    private val equiGraph = new SimpleGraph[String, DefaultEdge](classOf[DefaultEdge]);
+
+    private val aggAttributes = new HashSet[String];
+
+    private val complexAttributes = new HashSet[String];
 
     def initialize(plan: Aggregate) {
       buildGraph(plan);
-      val alg = new ConnectivityInspector[Attribute, DefaultEdge](attributeGraph);
+      val alg = new ConnectivityInspector[String, DefaultEdge](relevantGraph);
 
-      rootAttributes.foreach(attr => {
+      aggAttributes.foreach(attr => {
         val set = alg.connectedSetOf(attr);
-        attributes.++=(set);
+        attributes ++= set;
+      });
+
+      attributes.foreach(attr => {
+        if (isComplexAttribute(attr)) {
+          val pre = getComplexAttribute(attr);
+          val set = attributeSubs.getOrElseUpdate(attr, new HashSet[String]);
+          set.add(attr);
+        }
       });
     }
 
@@ -88,153 +112,182 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
      * test whether a given predicate should be added as constraint
      */
     def effective(pred: Expression, plan: LogicalPlan): Boolean = {
-      pred.foreach(expr => {
-        expr match {
-          case attr: Attribute => {
-            val label = plan.childLabel(attr);
-            for (a <- label.attributes) yield {
-              if (attributes.contains(a)) {
-                return true;
-              }
-            }
-          }
-          case _ =>
+      pred match {
+        case attr if (isAttribute(attr)) => {
+          return effective(attr);
         }
-      });
+        case _ => {
+          return pred.children.exists(effective(_, plan));
+        }
+      }
+
       return false;
     }
 
-    private def effective(attr: Attribute): Boolean = {
-      attributes.contains(attr);
+    def effective(attribute: Expression): Boolean = {
+      val string = getAttributeString(attribute);
+      if (string == null) {
+        return false;
+      } else {
+        return attributes.contains(string);
+      }
     }
 
     private def buildGraph(plan: Aggregate) {
-      plan.aggregateExpressions.foreach(checkAggregateExpression(_, plan));
+      plan.aggregateExpressions.foreach(resolveAggregateExpression(_, plan));
 
-      plan.foreach(node => {
+      plan.child.foreach(node => {
         node match {
           case filter: Filter => {
-            checkExpression(filter.condition, plan);
+            resolveExpression(filter.condition);
           }
           case join: Join => {
             join.condition match {
-              case Some(cond) => checkExpression(cond, plan);
+              case Some(cond) => resolveExpression(cond);
               case _ =>
+            }
+          }
+          case agg: Aggregate => {
+            for (i <- 0 to agg.output.length - 1) {
+              connectOutput(agg.aggregateExpressions(i), agg.output(i).asInstanceOf[Attribute]);
+            }
+          }
+          case project: Project => {
+            for (i <- 0 to project.output.length - 1) {
+              connectOutput(project.projectList(i), project.output(i).asInstanceOf[Attribute]);
             }
           }
           case binary: BinaryNode => {
             //connect left and right attributes in the binary plan
             for (i <- 0 to binary.output.length - 1) {
-              val left = collectAttributes(binary.left.output(i), binary);
-              val right = collectAttributes(binary.right.output(i), binary);
-              connect(left);
-              connect(right);
-              connect(List(left(0), right(0)));
+              val left = binary.left.output(i);
+              val right = binary.right.output(i);
+              val attr = binary.output(i);
+              connectOutput(left, attr);
+              connectOutput(right, attr);
             }
           }
           case _ =>
         }
       });
 
+      //post processing, create nodes and edges for complex types
+      val alg = new ConnectivityInspector[String, DefaultEdge](equiGraph);
+
+      val queue = new Queue[String];
+      complexAttributes.foreach(queue.enqueue(_));
+      while (!queue.isEmpty) {
+        val attr = queue.dequeue;
+        val pre = getComplexAttribute(attr);
+        val subtypes = getComplexSubtypes(attr);
+
+        val equivalents = alg.connectedSetOf(pre);
+        for (equi <- equivalents) {
+          val equiAttr = concatComplexAttribute(equi, subtypes);
+          if (!relevantGraph.containsVertex(equiAttr)) {
+            relevantGraph.addVertex(equiAttr);
+            relevantGraph.addEdge(attr, equiAttr);
+            queue.enqueue(equiAttr);
+          }
+        }
+      }
     }
 
-    private def checkAggregateExpression(expr: Expression, plan: LogicalPlan) {
+    private def resolveAggregateExpression(expr: Expression, plan: LogicalPlan) {
       expr match {
-        case attr: Attribute => {
-          val label = plan.childLabel(attr);
-          checkAggregateLabel(label);
-        }
-        case cast: Cast => checkAggregateExpression(cast.child, plan);
-        case alias: Alias => checkAggregateExpression(alias.child, plan);
+        case cast: Cast => resolveAggregateExpression(cast.child, plan);
+        case alias: Alias => resolveAggregateExpression(alias.child, plan);
         case agg: AggregateExpression => {
-          if (DPUtil.supported(agg)) {
-            checkAggregateExpression(agg.children(0), plan);
+          if (agg.enableDP) {
+            val attr = agg.children(0);
+            aggAttributes.add(getAttributeString(attr));
           }
         }
         case _ =>
       }
     }
 
-    private def checkAggregateLabel(label: Label) {
-      label match {
-        case data: DataLabel => {
-          attributeGraph.addVertex(data.attr);
-          rootAttributes.add(data.attr);
-        }
-        case func: Function => {
-          func.transform match {
-            case Func_Union | Func_Intersect | Func_Except => func.children.foreach(checkAggregateLabel(_));
-            case _ =>
-          }
-        }
-        case _ =>
-      }
-    }
-
-    private def checkExpression(expr: Expression, plan: LogicalPlan) {
+    private def resolveExpression(expr: Expression) {
       expr match {
         case _: And | _: Or | _: Not => {
-          expr.children.foreach(checkExpression(_, plan));
+          expr.children.foreach(resolveExpression(_));
         }
         case _: BinaryComparison | _: In | _: InSet => {
-          val attrs = collectAttributes(expr, plan);
-          connect(attrs);
+          val list = new ListBuffer[String];
+          if (collectAttributes(expr, list)) {
+            connect(list: _*);
+          }
         }
         case _ =>
       }
     }
 
-    private def connect(attrs: Seq[Attribute]) {
-      attrs.foreach(attributeGraph.addVertex(_));
-      for (i <- 0 to attrs.length - 2) {
-        attributeGraph.addEdge(attrs(i), attrs(i + 1));
-      }
-    }
-
-    private def collectAttributes(expr: Expression, plan: LogicalPlan): Seq[Attribute] = {
+    private def collectAttributes(expr: Expression, list: ListBuffer[String]): Boolean = {
       expr match {
-        case attr: Attribute => {
-          val label = plan.childLabel(attr);
-          collectLabels(label, plan);
+        case a if (isAttribute(a)) => {
+          list.append(getAttributeString(a));
+          true;
         }
-        case _ => {
-          expr.children.flatMap(collectAttributes(_, plan));
+        case e if (supportArithmetic(e)) => {
+          e.children.forall(collectAttributes(_, list));
         }
+        case _ => false;
       }
     }
 
-    private def collectLabels(label: Label, plan: LogicalPlan): Seq[Attribute] = {
-      label match {
-        case column: ColumnLabel => {
-          List(column.attr);
-        }
-        case func: Function => {
-          func.children.flatMap(collectLabels(_, plan));
-        }
-        case _ => Nil;
+    private def connectOutput(expr: Expression, output: Attribute) {
+      val list = new ListBuffer[String];
+      list.append(getAttributeString(output));
+      if (collectAttributes(expr, list)) {
+        connect(list: _*);
+      }
+
+      if (output.dataType.isPrimitive) {
+        return ;
+      }
+      val attr = resolveSimpleAttribute(expr);
+      if (attr != null) {
+        val str1 = getAttributeString(output);
+        val str2 = getAttributeString(attr);
+        equiGraph.addVertex(str1);
+        equiGraph.addVertex(str2);
+        equiGraph.addEdge(str1, str2);
       }
     }
+
+    private def connect(attrs: String*) {
+      attrs.foreach(attr => {
+        relevantGraph.addVertex(attr);
+        if (isComplexAttribute(attr)) {
+          complexAttributes.add(attr);
+        }
+      });
+
+      for (i <- 0 to attrs.length - 2) {
+        relevantGraph.addEdge(attrs(i), attrs(i + 1));
+      }
+    }
+
   }
 
   private class ConstraintModel {
-    private val varMaps = new HashMap[Attribute, IntVar];
-    private val attrVars = new LinkedHashSet[IntVar];
-    private val tmpVars = new LinkedHashSet[IntVar];
+    private val attrVars = new HashMap[String, IntVar];
+    private val tmpVars = new HashSet[IntVar];
 
     private val constraintStack = new Stack[Constraint];
     private var constraintIndex = 0;
 
     private lazy val allVars: Array[IntVar] = {
       val array = new Array[IntVar](attrVars.size + tmpVars.size);
-      attrVars.copyToArray(array);
+      attrVars.values.copyToArray(array);
       tmpVars.copyToArray(array, attrVars.size);
       array;
     }
 
-    def getAllVaraibles(attrVar: IntVar): Array[IntVar] = {
-      val target = allVars.indexOf(attrVar);
+    def getAllVaraibles(head: IntVar): Array[IntVar] = {
+      val target = allVars.indexOf(head);
       val tmp = allVars(0);
-      allVars(0) = attrVar;
+      allVars(0) = head;
       allVars(target) = tmp;
       return allVars;
     }
@@ -257,35 +310,33 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
       }
     }
 
-    def getVariable(attr: Attribute): IntVar = {
-      return varMaps.getOrElse(attr, null);
-
+    def getVariable(attr: String): IntVar = {
+      return attrVars.getOrElse(attr, null);
     }
 
     def addTempVariable(v: IntVar): IntVar = {
       tmpVars.add(v);
       return v;
     }
-    def addAttrVariable(attr: Attribute, v: IntVar, force: Boolean = false): IntVar = {
-      if (!varMaps.contains(attr) || force) {
-        attrVars.add(v);
-        varMaps.put(attr, v);
-      }
+    def addAttrVariable(attr: String, v: IntVar): IntVar = {
+      attrVars.put(attr, v);
       return v;
     }
   }
+
+  private var id = 0;
 
   private val Search_Limit = 2000; //in ms
 
   private val solver: Solver = new Solver;
 
-  private var id = 0;
+  private val attributeSubs = new HashMap[String, Set[String]];
 
   private val predFilter = new PredicateFilter;
 
   private val model = new ConstraintModel;
 
-  private val refinedRanges = new HashMap[Attribute, (Int, Int)];
+  private val refinedRanges = new HashMap[String, (Int, Int)];
 
   initialize(aggregate);
 
@@ -300,15 +351,17 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
   }
 
   //TODO luochen, add support for ignore refinement
-  def get(attr: Attribute, plan: LogicalPlan): (Int, Int) = {
+  def get(expr: Expression, plan: LogicalPlan, refine: Boolean): (Int, Int) = {
+    val attr = getAttributeString(expr);
     val result = refinedRanges.getOrElse(attr, null);
     if (result != null) {
       return result;
     }
     val attrVar = model.getVariable(attr);
-    if (attrVar == null) {
+    if (!refine || attrVar == null) {
       logWarning(s"no attribute refinement needed, return original range for $attr");
-      val label = plan.childLabel(attr);
+      //TODO add support for complex types;
+      val label = plan.childLabel(expr);
       val range = resolveAttributeRange(label);
       refinedRanges.put(attr, (range));
       return range;
@@ -364,19 +417,28 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
           case _ =>
         }
       }
+      case agg: Aggregate => {
+        //TODO
+
+      }
+      case project: Project => {
+        //TODO
+      }
+      case binary: BinaryNode => {
+
+      }
+      case leaf: LeafNode => {
+        //create initial variables
+
+      }
       case _ =>
     }
   }
 
   private def resolveAggregateAttribute(expr: Expression, plan: Aggregate) {
     expr match {
-      case attr: Attribute => {
-        val label = plan.childLabel(attr);
-        if (label.contains(Func_Union, Func_Intersect, Func_Except)) {
-          model.addAttrVariable(attr, resolveLabelVar(label, false), true);
-        } else {
-          model.addAttrVariable(attr, resolveLabelVar(label, false));
-        }
+      case attr if (isAttribute(attr)) => {
+        resolveAttributeVar(attr, plan);
       }
       case alias: Alias => {
         resolveAggregateAttribute(alias.child, plan);
@@ -507,18 +569,7 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
     term match {
       //add support for complex data types
       case attr: Attribute => {
-        val attrVar = model.getVariable(attr);
-        if (attrVar != null) {
-          return attrVar;
-        } else {
-          //create a new attribute variable
-          val label = plan.childLabel(attr);
-          if (label.contains(Func_Union, Func_Intersect, Func_Except)) {
-            model.addAttrVariable(attr, resolveLabelVar(label), true);
-          } else {
-            model.addAttrVariable(attr, resolveLabelVar(label));
-          }
-        }
+        model.getVariable(getAttributeString(attr));
       }
       case literal: Literal => {
         VariableFactory.fixed(literal.value, solver);
@@ -632,127 +683,22 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
     }
   }
 
-  private def resolveLabelVar(label: Label, arithm: Boolean = true): IntVar = {
+  private def resolveAttributeVar(attr: Expression, plan: LogicalPlan): IntVar = {
+    val str = getAttributeString(attr);
+    return model.getVariable(str);
+    //try to create variable, should only happen for complex types for top aggregate expressions
+    /* val label = plan.childLabel(attr);
+    val transformed = transformComplexLabel(label);
+    val range = resolveAttributeRange(transformed);
 
-    def unaryArithmHelper(func: Function, transFunc: (IntVar) => IntVar): IntVar = {
-      val child = resolveLabelVar(func.children(0), arithm);
-      if (child == null) {
-        return null;
-      }
-      return transFunc(child);
-    }
-
-    def binaryArithmHelper(func: Function, rangeFunc: ((Int, Int), (Int, Int)) => (Int, Int), transFunc: (IntVar, IntVar, IntVar) => Constraint): IntVar = {
-      val left = resolveLabelVar(func.children(0), arithm);
-      val right = resolveLabelVar(func.children(1), arithm);
-      if (left == null || right == null) {
-        return null;
-      } else {
-        val range = rangeFunc((left.getLB, left.getUB), (right.getLB, right.getUB));
-        val tmp =
-          if (range == null) {
-            VariableFactory.fixed(0, solver);
-          } else {
-            newTmpVar(range._1, range._2);
-          }
-        model.addTempVariable(tmp);
-        model.addConstraint(transFunc(left, right, tmp));
-        return tmp;
-      }
-    }
-
-    label match {
-      case column: ColumnLabel => {
-        val attrVar = model.getVariable(column.attr);
-        if (attrVar != null) {
-          return attrVar;
-        } else {
-          val range = infos.get(column.database, column.table, column.attr.name);
-          model.addAttrVariable(column.attr, VariableFactory.bounded(s"${column.attr}", range.low, range.up, solver));
-        }
-      }
-      case cons: Constant => {
-        VariableFactory.fixed(cons.value, solver);
-      }
-      case func: Function => {
-        //TODO: luochen add support for complex data types
-        func.transform match {
-          case Arithmetic_UnaryMinus if (arithm) => {
-            unaryArithmHelper(func, VariableFactory.scale(_, -1));
-          }
-          case Arithmetic_Abs if (arithm) => {
-            unaryArithmHelper(func, VariableFactory.abs(_));
-          }
-          case Arithmetic_Add if (arithm) => {
-            val labels = collect(label, Arithmetic_Add);
-            val vars = labels.map(resolveLabelVar(_, arithm));
-            if (vars.exists(_ == null)) {
-              return null;
-            } else {
-              val range = rangeAdd(vars.map(v => (v.getLB, v.getUB)): _*);
-              val tmp = newTmpVar(range._1, range._2);
-              model.addTempVariable(tmp);
-              model.addConstraint(IntConstraintFactory.sum(vars.toArray, tmp));
-              tmp;
-            }
-          }
-          case Arithmetic_Subtract if (arithm) => {
-            val labels = collect(label, Arithmetic_Subtract);
-            val vars = labels.map(resolveLabelVar(_, arithm));
-            if (vars.exists(_ == null)) {
-              return null;
-            } else {
-              val range = rangeSubtract(vars.map(v => (v.getLB, v.getUB)): _*);
-              val tmp = newTmpVar(range._1, range._2);
-              model.addTempVariable(tmp);
-              model.addConstraint(IntConstraintFactory.sum(vars.toArray, tmp));
-              tmp;
-            }
-          }
-          case Arithmetic_Divide if (arithm) => {
-            binaryArithmHelper(func, rangeDivide(_, _), (left: IntVar, right: IntVar, result: IntVar) => {
-              IntConstraintFactory.eucl_div(left, right, result);
-            });
-          }
-          case Arithmetic_Multiply if (arithm) => {
-            binaryArithmHelper(func, rangeTimes(_, _), (left: IntVar, right: IntVar, result: IntVar) => {
-              IntConstraintFactory.times(left, right, result);
-            });
-          }
-          case Arithmetic_Remainder if (arithm) => {
-            binaryArithmHelper(func, rangeRemainder(_, _), (left: IntVar, right: IntVar, result: IntVar) => {
-              IntConstraintFactory.mod(left, right, result);
-            });
-          }
-
-          case Func_Union => {
-            binaryArithmHelper(func, rangeUnion(_, _), (left: IntVar, right: IntVar, result: IntVar) => {
-              LogicalConstraintFactory.or(IntConstraintFactory.arithm(result, "=", left), IntConstraintFactory.arithm(result, "=", right));
-            });
-          }
-
-          case Func_Intersect => {
-            binaryArithmHelper(func, rangeIntersect(_, _), (left: IntVar, right: IntVar, result: IntVar) => {
-              LogicalConstraintFactory.and(IntConstraintFactory.arithm(result, "=", left), IntConstraintFactory.arithm(result, "=", right));
-            });
-          }
-
-          case Func_Except => {
-            binaryArithmHelper(func, rangeExcept(_, _), (left: IntVar, right: IntVar, result: IntVar) => {
-              LogicalConstraintFactory.and(IntConstraintFactory.arithm(result, "=", left), IntConstraintFactory.arithm(result, "!=", right));
-            });
-          }
-
-          case _ => null;
-        }
-      }
-      case _ => null;
-
-    }
+    val created = VariableFactory.bounded(str, range._1, range._2, solver);
+    model.addAttrVariable(str, created);
+     */
   }
 
+  //TODO: support complex types
   private def resolveAttributeRange(label: Label): (Int, Int) = {
-    def rangeHelper(func: Function, trans: ((Int, Int), (Int, Int)) => (Int, Int)): (Int, Int) = {
+    def rangeHelper(func: FunctionLabel, trans: ((Int, Int), (Int, Int)) => (Int, Int)): (Int, Int) = {
       val left = resolveAttributeRange(func.children(0));
       val right = resolveAttributeRange(func.children(0));
       trans(left, right);
@@ -763,7 +709,7 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
         val info = infos.get(column.database, column.table, column.attr.name);
         (info.low, info.up);
       }
-      case func: Function => {
+      case func: FunctionLabel => {
         func.transform match {
           case Func_Union => {
             rangeHelper(func, DPUtil.rangeUnion(_, _));
@@ -783,7 +729,7 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
 
   private def nextId(): Int = {
     id += 1;
-    id;
+    nextId;
   }
 
   private def newTmpVar(min: Int, max: Int): IntVar = {

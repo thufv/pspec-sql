@@ -12,11 +12,8 @@ import org.apache.spark.sql.catalyst.expressions.AttributeReference
 import org.apache.spark.sql.types.DataType
 import org.apache.spark.sql.types.NumericType
 import edu.thu.ss.spec.global.MetaManager
-import org.apache.spark.sql.catalyst.dp.TableInfo
-import org.apache.spark.sql.catalyst.dp.AttributeInfo
-import org.apache.spark.sql.catalyst.dp.TableInfo
-import org.apache.spark.sql.catalyst.dp.AttributeInfo
-import org.apache.spark.sql.catalyst.dp.AttributeInfo
+import org.apache.spark.sql.catalyst.checker.dp.TableInfo
+import org.apache.spark.sql.catalyst.checker.dp.AttributeInfo
 
 class HiveTableInfo(val hive: HiveContext) extends TableInfo {
   private class Table {

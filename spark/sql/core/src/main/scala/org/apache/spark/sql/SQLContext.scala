@@ -39,7 +39,7 @@ import org.apache.spark.sql.sources._
 import org.apache.spark.sql.types._
 import org.apache.spark.util.Utils
 import org.apache.spark.{ Partition, SparkContext }
-import org.apache.spark.sql.catalyst.dp.DPUtil
+import org.apache.spark.sql.catalyst.checker.dp.DPUtil
 import org.apache.spark.sql.catalyst.checker.SparkChecker
 
 /**

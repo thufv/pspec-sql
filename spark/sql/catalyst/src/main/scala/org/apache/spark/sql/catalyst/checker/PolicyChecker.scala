@@ -19,9 +19,9 @@ import scala.collection.mutable.HashMap
 import org.apache.spark.sql.catalyst.checker.LabelConstants._
 import org.apache.spark.sql.catalyst.expressions.AggregateExpression
 import scala.collection.mutable.HashSet
-import org.apache.spark.sql.catalyst.dp.DPBudgetManager
-import org.apache.spark.sql.catalyst.dp.GlobalBudgetManager
-import org.apache.spark.sql.catalyst.dp.FineBudgetManager
+import org.apache.spark.sql.catalyst.checker.dp.DPBudgetManager
+import org.apache.spark.sql.catalyst.checker.dp.GlobalBudgetManager
+import org.apache.spark.sql.catalyst.checker.dp.FineBudgetManager
 
 /**
  * interface for privacy checker
@@ -317,5 +317,5 @@ class SparkPolicyChecker(_budget: DPBudgetManager, val epsilon: Double) extends 
     });
   }
 
-  private def asAggregate(func: Function): AggregateExpression = func.expression.asInstanceOf[AggregateExpression];
+  private def asAggregate(func: FunctionLabel): AggregateExpression = func.expression.asInstanceOf[AggregateExpression];
 }

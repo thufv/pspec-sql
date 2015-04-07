@@ -1,4 +1,4 @@
-package org.apache.spark.sql.catalyst.dp
+package org.apache.spark.sql.catalyst.checker.dp
 
 import scala.math.BigDecimal
 import scala.util.Random

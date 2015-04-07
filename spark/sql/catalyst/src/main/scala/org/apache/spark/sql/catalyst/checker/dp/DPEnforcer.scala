@@ -1,4 +1,4 @@
-package org.apache.spark.sql.catalyst.dp
+package org.apache.spark.sql.catalyst.checker.dp
 
 import scala.collection.Set
 import scala.collection.mutable
@@ -8,9 +8,9 @@ import scala.collection.mutable.ListBuffer
 import org.apache.spark.Logging
 import org.apache.spark.sql.catalyst.checker.ColumnLabel
 import org.apache.spark.sql.catalyst.checker.ConditionalLabel
-import org.apache.spark.sql.catalyst.checker.Constant
+import org.apache.spark.sql.catalyst.checker.ConstantLabel
 import org.apache.spark.sql.catalyst.checker.DataLabel
-import org.apache.spark.sql.catalyst.checker.Function
+import org.apache.spark.sql.catalyst.checker.FunctionLabel
 import org.apache.spark.sql.catalyst.checker.Insensitive
 import org.apache.spark.sql.catalyst.checker.Label
 import org.apache.spark.sql.catalyst.checker.LabelConstants._
@@ -49,9 +49,9 @@ import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
 import org.apache.spark.sql.catalyst.plans.logical.Project
 import org.apache.spark.sql.catalyst.plans.logical.UnaryNode
 import org.apache.spark.sql.catalyst.plans.logical.Union
-import org.apache.spark.sql.catalyst.dp.DPUtil._
-import org.apache.spark.sql.catalyst.checker.CheckerUtil._
-import org.apache.spark.sql.catalyst.checker.AggregateType._
+import org.apache.spark.sql.catalyst.checker.dp.DPUtil._
+import org.apache.spark.sql.catalyst.checker.util.CheckerUtil._
+import org.apache.spark.sql.catalyst.checker.util.TypeUtil._
 import org.apache.spark.sql.catalyst.plans.logical.Aggregate
 
 /**
@@ -274,8 +274,9 @@ class DPEnforcer(val tableInfo: TableInfo, val budgetManager: DPBudgetManager, v
       }
       case equal: EqualTo => {
         try {
-          val left = resolveAttribute(equal.left);
-          val right = resolveAttribute(equal.right);
+          //join on complex data types is not allowed
+          val left = resolveSimpleAttribute(equal.left).asInstanceOf[Attribute];
+          val right = resolveSimpleAttribute(equal.right).asInstanceOf[Attribute];
           val lmulti = resolveAttributeMultiplicity(equal.left, plan);
           val rmulti = resolveAttributeMultiplicity(equal.right, plan);
           //   graph.updateEdge(lLabel.table, rLabel.table, stat.get(rLabel.database, rLabel.table, right.name));
@@ -332,7 +333,7 @@ class DPEnforcer(val tableInfo: TableInfo, val budgetManager: DPBudgetManager, v
       currentRefiner = new AttributeRangeRefiner(tableInfo, plan);
     }
     if (refine) {
-      val range = resolveAttributeRange(agg.children(0), plan);
+      val range = resolveAttributeRange(agg.children(0), plan, refine);
       agg.sensitivity = func(DPUtil.toDouble(range._1), DPUtil.toDouble(range._2));
     } else {
       agg.sensitivity = func(0, 0);
@@ -342,24 +343,24 @@ class DPEnforcer(val tableInfo: TableInfo, val budgetManager: DPBudgetManager, v
     logWarning(s"enable dp for $agg with sensitivity = ${agg.sensitivity}, epsilon = $epsilon, scale = $scale, and result epsilon = ${agg.epsilon}");
   }
 
-  private def resolveAttributeRange(expr: Expression, plan: LogicalPlan): (Int, Int) = {
+  private def resolveAttributeRange(expr: Expression, plan: LogicalPlan, refine: Boolean): (Int, Int) = {
     expr match {
       //TODO: luochen support operators for complex data types
-      case attr: AttributeReference => {
-        return currentRefiner.get(attr, plan);
+      case attr if (isAttribute(attr)) => {
+        return currentRefiner.get(attr, plan, refine);
       }
       case alias: Alias => {
-        resolveAttributeRange(alias.child, plan);
+        resolveAttributeRange(alias.child, plan, refine);
       }
       case cast: Cast => {
-        resolveAttributeRange(cast.child, plan);
+        resolveAttributeRange(cast.child, plan, refine);
       }
       case _ => null;
     }
   }
 
   private def resolveAttributeMultiplicity(expr: Expression, plan: LogicalPlan): Option[Int] = {
-    def multiplicityHelper(func: Function, trans: (Option[Int], Option[Int]) => Option[Int]): Option[Int] = {
+    def multiplicityHelper(func: FunctionLabel, trans: (Option[Int], Option[Int]) => Option[Int]): Option[Int] = {
       val left = resolveLabelMultiplicity(func.children(0));
       val right = resolveLabelMultiplicity(func.children(1));
       return trans(left, right);
@@ -371,7 +372,7 @@ class DPEnforcer(val tableInfo: TableInfo, val budgetManager: DPBudgetManager, v
           val info = tableInfo.get(column.database, column.table, column.attr.name);
           return info.multiplicity;
         }
-        case func: Function => {
+        case func: FunctionLabel => {
           func.transform match {
             //TODO: luochen support operators for complex data types
             case Func_Union => {

@@ -212,7 +212,7 @@ class LabelPropagator extends Logging {
     for (i <- 0 to binary.output.length - 1) {
       val leftLabel = binary.left.projectLabels.getOrElse(binary.left.output(i), null);
       val rightLabel = binary.right.projectLabels.getOrElse(binary.right.output(i), null);
-      binary.projectLabels.put(binary.output(i), Function(List(leftLabel, rightLabel), name, null));
+      binary.projectLabels.put(binary.output(i), FunctionLabel(List(leftLabel, rightLabel), name, null));
     }
     binary.condLabels ++= binary.left.condLabels ++= binary.right.condLabels;
   }
@@ -318,8 +318,8 @@ class LabelPropagator extends Logging {
       case leaf: LeafExpression => {
         leaf match {
           //a constant node
-          case l: Literal => Constant(l.value);
-          case l: MutableLiteral => Constant(l.value);
+          case l: Literal => ConstantLabel(l.value);
+          case l: MutableLiteral => ConstantLabel(l.value);
           case _ => throw new UnsupportedPlanException(s"unknown leaf expression: $leaf");
         }
       }
@@ -327,7 +327,7 @@ class LabelPropagator extends Logging {
         count.child match {
           case IntegerLiteral(1) => {
             val labels = plan.children.flatMap(_.projectLabels.values.toSeq);
-            Function(labels, ExpressionRegistry.resolveFunction(expression), count);
+            FunctionLabel(labels, ExpressionRegistry.resolveFunction(expression), count);
           }
           case _ => resolveTermFunction(expression, plan);
         }
@@ -356,7 +356,7 @@ class LabelPropagator extends Logging {
       }
       case udf: ScalaUdf => {
         val labels = udf.children.map(resolveTerm(_, plan));
-        return Function(labels, udf.name, udf);
+        return FunctionLabel(labels, udf.name, udf);
       }
       case when: CaseWhen => {
         //collect all predicates in condLabels
@@ -364,8 +364,8 @@ class LabelPropagator extends Logging {
         //build a lineage tree that is combination of all values
         val labels = when.values.map(resolveTerm(_, plan));
         when.elseValue match {
-          case Some(expr) => Function(labels :+ (resolveTerm(expr, plan)), ExpressionRegistry.resolveFunction(when), when);
-          case None => Function(labels, ExpressionRegistry.resolveFunction(when), when);
+          case Some(expr) => FunctionLabel(labels :+ (resolveTerm(expr, plan)), ExpressionRegistry.resolveFunction(when), when);
+          case None => FunctionLabel(labels, ExpressionRegistry.resolveFunction(when), when);
         }
       }
       case i: If => {
@@ -373,10 +373,10 @@ class LabelPropagator extends Logging {
         resolveExpression(i.predicate, plan);
         val tLabel = resolveTerm(i.trueValue, plan);
         val fLabel = resolveTerm(i.falseValue, plan);
-        Function(List(tLabel, fLabel), ExpressionRegistry.resolveFunction(i), i);
+        FunctionLabel(List(tLabel, fLabel), ExpressionRegistry.resolveFunction(i), i);
       }
 
-      case _ => Function(expression.children.map(resolveExpression(_, plan)), expression.nodeName, expression);
+      case _ => FunctionLabel(expression.children.map(resolveExpression(_, plan)), expression.nodeName, expression);
     }
   }
 
@@ -388,7 +388,7 @@ class LabelPropagator extends Logging {
 
     val func = ExpressionRegistry.resolveFunction(expression);
     if (func != null) {
-      Function(labels, ExpressionRegistry.resolveFunction(expression), expression);
+      FunctionLabel(labels, ExpressionRegistry.resolveFunction(expression), expression);
     } else {
       labels(0);
     }
@@ -459,8 +459,8 @@ class LabelPropagator extends Logging {
   private def resolveJoinLabel(label: Label, set: Set[EquiVertex]): Unit = {
     label match {
       case col: ColumnLabel => set.add(ColumnVertex(col.attr));
-      case cons: Constant => set.add(ConstantVertex(cons.value));
-      case func: Function => func.children.foreach(resolveJoinLabel(_, set));
+      case cons: ConstantLabel => set.add(ConstantVertex(cons.value));
+      case func: FunctionLabel => func.children.foreach(resolveJoinLabel(_, set));
       case _ => throw new RuntimeException(s"Predicate $label should not appear in equi-join expression.");
     }
   }
@@ -477,7 +477,7 @@ class LabelPropagator extends Logging {
   private def fulfillConditions(label: Label): Unit = {
     label match {
       case cond: ConditionalLabel => fulfillCondition(cond);
-      case func: Function => func.children.foreach(fulfillConditions(_));
+      case func: FunctionLabel => func.children.foreach(fulfillConditions(_));
       case pred: PredicateLabel => pred.children.foreach(fulfillConditions(_));
       case _ =>
     }
