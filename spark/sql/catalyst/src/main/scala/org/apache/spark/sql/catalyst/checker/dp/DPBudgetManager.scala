@@ -156,6 +156,7 @@ class FineBudgetManager(val budgets: mutable.Map[DataCategory, Double]) extends 
 
   private def consume(expr: Expression, epsilon: Double, plan: Aggregate) {
     expr match {
+      case attr: Attribute =>
       case cast: Cast => consume(cast.child, epsilon, plan);
       case alias: Alias => consume(alias.child, epsilon, plan);
       case agg: AggregateExpression => {

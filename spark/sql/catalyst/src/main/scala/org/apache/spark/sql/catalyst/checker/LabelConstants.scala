@@ -1,6 +1,7 @@
 package org.apache.spark.sql.catalyst.checker
 
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation
+import edu.thu.ss.spec.global.MetaManager
 
 object LabelConstants extends LabelConstants {
 
@@ -50,9 +51,16 @@ trait LabelConstants {
 
   def isGetEntry(trans: String) = trans.startsWith(Func_GetEntry);
 
-  def getSubType(trans: String) = trans.split("\\.")(1);
+  def getSubType(trans: String): String = {
+    val strs = trans.split("\\.");
+    if (strs.length > 1) {
+      strs(1);
+    } else {
+      "";
+    }
+  }
 
-  def isSubtype(trans: String) = isGetItem(trans) || isGetField(trans) || isGetEntry(trans);
+  def isSubtypeOperation(trans: String) = isGetItem(trans) || isGetField(trans) || isGetEntry(trans) || MetaManager.isExtractOperation(trans);
 
   val Pred_Equal = "=";
   val Pred_Greater = ">";

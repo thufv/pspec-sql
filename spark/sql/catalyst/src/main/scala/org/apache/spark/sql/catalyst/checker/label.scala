@@ -10,6 +10,10 @@ import edu.thu.ss.spec.meta.JoinCondition
 import edu.thu.ss.spec.lang.pojo.DataCategory
 import edu.thu.ss.spec.meta.StructType
 import edu.thu.ss.spec.meta.ArrayType
+import edu.thu.ss.spec.meta.PrimitiveType
+import edu.thu.ss.spec.meta.MapType
+import edu.thu.ss.spec.global.MetaManager
+import edu.thu.ss.spec.meta.CompositeType
 
 /**
  * base class for lineage tree
@@ -25,6 +29,7 @@ sealed abstract class Label {
 
   def getTypes(): Seq[BaseType];
 
+  def transitTypes(): Seq[BaseType];
 }
 
 /**
@@ -50,6 +55,7 @@ case class DataLabel(labelType: BaseType, database: String, table: String, attr:
 
   def getTypes = Seq(labelType);
 
+  def transitTypes = Seq(labelType);
 }
 
 /**
@@ -60,6 +66,8 @@ case class Insensitive(database: String, table: String, attr: AttributeReference
   def sensitive(): Boolean = false;
 
   def getTypes = Nil;
+
+  def transitTypes = Nil;
 }
 
 /**
@@ -77,6 +85,8 @@ case class ConditionalLabel(conds: Map[JoinCondition, BaseType], database: Strin
   }
 
   def getTypes = if (fulfilled != null) fulfilled.toSeq; else Nil;
+
+  def transitTypes = getTypes;
 
   override def equals(other: Any) = {
     other match {
@@ -110,6 +120,71 @@ case class FunctionLabel(children: Seq[Label], transform: String, expression: Ex
     children.flatMap(_.getTypes).flatMap(resolveType(_, FunctionLabel.this)).filter(_ != null);
   }
 
+  def transitTypes: Seq[BaseType] = {
+    transform match {
+      case binary if (Func_SetOperations.contains(binary)) => {
+        val left = children(0).transitTypes;
+        val right = children(1).transitTypes;
+        if (left.isEmpty || right.isEmpty) {
+          return Nil;
+        } else {
+          return left ++ right;
+        }
+      }
+      case get if (isGetEntry(get)) => {
+        val types = children(0).transitTypes;
+        types.map(sub => {
+          sub match {
+            case struct: StructType => {
+              struct.getFieldType(getSubType(get));
+              //TODO luochen maybe we should return Nil?
+            }
+            case prim: PrimitiveType => prim;
+          }
+        }).filter(_ != null);
+      }
+      case get if (isGetItem(get)) => {
+        val types = children(0).transitTypes;
+        types.map(sub => {
+          sub match {
+            case array: ArrayType => {
+              array.getItemType();
+            }
+            case prim: PrimitiveType => prim;
+          }
+        })
+      }
+      case get if (isGetEntry(get)) => {
+        val types = children(0).transitTypes;
+        types.map(sub => {
+          sub match {
+            case map: MapType => {
+              map.getEntryType(getSubType(get));
+            }
+            case prim: PrimitiveType => prim;
+          }
+        });
+      }
+      case extract if (MetaManager.isExtractOperation(extract)) => {
+        val types = children(0).transitTypes;
+        types.map(sub => {
+          sub match {
+            case comp: CompositeType => {
+              val comptype = comp.getExtractType(transform);
+              if (comptype == null) {
+                return Nil;
+              } else {
+                comptype;
+              }
+            }
+            case _ => return Nil;
+          }
+        });
+      }
+      case _ => Nil;
+    }
+  }
+
 }
 
 /**
@@ -123,6 +198,8 @@ case class ConstantLabel(value: Any) extends Label {
   def contains(trans: String*) = false;
 
   def getTypes = Nil;
+
+  def transitTypes = Nil;
 }
 
 /**
@@ -137,5 +214,7 @@ case class PredicateLabel(val children: Seq[Label], val operation: String) exten
   def contains(trans: String*) = false;
 
   def getTypes = children.flatMap(_.getTypes);
+
+  def transitTypes = Nil;
 
 }

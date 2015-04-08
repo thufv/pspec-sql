@@ -144,15 +144,21 @@ object CheckerUtil {
     }
   }
 
-
-
   private val SupportedArithms = List(classOf[BinaryArithmetic], classOf[UnaryMinus], classOf[Abs]);
 
   private val SupportedPredicates = List(classOf[BinaryComparison], classOf[In], classOf[InSet]);
 
-
   def supportArithmetic(expr: Expression) = SupportedArithms.exists(_.isInstance(expr));
 
   def supportPredicate(expr: Expression) = SupportedPredicates.exists(_.isInstance(expr));
+
+  def asType[T](value: Any, clazz: Class[T]): T = {
+    if (value != null && clazz.isInstance(value)) {
+      return clazz.cast(value);
+    } else {
+      return null.asInstanceOf[T];
+    }
+
+  }
 
 }

@@ -3,6 +3,46 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" policy="res/spark-policy.xml"
 	xsi:schemaLocation="http://www.example.org/privacy res/meta.xsd">
 	<database name="default">
+		<table name="complex1">
+			<column name="a1">
+				<array>
+					<item data-category="b_year">
+					</item>
+				</array>
+			</column>
+			<column name="a2">
+				<struct>
+					<field name="s2">
+						<map>
+							<entry key="a" data-category="b_year"></entry>
+							<entry key="b" data-category="b_month"></entry>
+							<entry key="c" data-category="b_day"></entry>
+						</map>
+					</field>
+				</struct>
+			</column>
+			<column name="a3">
+				<struct>
+					<field name="s3">
+						<map>
+							<entry key="a">
+								<struct>
+									<field name="m2" data-category="b_year"></field>
+								</struct>
+							</entry>
+							<entry key="b" data-category="b_month"></entry>
+							<entry key="c" data-category="b_day"></entry>
+						</map>
+					</field>
+				</struct>
+			</column>
+		</table>
+
+
+
+
+
+
 		<table name="customer">
 			<column name="c_customer_sk" data-category="sk" joinable="true"
 				multiplicity="1"></column>

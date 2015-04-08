@@ -34,6 +34,36 @@
 -- Gradient Systems
 --
 
+create table test1
+(
+  a1 map<string, int>
+)
+ROW FORMAT DELIMITED
+  MAP KEYS TERMINATED BY '$';
+
+create table complex1
+(
+  a1 array<int>, 
+  a2 struct<s1:int, s2:map<string, int>>, 
+  a3 map<string, struct<m1:string, m2:int>>
+);
+
+
+create table complex2
+(
+  a1 array<int>, 
+  a2 struct<s1:int, s2:map<string, int>>, 
+  a3 map<string, struct<m1:string, m2:int>>
+);
+
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY ' '
+  COLLECTION ITEMS TERMINATED BY ','
+  MAP KEYS TERMINATED BY '$';
+
+load data local inpath '/Users/luochen/Documents/Research/privacy/data/complex.txt' into table complex2;
+
+
 CREATE TABLE dbgen_version
 (
    dv_version        VARCHAR(16),
@@ -41,6 +71,7 @@ CREATE TABLE dbgen_version
    dv_create_time    TIMESTAMP,
    dv_cmdline_args   VARCHAR(200)
 );
+
 
 CREATE TABLE customer_address
 (

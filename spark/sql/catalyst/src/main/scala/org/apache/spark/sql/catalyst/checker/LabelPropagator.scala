@@ -17,6 +17,8 @@ import org.jgrapht.graph.SimpleGraph
 import org.jgrapht.alg.ConnectivityInspector
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.HashMap
+import org.jgrapht.graph.Multigraph
+import org.jgrapht.graph.Pseudograph
 
 /**
  * vertex class for equi-graph
@@ -47,7 +49,7 @@ class LabelPropagator extends Logging {
    */
   lazy val tables = new HashMap[ColumnLabel, Map[String, ColumnLabel]];
 
-  lazy val equiGraph = new SimpleGraph[EquiVertex, DefaultEdge](classOf[DefaultEdge]);
+  lazy val equiGraph = new Pseudograph[EquiVertex, DefaultEdge](classOf[DefaultEdge]);
 
   lazy val alg = new ConnectivityInspector[EquiVertex, DefaultEdge](equiGraph);
 

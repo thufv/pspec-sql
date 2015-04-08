@@ -52,7 +52,7 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
    * lookup lineage tree for attr on child projections
    */
   def childLabel(expr: Expression): Label = {
-    val list = TypeUtil.getAttributeTypes(expr);
+    val list = TypeUtil.getAttributeTypes(expr, this);
     val child = children.find(_.projectLabels.contains(list.head.asInstanceOf[Attribute]));
     val label = child.get.projectLabels.get(list.head.asInstanceOf[Attribute]);
     TypeUtil.concatComplexLabel(label.get, list.tail);

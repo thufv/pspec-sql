@@ -273,22 +273,23 @@ class DPEnforcer(val tableInfo: TableInfo, val budgetManager: DPBudgetManager, v
         throw new PrivacyException("OR in join condition is not supported");
       }
       case equal: EqualTo => {
-        try {
-          //join on complex data types is not allowed
-          val left = resolveSimpleAttribute(equal.left).asInstanceOf[Attribute];
-          val right = resolveSimpleAttribute(equal.right).asInstanceOf[Attribute];
-          val lmulti = resolveAttributeMultiplicity(equal.left, plan);
-          val rmulti = resolveAttributeMultiplicity(equal.right, plan);
-          //   graph.updateEdge(lLabel.table, rLabel.table, stat.get(rLabel.database, rLabel.table, right.name));
-          if (!lmulti.isDefined || !rmulti.isDefined) {
-            throw new PrivacyException(s"join condition $equal is not allowed");
-          }
-          graph.updateEdge(left, right, rmulti.get);
-          graph.updateEdge(right, left, lmulti.get);
-        } catch {
-          case e: ClassCastException =>
-            throw new PrivacyException(s"join condition $equal is invalid, only equi-join is supported");
+        //join on complex data types is not allowed
+        val left = resolveSimpleAttribute(equal.left);
+        val right = resolveSimpleAttribute(equal.right);
+        if ((left == null || right == null) || left.isInstanceOf[Attribute] || right.isInstanceOf[Attribute]) {
+          throw new PrivacyException(s"join condition $equal is invalid, only equi-join is supported");
         }
+
+        val lmulti = resolveAttributeMultiplicity(equal.left, plan);
+        val rmulti = resolveAttributeMultiplicity(equal.right, plan);
+        //   graph.updateEdge(lLabel.table, rLabel.table, stat.get(rLabel.database, rLabel.table, right.name));
+        if (!lmulti.isDefined || !rmulti.isDefined) {
+          throw new PrivacyException(s"join condition $equal is not allowed");
+        }
+        val aleft = left.asInstanceOf[Attribute];
+        val aright = right.asInstanceOf[Attribute];
+        graph.updateEdge(aleft, aright, rmulti.get);
+        graph.updateEdge(aright, aleft, lmulti.get);
       }
       case _ =>
     }
@@ -302,7 +303,7 @@ class DPEnforcer(val tableInfo: TableInfo, val budgetManager: DPBudgetManager, v
         enforceDP(sum, plan, scale, true, (min, max) => Math.max(Math.abs(min), Math.abs(max)));
       }
       case sum: SumDistinct => {
-        enforceDP(sum, plan, scale, true, (min, max) => max - min);
+        enforceDP(sum, plan, scale, true, (min, max) => Math.max(Math.abs(min), Math.abs(max)));
       }
       case count: Count => {
         enforceDP(count, plan, scale, false, (min, max) => 1);
@@ -345,7 +346,6 @@ class DPEnforcer(val tableInfo: TableInfo, val budgetManager: DPBudgetManager, v
 
   private def resolveAttributeRange(expr: Expression, plan: LogicalPlan, refine: Boolean): (Int, Int) = {
     expr match {
-      //TODO: luochen support operators for complex data types
       case attr if (isAttribute(attr)) => {
         return currentRefiner.get(attr, plan, refine);
       }
@@ -360,40 +360,9 @@ class DPEnforcer(val tableInfo: TableInfo, val budgetManager: DPBudgetManager, v
   }
 
   private def resolveAttributeMultiplicity(expr: Expression, plan: LogicalPlan): Option[Int] = {
-    def multiplicityHelper(func: FunctionLabel, trans: (Option[Int], Option[Int]) => Option[Int]): Option[Int] = {
-      val left = resolveLabelMultiplicity(func.children(0));
-      val right = resolveLabelMultiplicity(func.children(1));
-      return trans(left, right);
-    }
-
-    def resolveLabelMultiplicity(label: Label): Option[Int] = {
-      label match {
-        case column: ColumnLabel => {
-          val info = tableInfo.get(column.database, column.table, column.attr.name);
-          return info.multiplicity;
-        }
-        case func: FunctionLabel => {
-          func.transform match {
-            //TODO: luochen support operators for complex data types
-            case Func_Union => {
-              multiplicityHelper(func, multiplicityUnion(_, _));
-            }
-            case Func_Intersect => {
-              multiplicityHelper(func, multiplicityIntersect(_, _));
-            }
-            case Func_Except => {
-              multiplicityHelper(func, multiplicityUnion(_, _));
-            }
-            case _ => None;
-          }
-        }
-        case _ => None;
-
-      }
-    }
 
     expr match {
-      case attr: AttributeReference => {
+      case attr if (isAttribute(attr)) => {
         val label = plan.childLabel(attr);
         return resolveLabelMultiplicity(label);
       }
@@ -404,6 +373,36 @@ class DPEnforcer(val tableInfo: TableInfo, val budgetManager: DPBudgetManager, v
         resolveAttributeMultiplicity(cast.child, plan);
       }
       case _ => None;
+    }
+  }
+
+  def resolveLabelMultiplicity(label: Label): Option[Int] = {
+    def multiplicityHelper(func: FunctionLabel, trans: (Option[Int], Option[Int]) => Option[Int]): Option[Int] = {
+      val left = resolveLabelMultiplicity(func.children(0));
+      val right = resolveLabelMultiplicity(func.children(1));
+      return trans(left, right);
+    }
+    label match {
+      case column: ColumnLabel => {
+        val info = tableInfo.get(column.database, column.table, column.attr.name);
+        return info.multiplicity;
+      }
+      case func: FunctionLabel => {
+        func.transform match {
+          case Func_Union => {
+            multiplicityHelper(func, multiplicityUnion(_, _));
+          }
+          case Func_Intersect => {
+            multiplicityHelper(func, multiplicityIntersect(_, _));
+          }
+          case Func_Except => {
+            multiplicityHelper(func, multiplicityUnion(_, _));
+          }
+          case _ => None;
+        }
+      }
+      case _ => None;
+
     }
   }
 

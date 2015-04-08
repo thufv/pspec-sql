@@ -11,12 +11,32 @@ import org.apache.spark.sql.catalyst.checker.Label
 import edu.thu.ss.spec.meta.StructType
 import edu.thu.ss.spec.meta.CompositeType
 import edu.thu.ss.spec.meta.MapType
+import edu.thu.ss.spec.global.MetaManager
+import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
+import org.apache.spark.sql.catalyst.checker.ColumnLabel
+import edu.thu.ss.spec.meta.PrimitiveType
+import org.apache.spark.sql.catalyst.expressions.GetField
+import org.apache.spark.sql.types
+import org.apache.spark.sql.types.StructField
+import org.apache.spark.sql.types.DataType
 
 object TypeUtil {
 
   private val AttributeClasses = List(classOf[Attribute], classOf[GetField], classOf[GetItem]);
 
+  private val Delimiter_Type = " ";
+  private val Delimiter_Attr = "#";
+
   def isAttribute(attr: Expression) = AttributeClasses.exists(_.isInstance(attr));
+
+  def isExtractOperation(expr: Expression): Boolean = MetaManager.isExtractOperation(expr.nodeName);
+
+  def checkExtractOperation(expr: Expression, plan: LogicalPlan): Boolean = {
+    //check whether the extract operation is valid (specified with meta labeling)
+    val label = plan.childLabel(expr);
+    return !label.transitTypes().isEmpty;
+
+  }
 
   def resolveSimpleAttribute(expr: Expression): Expression = {
     expr match {
@@ -27,56 +47,68 @@ object TypeUtil {
       case cast: Cast => {
         resolveSimpleAttribute(cast.child);
       }
-      case _ => expr.asInstanceOf[Attribute];
+      case _ => null;
     }
   }
 
   /**
    * one attribute, followed by several get expressions
    */
-  private def getAttributeString(exprs: Seq[Expression]): String = {
-    val sb = new StringBuilder;
-    val subTypes = exprs.foreach(expr => {
+  def toAttributeString(exprs: Seq[Expression]): String = {
+    exprs.map(expr => {
       expr match {
+        case attr: Attribute => {
+          attr.toString;
+        }
         case getItem: GetItem => {
-          val child = getItem.child;
-          val ordinal = getItem.ordinal;
-          ordinal match {
-            case literal: Literal => {
-              sb.append("[");
-              sb.append(literal.toString);
-              sb.append("]");
-            }
-            case _ => {
-              return null;
-            }
+          val result = toItemString(getItem, getItem.dataType.getClass);
+          if (result == null) {
+            return null;
+          } else {
+            result;
           }
         }
         case getField: GetField => {
-          val field = getField.field;
-          sb.append(".");
-          sb.append(field.name);
+          toFieldString(getField.field);
         }
-        case _ => throw new IllegalArgumentException(s"unsupported expression:$expr, only GetItem and GetField are allowed");
+        case _ => {
+          if (isExtractOperation(expr)) {
+            expr.nodeName;
+          } else {
+            return null;
+          }
+        }
       }
-    });
-    return sb.toString;
+    }).mkString(Delimiter_Type);
   }
 
-  def getAttributeTypes(expr: Expression): Seq[Expression] = {
+  def getAttributeTypes(expr: Expression, plan: LogicalPlan): Seq[Expression] = {
     val list = new ListBuffer[Expression];
     var current = expr;
+    //the extract operation must appear at the top
+    if (MetaManager.isExtractOperation(current.nodeName)) {
+      //check the validity of the extract operation
+      if (!checkExtractOperation(current, plan)) {
+        return null;
+      }
+      list.append(current);
+      current = current.children(0);
+      if (current.isInstanceOf[Cast]) {
+        current = current.asInstanceOf[Cast].child;
+      }
+    }
+
     while (current != null) {
       current match {
         case get: GetItem => {
-          val child = get.child;
           val ordinal = get.ordinal;
           ordinal match {
             case literal: Literal => {
-              list.append(literal);
+              list.append(get);
+              current = get.child;
             }
             case _ => {
-              return null;
+              return Nil;
             }
           }
         }
@@ -88,7 +120,7 @@ object TypeUtil {
           list.append(attribute);
           current = null;
         }
-        case _ => throw new IllegalArgumentException(s"unsupported expression:$expr, only subtype and attribute expressions are allowed");
+        case _ => return Nil;
       }
     }
     return list.reverse;
@@ -97,34 +129,67 @@ object TypeUtil {
   /**
    * a tree of some get expressions and ends in a attribute
    */
-  def getAttributeString(expr: Expression): String = {
-
+  def getAttributeString(expr: Expression, plan: LogicalPlan): String = {
+    if (expr == null) {
+      return null;
+    }
     if (expr.isInstanceOf[Attribute]) {
       return expr.toString;
     }
-
-    val list = getAttributeTypes(expr);
-    if (list != null) {
-      return getAttributeString(list);
+    val list = getAttributeTypes(expr, plan);
+    if (!list.isEmpty) {
+      return toAttributeString(list);
     } else {
       return null;
     }
   }
 
-  def isComplexAttribute(attr: String): Boolean = attr.contains(" ");
+  def isComplexAttribute(attr: String): Boolean = attr.contains(Delimiter_Type);
 
-  def getComplexAttribute(attr: String) = attr.split(" ")(0);
+  def getComplexAttribute(attr: String): String = {
+    val index = attr.indexOf(Delimiter_Type);
+    if (index < 0) {
+      return attr;
+    } else {
+      return attr.substring(0, index);
+    }
+  }
 
   def getComplexSubtypes(attr: String): String = {
     val index = attr.indexOf(' ');
     if (index >= 0) {
       return attr.substring(index + 1);
     } else {
-      return "";
+      return null;
     }
   }
 
-  def concatComplexAttribute(attr: String, subs: String) = attr + " " + subs;
+  def concatComplexAttribute(attr: String, subs: String): String = {
+    if (subs == null) {
+      return attr;
+    } else {
+      return attr + " " + subs;
+    }
+  }
+
+  def toFieldString(field: StructField): String = {
+    return "." + field.name;
+  }
+
+  def toItemString(ordinal: Expression, clazz: Class[_ <: DataType]): String = {
+    ordinal match {
+      case literal: Literal => {
+        if (clazz == classOf[types.ArrayType]) {
+          "[0]";
+        } else {
+          "['" + literal.toString + "']"
+        }
+      }
+      case _ => {
+        return null;
+      }
+    }
+  }
 
   def resolveType(t: BaseType, func: FunctionLabel): Seq[BaseType] = {
     val transform = func.transform;
@@ -163,6 +228,9 @@ object TypeUtil {
       case map: MapType => {
         if (isGetEntry(transform)) {
           val key = getSubType(transform);
+          if (key == null || key.isEmpty()) {
+            return map.toPrimitives();
+          }
           val subType = map.getEntry(key);
           if (subType != null) {
             Seq(subType.getType);
@@ -173,8 +241,21 @@ object TypeUtil {
           return map.toPrimitives();
         }
       }
-      case _ => Seq(t);
+      case prim: PrimitiveType => Seq(prim);
     }
+  }
+
+  def getColumnString(attr: String): String = {
+    def toColumnString(str: String): String = str.split("#")(0);
+
+    if (isComplexAttribute(attr)) {
+      val pre = getComplexAttribute(attr);
+      val types = getComplexSubtypes(attr);
+      return concatComplexAttribute(pre, types);
+    } else {
+      return toColumnString(attr);
+    }
+
   }
 
   def concatComplexLabel(label: Label, subtypes: Seq[Expression]): Label = {
@@ -209,7 +290,7 @@ object TypeUtil {
         val children = func.children.map(transformComplexLabel(_));
         return FunctionLabel(children, set, null);
       }
-      case get if (isSubtype(get)) => {
+      case get if (isSubtypeOperation(get)) => {
         val child = transformComplexLabel(func.children(0));
         child match {
           case cfunc: FunctionLabel => {
@@ -230,5 +311,24 @@ object TypeUtil {
         }
       }
     }
+  }
+
+  /**
+   * transform an attribute string to sql string
+   */
+  def toSQLString(attr: String): String = {
+    val seq = attr.split(Delimiter_Type);
+    if (seq.length == 1) {
+      return seq(0);
+    }
+
+    if (MetaManager.isExtractOperation(seq.last)) {
+      val extract = seq.last;
+      val truncated = seq.dropRight(1).mkString("");
+      return extract + "(" + truncated + ")";
+    } else {
+      return seq.mkString("");
+    }
+
   }
 }
