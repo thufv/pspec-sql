@@ -17,6 +17,7 @@ import org.apache.spark.sql.catalyst.expressions.Cast
 import org.apache.spark.sql.catalyst.expressions.Alias
 import org.apache.spark.sql.catalyst.expressions.AggregateExpression
 import scala.collection.mutable.HashSet
+import scala.collection.mutable.Set
 import org.apache.spark.sql.catalyst.checker.util.TypeUtil._
 import org.apache.spark.sql.catalyst.expressions.Attribute
 
@@ -50,13 +51,15 @@ trait DPBudgetManager {
 
   def commit: Unit;
 
-  def rollback: Unit;
+  def rollback(): Unit;
 
   def specified(data: DataCategory): Boolean;
 
   def consume(plan: Aggregate, epsilon: Double): Unit;
 
   def consume(data: DataCategory, epsilon: Double): Unit;
+
+  def returnback(epsilon: Double, dpId: Int): Unit;
 
   def budget(data: DataCategory): Double;
 
@@ -67,7 +70,7 @@ class GlobalBudgetManager(var budget: Double) extends DPBudgetManager with Loggi
   var tmpBudget: Double = budget;
 
   def commit() {
-    logWarning(s"commit global privacy budget, buget left: $tmpBudget");
+    logWarning(s"commit global privacy budget, budget left: $tmpBudget");
     budget = tmpBudget;
   }
 
@@ -77,6 +80,12 @@ class GlobalBudgetManager(var budget: Double) extends DPBudgetManager with Loggi
   }
 
   def specified(data: DataCategory) = true;
+
+  def returnback(epsilon: Double, dpId: Int = 0) {
+    tmpBudget = tmpBudget + epsilon;
+    assert(tmpBudget <= budget, "pay back failure");
+    logWarning(s"return back global privacy budget $epsilon, now privacy budget left: $tmpBudget");
+  }
 
   def consume(data: DataCategory, epsilon: Double) {
     if (tmpBudget - epsilon < 0) {
@@ -96,7 +105,7 @@ class GlobalBudgetManager(var budget: Double) extends DPBudgetManager with Loggi
       case cast: Cast => consume(cast.child, epsilon);
       case alias: Alias => consume(alias.child, epsilon);
       case agg: AggregateExpression => {
-        if (agg.enableDP) {
+        if (agg.enableDP && agg.sensitivity > 0) {
           consume(null.asInstanceOf[DataCategory], epsilon);
         }
       }
@@ -112,14 +121,38 @@ class GlobalBudgetManager(var budget: Double) extends DPBudgetManager with Loggi
 
 }
 
+object FineBudgetManager {
+  private var nextId = 0;
+
+  def getId: Int = {
+    nextId += 1;
+    nextId;
+  }
+}
+
 class FineBudgetManager(val budgets: mutable.Map[DataCategory, Double]) extends DPBudgetManager with Logging {
 
-  val tmpBudgets = new HashMap[DataCategory, Double];
+  private val tmpBudgets = new HashMap[DataCategory, Double];
+  private val relevantDatas = new HashMap[Int, Set[DataCategory]];
+
   sync(budgets, tmpBudgets);
+
+  def returnback(epsilon: Double, dpId: Int) {
+    val set = relevantDatas.getOrElse(dpId, null);
+    if (set != null) {
+      set.foreach(data => {
+        val budget = tmpBudgets.getOrElse(data, 0.0);
+        val returned = budget + epsilon;
+        tmpBudgets.put(data, returned);
+        logWarning(s"return fine budget back $epsilon for ${data.getId}, now budget left: $returned");
+      });
+
+    }
+  }
 
   def commit() {
     sync(tmpBudgets, budgets);
-
+    relevantDatas.clear;
     val sb = new StringBuilder;
     for (t <- budgets) {
       sb.append(s"\tdata: ${t._1.getId()}, budget: ${t._2}\n");
@@ -134,6 +167,7 @@ class FineBudgetManager(val budgets: mutable.Map[DataCategory, Double]) extends 
   def rollback() {
     logWarning(s"rollback fine privacy budget");
     sync(budgets, tmpBudgets);
+    relevantDatas.clear;
   }
 
   def consume(data: DataCategory, epsilon: Double) {
@@ -160,14 +194,18 @@ class FineBudgetManager(val budgets: mutable.Map[DataCategory, Double]) extends 
       case cast: Cast => consume(cast.child, epsilon, plan);
       case alias: Alias => consume(alias.child, epsilon, plan);
       case agg: AggregateExpression => {
-        if (agg.enableDP) {
+        if (agg.enableDP && agg.sensitivity > 0) {
           val set = new HashSet[DataCategory];
-          val attr = resolveSimpleAttribute(agg.children(0)).asInstanceOf[Attribute];
+          val attr = resolveSimpleAttribute(agg.children(0));
           //TODO luochen add support for complex types
           val label = plan.childLabel(attr);
           set ++= label.getDatas;
           plan.condLabels.foreach(set ++= _.getDatas);
           set.withFilter(specified(_)).foreach(consume(_, epsilon));
+
+          val id = FineBudgetManager.getId;
+          relevantDatas.put(id, set);
+          agg.dpId = id;
         }
       }
 

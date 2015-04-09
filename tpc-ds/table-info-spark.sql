@@ -34,10 +34,17 @@
 -- Gradient Systems
 --
 
-create table test1
+
+select sum(c['a'])
+from 
 (
-  a1 map<string, int>
-)
+  select b.s2 c from
+  (
+    select a2 b from complex1
+) y
+) x;
+
+
 ROW FORMAT DELIMITED
   MAP KEYS TERMINATED BY '$';
 
@@ -47,7 +54,6 @@ create table complex1
   a2 struct<s1:int, s2:map<string, int>>, 
   a3 map<string, struct<m1:string, m2:int>>
 );
-
 
 create table complex2
 (

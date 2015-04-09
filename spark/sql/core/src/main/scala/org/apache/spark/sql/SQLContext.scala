@@ -61,6 +61,15 @@ class SQLContext(@transient val sparkContext: SparkContext)
 
   self =>
 
+  //added by luochen
+  /**
+   * added by luochen
+   * load policy during startups
+   */
+  private val policyPath = sparkContext.conf.get("spark.privacy.policy", "res/spark-policy.xml");
+  private val metaPath = sparkContext.conf.get("spark.privacy.meta", "res/spark-meta.xml");
+  lazy val checker = new SparkChecker(catalog, policyPath, metaPath);
+
   def this(sparkContext: JavaSparkContext) = this(sparkContext.sc)
 
   // Note that this is a lazy val so we can override the default value in subclasses.
@@ -1079,7 +1088,8 @@ class SQLContext(@transient val sparkContext: SparkContext)
       //added by luochen
       //check logical plan
       val epsilon = getConf(DPUtil.Conf_Epsilon, DPUtil.Default_Epsilon).toDouble;
-      SparkChecker(optimizedPlan, epsilon);
+      checker.updateEpsilon(epsilon);
+      checker(optimizedPlan);
       SparkPlan.currentContext.set(self)
       planner(optimizedPlan).next()
     }

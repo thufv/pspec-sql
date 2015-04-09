@@ -40,7 +40,7 @@ class HiveTableInfo(val hive: HiveContext) extends TableInfo with Logging {
       val range = infos.get(column);
       range match {
         case Some(r) => r
-        case _ => throw new PrivacyException(s"column $column not exist.");
+        case _ => null;
       }
     }
 
@@ -54,24 +54,24 @@ class HiveTableInfo(val hive: HiveContext) extends TableInfo with Logging {
 
   def get(dbName: String, tableName: String, columnName: String): AttributeInfo = {
     val database = tableInfos.get(dbName);
-    database match {
+    val info = database match {
       case Some(d) => {
         val table = d.get(tableName);
         table match {
           case Some(t) => {
-            val info = t.get(columnName);
-            if (info == null) {
-              //update new info, mainly for complex types 
-              return updateRange(dbName, tableName, columnName);
-            } else {
-              return info;
-            }
+            t.get(columnName);
           }
           case _ => throw new PrivacyException(s"table $tableName not exist.");
         }
       }
       case _ => throw new PrivacyException(s"database $dbName not exist.");
     }
+    if (info == null) {
+      return updateRange(dbName, tableName, columnName);
+    } else {
+      return info;
+    }
+
   }
 
   def get(tableName: String, columnName: String): AttributeInfo = {

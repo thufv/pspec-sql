@@ -21,7 +21,7 @@ import org.apache.spark.annotation.DeveloperApi
 import org.apache.spark.Logging
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SQLContext
-import org.apache.spark.sql.catalyst.{ScalaReflection, trees}
+import org.apache.spark.sql.catalyst.{ ScalaReflection, trees }
 import org.apache.spark.sql.catalyst.expressions._
 import org.apache.spark.sql.catalyst.expressions.codegen._
 import org.apache.spark.sql.catalyst.plans.QueryPlan
@@ -112,7 +112,7 @@ abstract class SparkPlan extends QueryPlan[SparkPlan] with Logging with Serializ
           numPartsToTry = (1.5 * n * partsScanned / buf.size).toInt
         }
       }
-      numPartsToTry = math.max(0, numPartsToTry)  // guard against negative num of partitions
+      numPartsToTry = math.max(0, numPartsToTry) // guard against negative num of partitions
 
       val left = n - buf.size
       val p = partsScanned until math.min(partsScanned + numPartsToTry, totalParts)
@@ -128,7 +128,7 @@ abstract class SparkPlan extends QueryPlan[SparkPlan] with Logging with Serializ
   }
 
   protected def newProjection(
-      expressions: Seq[Expression], inputSchema: Seq[Attribute]): Projection = {
+    expressions: Seq[Expression], inputSchema: Seq[Attribute]): Projection = {
     log.debug(
       s"Creating Projection: $expressions, inputSchema: $inputSchema, codegen:$codegenEnabled")
     if (codegenEnabled) {
@@ -139,20 +139,19 @@ abstract class SparkPlan extends QueryPlan[SparkPlan] with Logging with Serializ
   }
 
   protected def newMutableProjection(
-      expressions: Seq[Expression],
-      inputSchema: Seq[Attribute]): () => MutableProjection = {
+    expressions: Seq[Expression],
+    inputSchema: Seq[Attribute]): () => MutableProjection = {
     log.debug(
       s"Creating MutableProj: $expressions, inputSchema: $inputSchema, codegen:$codegenEnabled")
-    if(codegenEnabled) {
+    if (codegenEnabled) {
       GenerateMutableProjection(expressions, inputSchema)
     } else {
       () => new InterpretedMutableProjection(expressions, inputSchema)
     }
   }
 
-
   protected def newPredicate(
-      expression: Expression, inputSchema: Seq[Attribute]): (Row) => Boolean = {
+    expression: Expression, inputSchema: Seq[Attribute]): (Row) => Boolean = {
     if (codegenEnabled) {
       GeneratePredicate(expression, inputSchema)
     } else {

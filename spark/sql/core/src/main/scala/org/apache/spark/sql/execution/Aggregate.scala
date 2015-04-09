@@ -44,7 +44,6 @@ case class Aggregate(
   aggregateExpressions: Seq[NamedExpression],
   child: SparkPlan)
   extends UnaryNode {
-
   override def requiredChildDistribution =
     if (partial) {
       UnspecifiedDistribution :: Nil

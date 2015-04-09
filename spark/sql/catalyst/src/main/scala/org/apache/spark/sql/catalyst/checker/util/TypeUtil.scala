@@ -55,13 +55,14 @@ object TypeUtil {
    * one attribute, followed by several get expressions
    */
   def toAttributeString(exprs: Seq[Expression]): String = {
+    var preType: DataType = null
     exprs.map(expr => {
-      expr match {
+      val string = expr match {
         case attr: Attribute => {
           attr.toString;
         }
         case getItem: GetItem => {
-          val result = toItemString(getItem, getItem.dataType.getClass);
+          val result = toItemString(getItem.ordinal, preType.getClass);
           if (result == null) {
             return null;
           } else {
@@ -79,6 +80,8 @@ object TypeUtil {
           }
         }
       }
+      preType = expr.dataType;
+      string;
     }).mkString(Delimiter_Type);
   }
 
@@ -100,6 +103,9 @@ object TypeUtil {
 
     while (current != null) {
       current match {
+        case alias: Alias => {
+          current = alias.child;
+        }
         case get: GetItem => {
           val ordinal = get.ordinal;
           ordinal match {
@@ -182,7 +188,10 @@ object TypeUtil {
         if (clazz == classOf[types.ArrayType]) {
           "[0]";
         } else {
-          "['" + literal.toString + "']"
+          literal.value match {
+            case str: String => "['" + str + "']"
+            case _ => "[" + literal.value + "]";
+          }
         }
       }
       case _ => {
@@ -251,7 +260,7 @@ object TypeUtil {
     if (isComplexAttribute(attr)) {
       val pre = getComplexAttribute(attr);
       val types = getComplexSubtypes(attr);
-      return concatComplexAttribute(pre, types);
+      return concatComplexAttribute(toColumnString(pre), types);
     } else {
       return toColumnString(attr);
     }

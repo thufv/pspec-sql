@@ -394,7 +394,7 @@ class HiveContext(sc: SparkContext) extends SQLContext(sc) {
 
       case other =>
         val result: Seq[Seq[Any]] = other.executeCollect().map(_.toSeq).toSeq
-        SparkChecker.commit;
+        checker.commit;
         // We need the types so we can output struct field names
         val types = analyzed.output.map(_.dataType)
         // Reformat to match hive tab delimited output.
@@ -409,18 +409,11 @@ class HiveContext(sc: SparkContext) extends SQLContext(sc) {
       }
   }
 
-  /**
-   * added by luochen
-   * load policy during startups
-   */
-  private val policyPath = sc.conf.get("spark.privacy.policy", "res/spark-policy.xml");
-  private val metaPath = sc.conf.get("spark.privacy.meta", "res/spark-meta.xml");
-  SparkChecker.init(catalog, policyPath, metaPath);
-
+  //added by luochen
   val hiveInfo: HiveTableInfo = new HiveTableInfo(this);
   hiveInfo.initialize;
-
-  SparkChecker.start(hiveInfo);
+  checker.start(hiveInfo);
+  SparkChecker.set(checker);
 }
 
 private object HiveContext {

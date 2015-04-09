@@ -83,6 +83,7 @@ import org.apache.spark.sql.catalyst.plans.logical.UnaryNode
 import org.apache.spark.sql.catalyst.checker.PrivacyException
 import org.jgrapht.graph.Multigraph
 import org.jgrapht.graph.Pseudograph
+import util.ESat
 
 class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) extends Logging {
 
@@ -110,7 +111,7 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
       relevantAttributes.foreach(attr => {
         if (isComplexAttribute(attr)) {
           val pre = getComplexAttribute(attr);
-          val set = attributeSubs.getOrElseUpdate(attr, new HashSet[String]);
+          val set = attributeSubs.getOrElseUpdate(pre, new HashSet[String]);
           set.add(attr);
         }
       });
@@ -188,14 +189,15 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
         val attr = queue.dequeue;
         val pre = getComplexAttribute(attr);
         val subtypes = getComplexSubtypes(attr);
-
-        val equivalents = alg.connectedSetOf(pre);
-        for (equi <- equivalents) {
-          val equiAttr = concatComplexAttribute(equi, subtypes);
-          if (!relevantGraph.containsVertex(equiAttr)) {
-            relevantGraph.addVertex(equiAttr);
-            relevantGraph.addEdge(attr, equiAttr);
-            queue.enqueue(equiAttr);
+        if (equiGraph.containsVertex(pre)) {
+          val equivalents = alg.connectedSetOf(pre);
+          for (equi <- equivalents) {
+            val equiAttr = concatComplexAttribute(equi, subtypes);
+            if (!relevantGraph.containsVertex(equiAttr)) {
+              relevantGraph.addVertex(equiAttr);
+              relevantGraph.addEdge(attr, equiAttr);
+              queue.enqueue(equiAttr);
+            }
           }
         }
       }
@@ -211,8 +213,11 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
             val str = getAttributeString(attr, plan);
             if (str == null) {
               throw new PrivacyException(s"Aggregate on ${attr} is not allowed");
-            } else {
-              aggAttributes.add(str);
+            }
+            relevantGraph.addVertex(str);
+            aggAttributes.add(str);
+            if (isComplexAttribute(str)) {
+              complexAttributes.add(str);
             }
           }
         }
@@ -307,7 +312,7 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
       val array = new Array[IntVar](attrVars.size + tmpVars.size);
       attrVars.values.copyToArray(array);
       tmpVars.copyToArray(array, attrVars.size);
-      array;
+      array.distinct;
     }
 
     def getAllVaraibles(head: IntVar): Array[IntVar] = {
@@ -408,6 +413,13 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
     logWarning(s"start solving upper bound for $attr");
     solver.set(IntStrategyFactory.lexico_UB(allVars: _*));
     solver.findOptimalSolution(ResolutionPolicy.MAXIMIZE, attrVar);
+    if (solver.isFeasible() != ESat.TRUE) {
+      logWarning(s"fail to find any solution, fall back to empty range for $attr"); ;
+      val range = (0, 0);
+      refinedRanges.put(attr, range);
+      return range;
+    }
+    
     val up = attrVar.getUB();
     if (solver.hasReachedLimit()) {
       logWarning(s"solving upper bound for $attr timeout, fall back to original $up");

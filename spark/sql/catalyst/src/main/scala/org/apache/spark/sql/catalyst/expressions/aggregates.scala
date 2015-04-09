@@ -23,8 +23,9 @@ import org.apache.spark.sql.catalyst.trees
 import org.apache.spark.sql.catalyst.errors.TreeNodeException
 import org.apache.spark.util.collection.OpenHashSet
 import org.apache.spark.sql.catalyst.checker.dp.DPUtil
+import org.apache.spark.sql.catalyst.checker.SparkChecker
 
-abstract class AggregateExpression extends Expression with Serializable {
+abstract class AggregateExpression() extends Expression with Serializable {
   self: Product =>
 
   /**
@@ -45,11 +46,13 @@ abstract class AggregateExpression extends Expression with Serializable {
   var enableDP: Boolean = false;
   var sensitivity: Double = 1;
   var epsilon: Double = 0.1;
+  var dpId = 0;
 
   def copyDP(agg: AggregateExpression): AggregateExpression = {
     agg.enableDP = this.enableDP;
     agg.sensitivity = this.sensitivity;
     agg.epsilon = this.epsilon;
+    agg.dpId = this.dpId;
     agg;
   }
 }
@@ -103,7 +106,7 @@ abstract class AggregateFunction
   //added by luochen
   protected def enforceDP(result: Any): Any = {
     if (base.enableDP) {
-      DPUtil.calibrateNoise(result, base.epsilon, base.sensitivity);
+      DPUtil.calibrateNoise(result, base.epsilon, base.sensitivity, base.dpId, SparkChecker.get);
     } else {
       result;
     }

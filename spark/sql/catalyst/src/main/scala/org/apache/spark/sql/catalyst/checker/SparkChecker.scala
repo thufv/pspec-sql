@@ -28,37 +28,56 @@ import scala.collection.mutable.HashSet
 import scala.collection.mutable.HashSet
 
 /**
+ * TODO luochen a temporary solution for returning back privacy budgets
+ * the spark checker should be accessed by the spark execution plans
+ */
+object SparkChecker {
+  private var _checker: SparkChecker = null;
+
+  def set(checker: SparkChecker) {
+    this._checker = checker;
+  }
+
+  def get(): SparkChecker = _checker;
+
+}
+
+/**
  * entrance class for spark privacy checker
  */
-object SparkChecker extends Logging {
+class SparkChecker(catalog: Catalog, policy: String, meta: String) extends Logging {
 
   private var tableInfo: TableInfo = null;
   private var budgetManager: DPBudgetManager = null;
-  private var initialized = false;
+  private var started = false;
   private var error = false;
+
+  private var epsilon = 0.0;
   var accuracyProb: Double = 0;
   var accurcayNoise: Double = 0;
   lazy val user: UserCategory = MetaManager.currentUser();
 
-  /**
-   * load policy and meta during startup.
-   * may need to be modified in a pluggable way.
-   */
-  def init(catalog: Catalog, policyPath: String, metaPath: String): Unit = {
-    loadPolicy(policyPath);
-    loadMeta(metaPath, catalog);
+  loadPolicy(policy);
+  loadMeta(meta, catalog);
 
+  def updateEpsilon(epsilon: Double) {
+    this.epsilon = epsilon;
   }
+
+  def returnback(dpId: Int) {
+    this.budgetManager.returnback(epsilon, dpId);
+  }
+
+  def getEpsilon() = epsilon;
 
   def start(info: TableInfo) {
     if (error) {
       logError("SparkChecker fail to initialize, see messages above");
     } else {
       this.tableInfo = info;
-      this.initialized = true;
+      this.started = true;
       logWarning("SparkChecker successfully initialized");
     }
-
   }
 
   def loadPolicy(path: String): Unit = {
@@ -84,22 +103,16 @@ object SparkChecker extends Logging {
   }
 
   def commit(): Unit = {
-    if (initialized) {
+    if (started) {
       budgetManager.commit;
-    }
-  }
-
-  def rollback(): Unit = {
-    if (initialized) {
-      budgetManager.rollback;
     }
   }
 
   /**
    * wrap of spark checker
    */
-  def apply(plan: LogicalPlan, epsilon: Double): Unit = {
-    if (!initialized) {
+  def apply(plan: LogicalPlan): Unit = {
+    if (!started) {
       return ;
     }
     val begin = System.currentTimeMillis();
@@ -128,7 +141,7 @@ object SparkChecker extends Logging {
   /**
    * check whether column is properly labeled
    */
-  private def checkMeta(meta: MetaRegistry, catalog: Catalog): Unit = {
+  private def checkMeta(meta: MetaRegistry, catalog: Catalog) {
     val databases = meta.getDatabases();
     for (db <- databases.asScala) {
       val dbName = Some(db._1); ;
@@ -137,6 +150,7 @@ object SparkChecker extends Logging {
         val table = t._1;
         val relation = lookupRelation(catalog, dbName, table);
         if (relation == null) {
+          error = true;
           logError(s"Error in MetaRegistry, table: ${table} not found in database: ${db._1}.");
         } else {
           t._2.getColumns().asScala.values.foreach(c => checkColumn(c.getName(), c.getType(), relation, table));
@@ -151,6 +165,7 @@ object SparkChecker extends Logging {
             val name = join.getJoinTable();
             val relation = lookupRelation(catalog, dbName, name);
             if (relation == null) {
+              error = true;
               logError(s"Error in MetaRegistry, table: $name (joined with ${t._1}) not found in database: ${db._1}.");
             } else {
               val cols = list.map(_.target);
@@ -162,14 +177,15 @@ object SparkChecker extends Logging {
     }
   }
 
-  private def checkColumn(name: String, labelType: BaseType, relation: LogicalPlan, table: String) {
+  private def checkColumn(name: String, labelType: BaseType, relation: LogicalPlan, table: String) = {
     val attribute = relation.output.find(attr => attr.name == name).getOrElse(null);
     if (attribute == null) {
+      error = true;
       logError(s"Error in MetaRegistry. Column: $name not exist in table: ${table}");
-      return ;
     }
     if (labelType != null) {
       if (checkDataType(name, labelType, attribute.dataType)) {
+        error = true;
         logError(s"Error in MetaRegistry. Type mismatch for column: $name in table: $table. Expected type: ${attribute.dataType}");
       }
     }

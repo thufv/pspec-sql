@@ -14,6 +14,7 @@ import org.apache.spark.sql.catalyst.checker.SparkChecker
 import org.apache.spark.sql.catalyst.expressions.AggregateExpression
 import org.apache.spark.sql.catalyst.expressions.Min
 import org.apache.spark.sql.catalyst.expressions.Max
+import org.apache.spark.sql.catalyst.checker.SparkChecker
 
 object DPUtil extends Logging {
 
@@ -87,15 +88,14 @@ object DPUtil extends Logging {
     return d1 < d2;
   }
 
-  def checkUtility(result: Any, epsilon: Double, sensitivity: Double): Boolean = {
+  def checkUtility(result: Any, epsilon: Double, sensitivity: Double, prob: Double, ratio: Double): Boolean = {
     val value = toDouble(result);
     val stddev = sensitivity / epsilon;
-    val noise = -stddev * Math.log(1 - SparkChecker.accuracyProb);
+    val noise = -stddev * Math.log(1 - prob);
 
-    logWarning(s"estimated noise range [-$noise, $noise] with probability ${SparkChecker.accuracyProb}");
+    logWarning(s"estimated noise range [-$noise, $noise] with probability ${noise}");
 
-    if (result == null || noise / value > SparkChecker.accurcayNoise) {
-      //SparkChecker.rollback;
+    if (result == null || noise / value > ratio) {
       //throw new PrivacyException("accuracy bound violated, please revise your query");
       return false;
     } else {
@@ -103,10 +103,11 @@ object DPUtil extends Logging {
     }
   }
 
-  def calibrateNoise(result: Any, epsilon: Double, sensitivity: Double): Any = {
+  def calibrateNoise(result: Any, epsilon: Double, sensitivity: Double, id: Int, checker: SparkChecker): Any = {
     logWarning(s"calibrating noise, epsilon:$epsilon, sensitivity:$sensitivity");
-    if (!checkUtility(result, epsilon, sensitivity)) {
+    if (!checkUtility(result, epsilon, sensitivity, checker.accuracyProb, checker.accurcayNoise)) {
       logWarning(s"utility accuracy unsatisfied, suppress aggregate result: ${result}");
+      checker.returnback(id);
       return null;
     }
     val noise = lapNoise(epsilon, sensitivity);

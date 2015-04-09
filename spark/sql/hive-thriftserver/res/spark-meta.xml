@@ -22,25 +22,17 @@
 				</struct>
 			</column>
 			<column name="a3">
-				<struct>
-					<field name="s3">
-						<map>
-							<entry key="a">
-								<struct>
-									<field name="m2" data-category="b_year"></field>
-								</struct>
-							</entry>
-							<entry key="b" data-category="b_month"></entry>
-							<entry key="c" data-category="b_day"></entry>
-						</map>
-					</field>
-				</struct>
+				<map>
+					<entry key="a">
+						<struct>
+							<field name="m2" data-category="b_year"></field>
+						</struct>
+					</entry>
+					<entry key="b" data-category="b_month"></entry>
+					<entry key="c" data-category="b_day"></entry>
+				</map>
 			</column>
 		</table>
-
-
-
-
 
 
 		<table name="customer">

@@ -90,6 +90,6 @@ trait LabelConstants {
 
   def ignorable(transform: String) = Ignorables.contains(transform);
 
-  def skippable(transform: String) = Skippables.contains(transform);
+  def skippable(transform: String) = Skippables.exists(transform.startsWith(_));
 
 }
