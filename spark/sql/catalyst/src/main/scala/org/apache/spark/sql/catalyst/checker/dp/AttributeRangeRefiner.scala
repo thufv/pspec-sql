@@ -84,6 +84,7 @@ import org.apache.spark.sql.catalyst.checker.PrivacyException
 import org.jgrapht.graph.Multigraph
 import org.jgrapht.graph.Pseudograph
 import util.ESat
+import org.jgrapht.graph.DirectedPseudograph
 
 class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) extends Logging {
 
@@ -93,7 +94,7 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
     private val relevantGraph = new Pseudograph[String, DefaultEdge](classOf[DefaultEdge]);
 
     //TODO: possible problems for union on complex types
-    private val equiGraph = new Pseudograph[String, DefaultEdge](classOf[DefaultEdge]);
+    private val deriveGraph = new DirectedPseudograph[String, DefaultEdge](classOf[DefaultEdge]);
 
     private val aggAttributes = new HashSet[String];
 
@@ -181,7 +182,7 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
       });
 
       //post processing, create nodes and edges for complex types
-      val alg = new ConnectivityInspector[String, DefaultEdge](equiGraph);
+      val alg = new ConnectivityInspector[String, DefaultEdge](deriveGraph);
 
       val queue = new Queue[String];
       complexAttributes.foreach(queue.enqueue(_));
@@ -189,15 +190,15 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
         val attr = queue.dequeue;
         val pre = getComplexAttribute(attr);
         val subtypes = getComplexSubtypes(attr);
-        if (equiGraph.containsVertex(pre)) {
+        if (deriveGraph.containsVertex(pre)) {
           val equivalents = alg.connectedSetOf(pre);
           for (equi <- equivalents) {
             val equiAttr = concatComplexAttribute(equi, subtypes);
             if (!relevantGraph.containsVertex(equiAttr)) {
-              relevantGraph.addVertex(equiAttr);
-              relevantGraph.addEdge(attr, equiAttr);
               queue.enqueue(equiAttr);
+              relevantGraph.addVertex(equiAttr);
             }
+            relevantGraph.addEdge(attr, equiAttr);
           }
         }
       }
@@ -280,9 +281,9 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
       if (attr != null) {
         val str1 = getAttributeString(output, plan);
         val str2 = getAttributeString(attr, plan);
-        equiGraph.addVertex(str1);
-        equiGraph.addVertex(str2);
-        equiGraph.addEdge(str1, str2);
+        deriveGraph.addVertex(str1);
+        deriveGraph.addVertex(str2);
+        deriveGraph.addEdge(str1, str2);
       }
     }
 
@@ -419,7 +420,7 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
       refinedRanges.put(attr, range);
       return range;
     }
-    
+
     val up = attrVar.getUB();
     if (solver.hasReachedLimit()) {
       logWarning(s"solving upper bound for $attr timeout, fall back to original $up");

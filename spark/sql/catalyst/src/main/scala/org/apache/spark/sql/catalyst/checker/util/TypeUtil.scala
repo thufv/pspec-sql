@@ -185,14 +185,18 @@ object TypeUtil {
   def toItemString(ordinal: Expression, clazz: Class[_ <: DataType]): String = {
     ordinal match {
       case literal: Literal => {
-        if (clazz == classOf[types.ArrayType]) {
-          "[0]";
-        } else {
-          literal.value match {
-            case str: String => "['" + str + "']"
-            case _ => "[" + literal.value + "]";
-          }
+        literal.value match {
+          case str: String => s"['$str']";
+          case v => s"[$v]";
         }
+        //        if (clazz == classOf[types.ArrayType]) {
+        //          s"[${literal.value}]";
+        //        } else {
+        //          literal.value match {
+        //            case str: String => "['" + str + "']"
+        //            case _ => "[" + literal.value + "]";
+        //          }
+        //        }
       }
       case _ => {
         return null;
@@ -207,19 +211,18 @@ object TypeUtil {
     }
     t match {
       case comp: CompositeType => {
-        val subType = comp.getExtractOperation(transform);
+        val subType = comp.getSubType(transform);
         if (subType != null) {
-          return Seq(subType.getType());
+          return Seq(subType);
         } else {
           return comp.toPrimitives();
         }
       }
       case struct: StructType => {
         if (isGetField(transform)) {
-          val field = getSubType(transform);
-          val subType = struct.getField(field);
+          val subType = struct.getSubType(transform);
           if (subType != null) {
-            Seq(subType.getType());
+            Seq(subType);
           } else {
             Nil;
           }
@@ -229,20 +232,31 @@ object TypeUtil {
       }
       case array: ArrayType => {
         if (isGetItem(transform)) {
-          return Seq(array.getItemType());
+          val index = getTypeSelector(transform);
+          if (index == null || index.isEmpty()) {
+            //unrecoganized get item operation, assume all subtypes are accessed 
+            return array.toSubTypes();
+          } else {
+            val subType = array.getSubType(index.toInt);
+            if (subType != null) {
+              Seq(subType);
+            } else {
+              Nil;
+            }
+          }
         } else {
           return array.toPrimitives();
         }
       }
       case map: MapType => {
         if (isGetEntry(transform)) {
-          val key = getSubType(transform);
+          val key = getTypeSelector(transform);
           if (key == null || key.isEmpty()) {
-            return map.toPrimitives();
+            return map.toSubTypes();
           }
-          val subType = map.getEntry(key);
+          val subType = map.getSubType(key);
           if (subType != null) {
-            Seq(subType.getType);
+            Seq(subType);
           } else {
             Nil;
           }

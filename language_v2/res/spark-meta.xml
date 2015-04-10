@@ -6,14 +6,15 @@
 		<table name="test">
 			<column name="c1">
 				<struct>
-
 					<field name="f1" data-category="name"></field>
 					<field name="f2">
 						<map>
 							<entry key="k1" data-category="sk"></entry>
 							<entry key="k2">
 								<array>
-									<item data-category="sk"></item>
+									<item index="0" data-category="sk"></item>
+									<item index="1" data-category="sk"></item>
+									<item index="*" data-category="sk"></item>
 								</array>
 							</entry>
 						</map>

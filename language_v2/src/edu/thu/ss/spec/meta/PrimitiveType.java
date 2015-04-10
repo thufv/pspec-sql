@@ -35,6 +35,14 @@ public class PrimitiveType extends BaseType {
 	}
 
 	@Override
+	public BaseType[] toSubTypes() {
+		if (subTypesArray == null) {
+			subTypesArray = toPrimitives();
+		}
+		return subTypesArray;
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;

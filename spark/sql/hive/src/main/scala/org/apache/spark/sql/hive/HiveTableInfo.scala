@@ -31,6 +31,7 @@ import org.apache.spark.sql.catalyst.expressions.AttributeReference
 import org.apache.spark.sql.catalyst.expressions.AttributeReference
 import org.apache.spark.Logging
 import org.apache.spark.sql.catalyst.checker.dp.AttributeInfo
+import org.apache.spark.sql.types.NumericType
 
 class HiveTableInfo(val hive: HiveContext) extends TableInfo with Logging {
   private class Table {
@@ -148,12 +149,12 @@ class HiveTableInfo(val hive: HiveContext) extends TableInfo with Logging {
     val compositeType = CheckerUtil.asType(baseType, classOf[meta.CompositeType]);
     if (compositeType != null) {
       //should be the end
-      compositeType.getExtractOperations().values().foreach(extract => {
-        val function = hive.functionRegistry.lookupFunction(extract.name, Seq(AttributeReference("", dataType)()));
+      compositeType.getAllTypes().foreach(extract => {
+        val function = hive.functionRegistry.lookupFunction(extract._1, Seq(AttributeReference("", dataType)()));
         function match {
           case _: HiveSimpleUdf | _: HiveGenericUdf => {
             if (function.dataType.isInstanceOf[NumericType]) {
-              val typeString = TypeUtil.concatComplexAttribute(prefix, extract.name);
+              val typeString = TypeUtil.concatComplexAttribute(prefix, extract._1);
             }
           }
           case _ =>
@@ -173,7 +174,7 @@ class HiveTableInfo(val hive: HiveContext) extends TableInfo with Logging {
             case complex if (!complex.isPrimitive) => {
               val structType = CheckerUtil.asType(baseType, classOf[meta.StructType]);
               if (structType != null) {
-                resolveSubtypes(complex, list, typeString, structType.getFieldType(field.name));
+                resolveSubtypes(complex, list, typeString, structType.getSubType(field.name));
               } else {
                 resolveSubtypes(complex, list, typeString, null);
               }
@@ -187,7 +188,7 @@ class HiveTableInfo(val hive: HiveContext) extends TableInfo with Logging {
         map.valueType match {
           case numeric: NumericType => {
             if (mapType != null) {
-              mapType.getEntries().keys.foreach(key => {
+              mapType.getAllTypes().keys.foreach(key => {
                 val typeString = TypeUtil.concatComplexAttribute(prefix, TypeUtil.toItemString(Literal(key), classOf[MapType]));
                 list.append(typeString);
               });
@@ -195,9 +196,9 @@ class HiveTableInfo(val hive: HiveContext) extends TableInfo with Logging {
           }
           case complex if (!complex.isPrimitive) => {
             if (mapType != null) {
-              mapType.getEntries().values.foreach(entry => {
-                val typeString = TypeUtil.concatComplexAttribute(prefix, TypeUtil.toItemString(Literal(entry.key), classOf[MapType]));
-                resolveSubtypes(complex, list, typeString, entry.valueType);
+              mapType.getAllTypes().foreach(entry => {
+                val typeString = TypeUtil.concatComplexAttribute(prefix, TypeUtil.toItemString(Literal(entry._1), classOf[MapType]));
+                resolveSubtypes(complex, list, typeString, entry._2);
               });
             }
           }
@@ -205,17 +206,22 @@ class HiveTableInfo(val hive: HiveContext) extends TableInfo with Logging {
         }
       }
       case array: ArrayType => {
-        val typeString = TypeUtil.concatComplexAttribute(prefix, TypeUtil.toItemString(Literal("0"), classOf[ArrayType]));
+        val arrayType = CheckerUtil.asType(baseType, classOf[meta.ArrayType]);
         array.elementType match {
           case numeric: NumericType => {
-            list.append(typeString);
+            if (arrayType != null) {
+              arrayType.getAllTypes().keys.foreach(index => {
+                val typeString = TypeUtil.concatComplexAttribute(prefix, TypeUtil.toItemString(Literal(index), classOf[ArrayType]));
+                list.append(typeString);
+              });
+            }
           }
           case complex if (!complex.isPrimitive) => {
-            val arrayType = CheckerUtil.asType(baseType, classOf[meta.ArrayType]);
             if (arrayType != null) {
-              resolveSubtypes(complex, list, typeString, arrayType.getItemType());
-            } else {
-              resolveSubtypes(complex, list, typeString, null);
+              arrayType.getAllTypes().foreach(item => {
+                val typeString = TypeUtil.concatComplexAttribute(prefix, TypeUtil.toItemString(Literal(item._1), classOf[ArrayType]));
+                resolveSubtypes(complex, list, typeString, item._2);
+              });
             }
           }
           case _ =>
@@ -256,11 +262,17 @@ class HiveTableInfo(val hive: HiveContext) extends TableInfo with Logging {
   }
 
   private def updateRange(db: String, table: String, column: String): AttributeInfo = {
-    val transformed = TypeUtil.toSQLString(column);
-    val row = queryRange(table, Seq((null, Seq(transformed))));
-    val info = new AttributeInfo(row(0), row(1), None);
-    put(db, table, column, info);
-    return info;
+    try {
+      hive.checker.pause();
+      val transformed = TypeUtil.toSQLString(column);
+      val row = queryRange(table, Seq((null, Seq(transformed))));
+      val info = new AttributeInfo(row(0), row(1), None);
+      put(db, table, column, info);
+      return info;
+    } finally {
+      hive.checker.resume();
+    }
+
   }
 
   private def queryRange(table: String, attributes: Seq[(Attribute, Seq[String])]): Row = {

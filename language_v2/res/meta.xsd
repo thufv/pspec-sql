@@ -123,8 +123,8 @@
 
 	<complexType name="arrayType">
 		<sequence>
-			<element name="item" type="tns:baseType" minOccurs="1"
-				maxOccurs="1" />
+			<element name="item" type="tns:itemType" minOccurs="1"
+				maxOccurs="unbounded" />
 		</sequence>
 	</complexType>
 
@@ -149,6 +149,29 @@
 			</extension>
 		</complexContent>
 	</complexType>
+
+	<complexType name="itemType">
+		<complexContent>
+			<extension base="tns:baseType">
+				<attribute name="index" use="required">
+					<simpleType>
+						<union>
+							<simpleType>
+								<restriction base="nonNegativeInteger">
+								</restriction>
+							</simpleType>
+							<simpleType>
+								<restriction base="string">
+									<enumeration value="*"></enumeration>
+								</restriction>
+							</simpleType>
+						</union>
+					</simpleType>
+				</attribute>
+			</extension>
+		</complexContent>
+	</complexType>
+
 
 	<complexType name="entryType">
 		<complexContent>

@@ -27,6 +27,7 @@ public class PolicyParserTest {
 		}
 	}
 
+	@Test
 	public void testMeta() {
 		try {
 			PolicyParser parser = new PolicyParser();
@@ -82,7 +83,6 @@ public class PolicyParserTest {
 		}
 	}
 
-	@Test
 	public void testGlobalDP() {
 		try {
 			PolicyParser parser = new PolicyParser();
@@ -93,7 +93,6 @@ public class PolicyParserTest {
 		}
 	}
 
-	@Test
 	public void testFineDP() {
 		try {
 			PolicyParser parser = new PolicyParser();

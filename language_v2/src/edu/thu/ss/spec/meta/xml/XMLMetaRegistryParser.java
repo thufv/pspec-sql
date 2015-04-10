@@ -25,12 +25,9 @@ import edu.thu.ss.spec.meta.CompositeType;
 import edu.thu.ss.spec.meta.Database;
 import edu.thu.ss.spec.meta.JoinCondition;
 import edu.thu.ss.spec.meta.MapType;
-import edu.thu.ss.spec.meta.CompositeType.ExtractOperation;
-import edu.thu.ss.spec.meta.MapType.EntryType;
 import edu.thu.ss.spec.meta.MetaRegistry;
 import edu.thu.ss.spec.meta.PrimitiveType;
 import edu.thu.ss.spec.meta.StructType;
-import edu.thu.ss.spec.meta.StructType.FieldType;
 import edu.thu.ss.spec.meta.Table;
 import edu.thu.ss.spec.util.ParsingException;
 import edu.thu.ss.spec.util.XMLUtil;
@@ -259,8 +256,11 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 			if (Ele_Struct_Field.equals(name)) {
 				String fieldName = XMLUtil.getAttrValue(node, Attr_Struct_Field_Name);
 				BaseType subType = parseType(node, columnName);
-				FieldType field = new FieldType(fieldName, subType);
-				struct.addField(field);
+				if (Attr_Complex_Type_Default.equals(fieldName)) {
+					struct.setDefaultType(subType);
+				} else {
+					struct.add(fieldName, subType);
+				}
 			}
 		}
 		return struct;
@@ -275,8 +275,11 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 			if (Ele_Map_Entry.equals(name)) {
 				String key = XMLUtil.getAttrValue(node, Attr_Map_Entry_Key);
 				BaseType valueType = parseType(node, columnName);
-				EntryType entry = new EntryType(key, valueType);
-				map.addEntry(entry);
+				if (Attr_Complex_Type_Default.equals(key)) {
+					map.setDefaultType(valueType);
+				} else {
+					map.add(key, valueType);
+				}
 			}
 		}
 		return map;
@@ -289,8 +292,13 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 			Node node = list.item(i);
 			String name = node.getLocalName();
 			if (Ele_Array_Item.equals(name)) {
-				BaseType itemType = parseType(node, columnName);
-				array.setItemType(itemType);
+				String index = XMLUtil.getAttrValue(node, Attr_Array_Item_Index);
+				BaseType baseType = parseType(node, columnName);
+				if (Attr_Complex_Type_Default.equals(index)) {
+					array.setDefaultType(baseType);
+				} else {
+					array.add(Integer.valueOf(index), baseType);
+				}
 			}
 		}
 		return array;
@@ -303,10 +311,9 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 			Node node = list.item(i);
 			String name = node.getLocalName();
 			if (Ele_Composite_Extract.equals(name)) {
-				String extractName = XMLUtil.getAttrValue(node, Attr_Composite_Extract_Name).toLowerCase();
+				String extractName = XMLUtil.getAttrValue(node, Attr_Composite_Extract_Name);
 				PrimitiveType extractType = parsePrimitiveType(node, columnName);
-				ExtractOperation operation = new ExtractOperation(extractName, extractType);
-				composite.addExtractOperation(operation);
+				composite.add(extractName, extractType);
 			}
 		}
 		return composite;

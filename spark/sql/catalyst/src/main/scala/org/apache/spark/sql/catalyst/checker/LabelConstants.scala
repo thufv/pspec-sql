@@ -51,7 +51,7 @@ trait LabelConstants {
 
   def isGetEntry(trans: String) = trans.startsWith(Func_GetEntry);
 
-  def getSubType(trans: String): String = {
+  def getTypeSelector(trans: String): String = {
     val strs = trans.split("\\.");
     if (strs.length > 1) {
       strs(1);

@@ -1,8 +1,6 @@
 package org.apache.spark.sql.catalyst.checker
 
-import scala.collection.JavaConverters.asScalaBufferConverter
-import scala.collection.JavaConverters.asScalaSetConverter
-import scala.collection.JavaConverters.mapAsScalaMapConverter
+import scala.collection.JavaConversions._
 import org.apache.spark.Logging
 import org.apache.spark.sql.catalyst.analysis.Catalog
 import org.apache.spark.sql.catalyst.checker.dp.DPBudgetManager
@@ -80,6 +78,16 @@ class SparkChecker(catalog: Catalog, policy: String, meta: String) extends Loggi
     }
   }
 
+  def pause() {
+    started = false;
+  }
+
+  def resume() {
+    if (!error) {
+      started = true;
+    }
+  }
+
   def loadPolicy(path: String): Unit = {
     val parser = new PolicyParser;
     try {
@@ -143,9 +151,9 @@ class SparkChecker(catalog: Catalog, policy: String, meta: String) extends Loggi
    */
   private def checkMeta(meta: MetaRegistry, catalog: Catalog) {
     val databases = meta.getDatabases();
-    for (db <- databases.asScala) {
+    for (db <- databases) {
       val dbName = Some(db._1); ;
-      val tables = db._2.getTables().asScala;
+      val tables = db._2.getTables();
       for (t <- tables) {
         val table = t._1;
         val relation = lookupRelation(catalog, dbName, table);
@@ -153,14 +161,14 @@ class SparkChecker(catalog: Catalog, policy: String, meta: String) extends Loggi
           error = true;
           logError(s"Error in MetaRegistry, table: ${table} not found in database: ${db._1}.");
         } else {
-          t._2.getColumns().asScala.values.foreach(c => checkColumn(c.getName(), c.getType(), relation, table));
-          t._2.getCondColumns().asScala.values.foreach(c => {
-            c.getTypes().asScala.values.foreach(t => checkColumn(c.getName(), t, relation, table));
+          t._2.getColumns().values.foreach(c => checkColumn(c.getName(), c.getType(), relation, table));
+          t._2.getCondColumns().values.foreach(c => {
+            c.getTypes().values.foreach(t => checkColumn(c.getName(), t, relation, table));
           });
-          val conds = t._2.getAllConditions().asScala;
+          val conds = t._2.getAllConditions();
           val condColumns = new HashSet[String];
           conds.foreach(join => {
-            val list = join.getJoinColumns().asScala;
+            val list = join.getJoinColumns();
             list.foreach(e => condColumns.add(e.column));
             val name = join.getJoinTable();
             val relation = lookupRelation(catalog, dbName, name);
@@ -184,14 +192,14 @@ class SparkChecker(catalog: Catalog, policy: String, meta: String) extends Loggi
       logError(s"Error in MetaRegistry. Column: $name not exist in table: ${table}");
     }
     if (labelType != null) {
-      if (checkDataType(name, labelType, attribute.dataType)) {
+      if (checkDataType(labelType, attribute.dataType)) {
         error = true;
         logError(s"Error in MetaRegistry. Type mismatch for column: $name in table: $table. Expected type: ${attribute.dataType}");
       }
     }
   }
 
-  private def checkDataType(name: String, labelType: BaseType, attrType: DataType): Boolean = {
+  private def checkDataType(labelType: BaseType, attrType: DataType): Boolean = {
     var error = false;
     labelType match {
       case _: PrimitiveType =>
@@ -199,7 +207,7 @@ class SparkChecker(catalog: Catalog, policy: String, meta: String) extends Loggi
       case array: ArrayType => {
         attrType match {
           case attrArray: types.ArrayType => {
-            error = checkDataType(name, array.getItemType(), attrArray.elementType)
+            error = array.getAllTypes().values.exists(item => checkDataType(item, attrArray.elementType));
           }
           case _ => error = true;
         }
@@ -207,12 +215,14 @@ class SparkChecker(catalog: Catalog, policy: String, meta: String) extends Loggi
       case struct: StructType => {
         attrType match {
           case attrStruct: types.StructType => {
-            error = struct.getFields().asScala.values.exists(field => {
-              val attrField = attrStruct.fields.find(f => f.name == field.name).getOrElse(null);
+            error = struct.getAllTypes().exists(t => {
+              val fieldName = t._1;
+              val fieldType = t._2;
+              val attrField = attrStruct.fields.find(f => f.name == fieldName).getOrElse(null);
               if (attrField == null) {
                 true;
               } else {
-                checkDataType(name, field.getType(), attrField.dataType);
+                checkDataType(fieldType, attrField.dataType);
               }
             });
           }
@@ -222,8 +232,8 @@ class SparkChecker(catalog: Catalog, policy: String, meta: String) extends Loggi
       case map: MapType => {
         attrType match {
           case attrMap: types.MapType => {
-            error = map.getEntries().asScala.values.exists(entry => {
-              checkDataType(name, entry.valueType, attrMap.valueType);
+            error = map.getAllTypes.values.exists(entry => {
+              checkDataType(entry, attrMap.valueType);
             });
           }
           case _ => error = true;

@@ -26,7 +26,7 @@
 			0.1 w.r.t. the real answer -->
 
 		<global-budget>
-			<user-category-ref refid="all" budget="1"></user-category-ref>
+			<user-category-ref refid="app" budget="1"></user-category-ref>
 
 		</global-budget>
 		<accuracy>

@@ -136,7 +136,7 @@ case class FunctionLabel(children: Seq[Label], transform: String, expression: Ex
         types.map(sub => {
           sub match {
             case struct: StructType => {
-              struct.getFieldType(getSubType(get));
+              struct.getSubType(getTypeSelector(get));
               //TODO luochen maybe we should return Nil?
             }
             case prim: PrimitiveType => prim;
@@ -148,7 +148,7 @@ case class FunctionLabel(children: Seq[Label], transform: String, expression: Ex
         types.map(sub => {
           sub match {
             case array: ArrayType => {
-              array.getItemType();
+              array.getSubType(getTypeSelector(get).toInt);
             }
             case prim: PrimitiveType => prim;
           }
@@ -159,7 +159,7 @@ case class FunctionLabel(children: Seq[Label], transform: String, expression: Ex
         types.map(sub => {
           sub match {
             case map: MapType => {
-              map.getEntryType(getSubType(get));
+              map.getSubType(getTypeSelector(get));
             }
             case prim: PrimitiveType => prim;
           }
@@ -170,7 +170,7 @@ case class FunctionLabel(children: Seq[Label], transform: String, expression: Ex
         types.map(sub => {
           sub match {
             case comp: CompositeType => {
-              val comptype = comp.getExtractType(transform);
+              val comptype = comp.getSubType(extract);
               if (comptype == null) {
                 return Nil;
               } else {

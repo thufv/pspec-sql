@@ -35,7 +35,13 @@ object ExpressionRegistry extends LabelConstants {
 
       case item: GetItem => {
         item.child.dataType match {
-          case _: ArrayType => Func_GetItem;
+          case _: ArrayType => {
+            item.ordinal match {
+              case literal: Literal => Func_GetItem + "." + literal.value;
+              case _ => Func_GetItem;
+            }
+
+          }
           case _: MapType => {
             item.ordinal match {
               case literal: Literal => Func_GetEntry + "." + literal.value;

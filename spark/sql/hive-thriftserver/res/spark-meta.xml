@@ -6,8 +6,9 @@
 		<table name="complex1">
 			<column name="a1">
 				<array>
-					<item data-category="b_year">
-					</item>
+					<item index="0" data-category="b_year" />
+					<item index="1" data-category="b_month" />
+					<item index="2" data-category="b_day" />
 				</array>
 			</column>
 			<column name="a2">

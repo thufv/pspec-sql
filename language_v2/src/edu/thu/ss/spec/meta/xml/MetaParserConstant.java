@@ -37,7 +37,11 @@ public interface MetaParserConstant {
 
   public static final String Attr_Struct_Field_Name = "name";
   public static final String Attr_Map_Entry_Key = "key";
+  public static final String Attr_Array_Item_Index = "index";
   public static final String Attr_Composite_Extract_Name = "name";
+  
+  public static final String Attr_Complex_Type_Default = "*";
+
 
   public static final String Attr_Policy = "policy";
 

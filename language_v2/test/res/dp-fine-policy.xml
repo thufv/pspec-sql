@@ -22,7 +22,6 @@
 			<user-category-ref refid="employee" budget="1"></user-category-ref>
 			<user-category-ref refid="student" budget="5"></user-category-ref>
 			<user-category-ref refid="teacher" budget="10"></user-category-ref>
-
 		</global-budget>
 
 		<!-- with probability (greater than) 0.9, the noise ratio should within 
