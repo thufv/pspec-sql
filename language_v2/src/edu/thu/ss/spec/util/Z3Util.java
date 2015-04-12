@@ -58,8 +58,8 @@ public class Z3Util {
 	 * @param dataLength
 	 * @return
 	 */
-	public static boolean implies(ExpandedRule rule1, ExpandedRule rule2, int[][] dataIncludes, int[] dataLength,
-			boolean[] covered) {
+	public static boolean implies(ExpandedRule rule1, ExpandedRule rule2, int[][] dataIncludes,
+			int[] dataLength, boolean[] covered) {
 		if (!initialized) {
 			init(BaseRedundancyAnalyzer.Max_Dimension);
 		}
@@ -95,8 +95,8 @@ public class Z3Util {
 				return false;
 			}
 			restrictions2 = filtered.toArray(new Restriction[filtered.size()]);
-			return impliesImplement(rule1.getRestrictions(), rule1.getDimension(), restrictions2, dim2, dataIncludes,
-					dataLength);
+			return impliesImplement(rule1.getRestrictions(), rule1.getDimension(), restrictions2, dim2,
+					dataIncludes, dataLength);
 		} catch (Z3Exception e) {
 			logger.error("", e);
 			return false;
@@ -104,8 +104,9 @@ public class Z3Util {
 
 	}
 
-	static boolean impliesImplement(Restriction[] restrictions1, int dim1, Restriction[] restrictions2, int dim2,
-			int[][] dataIncludes, int[] dataLength) throws Z3Exception {
+	static boolean impliesImplement(Restriction[] restrictions1, int dim1,
+			Restriction[] restrictions2, int dim2, int[][] dataIncludes, int[] dataLength)
+			throws Z3Exception {
 
 		IntExpr[] vars = new IntExpr[dim2];
 		Sort[] types = new Sort[dim2];
@@ -134,21 +135,24 @@ public class Z3Util {
 		return status.equals(Status.SATISFIABLE);
 	}
 
-	private static void buildPreCondition(Restriction[] restrictions, int dim, int[][] dataIncludes, int[] dataLength,
-			IntExpr[] vars, int[] varIndex, int index, List<BoolExpr> list) throws Z3Exception {
+	private static void buildPreCondition(Restriction[] restrictions, int dim, int[][] dataIncludes,
+			int[] dataLength, IntExpr[] vars, int[] varIndex, int index, List<BoolExpr> list)
+			throws Z3Exception {
 		if (index == dim) {
 			BoolExpr expr = buildExpr(restrictions, vars, varIndex);
 			list.add(expr);
 		} else {
 			for (int i = 0; i < dataLength[index]; i++) {
 				varIndex[index] = dataIncludes[index][i];
-				buildPreCondition(restrictions, dim, dataIncludes, dataLength, vars, varIndex, index + 1, list);
+				buildPreCondition(restrictions, dim, dataIncludes, dataLength, vars, varIndex, index + 1,
+						list);
 			}
 		}
 
 	}
 
-	private static BoolExpr buildExpr(Restriction[] restrictions, IntExpr[] vars, int[] varIndex) throws Z3Exception {
+	private static BoolExpr buildExpr(Restriction[] restrictions, IntExpr[] vars, int[] varIndex)
+			throws Z3Exception {
 		BoolExpr[] exprs = new BoolExpr[restrictions.length];
 		for (int i = 0; i < restrictions.length; i++) {
 			exprs[i] = buildExpr(restrictions[i], vars, varIndex);
@@ -156,7 +160,8 @@ public class Z3Util {
 		return context.mkOr(exprs);
 	}
 
-	private static BoolExpr buildExpr(Restriction res, IntExpr[] vars, int[] varIndex) throws Z3Exception {
+	private static BoolExpr buildExpr(Restriction res, IntExpr[] vars, int[] varIndex)
+			throws Z3Exception {
 		Desensitization[] des = res.getDesensitizations();
 		BoolExpr[] exprs = new BoolExpr[des.length];
 		for (int i = 0; i < des.length; i++) {
@@ -169,7 +174,8 @@ public class Z3Util {
 		return context.mkAnd(exprs);
 	}
 
-	private static BoolExpr buildExpr(int data, Desensitization de, IntExpr[] vars, int[] varIndex) throws Z3Exception {
+	private static BoolExpr buildExpr(int data, Desensitization de, IntExpr[] vars, int[] varIndex)
+			throws Z3Exception {
 		BoolExpr[] exprs = new BoolExpr[de.getOperations().size()];
 		int i = 0;
 		for (DesensitizeOperation op : de.getOperations()) {

@@ -1,6 +1,5 @@
 package org.apache.spark.sql.catalyst.checker.dp
 
-import scala.collection.Set
 import scala.collection.mutable
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.HashSet
@@ -67,7 +66,7 @@ class DPEnforcer(val tableInfo: TableInfo, val budgetManager: DPBudgetManager, v
     private val tableSizes = new HashMap[String, Int];
     private val tableMapping = new HashMap[String, Int];
 
-    def addTable(table: String, attrs: Set[Attribute], tableSize: Option[Int] = None) {
+    def addTable(table: String, attrs: collection.Set[Attribute], tableSize: Option[Int] = None) {
       val count = tableMapping.get(table);
       var name: String = null;
       //renaming table with unique id
@@ -140,6 +139,8 @@ class DPEnforcer(val tableInfo: TableInfo, val budgetManager: DPBudgetManager, v
 
   private var currentAggPlan: Aggregate = null;
 
+  private val queryTracker = new DPQueryTracker;
+
   def apply(plan: LogicalPlan) {
     if (!exists(plan, classOf[Aggregate])) {
       return ;
@@ -158,8 +159,12 @@ class DPEnforcer(val tableInfo: TableInfo, val budgetManager: DPBudgetManager, v
       }
       case agg: Aggregate => {
         val scale = enforce(agg.child, true);
-        agg.aggregateExpressions.foreach(enforceAggregate(_, agg, scale));
-        budgetManager.consume(agg, epsilon);
+        if (agg.aggregateExpressions.exists(dpEnabled(_))) {
+          currentRefiner = new AttributeRangeRefiner(tableInfo, agg);
+          agg.aggregateExpressions.foreach(enforceAggregate(_, agg, scale));
+          queryTracker.track(agg);
+          budgetManager.consume(agg, epsilon);
+        }
         scale;
       }
       case unary: UnaryNode => {
@@ -276,7 +281,7 @@ class DPEnforcer(val tableInfo: TableInfo, val budgetManager: DPBudgetManager, v
         //join on complex data types is not allowed
         val left = resolveSimpleAttribute(equal.left);
         val right = resolveSimpleAttribute(equal.right);
-        if ((left == null || right == null) || left.isInstanceOf[Attribute] || right.isInstanceOf[Attribute]) {
+        if ((left == null || right == null) || !left.isInstanceOf[Attribute] || !right.isInstanceOf[Attribute]) {
           throw new PrivacyException(s"join condition $equal is invalid, only equi-join is supported");
         }
 
@@ -325,13 +330,16 @@ class DPEnforcer(val tableInfo: TableInfo, val budgetManager: DPBudgetManager, v
     }
   }
 
+  private def dpEnabled(expression: Expression): Boolean = {
+    expression match {
+      case agg: AggregateExpression if (agg.enableDP) => true
+      case _ => expression.children.exists(dpEnabled(_));
+    }
+  }
+
   private def enforceDP(agg: AggregateExpression, plan: Aggregate, scale: Int, refine: Boolean, func: (Double, Double) => Double) {
     if (!agg.enableDP) {
       return ;
-    }
-    if (currentAggPlan != plan) {
-      currentAggPlan = plan;
-      currentRefiner = new AttributeRangeRefiner(tableInfo, plan);
     }
     if (refine) {
       val range = resolveAttributeRange(agg.children(0), plan, refine);
@@ -339,8 +347,8 @@ class DPEnforcer(val tableInfo: TableInfo, val budgetManager: DPBudgetManager, v
     } else {
       agg.sensitivity = func(0, 0);
     }
-    agg.epsilon = epsilon / scale;
-
+    agg.epsilon = epsilon;
+    agg.sensitivity = agg.sensitivity * scale;
     logWarning(s"enable dp for $agg with sensitivity = ${agg.sensitivity}, epsilon = $epsilon, scale = $scale, and result epsilon = ${agg.epsilon}");
   }
 

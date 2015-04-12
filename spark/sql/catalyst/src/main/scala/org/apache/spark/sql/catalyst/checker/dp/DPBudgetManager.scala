@@ -13,13 +13,12 @@ import edu.thu.ss.spec.lang.pojo.UserCategory
 import edu.thu.ss.spec.lang.pojo.GlobalBudget
 import edu.thu.ss.spec.lang.pojo.FineBudget
 import org.apache.spark.sql.catalyst.expressions.Expression
+import org.apache.spark.sql.catalyst.expressions.Attribute
 import org.apache.spark.sql.catalyst.expressions.Cast
 import org.apache.spark.sql.catalyst.expressions.Alias
 import org.apache.spark.sql.catalyst.expressions.AggregateExpression
-import scala.collection.mutable.HashSet
-import scala.collection.mutable.Set
 import org.apache.spark.sql.catalyst.checker.util.TypeUtil._
-import org.apache.spark.sql.catalyst.expressions.Attribute
+import scala.collection.mutable.HashSet
 
 object DPBudgetManager {
   def apply(param: PrivacyParams, user: UserCategory): DPBudgetManager = {

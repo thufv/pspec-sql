@@ -220,7 +220,8 @@ object TypeUtil {
       }
       case struct: StructType => {
         if (isGetField(transform)) {
-          val subType = struct.getSubType(transform);
+          val field = getTypeSelector(transform);
+          val subType = struct.getSubType(field);
           if (subType != null) {
             Seq(subType);
           } else {

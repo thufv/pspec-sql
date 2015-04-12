@@ -1,62 +1,25 @@
 package org.apache.spark.sql.catalyst.checker.dp
 
-import scala.collection.JavaConversions._
+import scala.annotation.migration
+import scala.collection.JavaConversions.asScalaSet
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.HashSet
-import scala.collection.mutable.Stack
-import scala.collection.mutable.LinkedHashSet
+import scala.collection.mutable.ListBuffer
+import scala.collection.mutable.Queue
 import org.apache.spark.Logging
-import org.apache.spark.sql.catalyst.checker.ExpressionRegistry._
-import org.apache.spark.sql.catalyst.expressions.Abs
-import org.apache.spark.sql.catalyst.expressions.Add
-import org.apache.spark.sql.catalyst.expressions.AggregateExpression
-import org.apache.spark.sql.catalyst.expressions.Alias
-import org.apache.spark.sql.catalyst.expressions.And
-import org.apache.spark.sql.catalyst.expressions.Attribute
-import org.apache.spark.sql.catalyst.expressions.BinaryArithmetic
-import org.apache.spark.sql.catalyst.expressions.BinaryComparison
-import org.apache.spark.sql.catalyst.expressions.Cast
-import org.apache.spark.sql.catalyst.expressions.Divide
-import org.apache.spark.sql.catalyst.expressions.EqualNullSafe
-import org.apache.spark.sql.catalyst.expressions.EqualTo
-import org.apache.spark.sql.catalyst.expressions.Expression
-import org.apache.spark.sql.catalyst.expressions.GreaterThan
-import org.apache.spark.sql.catalyst.expressions.GreaterThanOrEqual
-import org.apache.spark.sql.catalyst.expressions.In
-import org.apache.spark.sql.catalyst.expressions.InSet
-import org.apache.spark.sql.catalyst.expressions.LessThan
-import org.apache.spark.sql.catalyst.expressions.LessThanOrEqual
-import org.apache.spark.sql.catalyst.expressions.Literal
-import org.apache.spark.sql.catalyst.expressions.Multiply
-import org.apache.spark.sql.catalyst.expressions.MutableLiteral
-import org.apache.spark.sql.catalyst.expressions.Not
-import org.apache.spark.sql.catalyst.expressions.Or
-import org.apache.spark.sql.catalyst.expressions.Predicate
-import org.apache.spark.sql.catalyst.expressions.Remainder
-import org.apache.spark.sql.catalyst.expressions.Subtract
-import org.apache.spark.sql.catalyst.expressions.UnaryExpression
-import org.apache.spark.sql.catalyst.expressions.UnaryMinus
-import org.apache.spark.sql.catalyst.plans.logical.Aggregate
-import org.apache.spark.sql.catalyst.plans.logical.BinaryNode
-import org.apache.spark.sql.catalyst.plans.logical.Filter
-import org.apache.spark.sql.catalyst.plans.logical.Join
-import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
+import org.apache.spark.sql.catalyst.checker.ColumnLabel
+import org.apache.spark.sql.catalyst.checker.PrivacyException
+import org.apache.spark.sql.catalyst.checker.dp.DPUtil._
+import org.apache.spark.sql.catalyst.checker.util.CheckerUtil._
+import org.apache.spark.sql.catalyst.checker.util.TypeUtil._
+import org.apache.spark.sql.catalyst.expressions._
+import org.apache.spark.sql.catalyst.plans.logical._
 import org.jgrapht.alg.ConnectivityInspector
 import org.jgrapht.graph.DefaultEdge
-import org.jgrapht.graph.SimpleGraph
-import solver.ResolutionPolicy
-import solver.Solver
-import solver.constraints.Constraint
-import solver.constraints.IntConstraintFactory
-import solver.constraints.LogicalConstraintFactory
-import solver.constraints._
-import solver.search.strategy.IntStrategyFactory
-import solver.variables.IntVar
-import solver.variables.VariableFactory
-import solver.variables._
+import org.jgrapht.graph.DirectedPseudograph
+import org.jgrapht.graph.Pseudograph
 import solver.search.loop.monitors.SearchMonitorFactory
 import org.apache.spark.sql.catalyst.checker.ColumnLabel
-import org.apache.spark.sql.catalyst.checker.dp.DPUtil._
 import org.apache.spark.sql.catalyst.checker.DataLabel
 import org.apache.spark.sql.catalyst.checker.FunctionLabel
 import org.apache.spark.sql.catalyst.checker.Label
@@ -66,25 +29,14 @@ import org.apache.spark.sql.catalyst.checker.ConstantLabel
 import org.apache.spark.sql.catalyst.checker.util.CheckerUtil._
 import org.apache.spark.sql.catalyst.checker.util.TypeUtil._
 import scala.collection.mutable.ListBuffer
-import scala.collection.mutable.Set
-import org.apache.spark.sql.catalyst.expressions.Projection
-import org.apache.spark.sql.catalyst.plans.logical.Project
-import org.apache.spark.sql.catalyst.expressions.GetItem
-import org.apache.spark.sql.catalyst.expressions.GetField
-import org.apache.spark.sql.catalyst.expressions.GetItem
 import scala.collection.mutable.Queue
-import org.apache.spark.sql.catalyst.plans.logical.Aggregate
-import org.apache.spark.sql.catalyst.plans.logical.LeafNode
-import org.apache.spark.sql.catalyst.plans.logical.BinaryNode
-import org.apache.spark.sql.catalyst.plans.logical.Union
-import org.apache.spark.sql.catalyst.plans.logical.Intersect
-import org.apache.spark.sql.catalyst.plans.logical.Except
-import org.apache.spark.sql.catalyst.plans.logical.UnaryNode
-import org.apache.spark.sql.catalyst.checker.PrivacyException
-import org.jgrapht.graph.Multigraph
-import org.jgrapht.graph.Pseudograph
+import scala.collection.mutable.Stack
+import solver.Solver
+import solver.search.strategy.IntStrategyFactory
+import solver.ResolutionPolicy
 import util.ESat
-import org.jgrapht.graph.DirectedPseudograph
+import scala.collection.mutable.ArrayBuffer
+import scala.collection.mutable.Buffer
 
 class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) extends Logging {
 
@@ -365,7 +317,7 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
 
   private var id = 0;
 
-  private val Search_Limit = 2000; //in ms
+  private val Search_Limit = 100000; //in ms
 
   private val solver: Solver = new Solver;
 
@@ -379,16 +331,6 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
 
   initialize(aggregate);
 
-  def initialize(plan: Aggregate) {
-    SearchMonitorFactory.limitTime(solver, Search_Limit);
-    predFilter.initialize(plan);
-
-    //  plan.aggregateExpressions.foreach(resolveAggregateAttribute(_, plan));
-    //  model.commitConstraint;
-
-    resolvePlan(plan.child);
-  }
-
   //TODO luochen, add support for ignore refinement
   def get(expr: Expression, plan: LogicalPlan, refine: Boolean): (Int, Int) = {
     val attr = getAttributeString(expr, plan);
@@ -399,15 +341,14 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
     val attrVar = model.getVariable(attr);
     if (!refine) {
       logWarning(s"no attribute refinement needed, return original range for $attr");
-      val range = if (attrVar == null) {
-        null;
+      if (attrVar == null) {
+        return null;
       } else {
-        (attrVar.getLB, attrVar.getUB);
+        return (attrVar.getLB, attrVar.getUB);
       }
-      //      refinedRanges.put(attr, range);
-      return range;
     }
 
+    val initialRange = (attrVar.getLB(), attrVar.getUB());
     //constraint solving
     val allVars = model.getAllVaraibles(attrVar);
 
@@ -421,20 +362,27 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
       return range;
     }
 
-    val up = attrVar.getUB();
-    if (solver.hasReachedLimit()) {
-      logWarning(s"solving upper bound for $attr timeout, fall back to original $up");
+    val up = if (solver.hasReachedLimit()) {
+      logWarning(s"solving upper bound for $attr timeout, fall back to original ${initialRange._2}");
+      initialRange._2;
+    } else {
+      attrVar.getUB();
     }
     solver.getSearchLoop.reset;
+    // solver.getSearchLoop().getSMList().reset;
 
     logWarning(s"start solving lower bound for $attr");
     solver.set(IntStrategyFactory.lexico_LB(allVars: _*));
     solver.findOptimalSolution(ResolutionPolicy.MINIMIZE, attrVar);
-    val low = attrVar.getLB();
-    if (solver.hasReachedLimit()) {
-      logWarning(s"solving lower bound for $attr timeout, fall back to original $low");
-    }
+    val low =
+      if (solver.hasReachedLimit()) {
+        logWarning(s"solving lower bound for $attr timeout, fall back to original ${initialRange._1}");
+        initialRange._1;
+      } else {
+        attrVar.getLB();
+      }
     solver.getSearchLoop.reset;
+    //  solver.getSearchLoop().getSMList().reset;
 
     val range = (low, up);
     refinedRanges.put(attr, range);
@@ -442,49 +390,92 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
     return range;
   }
 
-  private def resolvePlan(plan: LogicalPlan) {
+  def initialize(plan: Aggregate) {
+    SearchMonitorFactory.limitTime(solver, Search_Limit);
+    predFilter.initialize(plan);
+    //  plan.aggregateExpressions.foreach(resolveAggregateAttribute(_, plan));
+    //  model.commitConstraint;
+
+    model.postConstraint(resolvePlan(plan.child));
+  }
+
+  private def resolvePlan(plan: LogicalPlan): Constraint = {
     //initialize
-    plan.children.foreach(resolvePlan(_));
     plan match {
       case filter: Filter => {
+        val childConstraint = resolvePlan(filter.child);
         val constraint = resolveExpression(filter.condition, plan);
         if (constraint != null) {
           model.commitConstraint;
-          model.postConstraint(constraint);
+          LogicalConstraintFactory.and(childConstraint, constraint);
+        } else {
+          childConstraint;
         }
       }
       case join: Join => {
+        val leftConstraint = resolvePlan(join.left);
+        val rightConstraint = resolvePlan(join.right);
         join.condition match {
           case Some(cond) => {
             val constraint = resolveExpression(cond, plan);
             if (constraint != null) {
               model.commitConstraint;
-              model.postConstraint(constraint);
+              LogicalConstraintFactory.and(leftConstraint, rightConstraint, constraint);
+            } else {
+              LogicalConstraintFactory.and(leftConstraint, rightConstraint);
             }
           }
-          case _ =>
+          case _ => LogicalConstraintFactory.and(leftConstraint, rightConstraint);
         }
       }
       case agg: Aggregate => {
+        val childConstraint = resolvePlan(agg.child);
         for (i <- 0 to agg.output.length - 1) {
+          //these constraints hold globally, i.e., must be satisfied by the final valuation
           createUnaryVariable(agg.aggregateExpressions(i), agg.output(i), agg);
         }
+        childConstraint;
       }
       case project: Project => {
-        for (i <- 0 to project.output.length - 1) {
+        val childConstraint = resolvePlan(project.child);
+        for (i <- 0 to plan.output.length - 1) {
           createUnaryVariable(project.projectList(i), project.output(i), project);
         }
+        childConstraint;
       }
       case binary: BinaryNode => {
+        val lefts = new ListBuffer[Constraint];
+        val rights = new ListBuffer[Constraint];
+
+        lefts.append(resolvePlan(binary.left));
+        rights.append(resolvePlan(binary.right));
         for (i <- 0 to binary.output.length - 1) {
-          createBinaryVariable(binary.left.output(i), binary.right.output(i), binary.output(i), binary);
+          val seq = createBinaryConstraint(binary.left.output(i), binary.right.output(i), binary.output(i), binary, lefts, rights);
+        }
+        val leftConstraint = LogicalConstraintFactory.and(lefts: _*);
+
+        binary match {
+          case union: Union => {
+            val rightConstraint = LogicalConstraintFactory.and(rights: _*);
+            LogicalConstraintFactory.or(leftConstraint, rightConstraint);
+          }
+          case intersect: Intersect => {
+            val rightConstraint = LogicalConstraintFactory.and(rights: _*);
+            LogicalConstraintFactory.and(leftConstraint, rightConstraint);
+          }
+          case except: Except => {
+            val rightConstraint = LogicalConstraintFactory.and(LogicalConstraintFactory.not(rights.head),
+              LogicalConstraintFactory.and(rights.tail: _*));
+            LogicalConstraintFactory.and(leftConstraint, rightConstraint);
+          }
         }
       }
       case leaf: LeafNode => {
         leaf.output.foreach(initializeVariable(_, leaf));
+        solver.TRUE;
 
       }
-      case _ =>
+      case _ => LogicalConstraintFactory.and(plan.children.map(resolvePlan(_)): _*);
     }
   }
 
@@ -524,9 +515,9 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
         return ;
       }
       val mark = model.markConstraint;
-      val exprVar = resolveTerm(expr, plan);
-      if (exprVar != null) {
-        model.addAttrVariable(outStr, exprVar);
+      val attrVar = resolveTerm(expr, plan);
+      if (attrVar != null) {
+        model.addAttrVariable(outStr, attrVar);
         model.commitConstraint;
       } else {
         model.rollbackConstraint(mark);
@@ -553,66 +544,58 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
     }
   }
 
-  private def createBinaryVariable(left: Attribute, right: Attribute, output: Attribute, plan: BinaryNode) {
-
-    def binaryVarHelper(leftStr: String, rightStr: String, outStr: String,
-      rangeFunc: ((Int, Int), (Int, Int)) => (Int, Int), consFunc: (IntVar, IntVar, IntVar) => Constraint) {
+  private def createBinaryConstraint(left: Attribute, right: Attribute, output: Attribute, plan: BinaryNode, lefts: Buffer[Constraint], rights: Buffer[Constraint]) {
+    def binaryConstraintHelper(leftStr: String, rightStr: String, outStr: String, rangeFunc: ((Int, Int), (Int, Int)) => (Int, Int)) {
       val leftVar = model.getVariable(getAttributeString(left, plan));
       val rightVar = model.getVariable(getAttributeString(right, plan));
       if (leftVar == null || rightVar == null) {
         return ;
       }
-      val range = rangeUnion((leftVar.getLB, leftVar.getUB), (rightVar.getLB, rightVar.getUB));
-      val outVar = VariableFactory.bounded(outStr, range._1, range._2, solver);
-      val constraint = consFunc(leftVar, rightVar, outVar);
+      val range = rangeFunc((leftVar.getLB, leftVar.getUB), (rightVar.getLB, rightVar.getUB));
+      val outVar = VariableFactory.bounded(s"$outStr#${nextId}", range._1, range._2, solver);
       model.addAttrVariable(outStr, outVar);
-      model.postConstraint(constraint);
+      lefts.append(IntConstraintFactory.arithm(outVar, "=", leftVar));
+      rights.append(IntConstraintFactory.arithm(outVar, "=", rightVar));
+
     }
 
-    def binaryHelper(rangeFunc: ((Int, Int), (Int, Int)) => (Int, Int), consFunc: (IntVar, IntVar, IntVar) => Constraint) {
+    def binaryHelper(rangeFunc: ((Int, Int), (Int, Int)) => (Int, Int)) {
       val leftStr = getAttributeString(left, plan);
       val rightStr = getAttributeString(right, plan);
       val outStr = getAttributeString(output, plan);
       if (output.dataType.isPrimitive) {
-        if (!predFilter.effective(output, plan)) {
+        if (!predFilter.effective(left, plan)) {
           return ;
         }
-        binaryVarHelper(leftStr, rightStr, outStr, rangeFunc, consFunc);
-
+        binaryConstraintHelper(leftStr, rightStr, outStr, rangeFunc);
       } else {
         val set = attributeSubs.getOrElse(outStr, null);
         if (set == null) {
           return ;
         }
         //create variable for each subtype
+        val results = new ListBuffer[(Constraint, Constraint)];
         set.foreach(sub => {
           val types = getComplexSubtypes(sub);
           val leftSub = concatComplexAttribute(leftStr, types);
           val rightSub = concatComplexAttribute(rightStr, types);
-          binaryVarHelper(leftSub, rightSub, sub, rangeFunc, consFunc);
+          binaryConstraintHelper(leftSub, rightSub, outStr, rangeFunc);
         });
       }
-
     }
 
     plan match {
       case union: Union => {
-        binaryHelper(rangeUnion(_, _), (left, right, out) => {
-          LogicalConstraintFactory.or(IntConstraintFactory.arithm(out, "=", left), IntConstraintFactory.arithm(out, "=", right));
-        });
+        binaryHelper(rangeUnion(_, _));
       }
       case intersect: Intersect => {
-        binaryHelper(rangeIntersect(_, _), (left, right, out) => {
-          LogicalConstraintFactory.and(IntConstraintFactory.arithm(out, "=", left), IntConstraintFactory.arithm(out, "=", right));
-        });
+        binaryHelper(rangeIntersect(_, _));
       }
       case except: Except => {
-        binaryHelper(rangeExcept(_, _), (left, right, out) => {
-          LogicalConstraintFactory.and(IntConstraintFactory.arithm(out, "=", left), IntConstraintFactory.arithm(out, "!=", right));
-        });
+        binaryHelper(rangeExcept(_, _));
       }
-      case _ =>
     }
+
   }
 
   def resolveExpression(cond: Expression, plan: LogicalPlan): Constraint = {

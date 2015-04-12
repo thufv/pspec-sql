@@ -104,7 +104,7 @@
 	<classpathentry kind="lib" path="../../lib_managed/jars/parquet-jackson-1.6.0rc3.jar"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/jodd-core-3.6.3.jar"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/hive-metastore-0.13.1a.jar"/>
-	<classpathentry kind="lib" path="../../lib_managed/jars/hive-serde-0.13.1a.jar"/>
+	<classpathentry kind="lib" path="../../lib_managed/jars/hive-serde-0.13.1a.jar" sourcepath="/Users/luochen/Documents/Development/apache-hive-0.13.1-src"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/hive-common-0.13.1a.jar"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/hive-shims-0.13.1a.jar"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/hive-shims-common-0.13.1a.jar"/>
@@ -133,7 +133,7 @@
 	<classpathentry kind="lib" path="../../lib_managed/jars/servlet-api-2.5-20081211.jar"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/hive-shims-0.20S-0.13.1a.jar"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/hive-shims-0.23-0.13.1a.jar"/>
-	<classpathentry kind="lib" path="../../lib_managed/jars/hive-exec-0.13.1a.jar"/>
+	<classpathentry kind="lib" path="../../lib_managed/jars/hive-exec-0.13.1a.jar" sourcepath="/Users/luochen/Documents/Development/apache-hive-0.13.1-src"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/hive-ant-0.13.1a.jar"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/ant-1.9.1.jar"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/ant-launcher-1.9.1.jar"/>

@@ -129,8 +129,11 @@ class PathBuilder {
     val policy = meta.getPolicy();
 
     val index = transforms.indexWhere(func => !skippable(func.transform));
-    val (skipped, left) = transforms.splitAt(index);
-
+    val (skipped, left) = if (index >= 0) {
+      transforms.splitAt(index);
+    } else {
+      (transforms.toList, Nil);
+    }
     var types = Seq(labelType);
     skipped.foreach(func => {
       types = types.flatMap(resolveType(_, func));
@@ -140,22 +143,20 @@ class PathBuilder {
 
   }
 
-  /**
-   * first calculate real data categories for data types
-   * then map transformations to real data categories.
-   */
-  private def addPath(primitive: PrimitiveType, transforms: ListBuffer[FunctionLabel], action: Action, policy: Policy): Unit = {
-
+ 
+  private def addPath(primitive: PrimitiveType, transforms: Seq[FunctionLabel], action: Action, policy: Policy): Unit = {
     val set = flows.getOrElseUpdate(policy, new HashSet[Flow]);
 
-    transforms.foreach(tran => {
-      val op = getOperation(primitive, tran.transform);
-      if (op != null) {
-        set.add(Flow(action, primitive.getDataCategory, Path(tran, op, transforms.toList)));
-      } else {
-        set.add(Flow(action, primitive.getDataCategory, Path(null, null, transforms.toList)));
-      }
-    });
+    val op = if (!transforms.isEmpty) {
+      getOperation(primitive, transforms.head.transform);
+    } else {
+      null;
+    }
+    if (op != null) {
+      set.add(Flow(action, primitive.getDataCategory, Path(transforms.head, op, transforms)));
+    } else {
+      set.add(Flow(action, primitive.getDataCategory, Path(null, null, transforms)));
+    }
   }
 
   private def getOperation(primitive: PrimitiveType, transform: String): DesensitizeOperation = {
