@@ -184,7 +184,7 @@ case class Aggregate(
             while (i < currentBuffer.length) {
               // Evaluating an aggregate buffer returns the result.  No row is required since we
               // already added all rows in the group using update.
-              aggregateResults(i) = currentBuffer(i).eval(EmptyRow)
+              aggregateResults(i) = currentBuffer(i).grouppedEval(EmptyRow)
               i += 1
             }
             resultProjection(joinedRow(aggregateResults, currentGroup))

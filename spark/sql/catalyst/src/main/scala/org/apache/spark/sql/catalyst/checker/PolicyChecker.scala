@@ -112,15 +112,15 @@ private class FlowIndex(val flows: Map[Policy, Set[Flow]]) {
   }
 }
 
-class SparkPolicyChecker(_budget: DPBudgetManager, val epsilon: Double) extends PolicyChecker with Logging {
+class SparkPolicyChecker(val _budget: DPBudgetManager, val epsilon: Double) extends PolicyChecker with Logging {
 
   lazy val user = MetaManager.currentUser();
+
+  private val budget = _budget.copy;
 
   private var violated = false;
 
   private var flowIndex: FlowIndex = null;
-
-  private val budget = _budget.copy;
 
   def check(flows: Map[Policy, Set[Flow]], policies: Set[Policy]): Unit = {
     if (policies.size == 0) {
@@ -286,10 +286,10 @@ class SparkPolicyChecker(_budget: DPBudgetManager, val epsilon: Double) extends 
         return epsilon;
       }
       case fine: FineBudgetManager => {
-        if (!budget.specified(flow.data)) {
+        if (!budget.defined(flow.data)) {
           return 0.0;
         } else {
-          val left = budget.budget(flow.data);
+          val left = budget.getBudget(flow.data);
           if (left == 0.0) {
             return Double.MaxValue;
           } else {

@@ -22,8 +22,9 @@ import org.apache.spark.sql.types._
 import org.apache.spark.sql.catalyst.trees
 import org.apache.spark.sql.catalyst.errors.TreeNodeException
 import org.apache.spark.util.collection.OpenHashSet
-import org.apache.spark.sql.catalyst.checker.dp.DPUtil
+import org.apache.spark.sql.catalyst.checker.util.DPUtil
 import org.apache.spark.sql.catalyst.checker.SparkChecker
+import com.sun.xml.internal.bind.annotation.OverrideAnnotationOf
 
 abstract class AggregateExpression() extends Expression with Serializable {
   self: Product =>
@@ -40,6 +41,8 @@ abstract class AggregateExpression() extends Expression with Serializable {
    */
   override def eval(input: Row = null): EvaluatedType =
     throw new TreeNodeException(this, s"No function to evaluate expression. type: ${this.nodeName}")
+
+  def grouppedEval(input: Row = null) = eval(input);
 
   //added by luochen
   //control noise added
@@ -104,9 +107,9 @@ abstract class AggregateFunction
   override def newInstance() = makeCopy(productIterator.map { case a: AnyRef => a }.toArray)
 
   //added by luochen
-  protected def enforceDP(result: Any): Any = {
+  protected def enforceDP(result: Any, grouping: Boolean): Any = {
     if (base.enableDP) {
-      DPUtil.calibrateNoise(result, base.epsilon, base.sensitivity, base.dpId, SparkChecker.get);
+      DPUtil.calibrateNoise(result, base, SparkChecker.get, grouping);
     } else {
       result;
     }
@@ -141,7 +144,11 @@ case class MinFunction(expr: Expression, base: AggregateExpression) extends Aggr
     }
   }
 
-  override def eval(input: Row): Any = enforceDP(currentMin.value)
+  //modified by luochen
+  override def eval(input: Row): Any = enforceDP(currentMin.value, false)
+
+  override def grouppedEval(input: Row): Any = enforceDP(currentMin.value, true)
+
 }
 
 case class Max(child: Expression) extends PartialAggregate with trees.UnaryNode[Expression] {
@@ -172,7 +179,11 @@ case class MaxFunction(expr: Expression, base: AggregateExpression) extends Aggr
     }
   }
 
-  override def eval(input: Row): Any = enforceDP(currentMax.value)
+  //modified by luochen
+  override def eval(input: Row): Any = enforceDP(currentMax.value, false)
+
+  override def grouppedEval(input: Row): Any = enforceDP(currentMax.value, false)
+
 }
 
 case class Count(child: Expression) extends PartialAggregate with trees.UnaryNode[Expression] {
@@ -267,7 +278,11 @@ case class CombineSetsAndCountFunction(
     }
   }
 
-  override def eval(input: Row): Any = enforceDP(seen.size.toLong);
+  //modified by luochen
+  override def eval(input: Row): Any = enforceDP(seen.size.toLong, false);
+ 
+  override def grouppedEval(input: Row): Any = enforceDP(seen.size.toLong, true);
+
 }
 
 case class ApproxCountDistinctPartition(child: Expression, relativeSD: Double)
@@ -535,7 +550,11 @@ case class CountFunction(expr: Expression, base: AggregateExpression) extends Ag
     }
   }
 
-  override def eval(input: Row): Any = enforceDP(count)
+  //modified by luochen
+  override def eval(input: Row): Any = enforceDP(count, false)
+
+  override def grouppedEval(input: Row): Any = enforceDP(count, true);
+
 }
 
 case class ApproxCountDistinctPartitionFunction(
@@ -595,11 +614,20 @@ case class SumFunction(expr: Expression, base: AggregateExpression) extends Aggr
     sum.update(addFunction, input)
   }
 
+  //modified by luochen
   override def eval(input: Row): Any = {
     expr.dataType match {
       case DecimalType.Fixed(_, _) =>
-        enforceDP(Cast(sum, dataType).eval(null))
-      case _ => enforceDP(sum.eval(null))
+        enforceDP(Cast(sum, dataType).eval(null), false)
+      case _ => enforceDP(sum.eval(null), false)
+    }
+  }
+
+  override def grouppedEval(input: Row): Any = {
+    expr.dataType match {
+      case DecimalType.Fixed(_, _) =>
+        enforceDP(Cast(sum, dataType).eval(null), true)
+      case _ => enforceDP(sum.eval(null), true)
     }
   }
 }
@@ -617,7 +645,7 @@ case class SumDistinctFunction(expr: Expression, base: AggregateExpression)
       seen += evaluatedExpr
     }
   }
-
+  //modified by luochen
   override def eval(input: Row): Any = {
     if (seen.size == 0) {
       null
@@ -626,7 +654,19 @@ case class SumDistinctFunction(expr: Expression, base: AggregateExpression)
         new Cast(Literal(
           seen.reduceLeft(
             dataType.asInstanceOf[NumericType].numeric.asInstanceOf[Numeric[Any]].plus)),
-          dataType).eval(null))
+          dataType).eval(null), false)
+    }
+  }
+
+  override def grouppedEval(input: Row): Any = {
+    if (seen.size == 0) {
+      null
+    } else {
+      enforceDP(
+        new Cast(Literal(
+          seen.reduceLeft(
+            dataType.asInstanceOf[NumericType].numeric.asInstanceOf[Numeric[Any]].plus)),
+          dataType).eval(null), true)
     }
   }
 }

@@ -9,7 +9,7 @@ import scala.collection.mutable.Queue
 import org.apache.spark.Logging
 import org.apache.spark.sql.catalyst.checker.ColumnLabel
 import org.apache.spark.sql.catalyst.checker.PrivacyException
-import org.apache.spark.sql.catalyst.checker.dp.DPUtil._
+import org.apache.spark.sql.catalyst.checker.util.DPUtil._
 import org.apache.spark.sql.catalyst.checker.util.CheckerUtil._
 import org.apache.spark.sql.catalyst.checker.util.TypeUtil._
 import org.apache.spark.sql.catalyst.expressions._

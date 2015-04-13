@@ -37,6 +37,9 @@ import org.apache.spark.sql.catalyst.checker.ConditionalLabel
 import org.apache.spark.sql.catalyst.checker.ConstantLabel
 import org.apache.spark.sql.catalyst.checker.Label
 import org.apache.spark.sql.catalyst.checker.FunctionLabel
+import com.microsoft.z3.BoolExpr
+import com.microsoft.z3.Context
+import com.microsoft.z3.Status
 
 object AggregateType extends Enumeration {
   type AggregateType = Value
@@ -144,6 +147,13 @@ object CheckerUtil {
     }
   }
 
+  def satisfiable(constraint: BoolExpr, context: Context): Boolean = {
+    val solver = context.mkSolver();
+    solver.add(constraint);
+    val result = solver.check();
+    return result == Status.SATISFIABLE;
+  }
+
   private val SupportedArithms = List(classOf[BinaryArithmetic], classOf[UnaryMinus], classOf[Abs]);
 
   private val SupportedPredicates = List(classOf[BinaryComparison], classOf[In], classOf[InSet]);
@@ -158,7 +168,6 @@ object CheckerUtil {
     } else {
       return null.asInstanceOf[T];
     }
-
   }
 
 }

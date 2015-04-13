@@ -39,8 +39,8 @@ import org.apache.spark.sql.sources._
 import org.apache.spark.sql.types._
 import org.apache.spark.util.Utils
 import org.apache.spark.{ Partition, SparkContext }
-import org.apache.spark.sql.catalyst.checker.dp.DPUtil
 import org.apache.spark.sql.catalyst.checker.SparkChecker
+import org.apache.spark.sql.catalyst.checker.util.DPUtil
 
 /**
  * The entry point for working with structured data (rows and columns) in Spark.  Allows the
@@ -1088,7 +1088,7 @@ class SQLContext(@transient val sparkContext: SparkContext)
       //added by luochen
       //check logical plan
       val epsilon = getConf(DPUtil.Conf_Epsilon, DPUtil.Default_Epsilon).toDouble;
-      checker.updateEpsilon(epsilon);
+      checker.epsilon = epsilon;
       checker(optimizedPlan);
       SparkPlan.currentContext.set(self)
       planner(optimizedPlan).next()

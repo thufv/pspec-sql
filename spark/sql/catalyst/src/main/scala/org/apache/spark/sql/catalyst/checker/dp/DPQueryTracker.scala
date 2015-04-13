@@ -32,34 +32,167 @@ import scala.collection.mutable.Buffer
 import com.microsoft.z3.RealExpr
 import com.microsoft.z3.Expr
 import com.microsoft.z3.IntExpr
+import com.microsoft.z3.Status
+import edu.thu.ss.spec.lang.pojo.DataCategory
+import org.apache.spark.sql.types.StringType
+import org.apache.spark.sql.types.NumericType
+import org.apache.spark.sql.types.BooleanType
+import scala.collection.mutable.HashMap
+import org.apache.spark.sql.types.DataType
+import com.microsoft.z3.ArithExpr
+import org.apache.spark.sql.types.NumericType
+import org.apache.spark.sql.types.DataType
+import org.apache.spark.sql.types.NumericType
+import com.microsoft.z3.ArithExpr
+import org.apache.spark.sql.types.BooleanType
+import com.microsoft.z3.ArithExpr
+import org.apache.spark.sql.types.DataType
+import org.apache.spark.sql.types.DataType
+import org.apache.spark.sql.types.DataType
+
+object DPQuery {
+  private var nextId = 0;
+
+  def getId(): Int = {
+    nextId += 1;
+    nextId;
+  }
+}
+
+class DPQuery(val range: BoolExpr, val aggregate: AggregateExpression, val plan: Aggregate) extends Equals {
+  val dpId = DPQuery.getId;
+
+  aggregate.dpId = dpId;
+
+  def canEqual(other: Any) = {
+    other.isInstanceOf[org.apache.spark.sql.catalyst.checker.dp.DPQuery]
+  }
+
+  override def equals(other: Any) = {
+    other match {
+      case that: org.apache.spark.sql.catalyst.checker.dp.DPQuery => that.canEqual(DPQuery.this) && dpId == that.dpId;
+      case _ => false
+    }
+  }
+
+  override def hashCode() = {
+    val prime = 41
+    prime + dpId.hashCode;
+  }
+}
+
+abstract class DPPartition(val context: Context, val budget: DPBudgetManager) {
+  private val queries = new ArrayBuffer[DPQuery];
+
+  private var ranges: BoolExpr = context.mkFalse();
+
+  def add(query: DPQuery) {
+    queries.append(query);
+    ranges = context.mkOr(ranges, query.range);
+    updateBudget(query);
+  }
+
+  def disjoint(query: DPQuery): Boolean = {
+    val cond = context.mkAnd(ranges, query.range);
+    return !satisfiable(cond, context);
+  }
+
+  def updateBudget(query: DPQuery);
+
+}
+
+private class GlobalPartition(context: Context, budget: DPBudgetManager) extends DPPartition(context, budget) {
+
+  private var maximum = 0.0;
+
+  def updateBudget(query: DPQuery) {
+    if (query.aggregate.epsilon > maximum) {
+      budget.consume(null, query.aggregate.epsilon - maximum);
+      maximum = query.aggregate.epsilon;
+    }
+  }
+}
+
+private class FinePartition(context: Context, budget: DPBudgetManager) extends DPPartition(context, budget) {
+  private val maximum = new HashMap[DataCategory, Double];
+
+  def updateBudget(query: DPQuery) {
+    val epsilon = query.aggregate.epsilon;
+
+    val set = new HashSet[DataCategory];
+    val attr = resolveSimpleAttribute(query.aggregate.children(0));
+    set ++= query.plan.childLabel(attr).getDatas;
+    query.plan.condLabels.foreach(set ++= _.getDatas);
+
+    set.foreach(data => {
+      val consumed = maximum.getOrElse(data, 0.0);
+      if (consumed < epsilon) {
+        budget.consume(data, epsilon - consumed);
+        maximum.put(data, epsilon);
+      }
+    });
+
+  }
+}
+
+object DPQueryTracker {
+
+  private val constants = new HashMap[String, Int];
+
+  private var constantId = 0;
+
+  def getConstant(string: String): Int = {
+    val result = constants.get(string);
+    result match {
+      case Some(i) => i;
+      case None => {
+        val id = constantId;
+        constants.put(string, id);
+        constantId += 1;
+        return id;
+      }
+    }
+  }
+
+  def newQueryTracker(budget: DPBudgetManager): DPQueryTracker[_] = {
+    budget match {
+      case fine: FineBudgetManager => new DPQueryTracker[FinePartition](fine, new FinePartition(_, budget));
+      case global: GlobalBudgetManager => new DPQueryTracker[GlobalPartition](global, new GlobalPartition(_, budget));
+    }
+  }
+
+}
 
 /**
  * tracking submitted dp-enabled queries for parallel composition theorem
  */
-class DPQueryTracker extends Logging {
+class DPQueryTracker[T <: DPPartition] private (val budget: DPBudgetManager, partitionBuilder: (Context) => T) extends Logging {
 
   private class TypeResolver {
 
     private val deriveGraph = new DirectedPseudograph[String, DefaultEdge](classOf[DefaultEdge]);
 
-    private val complexAttributes = new HashSet[String];
+    private val complexAttributes = new HashMap[String, DataType];
 
-    private val attributeSubs = new HashMap[String, Set[String]];
+    private val attributeSubs = new HashMap[String, Map[String, DataType]];
 
-    def get(attr: String): Set[String] = attributeSubs.getOrElse(attr, null);
+    private val supportedTypes = Seq(classOf[NumericType], classOf[StringType], classOf[BooleanType]);
+
+    def get(attr: String): Map[String, DataType] = attributeSubs.getOrElse(attr, null);
 
     def initialize(plan: Aggregate) {
       buildGraph(plan);
 
-      complexAttributes.foreach(attr => {
+      complexAttributes.foreach(t => {
+        val attr = t._1;
         val pre = getComplexAttribute(attr);
-        val set = attributeSubs.getOrElseUpdate(pre, new HashSet[String]);
-        set.add(attr);
+        val map = attributeSubs.getOrElseUpdate(pre, new HashMap[String, DataType]);
+        map.put(attr, t._2);
       });
     }
 
     def effective(attr: Attribute): Boolean = {
-      return attr.dataType.isInstanceOf[NumericType];
+      return supportedTypes.exists(_.isInstance(attr.dataType));
     }
 
     private def buildGraph(plan: Aggregate) {
@@ -102,9 +235,11 @@ class DPQueryTracker extends Logging {
       val alg = new ConnectivityInspector[String, DefaultEdge](deriveGraph);
 
       val queue = new Queue[String];
-      complexAttributes.foreach(queue.enqueue(_));
+      complexAttributes.foreach(t => queue.enqueue(t._1));
       while (!queue.isEmpty) {
         val attr = queue.dequeue;
+        val dataType = complexAttributes.getOrElse(attr, null);
+        assert(dataType != null);
         val pre = getComplexAttribute(attr);
         val subtypes = getComplexSubtypes(attr);
         if (deriveGraph.containsVertex(pre)) {
@@ -113,7 +248,7 @@ class DPQueryTracker extends Logging {
             val equiAttr = concatComplexAttribute(equi, subtypes);
             if (!complexAttributes.contains(equiAttr)) {
               queue.enqueue(equiAttr);
-              complexAttributes.add(equiAttr);
+              complexAttributes.put(equiAttr, dataType);
             }
           }
         }
@@ -137,7 +272,7 @@ class DPQueryTracker extends Logging {
         case a if (isAttribute(a)) => {
           val str = getAttributeString(a, plan);
           if (str != null && isComplexAttribute(str)) {
-            complexAttributes.add(str);
+            complexAttributes.put(str, a.dataType);
           }
         }
         case cast: Cast => {
@@ -170,29 +305,29 @@ class DPQueryTracker extends Logging {
   }
 
   private class SMTModel {
-    private val attrVars = new HashMap[String, ArithExpr];
+    private val attrVars = new HashMap[String, Expr];
 
-    val varIndex = new HashMap[ArithExpr, String];
+    val varIndex = new HashMap[Expr, String];
 
     /**
      * key: table.column, value: a set of variables
      */
-    val columnVars = new HashMap[String, Buffer[ArithExpr]];
+    val columnVars = new HashMap[String, Buffer[Expr]];
 
-    def getVariable(attr: String): ArithExpr = {
+    def getVariable(attr: String): Expr = {
       return attrVars.getOrElse(attr, null);
     }
-    def createAttrVariable(attr: String, table: String, variable: ArithExpr) {
+    def initAttrVariable(attr: String, table: String, variable: Expr) {
       attrVars.put(attr, variable);
       val column = s"$table.${getColumnString(attr)}";
-      
-      val buffer = columnVars.getOrElseUpdate(column, new ArrayBuffer[ArithExpr]);
+
+      val buffer = columnVars.getOrElseUpdate(column, new ArrayBuffer[Expr]);
       buffer.append(variable);
 
       varIndex.put(variable, column);
     }
 
-    def addAttrVariable(attr: String, variable: ArithExpr) {
+    def addAttrVariable(attr: String, variable: Expr) {
       attrVars.put(attr, variable);
       val column = getColumnString(attr);
     }
@@ -335,8 +470,8 @@ class DPQueryTracker extends Logging {
         if (!typeResolver.effective(attr)) {
           return ;
         }
-        val attrVar = context.mkConst(attrStr, defaultSort).asInstanceOf[ArithExpr];
-        model.createAttrVariable(attrStr, label.table, attrVar);
+        val attrVar = createVariable(attrStr, attr.dataType);
+        model.initAttrVariable(attrStr, label.table, attrVar);
       } else {
         val subs = typeResolver.get(attrStr);
         if (subs == null) {
@@ -344,8 +479,8 @@ class DPQueryTracker extends Logging {
         }
         //create a variable for each subtype
         subs.foreach(sub => {
-          val attrVar = context.mkConst(sub, defaultSort).asInstanceOf[ArithExpr];
-          model.createAttrVariable(sub, label.table, attrVar);
+          val attrVar = createVariable(sub._1, sub._2);
+          model.initAttrVariable(sub._1, label.table, attrVar);
         });
       }
     }
@@ -368,7 +503,7 @@ class DPQueryTracker extends Logging {
         if (exprStr == null) {
           return ;
         }
-        types.foreach(outType => {
+        types.keys.foreach(outType => {
           val subtypes = getComplexSubtypes(outType);
           val exprTypes = concatComplexAttribute(exprStr, subtypes);
           val exprVar = model.getVariable(exprTypes);
@@ -402,7 +537,7 @@ class DPQueryTracker extends Logging {
           return ;
         }
         //create variable for each subtype
-        set.foreach(sub => {
+        set.keys.foreach(sub => {
           val types = getComplexSubtypes(sub);
           val leftSub = concatComplexAttribute(leftStr, types);
           val rightSub = concatComplexAttribute(rightStr, types);
@@ -443,11 +578,14 @@ class DPQueryTracker extends Logging {
     }
 
     private def resolvePredicate(pred: Predicate, plan: LogicalPlan): BoolExpr = {
-      def binaryPredicateHelper(binary: BinaryComparison, consFunc: (ArithExpr, ArithExpr) => BoolExpr): BoolExpr = {
+      def binaryPredicateHelper(binary: BinaryComparison, consFunc: (Expr, Expr) => BoolExpr): BoolExpr = {
         try {
           val var1 = resolveTerm(binary.left, plan);
+          if (var1 == null) {
+            return null;
+          }
           val var2 = resolveTerm(binary.right, plan);
-          if (var1 == null || var2 == null) {
+          if (var2 == null) {
             return null;
           }
           return consFunc(var1, var2);
@@ -466,16 +604,16 @@ class DPQueryTracker extends Logging {
           binaryPredicateHelper(equal, context.mkEq(_, _));
         }
         case lt: LessThan => {
-          binaryPredicateHelper(lt, context.mkLt(_, _));
+          binaryPredicateHelper(lt, (l, r) => context.mkLt(l.asInstanceOf[ArithExpr], r.asInstanceOf[ArithExpr]));
         }
         case lte: LessThanOrEqual => {
-          binaryPredicateHelper(lte, context.mkLe(_, _));
+          binaryPredicateHelper(lte, (l, r) => context.mkLe(l.asInstanceOf[ArithExpr], r.asInstanceOf[ArithExpr]));
         }
         case gt: GreaterThan => {
-          binaryPredicateHelper(gt, context.mkGt(_, _));
+          binaryPredicateHelper(gt, (l, r) => context.mkGt(l.asInstanceOf[ArithExpr], r.asInstanceOf[ArithExpr]));
         }
         case gte: GreaterThanOrEqual => {
-          binaryPredicateHelper(gte, context.mkGe(_, _));
+          binaryPredicateHelper(gte, (l, r) => context.mkGe(l.asInstanceOf[ArithExpr], r.asInstanceOf[ArithExpr]));
         }
         case in: In => {
           val left = resolveTerm(in.value, plan);
@@ -500,7 +638,8 @@ class DPQueryTracker extends Logging {
       }
     }
 
-    private def resolveTerm(term: Expression, plan: LogicalPlan): ArithExpr = {
+    private def resolveTerm(term: Expression, plan: LogicalPlan): Expr = {
+
       term match {
         //add support for complex data types
         case attr if (isAttribute(attr)) => {
@@ -514,20 +653,10 @@ class DPQueryTracker extends Logging {
         }
 
         case literal: Literal => {
-          val value = toReal(literal.value);
-          if (value != null) {
-            context.mkReal(value);
-          } else {
-            null;
-          }
+          createConstant(literal.value, literal.dataType);
         }
         case mutable: MutableLiteral => {
-          val value = toReal(mutable.value);
-          if (value != null) {
-            context.mkReal(value);
-          } else {
-            null;
-          }
+          createConstant(mutable.value, mutable.dataType);
         }
         case unary: UnaryExpression => {
           resolveUnaryArithmetic(unary, plan);
@@ -542,9 +671,12 @@ class DPQueryTracker extends Logging {
     private def resolveBinaryArithmetic(binary: BinaryArithmetic, plan: LogicalPlan): ArithExpr = {
 
       def binaryHelper(transFunc: (ArithExpr, ArithExpr) => ArithExpr): ArithExpr = {
-        val left = resolveTerm(binary.left, plan);
-        val right = resolveTerm(binary.right, plan);
-        if (left == null || right == null) {
+        val left = resolveTerm(binary.left, plan).asInstanceOf[ArithExpr];
+        if (left == null) {
+          return null;
+        }
+        val right = resolveTerm(binary.right, plan).asInstanceOf[ArithExpr];
+        if (right == null) {
           return null;
         } else {
           return transFunc(left, right);
@@ -552,7 +684,7 @@ class DPQueryTracker extends Logging {
       }
 
       def binaryMultiHealper(transFunc: (Seq[ArithExpr]) => ArithExpr): ArithExpr = {
-        val list = collect(binary, binary.getClass()).map(resolveTerm(_, plan));
+        val list = collect(binary, binary.getClass()).map(resolveTerm(_, plan).asInstanceOf[ArithExpr]);
         if (list.exists(_ == null)) {
           return null;
         }
@@ -582,7 +714,7 @@ class DPQueryTracker extends Logging {
     private def resolveUnaryArithmetic(unary: UnaryExpression, plan: LogicalPlan): ArithExpr = {
 
       def unaryArithmHelper(transFunc: (ArithExpr) => ArithExpr): ArithExpr = {
-        val child = resolveTerm(unary.child, plan);
+        val child = resolveTerm(unary.child, plan).asInstanceOf[ArithExpr];
         if (child == null) {
           return null;
         } else {
@@ -603,7 +735,7 @@ class DPQueryTracker extends Logging {
       }
     }
 
-    private def resolveAttributeVar(attr: Expression, plan: LogicalPlan): ArithExpr = {
+    private def resolveAttributeVar(attr: Expression, plan: LogicalPlan): Expr = {
       val str = getAttributeString(attr, plan);
       return model.getVariable(str);
     }
@@ -616,6 +748,24 @@ class DPQueryTracker extends Logging {
       } catch {
         case t: NumberFormatException => return null;
       }
+    }
+
+    def createConstant(value: Any, dataType: DataType): Expr = {
+      dataType match {
+        case n: NumericType => context.mkReal(toReal(value));
+        case s: StringType => context.mkInt(DPQueryTracker.getConstant(value.asInstanceOf[String]));
+        case b: BooleanType => context.mkBool(value.asInstanceOf[Boolean]);
+        case _ => null;
+      }
+    }
+
+    def createVariable(name: String, dataType: DataType) = {
+      dataType match {
+        case n: NumericType => context.mkConst(name, context.mkRealSort());
+        case s: StringType => context.mkConst(name, context.mkIntSort());
+        case b: BooleanType => context.mkConst(name, context.mkBoolSort());
+      }
+
     }
 
     private def conjuncate(exprs: Seq[BoolExpr]): BoolExpr = {
@@ -650,10 +800,55 @@ class DPQueryTracker extends Logging {
 
   private val context = new Context;
 
+  private val partitions = new ArrayBuffer[T];
+
+  private val tmpQueries = new ArrayBuffer[DPQuery];
+
   def track(plan: Aggregate) {
     val builder = new SMTBuilder;
     val constraint = builder.buildSMT(plan);
-    println(constraint);
+    //check satisfiability
+    if (!satisfiable(constraint, context)) {
+      logWarning("Range constraint unsatisfiable, ignore query");
+      return ;
+    }
+
+    //decompose the aggregate query
+    plan.aggregateExpressions.foreach(agg => agg.foreach(expr => {
+      expr match {
+        case a: AggregateExpression if (a.enableDP && a.sensitivity > 0) => tmpQueries.append(new DPQuery(constraint, a, plan));
+        case _ =>
+      }
+    }));
+  }
+
+  def commit(failed: Set[Int]) {
+    //put queries into partitions
+    var pi = 0;
+    tmpQueries.withFilter(q => !failed.contains(q.dpId)).foreach(query => {
+      var found = false;
+      while (!found && pi < partitions.length) {
+        val partition = partitions(pi);
+        if (partition.disjoint(query)) {
+          found = true;
+          partition.add(query);
+        }
+        pi += 1;
+      }
+      if (!found) {
+        val partition = partitionBuilder(context);
+        partition.add(query);
+        partitions.append(partition);
+      }
+    });
+
+    tmpQueries.clear;
+    budget.show;
+  }
+
+  def testBudget() {
+    val copy = budget.copy;
+    tmpQueries.foreach(copy.consume(_));
   }
 
 }

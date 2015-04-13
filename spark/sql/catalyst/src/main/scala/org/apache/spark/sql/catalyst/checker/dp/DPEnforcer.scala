@@ -48,7 +48,7 @@ import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
 import org.apache.spark.sql.catalyst.plans.logical.Project
 import org.apache.spark.sql.catalyst.plans.logical.UnaryNode
 import org.apache.spark.sql.catalyst.plans.logical.Union
-import org.apache.spark.sql.catalyst.checker.dp.DPUtil._
+import org.apache.spark.sql.catalyst.checker.util.DPUtil._
 import org.apache.spark.sql.catalyst.checker.util.CheckerUtil._
 import org.apache.spark.sql.catalyst.checker.util.TypeUtil._
 import org.apache.spark.sql.catalyst.plans.logical.Aggregate
@@ -57,7 +57,7 @@ import org.apache.spark.sql.catalyst.plans.logical.Aggregate
  * enforce dp for a query logical plan
  * should be in the last phase of query checking
  */
-class DPEnforcer(val tableInfo: TableInfo, val budgetManager: DPBudgetManager, val epsilon: Double) extends Logging {
+class DPEnforcer(val tableInfo: TableInfo, val queryTracker: DPQueryTracker[_], val epsilon: Double) extends Logging {
   private class JoinGraph {
     val nodes = new HashMap[String, Node[String]];
     val edges = new AdjacencyList[String];
@@ -139,13 +139,17 @@ class DPEnforcer(val tableInfo: TableInfo, val budgetManager: DPBudgetManager, v
 
   private var currentAggPlan: Aggregate = null;
 
-  private val queryTracker = new DPQueryTracker;
-
   def apply(plan: LogicalPlan) {
     if (!exists(plan, classOf[Aggregate])) {
       return ;
     }
     enforce(plan);
+
+    queryTracker.testBudget;
+  }
+
+  def commit(failed: Set[Int]) {
+    queryTracker.commit(failed);
   }
 
   private def enforce(plan: LogicalPlan, dp: Boolean = false): Int = {
@@ -163,7 +167,6 @@ class DPEnforcer(val tableInfo: TableInfo, val budgetManager: DPBudgetManager, v
           currentRefiner = new AttributeRangeRefiner(tableInfo, agg);
           agg.aggregateExpressions.foreach(enforceAggregate(_, agg, scale));
           queryTracker.track(agg);
-          budgetManager.consume(agg, epsilon);
         }
         scale;
       }
@@ -343,7 +346,7 @@ class DPEnforcer(val tableInfo: TableInfo, val budgetManager: DPBudgetManager, v
     }
     if (refine) {
       val range = resolveAttributeRange(agg.children(0), plan, refine);
-      agg.sensitivity = func(DPUtil.toDouble(range._1), DPUtil.toDouble(range._2));
+      agg.sensitivity = func(toDouble(range._1), toDouble(range._2));
     } else {
       agg.sensitivity = func(0, 0);
     }
@@ -384,7 +387,7 @@ class DPEnforcer(val tableInfo: TableInfo, val budgetManager: DPBudgetManager, v
     }
   }
 
-  def resolveLabelMultiplicity(label: Label): Option[Int] = {
+  private def resolveLabelMultiplicity(label: Label): Option[Int] = {
     def multiplicityHelper(func: FunctionLabel, trans: (Option[Int], Option[Int]) => Option[Int]): Option[Int] = {
       val left = resolveLabelMultiplicity(func.children(0));
       val right = resolveLabelMultiplicity(func.children(1));

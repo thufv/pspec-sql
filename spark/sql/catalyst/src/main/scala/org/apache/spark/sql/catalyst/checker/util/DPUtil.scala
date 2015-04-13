@@ -1,20 +1,11 @@
-package org.apache.spark.sql.catalyst.checker.dp
+package org.apache.spark.sql.catalyst.checker.util
 
 import scala.math.BigDecimal
 import scala.util.Random
 import org.apache.spark.Logging
-import org.apache.spark.sql.catalyst.expressions.Sum
-import org.apache.spark.sql.catalyst.expressions.SumDistinct
-import org.apache.spark.sql.catalyst.expressions.CountDistinct
-import org.apache.spark.sql.catalyst.expressions.Average
-import org.apache.spark.sql.catalyst.expressions.CountDistinct
-import org.apache.spark.sql.catalyst.expressions.Count
+import org.apache.spark.sql.catalyst.expressions._
+import org.apache.spark.sql.catalyst.checker.SparkChecker
 import org.apache.spark.sql.catalyst.checker.PrivacyException
-import org.apache.spark.sql.catalyst.checker.SparkChecker
-import org.apache.spark.sql.catalyst.expressions.AggregateExpression
-import org.apache.spark.sql.catalyst.expressions.Min
-import org.apache.spark.sql.catalyst.expressions.Max
-import org.apache.spark.sql.catalyst.checker.SparkChecker
 
 object DPUtil extends Logging {
 
@@ -103,11 +94,16 @@ object DPUtil extends Logging {
     }
   }
 
-  def calibrateNoise(result: Any, epsilon: Double, sensitivity: Double, id: Int, checker: SparkChecker): Any = {
+  def calibrateNoise(result: Any, agg: AggregateExpression, checker: SparkChecker, grouping: Boolean): Any = {
+    val epsilon = agg.epsilon;
+    val sensitivity = agg.sensitivity;
     logWarning(s"calibrating noise, epsilon:$epsilon, sensitivity:$sensitivity");
     if (!checkUtility(result, epsilon, sensitivity, checker.accuracyProb, checker.accurcayNoise)) {
       logWarning(s"utility accuracy unsatisfied, suppress aggregate result: ${result}");
-      checker.returnback(id);
+      //TODO
+      if (!grouping) {
+        checker.failAggregate(agg.dpId);
+      }
       return null;
     }
     val noise = lapNoise(epsilon, sensitivity);

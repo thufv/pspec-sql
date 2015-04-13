@@ -19,6 +19,7 @@ import org.apache.spark.sql.catalyst.expressions.Alias
 import org.apache.spark.sql.catalyst.expressions.AggregateExpression
 import org.apache.spark.sql.catalyst.checker.util.TypeUtil._
 import scala.collection.mutable.HashSet
+import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
 
 object DPBudgetManager {
   def apply(param: PrivacyParams, user: UserCategory): DPBudgetManager = {
@@ -32,7 +33,6 @@ object DPBudgetManager {
         } else {
           return new GlobalBudgetManager(budget);
         }
-
       }
       case fine: FineBudget => {
         val map = fine.getBudget(user);
@@ -41,187 +41,92 @@ object DPBudgetManager {
         return new FineBudgetManager(converted);
       }
     }
-
   }
-
 }
 
 trait DPBudgetManager {
 
-  def commit: Unit;
+  def defined(data: DataCategory): Boolean;
 
-  def rollback(): Unit;
+  def consume(data: DataCategory, epsilon: Double);
 
-  def specified(data: DataCategory): Boolean;
+  def consume(query: DPQuery);
 
-  def consume(plan: Aggregate, epsilon: Double): Unit;
-
-  def consume(data: DataCategory, epsilon: Double): Unit;
-
-  def returnback(epsilon: Double, dpId: Int): Unit;
-
-  def budget(data: DataCategory): Double;
+  def getBudget(data: DataCategory): Double;
 
   def copy(): DPBudgetManager;
+
+  def show();
 }
 
-class GlobalBudgetManager(var budget: Double) extends DPBudgetManager with Logging {
-  var tmpBudget: Double = budget;
+class GlobalBudgetManager(private var budget: Double) extends DPBudgetManager with Logging {
 
-  def commit() {
-    logWarning(s"commit global privacy budget, budget left: $tmpBudget");
-    budget = tmpBudget;
-  }
+  def defined(data: DataCategory) = true;
 
-  def rollback() {
-    logWarning(s"rollback global privacy budget to $budget");
-    tmpBudget = budget;
-  }
-
-  def specified(data: DataCategory) = true;
-
-  def returnback(epsilon: Double, dpId: Int = 0) {
-    tmpBudget = tmpBudget + epsilon;
-    assert(tmpBudget <= budget, "pay back failure");
-    logWarning(s"return back global privacy budget $epsilon, now privacy budget left: $tmpBudget");
+  def consume(query: DPQuery) {
+    val epsilon = query.aggregate.epsilon;
+    consume(null, epsilon);
   }
 
   def consume(data: DataCategory, epsilon: Double) {
-    if (tmpBudget - epsilon < 0) {
-      rollback;
+    if (budget - epsilon < 0) {
       throw new PrivacyException(s"No enough global privacy budget for the query. Privacy budget left: $budget");
     }
-    tmpBudget -= epsilon;
+    budget -= epsilon;
   }
 
-  def consume(plan: Aggregate, epsilon: Double) {
-    //TODO add budget management for global budget
-    plan.aggregateExpressions.foreach(consume(_, epsilon));
-  }
+  def getBudget(data: DataCategory) = budget;
 
-  private def consume(expr: Expression, epsilon: Double) {
-    expr match {
-      case cast: Cast => consume(cast.child, epsilon);
-      case alias: Alias => consume(alias.child, epsilon);
-      case agg: AggregateExpression => {
-        if (agg.enableDP && agg.sensitivity > 0) {
-          consume(null.asInstanceOf[DataCategory], epsilon);
-        }
-      }
-      case _ =>
-    }
-  }
+  def copy() = new GlobalBudgetManager(budget);
 
-  def budget(data: DataCategory) = tmpBudget;
-
-  def copy() = {
-    new GlobalBudgetManager(this.budget);
-  }
-
-}
-
-object FineBudgetManager {
-  private var nextId = 0;
-
-  def getId: Int = {
-    nextId += 1;
-    nextId;
+  def show() {
+    logWarning(s"global privacy budget left: $budget");
   }
 }
 
 class FineBudgetManager(val budgets: mutable.Map[DataCategory, Double]) extends DPBudgetManager with Logging {
 
-  private val tmpBudgets = new HashMap[DataCategory, Double];
-  private val relevantDatas = new HashMap[Int, Set[DataCategory]];
-
-  sync(budgets, tmpBudgets);
-
-  def returnback(epsilon: Double, dpId: Int) {
-    val set = relevantDatas.getOrElse(dpId, null);
-    if (set != null) {
-      set.foreach(data => {
-        val budget = tmpBudgets.getOrElse(data, 0.0);
-        val returned = budget + epsilon;
-        tmpBudgets.put(data, returned);
-        logWarning(s"return fine budget back $epsilon for ${data.getId}, now budget left: $returned");
-      });
-
-    }
+  def defined(data: DataCategory): Boolean = {
+    return budgets.contains(data);
   }
 
-  def commit() {
-    sync(tmpBudgets, budgets);
-    relevantDatas.clear;
+  def consume(query: DPQuery) {
+    val epsilon = query.aggregate.epsilon;
+
+    val set = new HashSet[DataCategory];
+    val attr = resolveSimpleAttribute(query.aggregate.children(0));
+    set ++= query.plan.childLabel(attr).getDatas;
+    query.plan.condLabels.foreach(set ++= _.getDatas);
+
+    set.foreach(consume(_, epsilon));
+  }
+
+  def consume(data: DataCategory, epsilon: Double) {
+    if (!defined(data)) {
+      return ;
+    }
+    val budget = budgets.getOrElse(data, 0.0);
+    if (budget - epsilon < 0) {
+      throw new PrivacyException(s"No enough privacy budget for ${data.getId}, privacy budget left: $budget");
+    }
+    budgets.put(data, budget - epsilon);
+  }
+
+  def getBudget(data: DataCategory) = budgets.getOrElse(data, 0.0);
+
+  def copy(): DPBudgetManager = {
+    val map = new HashMap[DataCategory, Double];
+    budgets.foreach(map += _);
+    new FineBudgetManager(map);
+  }
+
+  def show() {
     val sb = new StringBuilder;
     for (t <- budgets) {
       sb.append(s"\tdata: ${t._1.getId()}, budget: ${t._2}\n");
     }
-    logWarning(s"commit fine privacy budget, budget left:\n ${sb.toString}");
-  }
+    logWarning(s"fine privacy budget left:\n ${sb.toString}");
 
-  def specified(data: DataCategory): Boolean = {
-    return budgets.contains(data);
-  }
-
-  def rollback() {
-    logWarning(s"rollback fine privacy budget");
-    sync(budgets, tmpBudgets);
-    relevantDatas.clear;
-  }
-
-  def consume(data: DataCategory, epsilon: Double) {
-    if (!specified(data)) {
-      return ;
-    }
-    val budget = tmpBudgets.getOrElse(data, 0.0);
-    if (budget - epsilon < 0) {
-      rollback;
-      throw new PrivacyException(s"No enough privacy budget for ${data.getId}, privacy budget left: $budget");
-    }
-    tmpBudgets += ((data, budget - epsilon));
-  }
-
-  def budget(data: DataCategory) = tmpBudgets.getOrElse(data, 0.0);
-
-  def consume(plan: Aggregate, epsilon: Double) {
-    plan.aggregateExpressions.foreach(consume(_, epsilon, plan));
-  }
-
-  private def consume(expr: Expression, epsilon: Double, plan: Aggregate) {
-    expr match {
-      case attr: Attribute =>
-      case cast: Cast => consume(cast.child, epsilon, plan);
-      case alias: Alias => consume(alias.child, epsilon, plan);
-      case agg: AggregateExpression => {
-        if (agg.enableDP && agg.sensitivity > 0) {
-          val set = new HashSet[DataCategory];
-          val attr = resolveSimpleAttribute(agg.children(0));
-          //TODO luochen add support for complex types
-          val label = plan.childLabel(attr);
-          set ++= label.getDatas;
-          plan.condLabels.foreach(set ++= _.getDatas);
-          set.withFilter(specified(_)).foreach(consume(_, epsilon));
-
-          val id = FineBudgetManager.getId;
-          relevantDatas.put(id, set);
-          agg.dpId = id;
-        }
-      }
-
-    }
-  }
-
-  def copy(): DPBudgetManager = {
-    val map = new HashMap[DataCategory, Double];
-    sync(budgets, map);
-    return new FineBudgetManager(map);
-  }
-
-  private def sync(src: mutable.Map[DataCategory, Double], dest: mutable.Map[DataCategory, Double]) {
-    dest.clear;
-    src.iterator.foreach(t => {
-      dest += t;
-    });
   }
 
 }
