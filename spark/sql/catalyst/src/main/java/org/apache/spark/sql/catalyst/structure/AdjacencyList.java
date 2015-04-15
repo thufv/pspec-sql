@@ -20,7 +20,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package org.apache.spark.sql.catalyst.graph;
+package org.apache.spark.sql.catalyst.structure;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -20,59 +20,40 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package org.apache.spark.sql.catalyst.graph;
+
+/*
+ * 
+ * Kruskal's algorithm finds a minimum spanning tree for a connected, weighted, undirected graph.
+ */
+package org.apache.spark.sql.catalyst.structure;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 /**
  *
- * @param <Node> 
  * @author Asad
  */
-public class DisjointSet<Node> {
+public class Kruskal<T> {
 
-  private List<List<Node>> set = new ArrayList<List<Node>>();
-
-  public void createSubsets(Node[] items) {
-    createSubsets(Arrays.asList(items));
-  }
-
-  public void createSubsets(Collection<Node> items) {
-    for (Node item : items) {
-      List<Node> subset = new ArrayList<Node>();
-      subset.add(item);
-      getSet().add(subset);
-    }
-  }
-
-  public void merge(int setA, int setB) {
-    getSet().get(setA).addAll(getSet().get(setB));
-    getSet().remove(setB);
-  }
-
-  public int find(Node searchfor) {
-    for (int i = 0; i < getSet().size(); i++) {
-      if (getSet().get(i).contains(searchfor)) {
-        return i;
+  /**
+   * 
+   * @param nodes
+   * @param edges
+   * @return
+   */
+  public List<Edge<T>> getMST(Collection<Node<T>> nodes, List<Edge<T>> edges) {
+    java.util.Collections.sort(edges);
+    List<Edge<T>> MST = new ArrayList<Edge<T>>();
+    DisjointSet<Node<T>> nodeset = new DisjointSet<Node<T>>();
+    nodeset.createSubsets(nodes);
+    for (Edge<T> e : edges) {
+      if (nodeset.find(e.getFrom()) != nodeset.find(e.getTo())) {
+        nodeset.merge(nodeset.find(e.getFrom()), nodeset.find(e.getTo()));
+        MST.add(e);
       }
     }
-    return -1;
-  }
-
-  /**
-   * @return the set
-   */
-  public List<List<Node>> getSet() {
-    return set;
-  }
-
-  /**
-   * @param set the set to set
-   */
-  public void setSet(List<List<Node>> set) {
-    this.set = set;
+    return MST;
   }
 }

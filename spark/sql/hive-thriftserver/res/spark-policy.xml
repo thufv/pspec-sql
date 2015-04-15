@@ -29,8 +29,8 @@
 		<!-- with probability (greater than) 0.9, the noise ratio should within 
 			0.1 w.r.t. the real answer -->
 		<accuracy>
-			<probability>0.9</probability>
-			<noise-ratio>0.1</noise-ratio>
+			<probability>0.5</probability>
+			<noise-ratio>1</noise-ratio>
 		</accuracy>
 	</privacy-parameters>
 	<rules>

@@ -26,7 +26,7 @@
  *  private int lowlink = -1;          // used for Tarjan's algorithm
  *  private int index = -1;            // used for Tarjan's algorithm
  */
-package org.apache.spark.sql.catalyst.graph;
+package org.apache.spark.sql.catalyst.structure;
 
 /**
  *

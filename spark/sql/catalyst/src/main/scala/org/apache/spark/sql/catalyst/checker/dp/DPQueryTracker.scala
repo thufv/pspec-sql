@@ -11,6 +11,7 @@ import org.jgrapht.graph.DirectedPseudograph
 import org.jgrapht.graph.DefaultEdge
 import org.apache.spark.sql.catalyst.plans.logical.Aggregate
 import org.jgrapht.alg.ConnectivityInspector
+import org.apache.spark.sql.catalyst.checker.LabelConstants._
 import org.apache.spark.sql.catalyst.checker.util.TypeUtil._
 import org.apache.spark.sql.catalyst.checker.util.CheckerUtil._
 import org.apache.spark.sql.catalyst.plans.logical.Join
@@ -49,90 +50,45 @@ import com.microsoft.z3.ArithExpr
 import org.apache.spark.sql.types.DataType
 import org.apache.spark.sql.types.DataType
 import org.apache.spark.sql.types.DataType
+import org.jgrapht.graph.Pseudograph
+import org.apache.spark.sql.catalyst.checker.Label
+import org.apache.spark.sql.catalyst.checker.FunctionLabel
+import org.apache.spark.sql.catalyst.structure.RedBlackBST
+import org.apache.spark.sql.catalyst.structure.RedBlackBST.Node
 
-object DPQuery {
-  private var nextId = 0;
+object QueryTracker {
 
-  def getId(): Int = {
-    nextId += 1;
-    nextId;
-  }
-}
-
-class DPQuery(val range: BoolExpr, val aggregate: AggregateExpression, val plan: Aggregate) extends Equals {
-  val dpId = DPQuery.getId;
-
-  aggregate.dpId = dpId;
-
-  def canEqual(other: Any) = {
-    other.isInstanceOf[org.apache.spark.sql.catalyst.checker.dp.DPQuery]
-  }
-
-  override def equals(other: Any) = {
-    other match {
-      case that: org.apache.spark.sql.catalyst.checker.dp.DPQuery => that.canEqual(DPQuery.this) && dpId == that.dpId;
-      case _ => false
+  def newQueryTracker(budget: DPBudgetManager): DPQueryTracker[_] = {
+    budget match {
+      case fine: FineBudgetManager => new DPQueryTracker[FinePartition](fine, new FinePartition(_, budget));
+      case global: GlobalBudgetManager => new DPQueryTracker[GlobalPartition](global, new GlobalPartition(_, budget));
     }
   }
 
-  override def hashCode() = {
-    val prime = 41
-    prime + dpId.hashCode;
-  }
 }
 
-abstract class DPPartition(val context: Context, val budget: DPBudgetManager) {
-  private val queries = new ArrayBuffer[DPQuery];
+abstract class QueryTracker(val budget: DPBudgetManager) {
+  protected val tmpQueries = new ArrayBuffer[DPQuery];
 
-  private var ranges: BoolExpr = context.mkFalse();
+  def track(plan: Aggregate, ranges: Map[Expression, (Int, Int)]);
 
-  def add(query: DPQuery) {
-    queries.append(query);
-    ranges = context.mkOr(ranges, query.range);
-    updateBudget(query);
+  def commit(failed: Set[Int]);
+
+  def testBudget() {
+    val copy = budget.copy;
+    tmpQueries.foreach(copy.consume(_));
   }
 
-  def disjoint(query: DPQuery): Boolean = {
-    val cond = context.mkAnd(ranges, query.range);
-    return !satisfiable(cond, context);
-  }
-
-  def updateBudget(query: DPQuery);
-
-}
-
-private class GlobalPartition(context: Context, budget: DPBudgetManager) extends DPPartition(context, budget) {
-
-  private var maximum = 0.0;
-
-  def updateBudget(query: DPQuery) {
-    if (query.aggregate.epsilon > maximum) {
-      budget.consume(null, query.aggregate.epsilon - maximum);
-      maximum = query.aggregate.epsilon;
-    }
-  }
-}
-
-private class FinePartition(context: Context, budget: DPBudgetManager) extends DPPartition(context, budget) {
-  private val maximum = new HashMap[DataCategory, Double];
-
-  def updateBudget(query: DPQuery) {
-    val epsilon = query.aggregate.epsilon;
-
-    val set = new HashSet[DataCategory];
-    val attr = resolveSimpleAttribute(query.aggregate.children(0));
-    set ++= query.plan.childLabel(attr).getDatas;
-    query.plan.condLabels.foreach(set ++= _.getDatas);
-
-    set.foreach(data => {
-      val consumed = maximum.getOrElse(data, 0.0);
-      if (consumed < epsilon) {
-        budget.consume(data, epsilon - consumed);
-        maximum.put(data, epsilon);
+  protected def collectDPQueries(plan: Aggregate, constraint: BoolExpr, ranges: Map[String, Interval]) {
+    //decompose the aggregate query
+    plan.aggregateExpressions.foreach(agg => agg.foreach(expr => {
+      expr match {
+        case a: AggregateExpression if (a.enableDP && a.sensitivity > 0) => tmpQueries.append(new DPQuery(constraint, a, plan, ranges));
+        case _ =>
       }
-    });
-
+    }));
   }
+
 }
 
 object DPQueryTracker {
@@ -153,24 +109,16 @@ object DPQueryTracker {
       }
     }
   }
-
-  def newQueryTracker(budget: DPBudgetManager): DPQueryTracker[_] = {
-    budget match {
-      case fine: FineBudgetManager => new DPQueryTracker[FinePartition](fine, new FinePartition(_, budget));
-      case global: GlobalBudgetManager => new DPQueryTracker[GlobalPartition](global, new GlobalPartition(_, budget));
-    }
-  }
-
 }
 
 /**
  * tracking submitted dp-enabled queries for parallel composition theorem
  */
-class DPQueryTracker[T <: DPPartition] private (val budget: DPBudgetManager, partitionBuilder: (Context) => T) extends Logging {
+class DPQueryTracker[T <: DPPartition] private[dp] (budget: DPBudgetManager, partitionBuilder: (Context) => T) extends QueryTracker(budget) with Logging {
 
   private class TypeResolver {
 
-    private val deriveGraph = new DirectedPseudograph[String, DefaultEdge](classOf[DefaultEdge]);
+    private val deriveGraph = new Pseudograph[String, DefaultEdge](classOf[DefaultEdge]);
 
     private val complexAttributes = new HashMap[String, DataType];
 
@@ -183,7 +131,7 @@ class DPQueryTracker[T <: DPPartition] private (val budget: DPBudgetManager, par
     def initialize(plan: Aggregate) {
       buildGraph(plan);
 
-      complexAttributes.foreach(t => {
+      complexAttributes.withFilter(t => effective(t._2)).foreach(t => {
         val attr = t._1;
         val pre = getComplexAttribute(attr);
         val map = attributeSubs.getOrElseUpdate(pre, new HashMap[String, DataType]);
@@ -191,9 +139,11 @@ class DPQueryTracker[T <: DPPartition] private (val budget: DPBudgetManager, par
       });
     }
 
-    def effective(attr: Attribute): Boolean = {
-      return supportedTypes.exists(_.isInstance(attr.dataType));
+    def effective(dataType: DataType): Boolean = {
+      return supportedTypes.exists(_.isInstance(dataType));
     }
+
+    def effective(attr: Attribute): Boolean = effective(attr.dataType);
 
     private def buildGraph(plan: Aggregate) {
       plan.child.foreach(node => {
@@ -223,8 +173,8 @@ class DPQueryTracker[T <: DPPartition] private (val budget: DPBudgetManager, par
               val left = binary.left.output(i);
               val right = binary.right.output(i);
               val attr = binary.output(i);
-              connectOutput(left, attr, binary);
-              connectOutput(right, attr, binary);
+              // connectOutput(left, attr, binary);
+              // connectOutput(right, attr, binary);
             }
           }
           case _ =>
@@ -240,18 +190,22 @@ class DPQueryTracker[T <: DPPartition] private (val budget: DPBudgetManager, par
         val attr = queue.dequeue;
         val dataType = complexAttributes.getOrElse(attr, null);
         assert(dataType != null);
-        val pre = getComplexAttribute(attr);
-        val subtypes = getComplexSubtypes(attr);
-        if (deriveGraph.containsVertex(pre)) {
-          val equivalents = alg.connectedSetOf(pre);
-          for (equi <- equivalents) {
-            val equiAttr = concatComplexAttribute(equi, subtypes);
-            if (!complexAttributes.contains(equiAttr)) {
-              queue.enqueue(equiAttr);
-              complexAttributes.put(equiAttr, dataType);
+        val splits = splitComplexAttribute(attr);
+        splits.foreach(t => {
+          val pre = t._1;
+          val subtypes = t._2;
+          if (deriveGraph.containsVertex(pre)) {
+            val equivalents = alg.connectedSetOf(pre);
+            for (equi <- equivalents) {
+              val equiAttr = concatComplexAttribute(equi, subtypes);
+              if (!complexAttributes.contains(equiAttr)) {
+                queue.enqueue(equiAttr);
+                complexAttributes.put(equiAttr, dataType);
+              }
             }
           }
-        }
+        });
+
       }
     }
 
@@ -291,13 +245,14 @@ class DPQueryTracker[T <: DPPartition] private (val budget: DPBudgetManager, par
     private def connectOutput(expr: Expression, output: Attribute, plan: LogicalPlan) {
       resolveAttributes(expr, plan);
       if (!output.dataType.isPrimitive) {
+        val outStr = getAttributeString(output, plan);
+        complexAttributes.put(outStr, output.dataType);
         val attr = resolveSimpleAttribute(expr);
         if (attr != null) {
-          val str1 = getAttributeString(output, plan);
-          val str2 = getAttributeString(attr, plan);
-          deriveGraph.addVertex(str1);
-          deriveGraph.addVertex(str2);
-          deriveGraph.addEdge(str1, str2);
+          val attrStr = getAttributeString(attr, plan);
+          deriveGraph.addVertex(outStr);
+          deriveGraph.addVertex(attrStr);
+          deriveGraph.addEdge(outStr, attrStr);
         }
       }
     }
@@ -307,24 +262,24 @@ class DPQueryTracker[T <: DPPartition] private (val budget: DPBudgetManager, par
   private class SMTModel {
     private val attrVars = new HashMap[String, Expr];
 
-    val varIndex = new HashMap[Expr, String];
+    val attrIndex = new HashMap[Expr, String];
 
     /**
-     * key: table.column, value: a set of variables
+     * key: table.column, value: a list of attributes
      */
-    val columnVars = new HashMap[String, Buffer[Expr]];
+    val columnVars = new HashMap[String, Buffer[String]];
 
     def getVariable(attr: String): Expr = {
       return attrVars.getOrElse(attr, null);
     }
     def initAttrVariable(attr: String, table: String, variable: Expr) {
       attrVars.put(attr, variable);
+
       val column = s"$table.${getColumnString(attr)}";
+      val buffer = columnVars.getOrElseUpdate(column, new ArrayBuffer[String]);
+      buffer.append(attr);
+      attrIndex.put(variable, column);
 
-      val buffer = columnVars.getOrElseUpdate(column, new ArrayBuffer[Expr]);
-      buffer.append(variable);
-
-      varIndex.put(variable, column);
     }
 
     def addAttrVariable(attr: String, variable: Expr) {
@@ -338,8 +293,9 @@ class DPQueryTracker[T <: DPPartition] private (val budget: DPBudgetManager, par
    * Transform a query (plan) into a SMT equation, which represents the column ranges
    */
   private class SMTBuilder {
+    val model = new SMTModel;
+
     private val typeResolver = new TypeResolver;
-    private val model = new SMTModel;
     private val defaultSort = context.getRealSort();
 
     private var id = 0;
@@ -354,25 +310,27 @@ class DPQueryTracker[T <: DPPartition] private (val budget: DPBudgetManager, par
       resolveActiveColumns(expression, activated);
       val replaces = activated.map(column => {
         val columnVar = context.mkConst(column, defaultSort);
-        val variables = model.columnVars.getOrElse(column, null);
-        val list = variables.map(v => {
-          context.mkEq(columnVar, v);
+        val attributes = model.columnVars.getOrElse(column, null);
+        val list = attributes.map(attr => {
+          val variable = model.getVariable(attr);
+          context.mkEq(columnVar, variable);
         });
         disjuncate(list);
       }).toList;
-      return conjuncate(expression :: replaces);
+
+      return conjuncate(expression :: replaces).simplify().asInstanceOf[BoolExpr];
     }
 
     private def resolveActiveColumns(expression: Expr, set: HashSet[String]) {
       expression match {
         case int: IntExpr => {
-          val column = model.varIndex.get(int);
+          val column = model.attrIndex.get(int);
           if (column.isDefined) {
             set.add(column.get);
           }
         }
         case real: RealExpr => {
-          val column = model.varIndex.get(real);
+          val column = model.attrIndex.get(real);
           if (column.isDefined) {
             set.add(column.get);
           }
@@ -516,8 +474,8 @@ class DPQueryTracker[T <: DPPartition] private (val budget: DPBudgetManager, par
 
     private def createBinaryConstraint(left: Attribute, right: Attribute, plan: BinaryNode, list: ArrayBuffer[BoolExpr]) {
       def binaryConstraintHelper(leftStr: String, rightStr: String): BoolExpr = {
-        val leftVar = model.getVariable(getAttributeString(left, plan));
-        val rightVar = model.getVariable(getAttributeString(right, plan));
+        val leftVar = model.getVariable(leftStr);
+        val rightVar = model.getVariable(rightStr);
         if (leftVar == null || rightVar == null) {
           return null;
         }
@@ -539,9 +497,8 @@ class DPQueryTracker[T <: DPPartition] private (val budget: DPBudgetManager, par
         //create variable for each subtype
         set.keys.foreach(sub => {
           val types = getComplexSubtypes(sub);
-          val leftSub = concatComplexAttribute(leftStr, types);
           val rightSub = concatComplexAttribute(rightStr, types);
-          val result = binaryConstraintHelper(leftSub, rightSub);
+          val result = binaryConstraintHelper(sub, rightSub);
           if (result != null) {
             list.append(result);
           }
@@ -764,6 +721,7 @@ class DPQueryTracker[T <: DPPartition] private (val budget: DPBudgetManager, par
         case n: NumericType => context.mkConst(name, context.mkRealSort());
         case s: StringType => context.mkConst(name, context.mkIntSort());
         case b: BooleanType => context.mkConst(name, context.mkBoolSort());
+        case _ => null;
       }
 
     }
@@ -798,13 +756,130 @@ class DPQueryTracker[T <: DPPartition] private (val budget: DPBudgetManager, par
     }
   }
 
+  private case class IntWrapper(val value: Int) extends Comparable[IntWrapper] {
+    def compareTo(other: IntWrapper): Int = {
+      return Integer.compare(this.value, other.value);
+    }
+  }
+
+  private class PartitionIndex(val column: String) {
+    val startTree = new RedBlackBST[IntWrapper, Set[T]];
+    val endTree = new RedBlackBST[IntWrapper, Set[T]];
+
+    def addPartition(partition: T) {
+      val intervals = partition.ranges.getOrElse(column, null);
+      if (intervals != null) {
+        intervals.foreach(addPartition(_, partition));
+      }
+    }
+
+    def addPartition(interval: Interval, partition: T) {
+      def add(point: Int, partition: T, tree: RedBlackBST[IntWrapper, Set[T]]) {
+        val set = tree.get(IntWrapper(point));
+        if (set != null) {
+          set.add(partition);
+        } else {
+          val set = new HashSet[T];
+          tree.put(IntWrapper(point), set);
+        }
+      }
+
+      add(interval.start, partition, startTree);
+      add(interval.end, partition, endTree);
+    }
+
+    def removePartition(partition: T) {
+      val intervals = partition.ranges.getOrElse(column, null);
+      intervals.foreach(removePartition(_, partition));
+    }
+
+    def removePartition(interval: Interval, partition: T) {
+      def remove(point: Int, partition: T, tree: RedBlackBST[IntWrapper, Set[T]]) {
+        val set = tree.get(IntWrapper(point));
+        assert(set != null);
+        set.remove(partition);
+        if (set == null) {
+          tree.delete(IntWrapper(point));
+        }
+      }
+      remove(interval.start, partition, startTree);
+      remove(interval.end, partition, endTree);
+    }
+
+    def lookupDisjoint(interval: Interval): T = {
+      val start = interval.start;
+      val end = interval.end;
+
+      val left = lookupByStart(end, interval, startTree.root);
+      if (left != null) {
+        return left;
+      }
+      return lookupByEnd(start, interval, endTree.root);
+    }
+
+    /**
+     * lookup by the start tree, only consider nodes > point
+     */
+    private def lookupByStart(point: Int, interval: Interval, node: Node[IntWrapper, Set[T]]): T = {
+      if (node == null) {
+        return null.asInstanceOf[T];
+      }
+      val start = node.key;
+      if (start.value > point) {
+        val current = checkPartitions(interval, node.value);
+        if (current != null) {
+          return current;
+        }
+        val t = lookupByStart(point, interval, node.left);
+        if (t != null) {
+          return t;
+        } else {
+          return lookupByStart(point, interval, node.right);
+        }
+      } else {
+        return lookupByStart(point, interval, node.right);
+      }
+    }
+
+    private def lookupByEnd(point: Int, interval: Interval, node: Node[IntWrapper, Set[T]]): T = {
+      if (node == null) {
+        return null.asInstanceOf[T];
+      }
+      val end = node.key;
+      if (end.value < point) {
+        val current = checkPartitions(interval, node.value);
+        if (current != null) {
+          return current;
+        }
+        val t = lookupByEnd(point, interval, node.right);
+        if (t != null) {
+          return t;
+        } else {
+          return lookupByEnd(point, interval, node.left);
+        }
+      } else {
+        return lookupByEnd(point, interval, node.left);
+      }
+    }
+
+    private def checkPartitions(interval: Interval, partitions: Set[T]): T = {
+      partitions.foreach(p => {
+        if (p.disjoint(column, interval)) {
+          return p;
+        }
+      });
+      return null.asInstanceOf[T];
+    }
+
+  }
+
   private val context = new Context;
 
   private val partitions = new ArrayBuffer[T];
 
-  private val tmpQueries = new ArrayBuffer[DPQuery];
+  private val partitionIndex = new HashMap[String, PartitionIndex];
 
-  def track(plan: Aggregate) {
+  def track(plan: Aggregate, ranges: Map[Expression, (Int, Int)]) {
     val builder = new SMTBuilder;
     val constraint = builder.buildSMT(plan);
     //check satisfiability
@@ -812,43 +887,185 @@ class DPQueryTracker[T <: DPPartition] private (val budget: DPBudgetManager, par
       logWarning("Range constraint unsatisfiable, ignore query");
       return ;
     }
-
-    //decompose the aggregate query
-    plan.aggregateExpressions.foreach(agg => agg.foreach(expr => {
-      expr match {
-        case a: AggregateExpression if (a.enableDP && a.sensitivity > 0) => tmpQueries.append(new DPQuery(constraint, a, plan));
-        case _ =>
+    //check soundness of the estimated intervals
+    val checkedRanges = new HashMap[String, Interval];
+    ranges.foreach(t => {
+      val attr = t._1;
+      val range = t._2;
+      //ensure no join table appear for each attribute
+      val left = new HashSet[String];
+      val right = new HashSet[String];
+      val label = plan.childLabel(attr);
+      collectAttributes(transformComplexLabel(label), left, right, plan, builder.model);
+      if (left.size >= right.size) {
+        //sound
+        val column = getColumnString(getAttributeString(attr, plan));
+        checkedRanges.put(column, Interval(range._1, range._2));
       }
-    }));
+    });
+
+    collectDPQueries(plan, constraint, checkedRanges);
+  }
+
+  private def collectAttributes(label: Label, left: Set[String], right: Set[String], plan: LogicalPlan, model: SMTModel) {
+    def addAttribute(attr: Expression, table: String) {
+      val str = getAttributeString(attr, plan);
+      left.add(str);
+      val column = getColumnString(str);
+      val set = model.columnVars.getOrElse(column, null);
+      if (set != null) {
+        right ++= set;
+      }
+    }
+
+    label match {
+      case column: ColumnLabel => {
+        addAttribute(column.attr, column.table);
+      }
+      case func: FunctionLabel => {
+        func.transform match {
+          case Func_Union | Func_Except | Func_Intersect => func.children.foreach(collectAttributes(_, left, right, plan, model));
+          case get if (isSubtypeOperation(get)) => {
+            val attr = getAttributeString(func.expression, plan);
+            addAttribute(func.expression, func.getTables().head);
+          }
+        }
+      }
+      case _ =>
+
+    }
   }
 
   def commit(failed: Set[Int]) {
     //put queries into partitions
-    var pi = 0;
+    var success = true;
+    var pi = partitions.length - 1;
     tmpQueries.withFilter(q => !failed.contains(q.dpId)).foreach(query => {
-      var found = false;
-      while (!found && pi < partitions.length) {
-        val partition = partitions(pi);
-        if (partition.disjoint(query)) {
-          found = true;
-          partition.add(query);
-        }
-        pi += 1;
+      if (success) {
+        success = commitQueryByIndex(query);
       }
-      if (!found) {
-        val partition = partitionBuilder(context);
-        partition.add(query);
-        partitions.append(partition);
+      if (!success) {
+        var found = false;
+        while (!found && pi >= 0) {
+          val partition = partitions(pi);
+          if (partition.disjoint(query)) {
+            found = true;
+            updatePartition(partition, query);
+          }
+          pi -= 1;
+        }
+        if (!found) {
+          createPartition(query);
+        }
       }
     });
 
+    tmpQueries.foreach(_.clear);
     tmpQueries.clear;
     budget.show;
   }
 
-  def testBudget() {
-    val copy = budget.copy;
-    tmpQueries.foreach(copy.consume(_));
+  private def createPartition(query: DPQuery) {
+    val partition = partitionBuilder(context);
+    partition.init(query);
+
+    partition.ranges.foreach(t => {
+      val column = t._1;
+      val index = partitionIndex.getOrElseUpdate(column, new PartitionIndex(column));
+      index.addPartition(partition);
+    });
+
+    this.partitions.append(partition);
+    logWarning("fail to locate a disjoint partition, create a new one");
   }
 
+  private def updatePartition(partition: T, query: DPQuery) {
+    partition.add(query);
+    //
+    val toRemove = new ArrayBuffer[String];
+    partition.ranges.foreach(t => {
+      val column = t._1;
+      if (!query.ranges.contains(t._1)) {
+        toRemove.append(column);
+        val index = partitionIndex.getOrElse(column, null);
+        //the column range is no longer invalid, remove all intervals
+        if (index != null) {
+          index.removePartition(partition);
+        }
+      }
+    });
+    toRemove.foreach(partition.ranges.remove(_));
+
+    partition.ranges.foreach(t => {
+      val column = t._1;
+      val list = t._2;
+      val interval = query.ranges.getOrElse(column, null);
+      assert(interval != null);
+      //union the list and interval
+      val index = partitionIndex.getOrElse(column, null);
+
+      val firstIndex = list.indexWhere(_.joint(interval));
+      val lastIndex = list.lastIndexWhere(_.joint(interval));
+
+      if (firstIndex >= 0) {
+        //union takes effective
+        val start = Math.min(interval.start, list(firstIndex).start);
+        val end = Math.max(interval.end, list(lastIndex).end);
+        val newInterval = Interval(start, end);
+        for (i <- firstIndex to lastIndex) {
+          index.removePartition(list(i), partition);
+        }
+        list.remove(firstIndex, lastIndex - firstIndex + 1);
+
+        list.insert(firstIndex, newInterval);
+        index.addPartition(newInterval, partition);
+      } else {
+        val i = list.indexWhere(_.start > interval.start);
+        if (i >= 0) {
+          list.insert(i, interval);
+        } else {
+          list.append(interval);
+        }
+        index.addPartition(interval, partition);
+
+      }
+    });
+
+  }
+
+  /**
+   * lookup the index to commit the query
+   */
+  private def commitQueryByIndex(query: DPQuery): Boolean = {
+    val ranges = query.ranges;
+    ranges.foreach(t => {
+      val column = t._1;
+      val interval = t._2;
+      val index = partitionIndex.getOrElse(column, null);
+      if (index != null) {
+        val partition = index.lookupDisjoint(interval);
+        if (partition != null) {
+          logWarning("find disjoint partition with index, no SMT solving needed");
+
+          updatePartition(partition, query);
+          return true;
+        }
+      }
+    });
+
+    return false;
+  }
+}
+
+class DummyQueryTracker(budget: DPBudgetManager) extends QueryTracker(budget) {
+
+  def track(plan: Aggregate, ranges: Map[Expression, (Int, Int)]) {
+    collectDPQueries(plan, null, null);
+  }
+
+  def commit(failed: Set[Int]) {
+    tmpQueries.foreach(budget.consume(_));
+    tmpQueries.clear;
+    budget.show;
+  }
 }

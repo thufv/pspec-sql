@@ -31,9 +31,9 @@ import org.apache.spark.sql.catalyst.expressions.Min
 import org.apache.spark.sql.catalyst.expressions.Or
 import org.apache.spark.sql.catalyst.expressions.Sum
 import org.apache.spark.sql.catalyst.expressions.SumDistinct
-import org.apache.spark.sql.catalyst.graph.AdjacencyList
-import org.apache.spark.sql.catalyst.graph.EdmondsChuLiu
-import org.apache.spark.sql.catalyst.graph.Node
+import org.apache.spark.sql.catalyst.structure.AdjacencyList
+import org.apache.spark.sql.catalyst.structure.EdmondsChuLiu
+import org.apache.spark.sql.catalyst.structure.Node
 import org.apache.spark.sql.catalyst.plans.logical.Aggregate
 import org.apache.spark.sql.catalyst.plans.logical.BinaryNode
 import org.apache.spark.sql.catalyst.plans.logical.Except
@@ -135,10 +135,6 @@ class DPEnforcer(val tableInfo: TableInfo, val queryTracker: DPQueryTracker[_], 
 
   private val MaxWeight = 10000;
 
-  private var currentRefiner: AttributeRangeRefiner = null;
-
-  private var currentAggPlan: Aggregate = null;
-
   def apply(plan: LogicalPlan) {
     if (!exists(plan, classOf[Aggregate])) {
       return ;
@@ -146,10 +142,6 @@ class DPEnforcer(val tableInfo: TableInfo, val queryTracker: DPQueryTracker[_], 
     enforce(plan);
 
     queryTracker.testBudget;
-  }
-
-  def commit(failed: Set[Int]) {
-    queryTracker.commit(failed);
   }
 
   private def enforce(plan: LogicalPlan, dp: Boolean = false): Int = {
@@ -164,9 +156,10 @@ class DPEnforcer(val tableInfo: TableInfo, val queryTracker: DPQueryTracker[_], 
       case agg: Aggregate => {
         val scale = enforce(agg.child, true);
         if (agg.aggregateExpressions.exists(dpEnabled(_))) {
-          currentRefiner = new AttributeRangeRefiner(tableInfo, agg);
-          agg.aggregateExpressions.foreach(enforceAggregate(_, agg, scale));
-          queryTracker.track(agg);
+          val refiner = new AttributeRangeRefiner(tableInfo, agg);
+          agg.aggregateExpressions.foreach(enforceAggregate(_, agg, refiner, scale));
+
+          queryTracker.track(agg, refiner.ranges);
         }
         scale;
       }
@@ -303,33 +296,33 @@ class DPEnforcer(val tableInfo: TableInfo, val queryTracker: DPQueryTracker[_], 
     }
   }
 
-  private def enforceAggregate(expression: Expression, plan: Aggregate, scale: Int) {
+  private def enforceAggregate(expression: Expression, plan: Aggregate, refiner: AttributeRangeRefiner, scale: Int) {
     expression match {
-      case alias: Alias => enforceAggregate(alias.child, plan, scale);
+      case alias: Alias => enforceAggregate(alias.child, plan, refiner, scale);
       //estimate sensitivity based on range for each functions
       case sum: Sum => {
-        enforceDP(sum, plan, scale, true, (min, max) => Math.max(Math.abs(min), Math.abs(max)));
+        enforceDP(sum, plan, refiner, scale, true, (min, max) => Math.max(Math.abs(min), Math.abs(max)));
       }
       case sum: SumDistinct => {
-        enforceDP(sum, plan, scale, true, (min, max) => Math.max(Math.abs(min), Math.abs(max)));
+        enforceDP(sum, plan, refiner, scale, true, (min, max) => Math.max(Math.abs(min), Math.abs(max)));
       }
       case count: Count => {
-        enforceDP(count, plan, scale, false, (min, max) => 1);
+        enforceDP(count, plan, refiner, scale, false, (min, max) => 1);
       }
       case count: CountDistinct => {
-        enforceDP(count, plan, scale, false, (min, max) => 1);
+        enforceDP(count, plan, refiner, scale, false, (min, max) => 1);
       }
       case avg: Average => {
-        enforceDP(avg, plan, scale, true, (min, max) => max - min);
+        enforceDP(avg, plan, refiner, scale, true, (min, max) => max - min);
       }
       case min: Min => {
-        enforceDP(min, plan, 1, true, (min, max) => max - min);
+        enforceDP(min, plan, refiner, 1, true, (min, max) => max - min);
       }
       case max: Max => {
-        enforceDP(max, plan, 1, true, (min, max) => max - min);
+        enforceDP(max, plan, refiner, 1, true, (min, max) => max - min);
       }
 
-      case _ => expression.children.foreach(enforceAggregate(_, plan, scale));
+      case _ => expression.children.foreach(enforceAggregate(_, plan, refiner, scale));
     }
   }
 
@@ -340,34 +333,15 @@ class DPEnforcer(val tableInfo: TableInfo, val queryTracker: DPQueryTracker[_], 
     }
   }
 
-  private def enforceDP(agg: AggregateExpression, plan: Aggregate, scale: Int, refine: Boolean, func: (Double, Double) => Double) {
+  private def enforceDP(agg: AggregateExpression, plan: Aggregate, refiner: AttributeRangeRefiner, scale: Int, refine: Boolean, func: (Int, Int) => Double) {
     if (!agg.enableDP) {
       return ;
     }
-    if (refine) {
-      val range = resolveAttributeRange(agg.children(0), plan, refine);
-      agg.sensitivity = func(toDouble(range._1), toDouble(range._2));
-    } else {
-      agg.sensitivity = func(0, 0);
-    }
+    val attribute = resolveSimpleAttribute(agg.children(0));
+    val range = if (attribute == null) (0, 0) else refiner.get(attribute, plan, refine);
+    agg.sensitivity = func(range._1, range._2) * scale;
     agg.epsilon = epsilon;
-    agg.sensitivity = agg.sensitivity * scale;
     logWarning(s"enable dp for $agg with sensitivity = ${agg.sensitivity}, epsilon = $epsilon, scale = $scale, and result epsilon = ${agg.epsilon}");
-  }
-
-  private def resolveAttributeRange(expr: Expression, plan: LogicalPlan, refine: Boolean): (Int, Int) = {
-    expr match {
-      case attr if (isAttribute(attr)) => {
-        return currentRefiner.get(attr, plan, refine);
-      }
-      case alias: Alias => {
-        resolveAttributeRange(alias.child, plan, refine);
-      }
-      case cast: Cast => {
-        resolveAttributeRange(cast.child, plan, refine);
-      }
-      case _ => null;
-    }
   }
 
   private def resolveAttributeMultiplicity(expr: Expression, plan: LogicalPlan): Option[Int] = {

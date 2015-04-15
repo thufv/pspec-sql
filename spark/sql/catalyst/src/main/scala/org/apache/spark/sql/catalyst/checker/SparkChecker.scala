@@ -26,6 +26,7 @@ import scala.collection.mutable.HashSet
 import scala.collection.mutable.HashSet
 import scala.collection.mutable.ArrayBuffer
 import org.apache.spark.sql.catalyst.checker.dp.DPQueryTracker
+import org.apache.spark.sql.catalyst.checker.dp.QueryTracker
 
 /**
  * TODO luochen a temporary solution for returning back privacy budgets
@@ -58,7 +59,7 @@ class SparkChecker(catalog: Catalog, policy: String, meta: String) extends Loggi
   lazy val user: UserCategory = MetaManager.currentUser();
 
   private val failedAggregates = new HashSet[Int];
-  private lazy val tracker = DPQueryTracker.newQueryTracker(budgetManager);
+  private lazy val tracker = QueryTracker.newQueryTracker(budgetManager);
 
   loadPolicy(policy);
   loadMeta(meta, catalog);

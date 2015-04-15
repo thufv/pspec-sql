@@ -48,7 +48,7 @@
  *   print v'
  *until (v' == v)
  */
-package org.apache.spark.sql.catalyst.graph;
+package org.apache.spark.sql.catalyst.structure;
 
 import java.util.ArrayList;
 import java.util.List;

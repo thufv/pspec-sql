@@ -46,7 +46,7 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
     private val relevantGraph = new Pseudograph[String, DefaultEdge](classOf[DefaultEdge]);
 
     //TODO: possible problems for union on complex types
-    private val deriveGraph = new DirectedPseudograph[String, DefaultEdge](classOf[DefaultEdge]);
+    private val deriveGraph = new Pseudograph[String, DefaultEdge](classOf[DefaultEdge]);
 
     private val aggAttributes = new HashSet[String];
 
@@ -140,19 +140,22 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
       complexAttributes.foreach(queue.enqueue(_));
       while (!queue.isEmpty) {
         val attr = queue.dequeue;
-        val pre = getComplexAttribute(attr);
-        val subtypes = getComplexSubtypes(attr);
-        if (deriveGraph.containsVertex(pre)) {
-          val equivalents = alg.connectedSetOf(pre);
-          for (equi <- equivalents) {
-            val equiAttr = concatComplexAttribute(equi, subtypes);
-            if (!relevantGraph.containsVertex(equiAttr)) {
-              queue.enqueue(equiAttr);
-              relevantGraph.addVertex(equiAttr);
+        val splits = splitComplexAttribute(attr);
+        splits.foreach(t => {
+          val pre = t._1;
+          val subtypes = t._2;
+          if (deriveGraph.containsVertex(pre)) {
+            val equivalents = alg.connectedSetOf(pre);
+            for (equi <- equivalents) {
+              val equiAttr = concatComplexAttribute(equi, subtypes);
+              if (!relevantGraph.containsVertex(equiAttr)) {
+                queue.enqueue(equiAttr);
+                relevantGraph.addVertex(equiAttr);
+              }
+              relevantGraph.addEdge(attr, equiAttr);
             }
-            relevantGraph.addEdge(attr, equiAttr);
           }
-        }
+        });
       }
     }
 
@@ -329,7 +332,11 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
 
   private val refinedRanges = new HashMap[String, (Int, Int)];
 
+  private val attributeRanges = new HashMap[Expression, (Int, Int)];
+
   initialize(aggregate);
+
+  def ranges = attributeRanges;
 
   //TODO luochen, add support for ignore refinement
   def get(expr: Expression, plan: LogicalPlan, refine: Boolean): (Int, Int) = {
@@ -339,16 +346,14 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
       return result;
     }
     val attrVar = model.getVariable(attr);
+    val initialRange = (attrVar.getLB(), attrVar.getUB());
     if (!refine) {
+      attributeRanges.put(expr, initialRange);
+      refinedRanges.put(attr, initialRange);
       logWarning(s"no attribute refinement needed, return original range for $attr");
-      if (attrVar == null) {
-        return null;
-      } else {
-        return (attrVar.getLB, attrVar.getUB);
-      }
+      return initialRange;
     }
 
-    val initialRange = (attrVar.getLB(), attrVar.getUB());
     //constraint solving
     val allVars = model.getAllVaraibles(attrVar);
 
@@ -358,10 +363,10 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
     if (solver.isFeasible() != ESat.TRUE) {
       logWarning(s"fail to find any solution, fall back to empty range for $attr"); ;
       val range = (0, 0);
+      attributeRanges.put(expr, range);
       refinedRanges.put(attr, range);
       return range;
     }
-
     val up = if (solver.hasReachedLimit()) {
       logWarning(s"solving upper bound for $attr timeout, fall back to original ${initialRange._2}");
       initialRange._2;
@@ -385,12 +390,13 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
     //  solver.getSearchLoop().getSMList().reset;
 
     val range = (low, up);
+    attributeRanges.put(expr, range);
     refinedRanges.put(attr, range);
     logWarning(s"update range for $attr as [$low, $up]");
     return range;
   }
 
-  def initialize(plan: Aggregate) {
+  private def initialize(plan: Aggregate) {
     SearchMonitorFactory.limitTime(solver, Search_Limit);
     predFilter.initialize(plan);
     //  plan.aggregateExpressions.foreach(resolveAggregateAttribute(_, plan));
@@ -546,8 +552,8 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
 
   private def createBinaryConstraint(left: Attribute, right: Attribute, output: Attribute, plan: BinaryNode, lefts: Buffer[Constraint], rights: Buffer[Constraint]) {
     def binaryConstraintHelper(leftStr: String, rightStr: String, outStr: String, rangeFunc: ((Int, Int), (Int, Int)) => (Int, Int)) {
-      val leftVar = model.getVariable(getAttributeString(left, plan));
-      val rightVar = model.getVariable(getAttributeString(right, plan));
+      val leftVar = model.getVariable(leftStr);
+      val rightVar = model.getVariable(rightStr);
       if (leftVar == null || rightVar == null) {
         return ;
       }
@@ -598,7 +604,7 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
 
   }
 
-  def resolveExpression(cond: Expression, plan: LogicalPlan): Constraint = {
+  private def resolveExpression(cond: Expression, plan: LogicalPlan): Constraint = {
 
     cond match {
       case and: And => {

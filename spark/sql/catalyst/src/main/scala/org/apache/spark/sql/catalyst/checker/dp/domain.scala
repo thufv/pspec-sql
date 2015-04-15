@@ -2,7 +2,13 @@ package org.apache.spark.sql.catalyst.checker.dp;
 
 import scala.collection.mutable.ListBuffer
 
-case class Interval private (start: Double, end: Double) {
+case class Interval(start: Int, end: Int) {
+
+  def joint(other: Interval): Boolean = {
+    return !disjoint(other);
+
+  }
+
   def disjoint(other: Interval): Boolean = {
     return this.end < other.start || other.end < this.start;
   }
@@ -17,53 +23,11 @@ case class Interval private (start: Double, end: Double) {
 
 }
 
-object Interval {
-  private val Rounding = 0.0000000000001;
-
-  def apply(min: Double, minInclusive: Boolean, max: Double, maxInclusive: Boolean): Interval = {
-    assert(min <= max);
-    val _min = if (minInclusive) min else min + Rounding;
-    val _max = if (maxInclusive) max else max - Rounding;
-    return Interval(_min, _max);
-  }
-
-  def sort(left: Interval, right: Interval): (Interval, Interval) = {
-    val _left = if (left.start < right.start) left else right;
-    val _right = if (left.start < right.start) right else left;
-    (_left, _right);
-  }
-
-  def intersect(left: Interval, right: Interval): Interval = {
-    val start = Math.max(left.start, right.start);
-    val end = Math.min(left.end, right.end);
-    if (start < end) {
-      Interval(start, end);
-    } else {
-      null;
-    }
-  }
-
-  def except(left: Interval, right: Interval): Seq[Interval] = {
-    if (left.disjoint(right)) {
-      Seq(left);
-    } else if (right.includes(left)) {
-      Nil;
-    } else if (left.includes(right)) {
-      //split
-      Seq(Interval(left.start, true, right.start, false), Interval(right.end, false, left.end, true));
-    } else {
-      //overlap
-      Seq(Interval(left.start, true, right.start, false));
-    }
-  }
-}
-
 //intervals must be disjointed, and are sorted in an ascending order
 case class Domain private (intervals: Seq[Interval]) {
 
   def disjoint(other: Domain): Boolean = {
     return !joint(other);
-
   }
 
   def joint(other: Domain): Boolean = {
@@ -101,33 +65,9 @@ object Domain {
         end = list(i).end;
         i += 1;
       }
-      result.append(Interval(begin, true, end, true));
+      result.append(Interval(begin, end));
     }
     return Domain(result);
   }
 
-  def except(domain1: Domain, domain2: Domain): Domain = {
-    val result = new ListBuffer[Interval];
-    domain1.intervals.foreach(int1 => {
-      domain2.intervals.foreach(int2 => {
-        val seq = Interval.except(int1, int2);
-        result ++= seq;
-      });
-    });
-
-    return Domain(result);
-  }
-
-  def intersect(domain1: Domain, domain2: Domain): Domain = {
-    val result = new ListBuffer[Interval];
-    domain1.intervals.foreach(int1 => {
-      domain2.intervals.foreach(int2 => {
-        val int = Interval.intersect(int1, int2);
-        if (int != null) {
-          result += int;
-        }
-      });
-    });
-    return Domain(result);
-  }
 }

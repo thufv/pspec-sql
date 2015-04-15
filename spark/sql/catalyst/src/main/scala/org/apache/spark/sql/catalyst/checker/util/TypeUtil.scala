@@ -161,6 +161,16 @@ object TypeUtil {
     }
   }
 
+  def splitComplexAttribute(attr: String): Array[(String, String)] = {
+    val subs = attr.split(Delimiter_Type);
+    val result = new Array[(String, String)](subs.length - 1);
+    for (i <- 0 to result.length - 1) {
+      val (pre, post) = subs.splitAt(i + 1);
+      result(i) = (pre.mkString(Delimiter_Type), post.mkString(Delimiter_Type));
+    }
+    return result;
+  }
+
   def getComplexSubtypes(attr: String): String = {
     val index = attr.indexOf(' ');
     if (index >= 0) {

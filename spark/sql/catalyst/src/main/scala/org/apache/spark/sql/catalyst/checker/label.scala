@@ -29,6 +29,8 @@ sealed abstract class Label {
 
   def getTypes(): Seq[BaseType];
 
+  def getTables(): Seq[String];
+
   def transitTypes(): Seq[BaseType];
 }
 
@@ -44,6 +46,7 @@ abstract class ColumnLabel extends Label {
 
   def contains(trans: String*) = false;
 
+  def getTables = Seq(table);
 }
 
 /**
@@ -118,6 +121,10 @@ case class FunctionLabel(children: Seq[Label], transform: String, expression: Ex
 
   def getTypes: Seq[BaseType] = {
     children.flatMap(_.getTypes).flatMap(resolveType(_, FunctionLabel.this)).filter(_ != null);
+  }
+
+  def getTables: Seq[String] = {
+    children.flatMap(_.getTables);
   }
 
   def transitTypes: Seq[BaseType] = {
@@ -200,6 +207,8 @@ case class ConstantLabel(value: Any) extends Label {
   def getTypes = Nil;
 
   def transitTypes = Nil;
+
+  def getTables = Nil;
 }
 
 /**
@@ -216,5 +225,7 @@ case class PredicateLabel(val children: Seq[Label], val operation: String) exten
   def getTypes = children.flatMap(_.getTypes);
 
   def transitTypes = Nil;
+
+  def getTables = children.flatMap(_.getTables);
 
 }
