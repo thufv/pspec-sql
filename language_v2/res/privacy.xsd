@@ -262,6 +262,12 @@
 	<simpleType name="ratioType">
 		<restriction base="double">
 			<minInclusive value="0"></minInclusive>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="probabilityType">
+		<restriction base="double">
+			<minInclusive value="0"></minInclusive>
 			<maxInclusive value="1"></maxInclusive>
 		</restriction>
 	</simpleType>
@@ -312,7 +318,7 @@
 
 	<complexType name="accuracyType">
 		<sequence>
-			<element name="probability" type="tns:ratioType">
+			<element name="probability" type="tns:probabilityType">
 			</element>
 			<element name="noise-ratio" type="tns:ratioType"></element>
 		</sequence>

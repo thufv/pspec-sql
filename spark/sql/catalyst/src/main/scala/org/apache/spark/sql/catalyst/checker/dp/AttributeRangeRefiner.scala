@@ -45,7 +45,6 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
 
     private val relevantGraph = new Pseudograph[String, DefaultEdge](classOf[DefaultEdge]);
 
-    //TODO: possible problems for union on complex types
     private val deriveGraph = new Pseudograph[String, DefaultEdge](classOf[DefaultEdge]);
 
     private val aggAttributes = new HashSet[String];
@@ -318,9 +317,9 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
     def postConstraint(cons: Constraint) = solver.post(cons);
   }
 
-  private var id = 0;
+  private var nextId = 0;
 
-  private val Search_Limit = 100000; //in ms
+  private val Search_Limit = 100 * 1000; //in ms
 
   private val solver: Solver = new Solver;
 
@@ -338,7 +337,6 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
 
   def ranges = attributeRanges;
 
-  //TODO luochen, add support for ignore refinement
   def get(expr: Expression, plan: LogicalPlan, refine: Boolean): (Int, Int) = {
     val attr = getAttributeString(expr, plan);
     val result = refinedRanges.getOrElse(attr, null);
@@ -362,7 +360,7 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
     solver.findOptimalSolution(ResolutionPolicy.MAXIMIZE, attrVar);
     if (solver.isFeasible() != ESat.TRUE) {
       logWarning(s"fail to find any solution, fall back to empty range for $attr"); ;
-      val range = (0, 0);
+      val range = null;
       attributeRanges.put(expr, range);
       refinedRanges.put(attr, range);
       return range;
@@ -550,6 +548,9 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
     }
   }
 
+  /**
+   * TODO luochen the semantics for binary operators should be reconsidered
+   */
   private def createBinaryConstraint(left: Attribute, right: Attribute, output: Attribute, plan: BinaryNode, lefts: Buffer[Constraint], rights: Buffer[Constraint]) {
     def binaryConstraintHelper(leftStr: String, rightStr: String, outStr: String, rangeFunc: ((Int, Int), (Int, Int)) => (Int, Int)) {
       val leftVar = model.getVariable(leftStr);
@@ -714,7 +715,6 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
 
   private def resolveTerm(term: Expression, plan: LogicalPlan): IntVar = {
     term match {
-      //add support for complex data types
       case attr if (isAttribute(attr)) => {
         resolveAttributeVar(attr, plan);
       }
@@ -843,13 +843,13 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
     return model.getVariable(str);
   }
 
-  private def nextId(): Int = {
-    id += 1;
-    id;
+  private def getId(): Int = {
+    nextId += 1;
+    nextId;
   }
 
   private def newTmpVar(min: Int, max: Int): IntVar = {
-    VariableFactory.bounded(s"t_$nextId", Math.max(min, VariableFactory.MIN_INT_BOUND), Math.min(max, VariableFactory.MAX_INT_BOUND), solver);
+    VariableFactory.bounded(s"t_$getId", Math.max(min, VariableFactory.MIN_INT_BOUND), Math.min(max, VariableFactory.MAX_INT_BOUND), solver);
   }
 
   implicit private def anyToInt(any: Any): Int = {

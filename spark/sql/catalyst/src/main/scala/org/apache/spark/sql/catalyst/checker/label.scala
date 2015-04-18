@@ -144,7 +144,6 @@ case class FunctionLabel(children: Seq[Label], transform: String, expression: Ex
           sub match {
             case struct: StructType => {
               struct.getSubType(getTypeSelector(get));
-              //TODO luochen maybe we should return Nil?
             }
             case prim: PrimitiveType => prim;
           }

@@ -339,7 +339,11 @@ class DPEnforcer(val tableInfo: TableInfo, val queryTracker: DPQueryTracker[_], 
     }
     val attribute = resolveSimpleAttribute(agg.children(0));
     val range = if (attribute == null) (0, 0) else refiner.get(attribute, plan, refine);
-    agg.sensitivity = func(range._1, range._2) * scale;
+    if (range == null) {
+      agg.sensitivity = func(0, 0) * scale;
+    } else {
+      agg.sensitivity = func(range._1, range._2) * scale;
+    }
     agg.epsilon = epsilon;
     logWarning(s"enable dp for $agg with sensitivity = ${agg.sensitivity}, epsilon = $epsilon, scale = $scale, and result epsilon = ${agg.epsilon}");
   }

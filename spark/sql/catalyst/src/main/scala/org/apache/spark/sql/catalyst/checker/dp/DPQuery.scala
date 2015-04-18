@@ -13,6 +13,27 @@ import org.apache.spark.sql.catalyst.checker.util.TypeUtil._
 import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 
+case class Interval(start: Int, end: Int) {
+
+  def joint(other: Interval): Boolean = {
+    return !disjoint(other);
+
+  }
+
+  def disjoint(other: Interval): Boolean = {
+    return this.end < other.start || other.end < this.start;
+  }
+
+  def overlap(other: Interval): Boolean = {
+    return !this.disjoint(other) && !(this.includes(other) || other.includes(this));
+  }
+
+  def includes(other: Interval): Boolean = {
+    return start <= other.start && end >= other.end;
+  }
+
+}
+
 object DPQuery {
   private var nextId = 0;
 

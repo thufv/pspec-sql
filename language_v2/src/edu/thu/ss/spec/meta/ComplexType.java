@@ -19,6 +19,9 @@ public abstract class ComplexType<K> extends BaseType {
 	}
 
 	public BaseType getSubType(K k) {
+		if (k == null) {
+			return null;
+		}
 		BaseType result = this.subtypes.get(k);
 		if (result != null) {
 			return result;

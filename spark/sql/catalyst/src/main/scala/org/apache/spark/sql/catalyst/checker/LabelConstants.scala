@@ -45,23 +45,6 @@ trait LabelConstants {
   val Func_GetItem = "GetItem";
   val Func_GetEntry = "GetEntry";
 
-  def isGetItem(trans: String) = trans == Func_GetItem;
-
-  def isGetField(trans: String) = trans.startsWith(Func_GetField);
-
-  def isGetEntry(trans: String) = trans.startsWith(Func_GetEntry);
-
-  def getTypeSelector(trans: String): String = {
-    val strs = trans.split("\\.");
-    if (strs.length > 1) {
-      strs(1);
-    } else {
-      "";
-    }
-  }
-
-  def isSubtypeOperation(trans: String) = isGetItem(trans) || isGetField(trans) || isGetEntry(trans) || MetaManager.isExtractOperation(trans);
-
   val Pred_Equal = "=";
   val Pred_Greater = ">";
   val Pred_GreaterEqual = ">=";

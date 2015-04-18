@@ -11,7 +11,6 @@ import org.apache.spark.sql.types.DataType
 import org.apache.spark.sql.types.NumericType
 import edu.thu.ss.spec.global.MetaManager
 import org.apache.spark.sql.catalyst.checker.dp.TableInfo
-import org.apache.spark.sql.catalyst.checker.dp.AttributeInfo
 import org.apache.spark.sql.catalyst.expressions.Attribute
 import scala.collection.mutable.ListBuffer
 import org.apache.spark.sql.types.StructType
@@ -28,16 +27,15 @@ import org.apache.spark.rdd.RDD
 import edu.thu.ss.spec.meta.CompositeType
 import org.apache.spark.sql.catalyst.expressions.Cast
 import org.apache.spark.sql.catalyst.expressions.AttributeReference
-import org.apache.spark.sql.catalyst.expressions.AttributeReference
 import org.apache.spark.Logging
-import org.apache.spark.sql.catalyst.checker.dp.AttributeInfo
 import org.apache.spark.sql.types.NumericType
+import org.apache.spark.sql.catalyst.checker.dp.ColumnInfo
 
 class HiveTableInfo(val hive: HiveContext) extends TableInfo with Logging {
   private class Table {
-    private val infos: Map[String, AttributeInfo] = new HashMap;
+    private val infos: Map[String, ColumnInfo] = new HashMap;
 
-    def get(column: String): AttributeInfo = {
+    def get(column: String): ColumnInfo = {
       val range = infos.get(column);
       range match {
         case Some(r) => r
@@ -45,7 +43,7 @@ class HiveTableInfo(val hive: HiveContext) extends TableInfo with Logging {
       }
     }
 
-    def put(column: String, range: AttributeInfo) {
+    def put(column: String, range: ColumnInfo) {
       infos.put(column, range);
     }
 
@@ -53,7 +51,7 @@ class HiveTableInfo(val hive: HiveContext) extends TableInfo with Logging {
 
   private val tableInfos: Map[String, Map[String, Table]] = new HashMap;
 
-  def get(dbName: String, tableName: String, columnName: String): AttributeInfo = {
+  def get(dbName: String, tableName: String, columnName: String): ColumnInfo = {
     val database = tableInfos.get(dbName);
     val info = database match {
       case Some(d) => {
@@ -75,11 +73,11 @@ class HiveTableInfo(val hive: HiveContext) extends TableInfo with Logging {
 
   }
 
-  def get(tableName: String, columnName: String): AttributeInfo = {
+  def get(tableName: String, columnName: String): ColumnInfo = {
     get("default", tableName, columnName);
   }
 
-  private def put(dbName: String, tableName: String, columnName: String, info: AttributeInfo) {
+  private def put(dbName: String, tableName: String, columnName: String, info: ColumnInfo) {
     val db = tableInfos.getOrElseUpdate(dbName, new HashMap);
     val table = db.getOrElseUpdate(tableName, new Table);
     table.put(columnName, info);
@@ -189,7 +187,7 @@ class HiveTableInfo(val hive: HiveContext) extends TableInfo with Logging {
           case numeric: NumericType => {
             if (mapType != null) {
               mapType.getAllTypes().keys.foreach(key => {
-                val typeString = TypeUtil.concatComplexAttribute(prefix, TypeUtil.toItemString(Literal(key), classOf[MapType]));
+                val typeString = TypeUtil.concatComplexAttribute(prefix, TypeUtil.toItemString(Literal(key)));
                 list.append(typeString);
               });
             }
@@ -197,7 +195,7 @@ class HiveTableInfo(val hive: HiveContext) extends TableInfo with Logging {
           case complex if (!complex.isPrimitive) => {
             if (mapType != null) {
               mapType.getAllTypes().foreach(entry => {
-                val typeString = TypeUtil.concatComplexAttribute(prefix, TypeUtil.toItemString(Literal(entry._1), classOf[MapType]));
+                val typeString = TypeUtil.concatComplexAttribute(prefix, TypeUtil.toItemString(Literal(entry._1)));
                 resolveSubtypes(complex, list, typeString, entry._2);
               });
             }
@@ -211,7 +209,7 @@ class HiveTableInfo(val hive: HiveContext) extends TableInfo with Logging {
           case numeric: NumericType => {
             if (arrayType != null) {
               arrayType.getAllTypes().keys.foreach(index => {
-                val typeString = TypeUtil.concatComplexAttribute(prefix, TypeUtil.toItemString(Literal(index), classOf[ArrayType]));
+                val typeString = TypeUtil.concatComplexAttribute(prefix, TypeUtil.toItemString(Literal(index)));
                 list.append(typeString);
               });
             }
@@ -219,7 +217,7 @@ class HiveTableInfo(val hive: HiveContext) extends TableInfo with Logging {
           case complex if (!complex.isPrimitive) => {
             if (arrayType != null) {
               arrayType.getAllTypes().foreach(item => {
-                val typeString = TypeUtil.concatComplexAttribute(prefix, TypeUtil.toItemString(Literal(item._1), classOf[ArrayType]));
+                val typeString = TypeUtil.concatComplexAttribute(prefix, TypeUtil.toItemString(Literal(item._1)));
                 resolveSubtypes(complex, list, typeString, item._2);
               });
             }
@@ -249,11 +247,11 @@ class HiveTableInfo(val hive: HiveContext) extends TableInfo with Logging {
 
       val seq = attributes(i)._2;
       if (seq.isEmpty) {
-        put(database, table, column, new AttributeInfo(row(2 * columnIndex), row(2 * columnIndex + 1), multiplicity));
+        put(database, table, column, new ColumnInfo(row(2 * columnIndex), row(2 * columnIndex + 1), multiplicity));
         columnIndex += 1;
       } else {
         seq.foreach(attr => {
-          put(database, table, attr, new AttributeInfo(row(2 * columnIndex), row(2 * columnIndex + 1), multiplicity));
+          put(database, table, attr, new ColumnInfo(row(2 * columnIndex), row(2 * columnIndex + 1), multiplicity));
           columnIndex += 1;
         });
       }
@@ -261,12 +259,13 @@ class HiveTableInfo(val hive: HiveContext) extends TableInfo with Logging {
     }
   }
 
-  private def updateRange(db: String, table: String, column: String): AttributeInfo = {
+  private def updateRange(db: String, table: String, column: String): ColumnInfo = {
     try {
+      //disable privacy checker temporarily
       hive.checker.pause();
       val transformed = TypeUtil.toSQLString(column);
       val row = queryRange(table, Seq((null, Seq(transformed))));
-      val info = new AttributeInfo(row(0), row(1), None);
+      val info = new ColumnInfo(row(0), row(1), None);
       put(db, table, column, info);
       return info;
     } finally {

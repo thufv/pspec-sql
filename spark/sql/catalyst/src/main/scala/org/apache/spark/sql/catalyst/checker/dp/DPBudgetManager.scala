@@ -1,11 +1,10 @@
 package org.apache.spark.sql.catalyst.checker.dp
 
-import scala.collection.JavaConverters._
+import scala.collection.JavaConversions._
 import scala.collection.mutable
 import scala.collection.mutable.HashMap
 import org.apache.spark.Logging
 import org.apache.spark.sql.catalyst.checker.PrivacyException
-import org.apache.spark.sql.catalyst.plans.logical.Aggregate
 import org.apache.spark.sql.catalyst.plans.logical.Aggregate
 import edu.thu.ss.spec.lang.pojo.DataCategory
 import edu.thu.ss.spec.lang.pojo.PrivacyParams
@@ -37,7 +36,7 @@ object DPBudgetManager {
       case fine: FineBudget => {
         val map = fine.getBudget(user);
         val converted = new HashMap[DataCategory, Double];
-        map.asScala.foreach(t => converted += ((t._1, t._2)));
+        map.foreach(t => converted += ((t._1, t._2)));
         return new FineBudgetManager(converted);
       }
     }
