@@ -103,7 +103,8 @@
 
 
 		<table name="household_demographics">
-			<column name="hd_demo_sk" data-category="sk"></column>
+			<column name="hd_demo_sk" data-category="sk">
+			</column>
 			<column name="hd_income_band_sk" data-category="sk"></column>
 			<column name="hd_buy_potential" data-category="financial"></column>
 			<column name="hd_dep_count" data-category="dep"></column>

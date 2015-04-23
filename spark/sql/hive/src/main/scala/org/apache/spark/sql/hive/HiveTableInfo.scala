@@ -241,7 +241,7 @@ class HiveTableInfo(val hive: HiveContext) extends TableInfo with Logging {
         if (value != null) {
           multiplicity = Some(value);
         } else {
-          multiplicity = Some(queryMultiplicity(table, column));
+          multiplicity = Some(queryMultiplicity(table, TypeUtil.toSQLString(column)));
         }
       }
 
@@ -282,7 +282,7 @@ class HiveTableInfo(val hive: HiveContext) extends TableInfo with Logging {
       val attr = t._1;
       val seq = t._2;
       if (seq.isEmpty) {
-        val name = attr.name;
+        val name = TypeUtil.toSQLString(attr.name);
         s"min($name), max($name)";
       } else {
         seq.map(name => {
@@ -301,6 +301,7 @@ class HiveTableInfo(val hive: HiveContext) extends TableInfo with Logging {
   }
 
   private def queryMultiplicity(table: String, column: String): Int = {
+
     val sql = s"""select max(tmp)
                   from (select count($column) as tmp
                         from $table

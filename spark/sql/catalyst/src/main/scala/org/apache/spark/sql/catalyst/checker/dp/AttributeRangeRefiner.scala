@@ -1,6 +1,5 @@
 package org.apache.spark.sql.catalyst.checker.dp
 
-import scala.annotation.migration
 import scala.collection.JavaConversions.asScalaSet
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.HashSet
@@ -9,6 +8,7 @@ import scala.collection.mutable.Queue
 import org.apache.spark.Logging
 import org.apache.spark.sql.catalyst.checker.ColumnLabel
 import org.apache.spark.sql.catalyst.checker.PrivacyException
+import org.apache.spark.sql.catalyst.checker.LabelConstants._
 import org.apache.spark.sql.catalyst.checker.util.DPUtil._
 import org.apache.spark.sql.catalyst.checker.util.CheckerUtil._
 import org.apache.spark.sql.catalyst.checker.util.TypeUtil._
@@ -37,6 +37,18 @@ import solver.ResolutionPolicy
 import util.ESat
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.mutable.Buffer
+
+object AttributeRangeRefiner {
+
+  def newInstance(infos: TableInfo, aggregate: Aggregate, refine: Boolean): AttributeRangeRefiner = {
+    if (refine) {
+      return new AttributeRangeRefiner(infos, aggregate);
+    } else {
+      return new DummyRefiner(infos, aggregate);
+    }
+  }
+
+}
 
 class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) extends Logging {
 
@@ -337,7 +349,7 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
 
   def ranges = attributeRanges;
 
-  def get(expr: Expression, plan: LogicalPlan, refine: Boolean): (Int, Int) = {
+  def getRange(expr: Expression, plan: LogicalPlan, refine: Boolean): (Int, Int) = {
     val attr = getAttributeString(expr, plan);
     val result = refinedRanges.getOrElse(attr, null);
     if (result != null) {
@@ -468,9 +480,10 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
             LogicalConstraintFactory.and(leftConstraint, rightConstraint);
           }
           case except: Except => {
-            val rightConstraint = LogicalConstraintFactory.and(LogicalConstraintFactory.not(rights.head),
+            leftConstraint;
+            /*val rightConstraint = LogicalConstraintFactory.and(LogicalConstraintFactory.not(rights.head),
               LogicalConstraintFactory.and(rights.tail: _*));
-            LogicalConstraintFactory.and(leftConstraint, rightConstraint);
+            LogicalConstraintFactory.and(leftConstraint, rightConstraint);*/
           }
         }
       }
@@ -852,7 +865,7 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
     VariableFactory.bounded(s"t_$getId", Math.max(min, VariableFactory.MIN_INT_BOUND), Math.min(max, VariableFactory.MAX_INT_BOUND), solver);
   }
 
-  implicit private def anyToInt(any: Any): Int = {
+  implicit protected def anyToInt(any: Any): Int = {
     any match {
       case long: Long => long.toInt;
       case int: Int => int;
@@ -862,6 +875,45 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
       case big: BigDecimal => big.toInt;
       case null => 0;
       case _ => null.asInstanceOf[Int];
+    }
+  }
+}
+
+class DummyRefiner(infos: TableInfo, aggregate: Aggregate) extends AttributeRangeRefiner(infos, aggregate) {
+
+  override def getRange(expr: Expression, plan: LogicalPlan, refine: Boolean): (Int, Int) = {
+    val label = plan.childLabel(expr);
+    val transformed = transformComplexLabel(label);
+    return resolveLabelRange(transformed);
+  }
+
+  private def resolveLabelRange(label: Label): (Int, Int) = {
+    label match {
+      case column: ColumnLabel => {
+        val info = infos.get(column.database, column.table, column.attr.name);
+        (info.low, info.up);
+      }
+      case func: FunctionLabel => {
+        func.transform match {
+          case get if (isGetOperation(get)) => {
+            val attr = getLabelString(func);
+            val database = func.getDatabases()(0);
+            val table = func.getTables()(0);
+            val info = infos.get(database, table, attr);
+            (info.low, info.up);
+          }
+          case Func_Union => {
+            rangeUnion(resolveLabelRange(func.children(0)), resolveLabelRange(func.children(1)));
+          }
+          case Func_Intersect => {
+            rangeIntersect(resolveLabelRange(func.children(0)), resolveLabelRange(func.children(1)));
+          }
+          case Func_Except => {
+            resolveLabelRange(func.children(0));
+          }
+        }
+      }
+      case _ => throw new IllegalArgumentException(s"error label for attribute range: $label");
     }
   }
 

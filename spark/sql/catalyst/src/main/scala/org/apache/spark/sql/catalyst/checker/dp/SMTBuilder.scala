@@ -308,12 +308,11 @@ private class SMTBuilder(val context: Context) extends Logging {
 
   private var id = 0;
 
-  def buildSMT(plan: Aggregate): BoolExpr = {
+  def buildSMT(plan: Aggregate, activated:Set[String]): BoolExpr = {
     typeResolver.initialize(plan);
 
     val constraint = resolvePlan(plan.child);
 
-    val activated = new HashSet[String];
 
     collectVariables(constraint).foreach(v => {
       val column = model.storedAttributeIndex.getColumnByVariable(v);

@@ -9,9 +9,9 @@ import org.apache.spark.sql.catalyst.checker.PrivacyException
 
 object DPUtil extends Logging {
 
-  val Conf_Epsilon = "epsilon";
+  val Key_Epsilon = "epsilon";
 
-  val Default_Epsilon = "0.5";
+  val Default_Epsilon = "0.1";
 
   def laplace(stddev: Double): Double = {
     val uniform = Random.nextDouble() - 0.5;
@@ -80,6 +80,7 @@ object DPUtil extends Logging {
   }
 
   def checkUtility(result: Any, epsilon: Double, sensitivity: Double, prob: Double, ratio: Double): Boolean = {
+
     val value = toDouble(result);
     val stddev = sensitivity / epsilon;
     val noise = -stddev * Math.log(1 - prob);
@@ -98,9 +99,8 @@ object DPUtil extends Logging {
     val epsilon = agg.epsilon;
     val sensitivity = agg.sensitivity;
     logWarning(s"calibrating noise, epsilon:$epsilon, sensitivity:$sensitivity");
-    if (!checkUtility(result, epsilon, sensitivity, checker.accuracyProb, checker.accurcayNoise)) {
+    if (checker.isCheckAccuracy && !checkUtility(result, epsilon, sensitivity, checker.getAccurcacyProb, checker.getAccurarcyNoise)) {
       logWarning(s"utility accuracy unsatisfied, suppress aggregate result: ${result}");
-      //TODO
       if (!grouping) {
         checker.failAggregate(agg.dpId);
       }

@@ -57,7 +57,7 @@ import org.apache.spark.sql.catalyst.plans.logical.Aggregate
  * enforce dp for a query logical plan
  * should be in the last phase of query checking
  */
-class DPEnforcer(val tableInfo: TableInfo, val queryTracker: DPQueryTracker[_], val epsilon: Double) extends Logging {
+class DPEnforcer(val tableInfo: TableInfo, val queryTracker: QueryTracker, val epsilon: Double, val refineAttribute: Boolean) extends Logging {
   private class JoinGraph {
     val nodes = new HashMap[String, Node[String]];
     val edges = new AdjacencyList[String];
@@ -135,16 +135,15 @@ class DPEnforcer(val tableInfo: TableInfo, val queryTracker: DPQueryTracker[_], 
 
   private val MaxWeight = 10000;
 
-  def apply(plan: LogicalPlan) {
+  def enforce(plan: LogicalPlan) {
     if (!exists(plan, classOf[Aggregate])) {
       return ;
     }
-    enforce(plan);
-
+    enforce(plan, false);
     queryTracker.testBudget;
   }
 
-  private def enforce(plan: LogicalPlan, dp: Boolean = false): Int = {
+  private def enforce(plan: LogicalPlan, dp: Boolean): Int = {
     plan match {
       case join: Join => {
         if (dp) {
@@ -156,7 +155,7 @@ class DPEnforcer(val tableInfo: TableInfo, val queryTracker: DPQueryTracker[_], 
       case agg: Aggregate => {
         val scale = enforce(agg.child, true);
         if (agg.aggregateExpressions.exists(dpEnabled(_))) {
-          val refiner = new AttributeRangeRefiner(tableInfo, agg);
+          val refiner = AttributeRangeRefiner.newInstance(tableInfo, agg, refineAttribute);
           agg.aggregateExpressions.foreach(enforceAggregate(_, agg, refiner, scale));
 
           queryTracker.track(agg, refiner.ranges);
@@ -338,7 +337,7 @@ class DPEnforcer(val tableInfo: TableInfo, val queryTracker: DPQueryTracker[_], 
       return ;
     }
     val attribute = resolveSimpleAttribute(agg.children(0));
-    val range = if (attribute == null) (0, 0) else refiner.get(attribute, plan, refine);
+    val range = if (attribute == null) (0, 0) else refiner.getRange(attribute, plan, refine);
     if (range == null) {
       agg.sensitivity = func(0, 0) * scale;
     } else {

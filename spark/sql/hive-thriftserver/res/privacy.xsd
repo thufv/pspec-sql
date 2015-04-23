@@ -345,7 +345,7 @@
 								<element name="global-budget" type="tns:globalBudgetType"></element>
 								<element name="fine-budget" type="tns:fineBudgetType"></element>
 							</choice>
-							<element name="accuracy" type="tns:accuracyType"></element>
+							<element name="accuracy" type="tns:accuracyType" minOccurs="0" maxOccurs="1"></element>
 						</sequence>
 					</complexType>
 				</element>

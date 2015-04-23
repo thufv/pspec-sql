@@ -9,9 +9,11 @@ public class PrivacyParams implements Parsable {
 
 	private PrivacyBudget<?> budget;
 
-	private double probability;
+	private double probability = 0.0;
 
-	private double noiseRatio;
+	private double noiseRatio = 1.0;
+
+	private boolean checkAccuracy = false;
 
 	@Override
 	public void parse(Node budgetNode) {
@@ -27,6 +29,7 @@ public class PrivacyParams implements Parsable {
 				budget.parse(node);
 			} else if (ParserConstant.Ele_Policy_DP_Accuracy.equals(name)) {
 				parseAccuracy(node);
+				checkAccuracy = true;
 			}
 		}
 	}
@@ -42,6 +45,10 @@ public class PrivacyParams implements Parsable {
 				noiseRatio = Double.valueOf(node.getTextContent());
 			}
 		}
+	}
+	
+	public boolean isCheckAccuracy() {
+		return checkAccuracy;
 	}
 
 	public double getProbability() {

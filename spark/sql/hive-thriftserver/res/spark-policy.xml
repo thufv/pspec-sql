@@ -17,21 +17,16 @@
 	</vocabulary-ref>
 
 	<privacy-parameters>
-		<!-- <global-budget> <user-category-ref refid="analyst" budget="10"></user-category-ref> 
-			</global-budget> -->
-		<fine-budget>
-			<budget-allocation>
-				<user-category-ref refid="analyst"></user-category-ref>
-				<data-category-ref refid="birth" budget="5"></data-category-ref>
-				<data-category-ref refid="b_month" budget="10"></data-category-ref>
-			</budget-allocation>
-		</fine-budget>
+		<global-budget>
+			<user-category-ref refid="analyst" budget="10"></user-category-ref>
+		</global-budget>
+		<!-- <fine-budget> <budget-allocation> <user-category-ref refid="analyst"></user-category-ref> 
+			<data-category-ref refid="birth" budget="5"></data-category-ref> <data-category-ref 
+			refid="b_month" budget="10"></data-category-ref> </budget-allocation> </fine-budget> -->
 		<!-- with probability (greater than) 0.9, the noise ratio should within 
 			0.1 w.r.t. the real answer -->
-		<accuracy>
-			<probability>0.01</probability>
-			<noise-ratio>1</noise-ratio>
-		</accuracy>
+		<!-- <accuracy> <probability>0.01</probability> <noise-ratio>1</noise-ratio> 
+			</accuracy> -->
 	</privacy-parameters>
 	<rules>
 		<rule id="rule1">

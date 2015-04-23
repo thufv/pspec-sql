@@ -7,7 +7,7 @@ import scala.math.BigDecimal
  * start spark-sql in eclipse
  */
 object TestCLI extends App {
-
+  System.setProperty("spark.privacy.refine", "false");
   System.setProperty("spark.master", "local");
   SparkSQLCLIDriver.main(args);
 

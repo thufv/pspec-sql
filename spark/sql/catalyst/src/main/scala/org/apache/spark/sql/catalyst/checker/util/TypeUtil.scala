@@ -127,17 +127,24 @@ object TypeUtil {
    * transform an column string to sql string
    */
   def toSQLString(str: String): String = {
-    val seq = str.split(Delimiter_Type);
-    if (seq.length == 1) {
-      return seq(0);
+    def toSQLColumn(str: String) = {
+      str match {
+        case field if (field.startsWith(".")) => s".`${field.substring(1)}`";
+        case item if (item.startsWith("[")) => item;
+        case attr => s"`$attr`";
+      }
     }
 
+    val seq = str.split(Delimiter_Type);
+    if (seq.length == 1) {
+      return toSQLColumn(str);
+    }
     if (MetaManager.isExtractOperation(seq.last)) {
       val extract = seq.last;
-      val truncated = seq.dropRight(1).mkString("");
+      val truncated = seq.dropRight(1).map(toSQLColumn(_)).mkString("");
       return extract + "(" + truncated + ")";
     } else {
-      return seq.mkString("");
+      return seq.map(toSQLColumn(_)).mkString("");
     }
 
   }

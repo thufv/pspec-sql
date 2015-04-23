@@ -43,7 +43,7 @@ object DPQuery {
   }
 }
 
-class DPQuery(val constraint: BoolExpr, var aggregate: AggregateExpression, var plan: Aggregate, var ranges: Map[String, Interval]) extends Equals {
+class DPQuery(val constraint: BoolExpr, val columns: Set[String], var aggregate: AggregateExpression, var plan: Aggregate, var ranges: Map[String, Interval]) extends Equals {
   val dpId = DPQuery.getId;
 
   aggregate.dpId = dpId;
@@ -93,9 +93,13 @@ abstract class DPPartition(val context: Context, val budget: DPBudgetManager) ex
 
   val ranges = new HashMap[String, Buffer[Interval]];
 
+  //record all effective columns
+  private val columns = new HashSet[String];
+
   def add(query: DPQuery) {
     queries.append(query);
     constraint = context.mkOr(constraint, query.constraint).simplify().asInstanceOf[BoolExpr];
+    columns ++= query.columns;
     updateBudget(query);
   }
 
@@ -126,6 +130,12 @@ abstract class DPPartition(val context: Context, val budget: DPBudgetManager) ex
   }
 
   def disjoint(query: DPQuery): Boolean = {
+    var intersect = false;
+    query.columns.foreach(column => { if (columns.contains(column)) intersect = true });
+    if (!intersect) {
+      return false;
+    }
+
     val cond = context.mkAnd(constraint, query.constraint);
     return !satisfiable(cond, context);
   }

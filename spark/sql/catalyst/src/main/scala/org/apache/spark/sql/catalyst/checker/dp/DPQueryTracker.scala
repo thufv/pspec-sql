@@ -214,7 +214,8 @@ class DPQueryTracker[T <: DPPartition] private[dp] (budget: DPBudgetManager, par
     }
 
     val builder = new SMTBuilder(context);
-    val constraint = builder.buildSMT(plan);
+    val columns = new HashSet[String];
+    val constraint = builder.buildSMT(plan, columns);
     println(constraint);
     //check satisfiability
     if (!satisfiable(constraint, context)) {
@@ -238,7 +239,7 @@ class DPQueryTracker[T <: DPPartition] private[dp] (budget: DPBudgetManager, par
         checkedRanges.put(column, Interval(range._1, range._2));
       }
     });
-    collectDPQueries(plan, constraint, checkedRanges);
+    collectDPQueries(plan, constraint, columns, checkedRanges);
   }
 
   private def collectAttributes(label: Label, left: Set[String], right: Set[String], plan: LogicalPlan, model: SMTModel) {

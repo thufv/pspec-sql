@@ -34,19 +34,24 @@
 -- Gradient Systems
 --
 
-
-select sum(c['a'])
-from 
+CREATE TABLE `adult`
 (
-  select b.s2 c from
-  (
-    select a2 b from complex1
-) y
-) x;
-
-
-ROW FORMAT DELIMITED
-  MAP KEYS TERMINATED BY '$';
+   `age`              int,
+   `workclass`        varchar(45),
+   `fnlwgt`           int,
+   `education`        varchar(45),
+   `education-num`    int,
+   `marital-status`   varchar(45),
+   `occupation`       varchar(45),
+   `relationship`     varchar(45),
+   `race`             varchar(45),
+   `sex`              varchar(45),
+   `capital-gain`     int,
+   `capital-loss`     int,
+   `hours-per-week`   int,
+   `native-country`   varchar(45),
+   `salary`           varchar(45)
+);
 
 create table complex1
 (
@@ -62,12 +67,6 @@ create table complex2
   a3 map<string, struct<m1:string, m2:int>>
 );
 
-ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY ' '
-  COLLECTION ITEMS TERMINATED BY ','
-  MAP KEYS TERMINATED BY '$';
-
-load data local inpath '/Users/luochen/Documents/Research/privacy/data/complex.txt' into table complex2;
 
 
 CREATE TABLE dbgen_version
