@@ -507,7 +507,7 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
         return ;
       }
       val range = infos.getByAttribute(label.database, label.table, attrStr);
-      val attrVar = VariableFactory.bounded(attrStr, range.low, range.up, solver);
+      val attrVar = VariableFactory.bounded(attrStr, toInt(range.low), toInt(range.up), solver);
       model.addAttrVariable(attrStr, attrVar);
     } else {
       val subs = attributeSubs.getOrElse(attrStr, null);
@@ -518,7 +518,7 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
       //create a variable for each subtype
       subs.foreach(sub => {
         val range = infos.getByAttribute(label.database, label.table, sub);
-        val attrVar = VariableFactory.bounded(sub, range.low, range.up, solver);
+        val attrVar = VariableFactory.bounded(sub, toInt(range.low), toInt(range.up), solver);
         model.addAttrVariable(sub, attrVar);
       });
     }
@@ -718,7 +718,7 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
         if (left == null) {
           return null;
         } else {
-          val constraints = inSet.hset.map(v => IntConstraintFactory.arithm(left, "=", VariableFactory.fixed(v, solver))).toArray;
+          val constraints = inSet.hset.map(v => IntConstraintFactory.arithm(left, "=", VariableFactory.fixed(toInt(v), solver))).toArray;
           return LogicalConstraintFactory.or(constraints: _*);
         }
       }
@@ -739,7 +739,7 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
       }
 
       case literal: Literal => {
-        val value = anyToInt(literal.value);
+        val value = toInt(literal.value);
         if (value != null) {
           VariableFactory.fixed(value, solver);
         } else {
@@ -747,7 +747,7 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
         }
       }
       case mutable: MutableLiteral => {
-        val value = anyToInt(mutable.value);
+        val value = toInt(mutable.value);
         if (value != null) {
           VariableFactory.fixed(value, solver);
         } else {
@@ -865,18 +865,6 @@ class AttributeRangeRefiner(val infos: TableInfo, val aggregate: Aggregate) exte
     VariableFactory.bounded(s"t_$getId", Math.max(min, VariableFactory.MIN_INT_BOUND), Math.min(max, VariableFactory.MAX_INT_BOUND), solver);
   }
 
-  implicit protected def anyToInt(any: Any): Int = {
-    any match {
-      case long: Long => long.toInt;
-      case int: Int => int;
-      case double: Double => double.toInt;
-      case float: Float => float.toInt;
-      case short: Short => short.toInt;
-      case big: BigDecimal => big.toInt;
-      case null => 0;
-      case _ => null.asInstanceOf[Int];
-    }
-  }
 }
 
 class DummyRefiner(infos: TableInfo, aggregate: Aggregate) extends AttributeRangeRefiner(infos, aggregate) {
@@ -891,7 +879,7 @@ class DummyRefiner(infos: TableInfo, aggregate: Aggregate) extends AttributeRang
     label match {
       case column: ColumnLabel => {
         val info = infos.get(column.database, column.table, column.attr.name);
-        (info.low, info.up);
+        (toInt(info.low), toInt(info.up));
       }
       case func: FunctionLabel => {
         func.transform match {
@@ -900,7 +888,7 @@ class DummyRefiner(infos: TableInfo, aggregate: Aggregate) extends AttributeRang
             val database = func.getDatabases()(0);
             val table = func.getTables()(0);
             val info = infos.get(database, table, attr);
-            (info.low, info.up);
+            (toInt(info.low), toInt(info.up));
           }
           case Func_Union => {
             rangeUnion(resolveLabelRange(func.children(0)), resolveLabelRange(func.children(1)));

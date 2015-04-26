@@ -22,14 +22,8 @@ import scala.collection.mutable.HashSet
 import org.apache.spark.sql.catalyst.checker.dp.DPBudgetManager
 import org.apache.spark.sql.catalyst.checker.dp.GlobalBudgetManager
 import org.apache.spark.sql.catalyst.checker.dp.FineBudgetManager
+import edu.thu.ss.spec.lang.pojo.UserCategory
 
-/**
- * interface for privacy checker
- */
-trait PolicyChecker extends Logging {
-
-  def check(flows: Map[Policy, Set[Flow]], policies: Set[Policy]): Unit;
-}
 private class IndexEntry(val projects: Map[DataCategory, Set[Flow]], val conds: Map[DataCategory, Set[Flow]]) {
 
 }
@@ -112,9 +106,7 @@ private class FlowIndex(val flows: Map[Policy, Set[Flow]]) {
   }
 }
 
-class SparkPolicyChecker(val _budget: DPBudgetManager, val epsilon: Double) extends PolicyChecker with Logging {
-
-  lazy val user = MetaManager.currentUser();
+class PolicyChecker(val user: UserCategory, val _budget: DPBudgetManager, val epsilon: Double) extends Logging {
 
   private val budget = _budget.copy;
 

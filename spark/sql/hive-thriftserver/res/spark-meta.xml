@@ -3,6 +3,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" policy="res/spark-policy.xml"
 	xsi:schemaLocation="http://www.example.org/privacy res/meta.xsd">
 	<database name="default">
+		<table name="adult">
+			<column name="age" data-category="b_year"></column>
+		</table>
 		<table name="complex1">
 			<column name="a1">
 				<array>

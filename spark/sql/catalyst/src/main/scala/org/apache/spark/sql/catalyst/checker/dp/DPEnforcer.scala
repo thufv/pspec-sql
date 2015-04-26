@@ -107,7 +107,7 @@ class DPEnforcer(val tableInfo: TableInfo, val queryTracker: QueryTracker, val e
       }
 
     }
-
+    
     def updateEdge(attr1: Attribute, attr2: Attribute, weight: Double) {
       val table1 = lookupTable(attr1);
       val table2 = lookupTable(attr2);
@@ -158,7 +158,7 @@ class DPEnforcer(val tableInfo: TableInfo, val queryTracker: QueryTracker, val e
           val refiner = AttributeRangeRefiner.newInstance(tableInfo, agg, refineAttribute);
           agg.aggregateExpressions.foreach(enforceAggregate(_, agg, refiner, scale));
 
-          queryTracker.track(agg, refiner.ranges);
+          queryTracker.track(agg);
         }
         scale;
       }

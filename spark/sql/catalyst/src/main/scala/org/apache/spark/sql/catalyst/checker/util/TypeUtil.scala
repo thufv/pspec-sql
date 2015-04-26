@@ -58,6 +58,24 @@ object TypeUtil {
     return !label.transitTypes().isEmpty;
   }
 
+  def isStoredAttribute(expr: Expression, plan: LogicalPlan): Boolean = {
+    val attribute = resolveSimpleAttribute(expr);
+    if (attribute == null) {
+      return false;
+    }
+    val label = plan.childLabel(attribute);
+    return label.isStoredAttribute();
+  }
+
+  def resolveLiteral(expr: Expression): Literal = {
+    expr match {
+      case cast: Cast => resolveLiteral(cast.child);
+      case literal: Literal => literal;
+      case MutableLiteral(value, dataType, _) => Literal(value, dataType);
+      case _ => null;
+    }
+  }
+
   def resolveSimpleAttribute(expr: Expression): Expression = {
     expr match {
       case attr if (isAttribute(attr)) => attr;

@@ -6,6 +6,7 @@ import org.apache.spark.Logging
 import org.apache.spark.sql.catalyst.expressions._
 import org.apache.spark.sql.catalyst.checker.SparkChecker
 import org.apache.spark.sql.catalyst.checker.PrivacyException
+import org.apache.spark.sql.catalyst.checker.util.CheckerUtil._
 
 object DPUtil extends Logging {
 
@@ -39,23 +40,9 @@ object DPUtil extends Logging {
     }
   }
 
-  def toDouble(value: Any): Double = {
-    value match {
-      case long: Long => long.toDouble;
-      case int: Int => int.toDouble;
-      case double: Double => double.toDouble;
-      case float: Float => float.toDouble;
-      case short: Short => short.toDouble;
-      case big: BigDecimal => big.toDouble;
-      case str: String => str.toDouble;
-      case null => null.asInstanceOf[Double];
-      case _ => throw new RuntimeException(s"invalid argument: $value.");
-    }
-  }
-
   def min(v1: Any, v2: Any): Any = {
-    val d1 = DPUtil.toDouble(v1);
-    val d2 = DPUtil.toDouble(v2);
+    val d1 = toDouble(v1);
+    val d2 = toDouble(v2);
     if (d1 <= d2) {
       return v1;
     } else {
@@ -64,8 +51,8 @@ object DPUtil extends Logging {
   }
 
   def max(v1: Any, v2: Any): Any = {
-    val d1 = DPUtil.toDouble(v1);
-    val d2 = DPUtil.toDouble(v2);
+    val d1 = toDouble(v1);
+    val d2 = toDouble(v2);
     if (d1 <= d2) {
       return v2;
     } else {
@@ -74,8 +61,8 @@ object DPUtil extends Logging {
   }
 
   def lessThan(v1: Any, v2: Any): Boolean = {
-    val d1 = DPUtil.toDouble(v1);
-    val d2 = DPUtil.toDouble(v2);
+    val d1 = toDouble(v1);
+    val d2 = toDouble(v2);
     return d1 < d2;
   }
 

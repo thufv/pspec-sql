@@ -13,27 +13,6 @@ import org.apache.spark.sql.catalyst.checker.util.TypeUtil._
 import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 
-case class Interval(start: Int, end: Int) {
-
-  def joint(other: Interval): Boolean = {
-    return !disjoint(other);
-
-  }
-
-  def disjoint(other: Interval): Boolean = {
-    return this.end < other.start || other.end < this.start;
-  }
-
-  def overlap(other: Interval): Boolean = {
-    return !this.disjoint(other) && !(this.includes(other) || other.includes(this));
-  }
-
-  def includes(other: Interval): Boolean = {
-    return start <= other.start && end >= other.end;
-  }
-
-}
-
 object DPQuery {
   private var nextId = 0;
 
@@ -43,7 +22,7 @@ object DPQuery {
   }
 }
 
-class DPQuery(val constraint: BoolExpr, val columns: Set[String], var aggregate: AggregateExpression, var plan: Aggregate, var ranges: Map[String, Interval]) extends Equals {
+class DPQuery(val constraint: BoolExpr, val columns: Set[String], var aggregate: AggregateExpression, var plan: Aggregate, var ranges: Map[String, Range]) extends Equals {
   val dpId = DPQuery.getId;
 
   aggregate.dpId = dpId;
@@ -91,42 +70,33 @@ abstract class DPPartition(val context: Context, val budget: DPBudgetManager) ex
 
   private var constraint: BoolExpr = context.mkFalse();
 
-  val ranges = new HashMap[String, Buffer[Interval]];
+  private var ranges: Map[String, Range] = null;
 
   //record all effective columns
   private val columns = new HashSet[String];
 
+  def getRanges = ranges;
+
   def add(query: DPQuery) {
     queries.append(query);
+    if (ranges == null) {
+      ranges = query.ranges;
+    } else {
+      ranges = disjuncate(ranges, query.ranges);
+    }
+
     constraint = context.mkOr(constraint, query.constraint).simplify().asInstanceOf[BoolExpr];
     columns ++= query.columns;
+
     updateBudget(query);
   }
 
-  def init(query: DPQuery) {
-    add(query);
-    query.ranges.foreach(t => {
-      val column = t._1;
-      val interval = t._2;
-
-      val buffer = new ArrayBuffer[Interval];
-      buffer.append(interval);
-      ranges.put(column, buffer);
-    })
-  }
-
-  def disjoint(column: String, interval: Interval): Boolean = {
+  def disjoint(column: String, that: Range): Boolean = {
     val range = ranges.getOrElse(column, null);
     if (range == null) {
       return false;
     }
-    range.foreach(r => {
-      if (r.joint(interval)) {
-        return false;
-      }
-    });
-    return true;
-
+    return range.disjoint(that);
   }
 
   def disjoint(query: DPQuery): Boolean = {
@@ -135,6 +105,14 @@ abstract class DPPartition(val context: Context, val budget: DPBudgetManager) ex
     if (!intersect) {
       return false;
     }
+
+    query.ranges.foreach(t => {
+      val column = t._1;
+      val range = t._2;
+      if (disjoint(column, range)) {
+        return true;
+      }
+    });
 
     val cond = context.mkAnd(constraint, query.constraint);
     return !satisfiable(cond, context);

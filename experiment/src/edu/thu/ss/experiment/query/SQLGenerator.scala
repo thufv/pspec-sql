@@ -89,7 +89,8 @@ class SQLGenerator(val table: String) {
       case category: CategoricalColumn => {
         val count = Math.max(1, category.values.length * ratio);
         val subvalues = sample(count, category.values);
-        "(" + subvalues.map(value => s" ${category.name} = \'$value\' ").mkString(" OR ") + ")";
+        val in = "(" + subvalues.map(value => s"\'$value\'").mkString(",") + ")";
+        s" (${category.name} IN $in) ";
       }
     }
   }

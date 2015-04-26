@@ -40,6 +40,10 @@ import org.apache.spark.sql.catalyst.checker.FunctionLabel
 import com.microsoft.z3.BoolExpr
 import com.microsoft.z3.Context
 import com.microsoft.z3.Status
+import scala.collection.mutable.Set
+import scala.collection.mutable.Map
+import scala.collection.mutable.HashMap
+import org.apache.spark.sql.catalyst.checker.dp.Range
 
 object AggregateType extends Enumeration {
   type AggregateType = Value
@@ -154,6 +158,41 @@ object CheckerUtil {
     return result == Status.SATISFIABLE;
   }
 
+  def intersect[T](set1: Set[T], set2: Set[T]): Boolean = {
+    set1.foreach(value => {
+      if (set2.contains(value)) {
+        return true;
+      }
+    });
+    return false;
+  }
+
+  def intersect[T](set1: Set[T], set2: Set[T], result: Set[T]) {
+    set1.foreach(value => {
+      if (set2.contains(value)) {
+        result.add(value);
+      }
+    });
+  }
+
+  def containsAll[T](set1: Set[T], set2: Set[T]): Boolean = {
+    set2.foreach(value => {
+      if (!set1.contains(value)) {
+        return false;
+      }
+    });
+    return true;
+  }
+
+  def union[T](set1: Set[T], set2: Set[T], result: Set[T]) {
+    result ++= set1 ++= set2;
+  }
+
+  def except[T](set1: Set[T], set2: Set[T], result: Set[T]) {
+    result ++= set1;
+    result --= set2;
+  }
+
   private val SupportedArithms = List(classOf[BinaryArithmetic], classOf[UnaryMinus], classOf[Abs]);
 
   private val SupportedPredicates = List(classOf[BinaryComparison], classOf[In], classOf[InSet]);
@@ -170,4 +209,59 @@ object CheckerUtil {
     }
   }
 
+  def conjuncate(ranges1: Map[String, Range], ranges2: Map[String, Range]): Map[String, Range] = {
+    val result = new HashMap[String, Range];
+    ranges1.foreach(t => {
+      val attr = t._1;
+      val range1 = t._2;
+      val range2 = ranges2.getOrElse(attr, null);
+      result.put(attr, range1.intersect(range2));
+    });
+    ranges2.foreach(t => {
+      val attr = t._1;
+      val range2 = t._2;
+      val range1 = ranges1.getOrElse(attr, null);
+      result.put(attr, range2.intersect(range1));
+    });
+    return result;
+  }
+
+  def disjuncate(ranges1: Map[String, Range], ranges2: Map[String, Range]): Map[String, Range] = {
+    val result = new HashMap[String, Range];
+    ranges1.foreach(t => {
+      val attr = t._1;
+      val range1 = t._2;
+      val range2 = ranges2.getOrElse(attr, null);
+      if (range2 != null) {
+        result.put(attr, range1.union(range2));
+      }
+    });
+    return result;
+  }
+
+  def toInt(value: Any): Int = {
+    value match {
+      case long: Long => long.toInt;
+      case int: Int => int;
+      case double: Double => double.toInt;
+      case float: Float => float.toInt;
+      case short: Short => short.toInt;
+      case big: BigDecimal => big.toInt;
+      case null => null.asInstanceOf[Int];
+      case _ => throw new RuntimeException(s"invalid argument: $value.");
+    }
+  }
+  def toDouble(value: Any): Double = {
+    value match {
+      case long: Long => long.toDouble;
+      case int: Int => int.toDouble;
+      case double: Double => double.toDouble;
+      case float: Float => float.toDouble;
+      case short: Short => short.toDouble;
+      case big: BigDecimal => big.toDouble;
+      case str: String => str.toDouble;
+      case null => null.asInstanceOf[Double];
+      case _ => throw new RuntimeException(s"invalid argument: $value.");
+    }
+  }
 }

@@ -59,160 +59,20 @@ import org.apache.spark.sql.types.IntegralType
 import org.apache.spark.sql.types.FractionalType
 import com.microsoft.z3.Sort
 
-object DPQueryTracker {
-
-  private val constants = new HashMap[String, Int];
-
-  private var constantId = 0;
-
-  def getConstant(string: String): Int = {
-    val result = constants.get(string);
-    result match {
-      case Some(i) => i;
-      case None => {
-        val id = constantId;
-        constants.put(string, id);
-        constantId += 1;
-        return id;
-      }
-    }
-  }
-}
-
 /**
  * tracking submitted dp-enabled queries for parallel composition theorem
  */
 class DPQueryTracker[T <: DPPartition] private[dp] (budget: DPBudgetManager, partitionBuilder: (Context) => T) extends QueryTracker(budget) with Logging {
 
-  private case class IntWrapper(val value: Int) extends Comparable[IntWrapper] {
-    def compareTo(other: IntWrapper): Int = {
-      return Integer.compare(this.value, other.value);
-    }
-  }
+  protected val context = new Context;
 
-  private class PartitionIndex(val column: String) {
-    private val startTree = new RedBlackBST[IntWrapper, Set[T]];
-    private val endTree = new RedBlackBST[IntWrapper, Set[T]];
+  protected val partitions = new ArrayBuffer[T];
 
-    def addPartition(partition: T) {
-      val intervals = partition.ranges.getOrElse(column, null);
-      if (intervals != null) {
-        intervals.foreach(addPartition(_, partition));
-      }
-    }
+  private val EmptyRange = Map.empty[String, Range];
 
-    def addPartition(interval: Interval, partition: T) {
-      def add(point: Int, partition: T, tree: RedBlackBST[IntWrapper, Set[T]]) {
-        val set = tree.get(IntWrapper(point));
-        if (set != null) {
-          set.add(partition);
-        } else {
-          val set = new HashSet[T];
-          set.add(partition);
-          tree.put(IntWrapper(point), set);
-        }
-      }
+  protected var pi = 0;
 
-      add(interval.start, partition, startTree);
-      add(interval.end, partition, endTree);
-    }
-
-    def removePartition(partition: T) {
-      val intervals = partition.ranges.getOrElse(column, null);
-      intervals.foreach(removePartition(_, partition));
-    }
-
-    def removePartition(interval: Interval, partition: T) {
-      def remove(point: Int, partition: T, tree: RedBlackBST[IntWrapper, Set[T]]) {
-        val set = tree.get(IntWrapper(point));
-        assert(set != null);
-        set.remove(partition);
-        if (set == null) {
-          tree.delete(IntWrapper(point));
-        }
-      }
-      remove(interval.start, partition, startTree);
-      remove(interval.end, partition, endTree);
-    }
-
-    def lookupDisjoint(interval: Interval): T = {
-      val start = interval.start;
-      val end = interval.end;
-
-      val left = lookupByStart(end, interval, startTree.root);
-      if (left != null) {
-        return left;
-      }
-      return lookupByEnd(start, interval, endTree.root);
-    }
-
-    /**
-     * lookup by the start tree, only consider nodes > point
-     */
-    private def lookupByStart(point: Int, interval: Interval, node: Node[IntWrapper, Set[T]]): T = {
-      if (node == null) {
-        return null.asInstanceOf[T];
-      }
-      val start = node.key;
-      if (start.value > point) {
-        val current = checkPartitions(interval, node.value);
-        if (current != null) {
-          return current;
-        }
-        val t = lookupByStart(point, interval, node.left);
-        if (t != null) {
-          return t;
-        } else {
-          return lookupByStart(point, interval, node.right);
-        }
-      } else {
-        return lookupByStart(point, interval, node.right);
-      }
-    }
-
-    private def lookupByEnd(point: Int, interval: Interval, node: Node[IntWrapper, Set[T]]): T = {
-      if (node == null) {
-        return null.asInstanceOf[T];
-      }
-      val end = node.key;
-      if (end.value < point) {
-        val current = checkPartitions(interval, node.value);
-        if (current != null) {
-          return current;
-        }
-        val t = lookupByEnd(point, interval, node.right);
-        if (t != null) {
-          return t;
-        } else {
-          return lookupByEnd(point, interval, node.left);
-        }
-      } else {
-        return lookupByEnd(point, interval, node.left);
-      }
-    }
-
-    private def checkPartitions(interval: Interval, partitions: Set[T]): T = {
-      partitions.foreach(p => {
-        if (p.disjoint(column, interval)) {
-          return p;
-        }
-      });
-      return null.asInstanceOf[T];
-    }
-  }
-
-  private val context = new Context;
-
-  private val partitions = new ArrayBuffer[T];
-
-  private val partitionIndex = new HashMap[String, PartitionIndex];
-
-  def track(plan: Aggregate, ranges: Map[Expression, (Int, Int)]) {
-    if (ranges.values.exists(_ == null)) {
-      logWarning("invalid range, ignore query");
-      return ;
-    }
-
+  def track(plan: Aggregate) {
     val builder = new SMTBuilder(context);
     val columns = new HashSet[String];
     val constraint = builder.buildSMT(plan, columns);
@@ -222,171 +82,57 @@ class DPQueryTracker[T <: DPPartition] private[dp] (budget: DPBudgetManager, par
       logWarning("Range constraint unsatisfiable, ignore query");
       return ;
     }
-    //check soundness of the estimated intervals
-    val checkedRanges = new HashMap[String, Interval];
-    ranges.foreach(t => {
-      val attr = t._1;
-      val range = t._2;
-      //ensure no join table appear for each attribute
-      val left = new HashSet[String];
-      val right = new HashSet[String];
-      val label = plan.childLabel(attr);
-      collectAttributes(transformComplexLabel(label), left, right, plan, builder.model);
-
-      if (left.size >= right.size) {
-        //sound
-        val column = getColumnString(getAttributeString(attr, plan));
-        checkedRanges.put(column, Interval(range._1, range._2));
-      }
-    });
-    collectDPQueries(plan, constraint, columns, checkedRanges);
-  }
-
-  private def collectAttributes(label: Label, left: Set[String], right: Set[String], plan: LogicalPlan, model: SMTModel) {
-    def addAttribute(label: Label, table: String) {
-      val str = getLabelString(label);
-      left.add(str);
-      val column = getColumnString(str);
-      val set = model.getAttributesByColumn(column);
-      if (set != null) {
-        right ++= set;
-      }
-    }
-
-    label match {
-      case column: ColumnLabel => {
-        addAttribute(column, column.table);
-      }
-      case func: FunctionLabel => {
-        func.transform match {
-          case Func_Union | Func_Except | Func_Intersect => func.children.foreach(collectAttributes(_, left, right, plan, model));
-          case get if (isGetOperation(get)) => {
-            addAttribute(func, func.getTables().head);
-          }
-        }
-      }
-      case _ =>
-
-    }
+    collectDPQueries(plan, constraint, columns, resolveRange(plan, builder.model.getColumnAttributes));
   }
 
   def commit(failed: Set[Int]) {
     //put queries into partitions
-    var success = true;
-    var pi = partitions.length - 1;
-    tmpQueries.withFilter(q => !failed.contains(q.dpId)).foreach(query => {
-      if (success) {
-        success = commitQueryByIndex(query);
-      }
-      if (!success) {
-        var found = false;
-        while (!found && pi >= 0) {
-          val partition = partitions(pi);
-          if (partition.disjoint(query)) {
-            found = true;
-            updatePartition(partition, query);
-          }
-          pi -= 1;
-        }
-        if (!found) {
-          createPartition(query);
-        }
+    beforeCommit;
+    tmpQueries.foreach(query => {
+      if (!failed.contains(query.dpId)) {
+        commitByConstraint(query);
       }
     });
+    afterCommit;
+  }
 
+  protected def resolveRange(plan: Aggregate, columnAttrs: => Map[String, Seq[String]]) = EmptyRange;
+
+  protected def beforeCommit() {
+    pi = partitions.length - 1;
+  }
+
+  protected def afterCommit() {
     tmpQueries.foreach(_.clear);
     tmpQueries.clear;
     budget.show;
   }
 
-  private def createPartition(query: DPQuery) {
+  protected def commitByConstraint(query: DPQuery) {
+    var found = false;
+    while (!found && pi >= 0) {
+      val partition = partitions(pi);
+      if (partition.disjoint(query)) {
+        found = true;
+        updatePartition(partition, query);
+      }
+      pi -= 1;
+    }
+    if (!found) {
+      createPartition(query);
+    }
+  }
+
+  protected def createPartition(query: DPQuery): T = {
     val partition = partitionBuilder(context);
-    partition.init(query);
-
-    partition.ranges.foreach(t => {
-      val column = t._1;
-      val index = partitionIndex.getOrElseUpdate(column, new PartitionIndex(column));
-      index.addPartition(partition);
-    });
-
+    partition.add(query);
     this.partitions.append(partition);
     logWarning("fail to locate a disjoint partition, create a new one");
+    return partition;
   }
 
-  private def updatePartition(partition: T, query: DPQuery) {
+  protected def updatePartition(partition: T, query: DPQuery) {
     partition.add(query);
-    //
-    val toRemove = new ArrayBuffer[String];
-    partition.ranges.foreach(t => {
-      val column = t._1;
-      if (!query.ranges.contains(t._1)) {
-        toRemove.append(column);
-        val index = partitionIndex.getOrElse(column, null);
-        //the column range is no longer invalid, remove all intervals
-        if (index != null) {
-          index.removePartition(partition);
-        }
-      }
-    });
-    toRemove.foreach(partition.ranges.remove(_));
-
-    partition.ranges.foreach(t => {
-      val column = t._1;
-      val list = t._2;
-      val interval = query.ranges.getOrElse(column, null);
-      assert(interval != null);
-      //union the list and interval
-      val index = partitionIndex.getOrElse(column, null);
-
-      val firstIndex = list.indexWhere(_.joint(interval));
-      val lastIndex = list.lastIndexWhere(_.joint(interval));
-
-      if (firstIndex >= 0) {
-        //union takes effective
-        val start = Math.min(interval.start, list(firstIndex).start);
-        val end = Math.max(interval.end, list(lastIndex).end);
-        val newInterval = Interval(start, end);
-        for (i <- firstIndex to lastIndex) {
-          index.removePartition(list(i), partition);
-        }
-        list.remove(firstIndex, lastIndex - firstIndex + 1);
-
-        list.insert(firstIndex, newInterval);
-        index.addPartition(newInterval, partition);
-      } else {
-        val i = list.indexWhere(_.start > interval.start);
-        if (i >= 0) {
-          list.insert(i, interval);
-        } else {
-          list.append(interval);
-        }
-        index.addPartition(interval, partition);
-
-      }
-    });
-
-  }
-
-  /**
-   * lookup the index to commit the query
-   */
-  private def commitQueryByIndex(query: DPQuery): Boolean = {
-    val ranges = query.ranges;
-    ranges.foreach(t => {
-      val column = t._1;
-      val interval = t._2;
-      val index = partitionIndex.getOrElse(column, null);
-      if (index != null) {
-        val partition = index.lookupDisjoint(interval);
-        if (partition != null) {
-          logWarning("find disjoint partition with index, no SMT solving needed");
-          updatePartition(partition, query);
-          return true;
-        }
-      }
-    });
-
-    return false;
   }
 
 }

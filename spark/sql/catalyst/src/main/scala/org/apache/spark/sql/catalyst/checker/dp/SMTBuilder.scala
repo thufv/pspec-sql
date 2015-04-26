@@ -266,6 +266,10 @@ class SMTModel {
     }
   }
 
+  def getColumnAttributes = columnIndex.map(t => {
+    (t._1, t._2.map(_.attribute).toSeq);
+  });
+
   def initAttrVariable(attr: String, table: String, variable: Expr) {
     val column = s"$table.${getColumnString(attr)}";
 
@@ -297,6 +301,26 @@ class SMTModel {
   }
 }
 
+private object SMTBuilder{
+  private val constants = new HashMap[String, Int];
+
+  private var constantId = 0;
+
+  def getConstant(string: String): Int = {
+    val result = constants.get(string);
+    result match {
+      case Some(i) => i;
+      case None => {
+        val id = constantId;
+        constants.put(string, id);
+        constantId += 1;
+        return id;
+      }
+    }
+  }
+  
+}
+
 /**
  * Transform a query (plan) into a SMT equation, which represents the column ranges
  */
@@ -308,11 +332,10 @@ private class SMTBuilder(val context: Context) extends Logging {
 
   private var id = 0;
 
-  def buildSMT(plan: Aggregate, activated:Set[String]): BoolExpr = {
+  def buildSMT(plan: Aggregate, activated: Set[String]): BoolExpr = {
     typeResolver.initialize(plan);
 
     val constraint = resolvePlan(plan.child);
-
 
     collectVariables(constraint).foreach(v => {
       val column = model.storedAttributeIndex.getColumnByVariable(v);
@@ -716,7 +739,9 @@ private class SMTBuilder(val context: Context) extends Logging {
         if (left == null) {
           return null;
         } else {
-          val constraints = inSet.hset.map(v => context.mkEq(left, context.mkReal(toReal(v)))).toSeq;
+          val constraints = inSet.hset.map(v => {
+            context.mkEq(left, context.mkInt(SMTBuilder.getConstant(v.toString)));
+          }).toSeq;
           return disjuncate(constraints);
         }
       }
@@ -830,7 +855,7 @@ private class SMTBuilder(val context: Context) extends Logging {
     dataType match {
       case i: IntegralType => context.mkInt(anyToInt(value));
       case f: FractionalType => context.mkReal(toReal(value));
-      case s: StringType => context.mkInt(DPQueryTracker.getConstant(value.asInstanceOf[String]));
+      case s: StringType => context.mkInt(SMTBuilder.getConstant(value.asInstanceOf[String]));
       case b: BooleanType => context.mkBool(value.asInstanceOf[Boolean]);
       case _ => null;
     }

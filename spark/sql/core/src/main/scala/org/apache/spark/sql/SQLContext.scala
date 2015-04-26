@@ -41,6 +41,7 @@ import org.apache.spark.util.Utils
 import org.apache.spark.{ Partition, SparkContext }
 import org.apache.spark.sql.catalyst.checker.SparkChecker
 import org.apache.spark.sql.catalyst.checker.util.DPUtil
+import edu.thu.ss.spec.global.MetaManager
 
 /**
  * The entry point for working with structured data (rows and columns) in Spark.  Allows the
@@ -1084,7 +1085,9 @@ class SQLContext(@transient val sparkContext: SparkContext)
       //added by luochen
       //check logical plan
       val epsilon = getConf(DPUtil.Key_Epsilon, DPUtil.Default_Epsilon).toDouble;
-      checker.check(optimizedPlan, epsilon);
+      //TODO wangjun add user category
+      val user = MetaManager.currentUser();
+      checker.check(user, optimizedPlan, epsilon);
       SparkPlan.currentContext.set(self)
       planner(optimizedPlan).next()
     }

@@ -34,6 +34,8 @@ sealed abstract class Label {
   def getDatabases(): Seq[String];
 
   def transitTypes(): Seq[BaseType];
+
+  def isStoredAttribute(): Boolean;
 }
 
 /**
@@ -51,6 +53,8 @@ abstract class ColumnLabel extends Label {
   def getTables = Seq(table);
 
   def getDatabases = Seq(database);
+
+  def isStoredAttribute() = true;
 }
 
 /**
@@ -199,6 +203,14 @@ case class FunctionLabel(children: Seq[Label], transform: String, expression: Ex
     }
   }
 
+  def isStoredAttribute: Boolean = {
+    if (isGetOperation(transform)) {
+      return children.head.isStoredAttribute;
+    } else {
+      return false;
+    }
+  }
+
 }
 
 /**
@@ -218,6 +230,8 @@ case class ConstantLabel(value: Any) extends Label {
   def getTables = Nil;
 
   def getDatabases = Nil;
+
+  def isStoredAttribute = false;
 
 }
 
@@ -240,4 +254,5 @@ case class PredicateLabel(val children: Seq[Label], val operation: String) exten
 
   def getDatabases = children.flatMap(_.getDatabases);
 
+  def isStoredAttribute = false;
 }

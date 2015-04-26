@@ -28,12 +28,20 @@ import scala.collection.mutable.ArrayBuffer
 import org.apache.spark.sql.catalyst.checker.dp.DPQueryTracker
 import org.apache.spark.sql.catalyst.checker.dp.QueryTracker
 import org.apache.spark.SparkConf
+import org.apache.spark.sql.catalyst.checker.SparkChecker._
+import scala.collection.mutable.HashMap
 
 /**
  * TODO luochen a temporary solution for returning back privacy budgets
  * the spark checker should be accessed by the spark execution plans
  */
 object SparkChecker {
+  val Conf_Privacy_Tracking = "spark.privacy.tracking";
+  val Conf_Privacy_Tracking_Index = "spark.privacy.tracking.index";
+  val Conf_Privacy_Refine = "spark.privacy.refine";
+  val Conf_Privacy_Policy = "spark.privacy.policy";
+  val Conf_Privacy_Meta = "spark.privacy.meta";
+
   private var _checker: SparkChecker = null;
 
   def set(checker: SparkChecker) {
@@ -58,19 +66,17 @@ class SparkChecker(catalog: Catalog, conf: SparkConf) extends Logging {
   private var accuracyProb: Double = 0;
   private var accurcayNoise: Double = 0;
   private var checkAccuracy: Boolean = false;
-  private lazy val queryTracker = {
-    val tracking = conf.getBoolean("spark.privacy.tracking", true);
-    QueryTracker.newInstance(budgetManager, tracking);
-  }
-  private val refineAttribute = conf.getBoolean("spark.privacy.refine", true);
+  private val trackers = new HashMap[UserCategory, QueryTracker];
+
+  private val refineAttribute = conf.getBoolean(Conf_Privacy_Refine, true);
 
   lazy val user: UserCategory = MetaManager.currentUser();
 
   private val failedAggregates = new HashSet[Int];
 
   {
-    val policyPath = conf.get("spark.privacy.policy", "res/spark-policy.xml");
-    val metaPath = conf.get("spark.privacy.meta", "res/spark-meta.xml");
+    val policyPath = conf.get(Conf_Privacy_Policy, "res/spark-policy.xml");
+    val metaPath = conf.get(Conf_Privacy_Meta, "res/spark-meta.xml");
     loadPolicy(policyPath);
     loadMeta(metaPath, catalog);
   }
@@ -101,7 +107,7 @@ class SparkChecker(catalog: Catalog, conf: SparkConf) extends Logging {
   /**
    * wrap of spark checker
    */
-  def check(plan: LogicalPlan, epsilon: Double) {
+  def check(user: UserCategory, plan: LogicalPlan, epsilon: Double) {
     if (!running) {
       return ;
     }
@@ -116,10 +122,11 @@ class SparkChecker(catalog: Catalog, conf: SparkConf) extends Logging {
       projects.++=(plan.projectLabels.values);
       val flows = builder(projects, plan.condLabels);
 
-      val checker = new SparkPolicyChecker(budgetManager, epsilon);
+      val checker = new PolicyChecker(user, budgetManager, epsilon);
       checker.check(flows, policies);
 
-      val dpEnforcer = new DPEnforcer(tableInfo, queryTracker, epsilon, refineAttribute);
+      val tracker = trackers.getOrElseUpdate(user, newQueryTracker);
+      val dpEnforcer = new DPEnforcer(tableInfo, tracker, epsilon, refineAttribute);
       dpEnforcer.enforce(plan);
     } finally {
       val end = System.currentTimeMillis();
@@ -148,9 +155,10 @@ class SparkChecker(catalog: Catalog, conf: SparkConf) extends Logging {
     }
   }
 
-  def commit(): Unit = {
+  def commit(user: UserCategory) {
     if (running) {
-      queryTracker.commit(failedAggregates);
+      val tracker = trackers.getOrElse(user, null);
+      tracker.commit(failedAggregates);
       failedAggregates.clear;
     }
   }
@@ -169,6 +177,12 @@ class SparkChecker(catalog: Catalog, conf: SparkConf) extends Logging {
 
   def setEpsilon(epsilon: Double) {
     this.epsilon = epsilon;
+  }
+
+  private def newQueryTracker(): QueryTracker = {
+    val tracking = conf.getBoolean(Conf_Privacy_Tracking, true);
+    val index = conf.getBoolean(Conf_Privacy_Tracking_Index, true);
+    QueryTracker.newInstance(budgetManager, tracking, index);
   }
 
 }

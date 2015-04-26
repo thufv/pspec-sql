@@ -19,10 +19,8 @@ package org.apache.spark.sql.hive
 
 import java.io.{ BufferedReader, InputStreamReader, PrintStream }
 import java.sql.Timestamp
-
 import scala.collection.JavaConversions._
 import scala.language.implicitConversions
-
 import org.apache.hadoop.fs.{ FileSystem, Path }
 import org.apache.hadoop.hive.conf.HiveConf
 import org.apache.hadoop.hive.ql.Driver
@@ -31,7 +29,6 @@ import org.apache.hadoop.hive.ql.parse.VariableSubstitution
 import org.apache.hadoop.hive.ql.processors._
 import org.apache.hadoop.hive.ql.session.SessionState
 import org.apache.hadoop.hive.serde2.io.{ DateWritable, TimestampWritable }
-
 import org.apache.spark.SparkContext
 import org.apache.spark.annotation.Experimental
 import org.apache.spark.sql._
@@ -42,6 +39,8 @@ import org.apache.spark.sql.hive.execution.{ DescribeHiveTableCommand, HiveNativ
 import org.apache.spark.sql.sources.{ DDLParser, DataSourceStrategy }
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.catalyst.checker.SparkChecker
+import org.hsqldb.UserManager
+import edu.thu.ss.spec.global.MetaManager
 
 /**
  * An instance of the Spark SQL execution engine that integrates with data stored in Hive.
@@ -394,7 +393,9 @@ class HiveContext(sc: SparkContext) extends SQLContext(sc) {
 
       case other =>
         val result: Seq[Seq[Any]] = other.executeCollect().map(_.toSeq).toSeq
-        checker.commit;
+        //TODO wangjun add user category here
+        val user = MetaManager.currentUser();
+        checker.commit(user);
         // We need the types so we can output struct field names
         val types = analyzed.output.map(_.dataType)
         // Reformat to match hive tab delimited output.
