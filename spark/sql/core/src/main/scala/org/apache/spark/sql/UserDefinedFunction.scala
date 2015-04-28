@@ -17,7 +17,7 @@
 
 package org.apache.spark.sql
 
-import java.util.{List => JList, Map => JMap}
+import java.util.{ List => JList, Map => JMap }
 
 import org.apache.spark.Accumulator
 import org.apache.spark.api.python.PythonBroadcast
@@ -40,7 +40,7 @@ import org.apache.spark.sql.types.DataType
 case class UserDefinedFunction protected[sql] (f: AnyRef, dataType: DataType) {
 
   def apply(exprs: Column*): Column = {
-    Column(ScalaUdf(f, dataType, exprs.map(_.expr)))
+    Column(ScalaUdf(f, dataType, exprs.map(_.expr), ""))
   }
 }
 
@@ -49,14 +49,14 @@ case class UserDefinedFunction protected[sql] (f: AnyRef, dataType: DataType) {
  * This is used by Python API.
  */
 private[sql] case class UserDefinedPythonFunction(
-    name: String,
-    command: Array[Byte],
-    envVars: JMap[String, String],
-    pythonIncludes: JList[String],
-    pythonExec: String,
-    broadcastVars: JList[Broadcast[PythonBroadcast]],
-    accumulator: Accumulator[JList[Array[Byte]]],
-    dataType: DataType) {
+  name: String,
+  command: Array[Byte],
+  envVars: JMap[String, String],
+  pythonIncludes: JList[String],
+  pythonExec: String,
+  broadcastVars: JList[Broadcast[PythonBroadcast]],
+  accumulator: Accumulator[JList[Array[Byte]]],
+  dataType: DataType) {
 
   /** Returns a [[Column]] that will evaluate to calling this UDF with the given input. */
   def apply(exprs: Column*): Column = {

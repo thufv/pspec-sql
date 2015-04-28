@@ -62,35 +62,47 @@ import com.microsoft.z3.Sort
 /**
  * tracking submitted dp-enabled queries for parallel composition theorem
  */
-class DPQueryTracker[T <: DPPartition] private[dp] (budget: DPBudgetManager, partitionBuilder: (Context) => T) extends QueryTracker(budget) with Logging {
+class DPQueryTracker[T <: DPPartition] private[dp] (budget: DPBudgetManager, limit: Int, partitionBuilder: (Context) => T)
+  extends QueryTracker(budget) with Logging {
 
   protected val context = new Context;
 
-  protected val partitions = new ArrayBuffer[T];
+  protected val partitions = new Queue[T];
 
   private val EmptyRange = Map.empty[String, Range];
 
-  protected var pi = 0;
+  protected var pi: Iterator[T] = null;
+
+  protected val tmpPartitions = new ArrayBuffer[DPQuery];
+
+  protected var buildingTime = 0L;
 
   def track(plan: Aggregate) {
+    val start = System.currentTimeMillis();
     val builder = new SMTBuilder(context);
     val columns = new HashSet[String];
     val constraint = builder.buildSMT(plan, columns);
-    println(constraint);
+    buildingTime = System.currentTimeMillis() - start;
     //check satisfiability
     if (!satisfiable(constraint, context)) {
       logWarning("Range constraint unsatisfiable, ignore query");
       return ;
     }
     collectDPQueries(plan, constraint, columns, resolveRange(plan, builder.model.getColumnAttributes));
+
   }
 
   def commit(failed: Set[Int]) {
     //put queries into partitions
     beforeCommit;
-    tmpQueries.foreach(query => {
-      if (!failed.contains(query.dpId)) {
+    currentQueries.foreach(query => {
+      if (!failed.contains(query.queryId)) {
+        stat.onTrackQuery;
+        stat.startTiming;
+
         commitByConstraint(query);
+        stat.endConstraintSolving;
+        stat.addConstraintBuilding(buildingTime);
       }
     });
     afterCommit;
@@ -99,34 +111,50 @@ class DPQueryTracker[T <: DPPartition] private[dp] (budget: DPBudgetManager, par
   protected def resolveRange(plan: Aggregate, columnAttrs: => Map[String, Seq[String]]) = EmptyRange;
 
   protected def beforeCommit() {
-    pi = partitions.length - 1;
+    pi = partitions.reverseIterator;
+
   }
 
   protected def afterCommit() {
-    tmpQueries.foreach(_.clear);
-    tmpQueries.clear;
+    tmpPartitions.foreach(createPartition(_));
+    tmpPartitions.clear;
+    currentQueries.foreach(_.clear);
+    currentQueries.clear;
     budget.show;
+
+    if (stat.queryNum % 100 == 0) {
+      stat.show;
+      partitions.foreach(partition => {
+        val queries = partition.getQueries.map(_.queryId).mkString(" ");
+        println(s"Partition: ${partition.getId}\t Queries: {$queries}");
+      });
+    }
+
   }
 
   protected def commitByConstraint(query: DPQuery) {
     var found = false;
-    while (!found && pi >= 0) {
-      val partition = partitions(pi);
+    while (!found && pi.hasNext) {
+      val partition = pi.next;
       if (partition.disjoint(query)) {
         found = true;
         updatePartition(partition, query);
       }
-      pi -= 1;
     }
     if (!found) {
-      createPartition(query);
+      tmpPartitions.append(query);
     }
   }
 
   protected def createPartition(query: DPQuery): T = {
+    stat.onCreatePartition;
+
     val partition = partitionBuilder(context);
     partition.add(query);
-    this.partitions.append(partition);
+    this.partitions.enqueue(partition);
+    if (this.partitions.length > limit) {
+      this.partitions.dequeue;
+    }
     logWarning("fail to locate a disjoint partition, create a new one");
     return partition;
   }

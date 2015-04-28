@@ -72,6 +72,9 @@ private class NumericalIndex[T <: DPPartition](column: String)
   private def removePartition(interval: Interval, partition: T) {
     def remove(point: Double, partition: T, tree: RedBlackBST[ValueWrapper, Set[T]]) {
       val set = tree.get(ValueWrapper(point));
+      if (set == null) {
+        println("error");
+      }
       assert(set != null);
       set.remove(partition);
       if (set == null) {
@@ -163,29 +166,37 @@ private class CategoricalIndex[T <: DPPartition](column: String) extends Partiti
   }
 }
 
-class IndexedQueryTracker[T <: DPPartition](budget: DPBudgetManager, partitionBuilder: Context => T)
-  extends DPQueryTracker[T](budget, partitionBuilder) {
+class IndexedQueryTracker[T <: DPPartition](budget: DPBudgetManager, limit: Int, partitionBuilder: Context => T)
+  extends DPQueryTracker[T](budget, limit, partitionBuilder) {
 
   private val partitionIndex = new HashMap[String, PartitionIndex[T]];
 
   override def commit(failed: Set[Int]) {
     //put queries into partitions
     beforeCommit;
+    if (stat.queryNum == 29) {
+      println();
+    }
+
     var success = true;
-    tmpQueries.foreach(query => {
-      if (!failed.contains(query.dpId)) {
+    currentQueries.foreach(query => {
+      if (!failed.contains(query.queryId)) {
+        stat.onTrackQuery;
+        stat.startTiming;
         if (success) {
           success = commitQueryByIndex(query);
         }
         if (!success) {
           commitByConstraint(query);
+          stat.endConstraintSolving;
         }
+        stat.addConstraintBuilding(buildingTime);
       }
     });
     afterCommit;
   }
 
-  protected override def resolveRange(plan: Aggregate, columnAttrs: =>Map[String, Seq[String]]): Map[String, Range] = {
+  protected override def resolveRange(plan: Aggregate, columnAttrs: => Map[String, Seq[String]]): Map[String, Range] = {
     val resolver = new RangeResolver;
     return resolver.resolve(plan, columnAttrs);
   }
@@ -237,13 +248,17 @@ class IndexedQueryTracker[T <: DPPartition](budget: DPBudgetManager, partitionBu
       if (index != null) {
         val partition = index.lookupDisjoint(range.asInstanceOf[index.RangeType]);
         if (partition != null) {
+          assert(partition.disjoint(query));
+
           logWarning("find disjoint partition with index, no SMT solving needed");
           updatePartition(partition, query);
+
+          stat.onIndexHit;
+          stat.endIndexHitting;
           return true;
         }
       }
     });
-
     return false;
   }
 

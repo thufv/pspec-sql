@@ -114,7 +114,7 @@
 	<classpathentry kind="lib" path="../../lib_managed/jars/test-interface-0.5.jar"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/junit-4.10.jar"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/h2-1.4.183.jar"/>
-	<classpathentry kind="lib" path="../../lib_managed/jars/mysql-connector-java-5.1.34.jar"/>
+	<classpathentry kind="lib" path="../../lib_managed/jars/mysql-connector-java-5.1.33.jar"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/postgresql-9.3-1102-jdbc41.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/spark-core"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/spark-catalyst"/>

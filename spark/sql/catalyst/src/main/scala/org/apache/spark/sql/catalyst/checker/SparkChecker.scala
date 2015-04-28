@@ -38,6 +38,7 @@ import scala.collection.mutable.HashMap
 object SparkChecker {
   val Conf_Privacy_Tracking = "spark.privacy.tracking";
   val Conf_Privacy_Tracking_Index = "spark.privacy.tracking.index";
+  val Conf_Privacy_Tracking_Limit = "spark.privacy.tracking.limit";
   val Conf_Privacy_Refine = "spark.privacy.refine";
   val Conf_Privacy_Policy = "spark.privacy.policy";
   val Conf_Privacy_Meta = "spark.privacy.meta";
@@ -180,9 +181,7 @@ class SparkChecker(catalog: Catalog, conf: SparkConf) extends Logging {
   }
 
   private def newQueryTracker(): QueryTracker = {
-    val tracking = conf.getBoolean(Conf_Privacy_Tracking, true);
-    val index = conf.getBoolean(Conf_Privacy_Tracking_Index, true);
-    QueryTracker.newInstance(budgetManager, tracking, index);
+    QueryTracker.newInstance(budgetManager, conf);
   }
 
 }

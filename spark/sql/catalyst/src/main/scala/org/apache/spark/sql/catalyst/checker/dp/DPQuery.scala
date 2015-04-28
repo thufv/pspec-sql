@@ -23,9 +23,9 @@ object DPQuery {
 }
 
 class DPQuery(val constraint: BoolExpr, val columns: Set[String], var aggregate: AggregateExpression, var plan: Aggregate, var ranges: Map[String, Range]) extends Equals {
-  val dpId = DPQuery.getId;
+  val queryId = DPQuery.getId;
 
-  aggregate.dpId = dpId;
+  aggregate.dpId = queryId;
 
   def canEqual(other: Any) = {
     other.isInstanceOf[org.apache.spark.sql.catalyst.checker.dp.DPQuery]
@@ -33,14 +33,14 @@ class DPQuery(val constraint: BoolExpr, val columns: Set[String], var aggregate:
 
   override def equals(other: Any) = {
     other match {
-      case that: org.apache.spark.sql.catalyst.checker.dp.DPQuery => that.canEqual(DPQuery.this) && dpId == that.dpId;
+      case that: org.apache.spark.sql.catalyst.checker.dp.DPQuery => that.canEqual(DPQuery.this) && queryId == that.queryId;
       case _ => false
     }
   }
 
   override def hashCode() = {
     val prime = 41
-    prime + dpId.hashCode;
+    prime + queryId.hashCode;
   }
 
   def clear() {
@@ -70,17 +70,24 @@ abstract class DPPartition(val context: Context, val budget: DPBudgetManager) ex
 
   private var constraint: BoolExpr = context.mkFalse();
 
-  private var ranges: Map[String, Range] = null;
+  private var ranges = Map.empty[String, Range];
+
+  private var initialized = false;
 
   //record all effective columns
   private val columns = new HashSet[String];
 
   def getRanges = ranges;
 
+  def getQueries = queries;
+  
+  def getId = id;
+
   def add(query: DPQuery) {
     queries.append(query);
-    if (ranges == null) {
-      ranges = query.ranges;
+    if (!initialized) {
+      ranges ++= query.ranges;
+      initialized = true;
     } else {
       ranges = disjuncate(ranges, query.ranges);
     }
@@ -100,9 +107,7 @@ abstract class DPPartition(val context: Context, val budget: DPBudgetManager) ex
   }
 
   def disjoint(query: DPQuery): Boolean = {
-    var intersect = false;
-    query.columns.foreach(column => { if (columns.contains(column)) intersect = true });
-    if (!intersect) {
+    if (query.columns.forall(!columns.contains(_))) {
       return false;
     }
 

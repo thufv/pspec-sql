@@ -40,10 +40,11 @@ import org.apache.spark.sql.catalyst.checker.FunctionLabel
 import com.microsoft.z3.BoolExpr
 import com.microsoft.z3.Context
 import com.microsoft.z3.Status
-import scala.collection.mutable.Set
+import scala.collection.Set
 import scala.collection.mutable.Map
 import scala.collection.mutable.HashMap
 import org.apache.spark.sql.catalyst.checker.dp.Range
+import scala.collection.mutable.HashSet
 
 object AggregateType extends Enumeration {
   type AggregateType = Value
@@ -167,14 +168,6 @@ object CheckerUtil {
     return false;
   }
 
-  def intersect[T](set1: Set[T], set2: Set[T], result: Set[T]) {
-    set1.foreach(value => {
-      if (set2.contains(value)) {
-        result.add(value);
-      }
-    });
-  }
-
   def containsAll[T](set1: Set[T], set2: Set[T]): Boolean = {
     set2.foreach(value => {
       if (!set1.contains(value)) {
@@ -182,15 +175,6 @@ object CheckerUtil {
       }
     });
     return true;
-  }
-
-  def union[T](set1: Set[T], set2: Set[T], result: Set[T]) {
-    result ++= set1 ++= set2;
-  }
-
-  def except[T](set1: Set[T], set2: Set[T], result: Set[T]) {
-    result ++= set1;
-    result --= set2;
   }
 
   private val SupportedArithms = List(classOf[BinaryArithmetic], classOf[UnaryMinus], classOf[Abs]);

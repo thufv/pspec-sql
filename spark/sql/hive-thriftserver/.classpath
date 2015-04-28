@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="target/scala-2.10/classes" path="scala"/>
 	<classpathentry kind="src" path="src/test/resources"/>
+	<classpathentry kind="src" path="v0.13.1/src/main/scala"/>
+	<classpathentry kind="src" path="src/main/scala"/>
 	<classpathentry kind="src" output="target/scala-2.10/classes" path="src/main/java"/>
-	<classpathentry kind="src" output="target/scala-2.10/classes" path="v0.13.1/src/main/scala"/>
 	<classpathentry kind="src" output="target/scala-2.10/test-classes" path="src/test/scala"/>
 	<classpathentry kind="src" output="target/scala-2.10/test-classes" path="src/test/java"/>
 	<classpathentry kind="con" path="org.scala-ide.sdt.launching.SCALA_CONTAINER"/>
@@ -153,7 +153,7 @@
 	<classpathentry kind="lib" path="../../lib_managed/jars/avro-mapred-1.7.6.jar"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/avro-ipc-1.7.6-tests.jar"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/avro-ipc-1.7.6.jar"/>
-	<classpathentry kind="lib" path="../../lib_managed/jars/hive-cli-0.13.1a.jar"/>
+	<classpathentry kind="lib" path="../../lib_managed/jars/hive-cli-0.13.1a.jar" sourcepath="/Users/luochen/Documents/Development/apache-hive-0.13.1-src/cli"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/hive-service-0.13.1a.jar"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/jpam-1.1.jar"/>
 	<classpathentry kind="lib" path="../../lib_managed/jars/jetty-all-7.6.0.v20120127.jar"/>

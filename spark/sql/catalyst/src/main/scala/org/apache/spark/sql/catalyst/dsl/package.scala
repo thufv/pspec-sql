@@ -17,15 +17,15 @@
 
 package org.apache.spark.sql.catalyst
 
-import java.sql.{Date, Timestamp}
+import java.sql.{ Date, Timestamp }
 
 import scala.language.implicitConversions
-import scala.reflect.runtime.universe.{TypeTag, typeTag}
+import scala.reflect.runtime.universe.{ TypeTag, typeTag }
 
-import org.apache.spark.sql.catalyst.analysis.{UnresolvedGetField, UnresolvedAttribute}
+import org.apache.spark.sql.catalyst.analysis.{ UnresolvedGetField, UnresolvedAttribute }
 import org.apache.spark.sql.catalyst.expressions._
 import org.apache.spark.sql.catalyst.plans.logical._
-import org.apache.spark.sql.catalyst.plans.{Inner, JoinType}
+import org.apache.spark.sql.catalyst.plans.{ Inner, JoinType }
 import org.apache.spark.sql.types._
 
 /**
@@ -65,25 +65,25 @@ package object dsl {
     def unary_! = Not(expr)
     def unary_~ = BitwiseNot(expr)
 
-    def + (other: Expression) = Add(expr, other)
-    def - (other: Expression) = Subtract(expr, other)
-    def * (other: Expression) = Multiply(expr, other)
-    def / (other: Expression) = Divide(expr, other)
-    def % (other: Expression) = Remainder(expr, other)
-    def & (other: Expression) = BitwiseAnd(expr, other)
-    def | (other: Expression) = BitwiseOr(expr, other)
-    def ^ (other: Expression) = BitwiseXor(expr, other)
+    def +(other: Expression) = Add(expr, other)
+    def -(other: Expression) = Subtract(expr, other)
+    def *(other: Expression) = Multiply(expr, other)
+    def /(other: Expression) = Divide(expr, other)
+    def %(other: Expression) = Remainder(expr, other)
+    def &(other: Expression) = BitwiseAnd(expr, other)
+    def |(other: Expression) = BitwiseOr(expr, other)
+    def ^(other: Expression) = BitwiseXor(expr, other)
 
-    def && (other: Expression) = And(expr, other)
-    def || (other: Expression) = Or(expr, other)
+    def &&(other: Expression) = And(expr, other)
+    def ||(other: Expression) = Or(expr, other)
 
-    def < (other: Expression) = LessThan(expr, other)
-    def <= (other: Expression) = LessThanOrEqual(expr, other)
-    def > (other: Expression) = GreaterThan(expr, other)
-    def >= (other: Expression) = GreaterThanOrEqual(expr, other)
-    def === (other: Expression) = EqualTo(expr, other)
-    def <=> (other: Expression) = EqualNullSafe(expr, other)
-    def !== (other: Expression) = Not(EqualTo(expr, other))
+    def <(other: Expression) = LessThan(expr, other)
+    def <=(other: Expression) = LessThanOrEqual(expr, other)
+    def >(other: Expression) = GreaterThan(expr, other)
+    def >=(other: Expression) = GreaterThanOrEqual(expr, other)
+    def ===(other: Expression) = EqualTo(expr, other)
+    def <=>(other: Expression) = EqualNullSafe(expr, other)
+    def !==(other: Expression) = Not(EqualTo(expr, other))
 
     def in(list: Expression*) = In(expr, list)
 
@@ -140,7 +140,7 @@ package object dsl {
       // Note that if we make ExpressionConversions an object rather than a trait, we can
       // then make this a value class to avoid the small penalty of runtime instantiation.
       def $(args: Any*): analysis.UnresolvedAttribute = {
-        analysis.UnresolvedAttribute(sc.s(args :_*))
+        analysis.UnresolvedAttribute(sc.s(args: _*))
       }
     }
 
@@ -235,8 +235,7 @@ package object dsl {
     }
   }
 
-
-  object expressions extends ExpressionConversions  // scalastyle:ignore
+  object expressions extends ExpressionConversions // scalastyle:ignore
 
   abstract class LogicalPlanFunctions {
     def logicalPlan: LogicalPlan
@@ -248,9 +247,9 @@ package object dsl {
     def limit(limitExpr: Expression) = Limit(limitExpr, logicalPlan)
 
     def join(
-        otherPlan: LogicalPlan,
-        joinType: JoinType = Inner,
-        condition: Option[Expression] = None) =
+      otherPlan: LogicalPlan,
+      joinType: JoinType = Inner,
+      condition: Option[Expression] = None) =
       Join(logicalPlan, otherPlan, joinType, condition)
 
     def orderBy(sortExprs: SortOrder*) = Sort(sortExprs, true, logicalPlan)
@@ -270,19 +269,19 @@ package object dsl {
     def unionAll(otherPlan: LogicalPlan) = Union(logicalPlan, otherPlan)
 
     def sfilter[T1](arg1: Symbol)(udf: (T1) => Boolean) =
-      Filter(ScalaUdf(udf, BooleanType, Seq(UnresolvedAttribute(arg1.name)),""), logicalPlan)
+      Filter(ScalaUdf(udf, BooleanType, Seq(UnresolvedAttribute(arg1.name)), ""), logicalPlan)
 
     def sample(
-        fraction: Double,
-        withReplacement: Boolean = true,
-        seed: Int = (math.random * 1000).toInt) =
+      fraction: Double,
+      withReplacement: Boolean = true,
+      seed: Int = (math.random * 1000).toInt) =
       Sample(fraction, withReplacement, seed, logicalPlan)
 
     def generate(
-        generator: Generator,
-        join: Boolean = false,
-        outer: Boolean = false,
-        alias: Option[String] = None) =
+      generator: Generator,
+      join: Boolean = false,
+      outer: Boolean = false,
+      alias: Option[String] = None) =
       Generate(generator, join, outer, None, logicalPlan)
 
     def insertInto(tableName: String, overwrite: Boolean = false) =
@@ -292,25 +291,28 @@ package object dsl {
     def analyze = analysis.SimpleAnalyzer(logicalPlan)
   }
 
-  object plans {  // scalastyle:ignore
+  object plans { // scalastyle:ignore
     implicit class DslLogicalPlan(val logicalPlan: LogicalPlan) extends LogicalPlanFunctions {
       def writeToFile(path: String) = WriteToFile(path, logicalPlan)
     }
   }
-
+  /*
   case class ScalaUdfBuilder[T: TypeTag](f: AnyRef) {
-    def call(args: Expression*) = ScalaUdf(f, ScalaReflection.schemaFor(typeTag[T]).dataType, args,"")
+    def call(args: Expression*) = ScalaUdf(f, ScalaReflection.schemaFor(typeTag[T]).dataType, args, "")
   }
-
-  // scalastyle:off
-  /** functionToUdfBuilder 1-22 were generated by this script
-
-    (1 to 22).map { x =>
-      val argTypes = Seq.fill(x)("_").mkString(", ")
-      s"implicit def functionToUdfBuilder[T: TypeTag](func: Function$x[$argTypes, T]): ScalaUdfBuilder[T] = ScalaUdfBuilder(func)"
-    }
+  * 
   */
 
+  // scalastyle:off
+  /**
+   * functionToUdfBuilder 1-22 were generated by this script
+   *
+   * (1 to 22).map { x =>
+   * val argTypes = Seq.fill(x)("_").mkString(", ")
+   * s"implicit def functionToUdfBuilder[T: TypeTag](func: Function$x[$argTypes, T]): ScalaUdfBuilder[T] = ScalaUdfBuilder(func)"
+   * }
+   */
+  /*
   implicit def functionToUdfBuilder[T: TypeTag](func: Function1[_, T]): ScalaUdfBuilder[T] = ScalaUdfBuilder(func)
 
   implicit def functionToUdfBuilder[T: TypeTag](func: Function2[_, _, T]): ScalaUdfBuilder[T] = ScalaUdfBuilder(func)
@@ -355,4 +357,5 @@ package object dsl {
 
   implicit def functionToUdfBuilder[T: TypeTag](func: Function22[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, T]): ScalaUdfBuilder[T] = ScalaUdfBuilder(func)
   // scalastyle:on
+  */
 }

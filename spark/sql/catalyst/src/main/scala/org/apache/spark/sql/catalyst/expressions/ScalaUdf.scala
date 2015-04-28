@@ -24,7 +24,7 @@ import org.apache.spark.sql.types.DataType
  * User-defined function.
  * @param dataType  Return type of function.
  */
-case class ScalaUdf(function: AnyRef, dataType: DataType, children: Seq[Expression], name: String = null)
+case class ScalaUdf(function: AnyRef, dataType: DataType, children: Seq[Expression], name: String)
   extends Expression {
 
   type EvaluatedType = Any

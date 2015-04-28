@@ -106,11 +106,7 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/spark-core"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/language_v2"/>
-	<classpathentry kind="lib" path="lib/args4j-2.0.29.jar"/>
-	<classpathentry kind="lib" path="lib/automaton-1.11-8.jar"/>
 	<classpathentry kind="lib" path="lib/choco-solver-3.2.2.jar" sourcepath="/Users/luochen/Documents/workspace/constraint/lib/choco-solver-3.2.2-sources.jar"/>
-	<classpathentry kind="lib" path="lib/jgrapht-0.8.1.jar" sourcepath="/Users/luochen/Documents/Development/jgrapht-0.8.1"/>
-	<classpathentry kind="lib" path="lib/trove4j-3.0.3.jar"/>
 	<classpathentry kind="lib" path="/Users/luochen/Documents/Research/privacy/spark/lib_managed/jars/tachyon-0.5.0.jar"/>
 	<classpathentry kind="lib" path="/language_v2/lib/com.microsoft.z3.jar" sourcepath="/Users/luochen/Documents/Research/z3/java"/>
 	<classpathentry kind="output" path="bin"/>

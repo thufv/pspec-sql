@@ -19,6 +19,7 @@ import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
 import org.apache.spark.sql.types.DataType
 import org.apache.ivy.core.resolve.ResolveProcessException
 import scala.collection.mutable.Buffer
+import scala.collection.immutable
 
 /**
  * given a query, calculate a conservative range for each column
@@ -63,7 +64,7 @@ class RangeResolver {
     }
   }
 
-  private def resolveCondition(expr: Expression, plan: LogicalPlan): Map[String, Range] = {
+  private[dp] def resolveCondition(expr: Expression, plan: LogicalPlan): Map[String, Range] = {
     val simplified = simplify(expr, plan);
     if (simplified == null) {
       return Map.empty;
@@ -130,6 +131,8 @@ class RangeResolver {
           return null;
         }
       }
+
+      case _ => null;
     }
   }
 
@@ -157,7 +160,7 @@ class RangeResolver {
         resolveConjunction(and.right, plan, ranges);
       }
       case not: Not => {
-        val (attr, range) = resolvePredicate(expr, plan);
+        val (attr, range) = resolvePredicate(not.child, plan);
         val notRange = range.not;
         addRange(attr, notRange, ranges);
       }
@@ -176,11 +179,16 @@ class RangeResolver {
       case in: InSet => {
         val attr = resolveSimpleAttribute(in.value);
         val attrStr = getAttributeString(attr, plan);
-        val ranges = in.hset.map(item => buildRange(attr.dataType, item,
-          value => Interval.newInstance(value, true, value, true, false),
-          value => Interval.newInstance(value, true, value, true, true),
-          value => CategoricalRange(true).addValue(value)));
-        val result = ranges.reduce((range1, range2) => range1.union(range2));
+        val result =
+          if (attr.dataType.isInstanceOf[StringType]) {
+            new CategoricalRange(in.hset.map(_.toString), true);
+          } else {
+            val ranges = in.hset.toSeq.map(item => buildRange(attr.dataType, item,
+              value => Interval.newInstance(value, true, value, true, false),
+              value => Interval.newInstance(value, true, value, true, true),
+              value => null));
+            ranges.reduce((range1, range2) => range1.union(range2));
+          }
         return (attrStr, result);
       }
     }
@@ -194,7 +202,7 @@ class RangeResolver {
         case _: EqualTo | _: EqualNullSafe => {
           buildRange(attr.dataType, resolveLiteral(binary.right).value, value => Interval.newInstance(value, true, value, true, false),
             value => Interval.newInstance(value, true, value, true, true),
-            value => CategoricalRange(true).addValue(value));
+            value => CategoricalRange(immutable.Set(value), true));
         }
         case LessThan(left, right) => {
           buildRange(attr.dataType, resolveLiteral(binary.right).value, value => Interval.newEndBounded(value, false, false),

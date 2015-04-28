@@ -4,6 +4,8 @@ import java.io.BufferedReader
 import java.io.FileReader
 import java.io.File
 import scala.collection.mutable.ArrayBuffer
+import java.io.PrintStream
+import java.io.FileInputStream
 
 object Main {
   def main(args: Array[String]) {
@@ -16,10 +18,12 @@ object Main {
     loadSchema(generator, "adult");
 
     val attribute = (3, 0.5);
-    val range = (0.1, 0.1);
-    val complex = (2, 0.5);
+    val range = (0.1, 0.5);
+    val complex = (0, 0.0);
     val param = new Parameter(100, attribute, range, complex, "age");
-    generator.generate(param, System.out);
+    val output = new PrintStream(new File("adult.sql"));
+    generator.generate(param, output);
+    output.close();
   }
 
   private def loadSchema(generator: SQLGenerator, path: String) {

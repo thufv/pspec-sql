@@ -23,6 +23,7 @@ object ExpressionRegistry extends LabelConstants {
       case _: RLike => Pred_RLike;
       case _: StartsWith => Pred_StartsWtih;
       case _: In => Pred_In;
+      case _: InSet => Pred_In;
       case _: IsNull => Pred_IsNull;
       case _: IsNotNull => Pred_IsNotNull;
     }

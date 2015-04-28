@@ -290,6 +290,7 @@ class LabelPropagator extends Logging {
       case _: RLike => resolvePredicate(expression, plan);
       case _: StartsWith => resolvePredicate(expression, plan);
       case _: In => resolvePredicate(expression, plan);
+      case _: InSet => resolvePredicate(expression, plan);
       case _: IsNull => resolvePredicate(expression, plan);
       case _: IsNotNull => resolvePredicate(expression, plan);
 

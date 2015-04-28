@@ -9,7 +9,7 @@ src_managed/
 project/boot/
 project/plugins/project/
 
-
+scalastyle-output.xml
 *.class
 *.DS_Store
 *.war
