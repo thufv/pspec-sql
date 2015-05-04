@@ -14,9 +14,4 @@ object TestCLI extends App {
 }
 
 
-object Main extends App{
-  val runtime = Runtime.getRuntime();
-  
-}
-
 

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<vocabulary base="paper/base-vocab.xml" xmlns="http://www.example.org/privacy"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.example.org/privacy ../res/privacy.xsd">
+	<vocabulary-information id="vocab-info">
+		<issuer>
+			<name>YanDong</name>
+			<organization>Intel</organization>
+			<e-mail>dong.yan@intel.com</e-mail>
+			<address>IntelLabChina</address>
+			<country>China</country>
+		</issuer>
+	</vocabulary-information>
+
+	<user-category-container id="tpcds-user" base="default-user">
+		<user-category id="analyst1" parent="analyst"></user-category>
+		<user-category id="analyst2" parent="analyst"></user-category>
+		<user-category id="analyst3" parent="analyst"></user-category>
+
+		<user-category id="analyst1-1" parent="analyst1" />
+		<user-category id="analyst1-2" parent="analyst1" />
+		<user-category id="analyst2-1" parent="analyst2" />
+		<user-category id="analyst2-2" parent="analyst2" />
+		<user-category id="analyst3-1" parent="analyst3" />
+		<user-category id="analyst3-2" parent="analyst3" />
+	</user-category-container>
+
+	<data-category-container id="tpcds-data" base="default-data">
+		<data-category id="sk" parent="ka"></data-category>
+		<data-category id="id" parent="ka"></data-category>
+		<data-category id="email" parent="ka"></data-category>
+
+		<data-category id="address" parent="qi"></data-category>
+		<data-category id="gender" parent="qi"></data-category>
+		<data-category id="education" parent="qi"></data-category>
+		<data-category id="name" parent="qi"></data-category>
+		<data-category id="marital" parent="qi"></data-category>
+		<data-category id="birth" parent="qi"></data-category>
+
+		<data-category id="country" parent="address"></data-category>
+		<data-category id="state" parent="address"></data-category>
+		<data-category id="city" parent="address"></data-category>
+		<data-category id="county" parent="address"></data-category>
+		<data-category id="street" parent="address"></data-category>
+		<data-category id="zip" parent="address">
+			<desensitize-operations>
+				<operation>truncate</operation>
+			</desensitize-operations>
+		</data-category>
+
+		<data-category id="s_num" parent="street"></data-category>
+		<data-category id="s_name" parent="street"></data-category>
+		<data-category id="s_type" parent="street"></data-category>
+		<data-category id="suite" parent="address"></data-category>
+
+
+		<data-category id="f_name" parent="name"></data-category>
+		<data-category id="l_name" parent="name"></data-category>
+
+
+		<data-category id="b_day" parent="birth"></data-category>
+		<data-category id="b_month" parent="birth"></data-category>
+		<data-category id="b_year" parent="birth"></data-category>
+
+		<data-category id="financial" parent="sa"></data-category>
+		<data-category id="business" parent="sa"></data-category>
+
+		<data-category id="income" parent="financial">
+			<desensitize-operations>
+				<operation>range</operation>
+			</desensitize-operations>
+		</data-category>
+		<data-category id="vehicle" parent="financial">
+			<desensitize-operations>
+				<operation>isZero</operation>
+			</desensitize-operations>
+		</data-category>
+		<data-category id="potential" parent="financial" />
+
+
+		<data-category id="price" parent="business">
+			<desensitize-operations>
+				<operation>sum</operation>
+				<operation>count</operation>
+				<operation>avg</operation>
+				<operation>min</operation>
+				<operation>max</operation>
+			</desensitize-operations>
+		</data-category>
+		<data-category id="item" parent="business">
+			<desensitize-operations>
+				<operation>count</operation>
+			</desensitize-operations>
+		</data-category>
+
+
+	</data-category-container>
+</vocabulary>

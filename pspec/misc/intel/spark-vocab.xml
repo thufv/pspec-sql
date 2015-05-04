@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<vocabulary base="intel/base-vocab.xml" xmlns="http://www.example.org/privacy"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.example.org/privacy ../res/privacy.xsd">
+	<vocabulary-information id="vocab-info">
+		<issuer>
+			<name>YanDong</name>
+			<organization>Intel</organization>
+			<e-mail>dong.yan@intel.com</e-mail>
+			<address>IntelLabChina</address>
+			<country>China</country>
+		</issuer>
+	</vocabulary-information>
+
+	<data-category-container id="tpcds-data" base="default-data">
+		<data-category id="email" parent="ka"></data-category>
+		<data-category id="login" parent="ka"></data-category>
+
+		<data-category id="address" parent="qi"></data-category>
+		<data-category id="gender" parent="qi"></data-category>
+		<data-category id="name" parent="qi"></data-category>
+		<data-category id="birth" parent="qi"></data-category>
+		<data-category id="education" parent="qi"></data-category>
+		<data-category id="marital" parent="qi"></data-category>
+
+		<data-category id="city" parent="address"></data-category>
+		<data-category id="county" parent="address"></data-category>
+		<data-category id="state" parent="address"></data-category>
+		<data-category id="country" parent="address"></data-category>
+		<data-category id="gmt" parent="address"></data-category>
+		<data-category id="suite" parent="address"></data-category>
+		<data-category id="zip" parent="address">
+			<desensitize-operations>
+				<operation>truncate</operation>
+			</desensitize-operations>
+		</data-category>
+		<data-category id="location_type" parent="address"></data-category>
+		<data-category id="street" parent="address"></data-category>
+
+		<data-category id="street_number" parent="street"></data-category>
+		<data-category id="street_name" parent="street"></data-category>
+		<data-category id="street_type" parent="street"></data-category>
+
+		<data-category id="nick_name" parent="name"></data-category>
+		<data-category id="first_name" parent="name"></data-category>
+		<data-category id="last_name" parent="name"></data-category>
+
+		<data-category id="birth_date" parent="birth"></data-category>
+		<data-category id="birth_country" parent="birth"></data-category>
+
+		<data-category id="birth_day" parent="birth_date"></data-category>
+		<data-category id="birth_month" parent="birth_date"></data-category>
+		<data-category id="birth_year" parent="birth_date"></data-category>
+
+		<data-category id="dep" parent="sa"></data-category>
+		<data-category id="financial" parent="sa">
+			<desensitize-operations>
+				<operation>sum</operation>
+				<operation>avg</operation>
+			</desensitize-operations>
+		</data-category>
+		<data-category id="vehicle" parent="sa"></data-category>
+		<data-category id="buy_potential" parent="sa"></data-category>
+		<data-category id="credit_rating" parent="sa"></data-category>
+	</data-category-container>
+</vocabulary>

@@ -163,8 +163,7 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/spark-core"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/spark-sql"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/language_v2"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/spark-catalyst"/>
-	<classpathentry kind="lib" path="/language_v2/lib/com.microsoft.z3.jar" sourcepath="/Users/luochen/Documents/Research/z3/java"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/pspec"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

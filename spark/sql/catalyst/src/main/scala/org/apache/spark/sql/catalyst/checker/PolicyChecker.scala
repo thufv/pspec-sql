@@ -106,7 +106,7 @@ private class FlowIndex(val flows: Map[Policy, Set[Flow]]) {
   }
 }
 
-class PolicyChecker(val user: UserCategory, val _budget: DPBudgetManager, val epsilon: Double) extends Logging {
+class PolicyChecker(val username: String, val _budget: DPBudgetManager, val epsilon: Double) extends Logging {
 
   private val budget = _budget.copy;
 
@@ -132,6 +132,10 @@ class PolicyChecker(val user: UserCategory, val _budget: DPBudgetManager, val ep
    * @throws PrivacyException
    */
   private def checkRule(rule: ExpandedRule, policy: Policy) {
+    val meta = MetaManager.get(policy);
+    //TODO
+    val user: UserCategory = MetaManager.currentUser();
+
     // check user
     if (!rule.contains(user)) {
       return ;

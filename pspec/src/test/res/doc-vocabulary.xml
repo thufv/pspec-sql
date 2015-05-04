@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<vocabulary xmlns="http://www.example.org/privacy" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.example.org/privacy ../../res/privacy.xsd">
+	<vocabulary-information id="vocab-info">
+		<issuer>
+			<name>luochen</name>
+			<organization>Tsinghua</organization>
+			<e-mail>luochen01@vip.qq.com</e-mail>
+			<address>Tsinghua</address>
+			<country>China</country>
+		</issuer>
+	</vocabulary-information>
+
+	<user-category-container id="example-user">
+		<user-category id="Employee" />
+		<user-category id="Report Analyst" parent="Employee" />
+		<user-category id="Marketing Analyst" parent="Employee" />
+		<user-category id="Advertise Analyst" parent="Employee" />
+	</user-category-container>
+
+
+	<data-category-container id="example-data">
+		<data-category id="All">
+			<desensitize-operations>
+				<operation>count</operation>
+			</desensitize-operations>
+		</data-category>
+		<data-category id="Identifier" parent="All" />
+		<data-category id="Phone" parent="Identifier">
+			<desensitize-operations>
+				<operation>truncate</operation>
+			</desensitize-operations>
+		</data-category>
+		<data-category id="Email" parent="Identifier" />
+		<data-category id="ID" parent="Identifier" />
+
+		<data-category id="Quasi Identifier" parent="All" />
+		<data-category id="Address" parent="Quasi Identifier" />
+		<data-category id="Zip" parent="Address" />
+		<data-category id="City" parent="Address" />
+		<data-category id="Street" parent="Address" />
+		<data-category id="Name" parent="Quasi Identifier" />
+		<data-category id="First Name" parent="Name" />
+		<data-category id="Last Name" parent="Name" />
+		<data-category id="Gender" parent="Quasi Identifier" />
+		<data-category id="Birth" parent="Quasi Identifier">
+			<desensitize-operations>
+				<operation>getYear</operation>
+				<operation>getMonth</operation>
+			</desensitize-operations>
+		</data-category>
+
+		<data-category id="Sensitive Attribute" parent="All" />
+		<data-category id="Financial" parent="Sensitive Attribute">
+			<desensitize-operations>
+				<operation>avg</operation>
+			</desensitize-operations>
+		</data-category>
+		<data-category id="Salary" parent="Financial">
+			<desensitize-operations>
+				<operation>range</operation>
+			</desensitize-operations>
+		</data-category>
+		<data-category id="Credit" parent="Financial" />
+		<data-category id="Sales" parent="Sensitive Attribute" />
+		<data-category id="Sale Price" parent="Sales">
+			<desensitize-operations>
+				<operation>max</operation>
+				<operation>min</operation>
+				<operation>avg</operation>
+				<operation>sum</operation>
+			</desensitize-operations>
+		</data-category>
+		<data-category id="Sale Item" parent="Sales" />
+	</data-category-container>
+</vocabulary>

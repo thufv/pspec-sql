@@ -296,12 +296,9 @@ package object dsl {
       def writeToFile(path: String) = WriteToFile(path, logicalPlan)
     }
   }
-  /*
   case class ScalaUdfBuilder[T: TypeTag](f: AnyRef) {
     def call(args: Expression*) = ScalaUdf(f, ScalaReflection.schemaFor(typeTag[T]).dataType, args, "")
   }
-  * 
-  */
 
   // scalastyle:off
   /**
@@ -312,7 +309,6 @@ package object dsl {
    * s"implicit def functionToUdfBuilder[T: TypeTag](func: Function$x[$argTypes, T]): ScalaUdfBuilder[T] = ScalaUdfBuilder(func)"
    * }
    */
-  /*
   implicit def functionToUdfBuilder[T: TypeTag](func: Function1[_, T]): ScalaUdfBuilder[T] = ScalaUdfBuilder(func)
 
   implicit def functionToUdfBuilder[T: TypeTag](func: Function2[_, _, T]): ScalaUdfBuilder[T] = ScalaUdfBuilder(func)
@@ -357,5 +353,4 @@ package object dsl {
 
   implicit def functionToUdfBuilder[T: TypeTag](func: Function22[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, T]): ScalaUdfBuilder[T] = ScalaUdfBuilder(func)
   // scalastyle:on
-  */
 }

@@ -2,6 +2,7 @@
 <meta-mapping xmlns="http://www.example.org/privacy"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" policy="res/spark-policy.xml"
 	xsi:schemaLocation="http://www.example.org/privacy ../res/meta.xsd">
+	
 	<database name="default">
 		<table name="test">
 			<column name="c1">
@@ -210,6 +211,5 @@
 				<column name="i_product_name" data-category="return_item"></column>
 			</condition>
 		</table>
-
 	</database>
 </meta-mapping>

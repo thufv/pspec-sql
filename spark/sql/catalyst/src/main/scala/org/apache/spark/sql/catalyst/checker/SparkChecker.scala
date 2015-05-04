@@ -123,7 +123,8 @@ class SparkChecker(catalog: Catalog, conf: SparkConf) extends Logging {
       projects.++=(plan.projectLabels.values);
       val flows = builder(projects, plan.condLabels);
 
-      val checker = new PolicyChecker(user, budgetManager, epsilon);
+      //TODO 
+      val checker = new PolicyChecker("", budgetManager, epsilon);
       checker.check(flows, policies);
 
       val tracker = trackers.getOrElseUpdate(user, newQueryTracker);
