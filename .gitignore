@@ -17,3 +17,5 @@ scalastyle-output.xml
 *.cache
 hs_err_pid*
 
+.classpath
+.project
