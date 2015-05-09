@@ -1,5 +1,6 @@
 package edu.thu.ss.spec.meta.xml;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -18,6 +19,7 @@ import edu.thu.ss.spec.global.PolicyManager;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.Policy;
+import edu.thu.ss.spec.lang.pojo.UserCategory;
 import edu.thu.ss.spec.meta.ArrayType;
 import edu.thu.ss.spec.meta.BaseType;
 import edu.thu.ss.spec.meta.Column;
@@ -29,6 +31,7 @@ import edu.thu.ss.spec.meta.MetaRegistry;
 import edu.thu.ss.spec.meta.PrimitiveType;
 import edu.thu.ss.spec.meta.StructType;
 import edu.thu.ss.spec.meta.Table;
+import edu.thu.ss.spec.meta.User;
 import edu.thu.ss.spec.util.ParsingException;
 import edu.thu.ss.spec.util.XMLUtil;
 
@@ -59,6 +62,13 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 			if (policy == null) {
 				throw new ParsingException("Policy: " + policyPath + " has not been loaded yet.");
 			}
+			//userList
+			Node userListNode = policyDoc.getElementsByTagName(Ele_UserList).item(0);
+			List<User> userList = parseUserList(userListNode);
+			for(int i = 0; i < userList.size(); i++) {
+				registry.addUser(userList.get(i));
+			}
+			//database
 			NodeList dbList = policyDoc.getElementsByTagName(Ele_Database);
 			for (int i = 0; i < dbList.getLength(); i++) {
 				Node node = dbList.item(i);
@@ -84,6 +94,32 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 		udfs = new HashMap<>();
 	}
 
+	private List<User> parseUserList(Node userListNode) {
+		List<User> userList = new ArrayList<User>();
+		User user;
+		NodeList list = userListNode.getChildNodes();
+		for (int i = 0; i < list.getLength(); i++) {
+			Node node = list.item(i);
+			String name = node.getLocalName();
+			if (Ele_User.equals(name)) {
+				user = new User();
+				String userName = XMLUtil.getLowerAttrValue(node, Attr_userName);
+				user.setName(userName);
+				String userCategoryId = XMLUtil.getLowerAttrValue(node, Attr_User_Category);
+				UserCategory userCategory = policy.getUserCategory(userCategoryId);
+				if (userCategory == null) {
+					logger.error("Cannot locate user category: {} referred in userList: {}.", userCategoryId,
+							userName);
+					error = true;
+					return userList;
+				}
+				user.setUserCategory(userCategory);
+				userList.add(user);
+			}
+		}
+		return userList;
+	}
+	
 	private Database parseDatabase(Node dbNode) {
 		Database database = new Database();
 		String dbName = XMLUtil.getLowerAttrValue(dbNode, Attr_Name);

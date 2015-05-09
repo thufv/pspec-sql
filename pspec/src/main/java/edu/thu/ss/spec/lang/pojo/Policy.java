@@ -199,4 +199,7 @@ public class Policy {
 	public DataCategory getDataCategory(String id) {
 		return dataContainer.get(id);
 	}
+	public UserCategory getUserCategory(String id) {
+		return userContainer.get(id);
+	}
 }

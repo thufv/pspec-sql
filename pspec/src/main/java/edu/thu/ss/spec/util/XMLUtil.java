@@ -135,6 +135,7 @@ public class XMLUtil {
 		if (file.exists()) {
 			path = file.getAbsolutePath();
 		}
-		return new URI(path).normalize();
+		URI uri = new URI(path.replace( '\\','/'));
+		return uri.normalize();
 	}
 }

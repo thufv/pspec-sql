@@ -15,10 +15,12 @@ import edu.thu.ss.spec.meta.Database;
 import edu.thu.ss.spec.meta.JoinCondition;
 import edu.thu.ss.spec.meta.MetaRegistry;
 import edu.thu.ss.spec.meta.Table;
+import edu.thu.ss.spec.meta.User;
 
 public class XMLMetaRegistry implements MetaRegistry {
 
 	private Map<String, Database> databases = new HashMap<>();
+	private Map<String, User> userList = new HashMap<>();
 	private Policy policy = null;
 	private Map<String, Set<String>> scope = null;
 
@@ -55,6 +57,10 @@ public class XMLMetaRegistry implements MetaRegistry {
 
 	void addDatabase(Database database) {
 		this.databases.put(database.getName(), database);
+	}
+	
+	void addUser(User user) {
+		this.userList.put(user.getName(), user);
 	}
 
 	@Override
@@ -119,6 +125,10 @@ public class XMLMetaRegistry implements MetaRegistry {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
+		for (String ul : userList.keySet()) {
+			sb.append(userList.get(ul));
+			sb.append('\n');
+		}
 		for (String db : databases.keySet()) {
 			sb.append(databases.get(db));
 			sb.append('\n');
