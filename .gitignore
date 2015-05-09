@@ -1,13 +1,9 @@
-
-
-assembly/
 target/
 bin/
 lib_managed/
 dist/
 src_managed/
-project/boot/
-project/plugins/project/
+
 
 scalastyle-output.xml
 *.class
