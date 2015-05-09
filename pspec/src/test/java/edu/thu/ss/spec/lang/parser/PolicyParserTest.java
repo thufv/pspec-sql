@@ -8,10 +8,28 @@ import java.io.IOException;
 import org.junit.Test;
 
 import edu.thu.ss.spec.lang.pojo.Policy;
+import edu.thu.ss.spec.meta.MetaRegistry;
+import edu.thu.ss.spec.meta.xml.XMLMetaRegistryParser;
 
 public class PolicyParserTest {
 
 	private static final String prefix = "src/test/res/";
+	
+	@Test
+	public void testMeta() {
+		try {
+			PolicyParser parser = new PolicyParser();
+			Policy policy = parser.parse(prefix + "spark-policy.xml", false, false);
+			System.out.println(policy);
+
+			XMLMetaRegistryParser metaParser = new XMLMetaRegistryParser();
+			MetaRegistry registry = metaParser.parse(prefix + "spark-meta.xml");
+			System.out.println(registry);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	public void testConflict() {
 		try {
@@ -23,7 +41,7 @@ public class PolicyParserTest {
 		}
 	}
 
-	@Test
+	
 	public void testRedundancy() {
 		try {
 			PolicyParser parser = new PolicyParser();
@@ -34,7 +52,7 @@ public class PolicyParserTest {
 		}
 	}
 
-	@Test
+	
 	public void testGlobalRedundancy() {
 		try {
 			PolicyParser parser = new PolicyParser();

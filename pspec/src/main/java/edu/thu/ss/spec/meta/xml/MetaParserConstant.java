@@ -7,6 +7,8 @@ public interface MetaParserConstant {
   public static final String Meta_Schema_Location = "res/meta.xsd";
 
   public static final String Ele_Root = "meta-mapping";
+  public static final String Ele_UserList = "userList";
+  public static final String Ele_User = "user";
   public static final String Ele_Database = "database";
   public static final String Ele_Table = "table";
   public static final String Ele_Column = "column";
@@ -27,10 +29,12 @@ public interface MetaParserConstant {
   public static final String Ele_Composite_Extract = "extract-operation";
 
   public static final String Attr_Name = "name";
+  public static final String Attr_userName = "user-name";
   public static final String Attr_Joinable = "joinable";
   public static final String Attr_Multiplicity = "multiplicity";
 
   public static final String Attr_Data_Category = "data-category";
+  public static final String Attr_User_Category = "user-category";
   public static final String Attr_Join_Table = "table";
   public static final String Attr_Join_Target = "target";
   public static final String Attr_Join_Column = "name";
