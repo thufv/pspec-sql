@@ -27,7 +27,7 @@ object TypeUtil {
   private val Delimiter_Type = " ";
   private val Delimiter_Attr = "#";
 
-  def isGetItem(trans: String) = trans == Func_GetItem;
+  def isGetItem(trans: String) = trans.startsWith(Func_GetItem);
 
   def isGetField(trans: String) = trans.startsWith(Func_GetField);
 

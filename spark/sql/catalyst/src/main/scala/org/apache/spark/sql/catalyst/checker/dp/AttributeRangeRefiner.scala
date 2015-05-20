@@ -878,16 +878,17 @@ class DummyRefiner(infos: TableInfo, aggregate: Aggregate) extends AttributeRang
   private def resolveLabelRange(label: Label): (Int, Int) = {
     label match {
       case column: ColumnLabel => {
-        val info = infos.get(column.database, column.table, column.attr.name);
+        
+        val info = infos.get(column.database, column.table, getColumnString(column.attr.name));
         (toInt(info.low), toInt(info.up));
       }
       case func: FunctionLabel => {
         func.transform match {
           case get if (isGetOperation(get)) => {
-            val attr = getLabelString(func);
+            val column = getColumnString(getLabelString(func));
             val database = func.getDatabases()(0);
             val table = func.getTables()(0);
-            val info = infos.get(database, table, attr);
+            val info = infos.get(database, table, column);
             (toInt(info.low), toInt(info.up));
           }
           case Func_Union => {
