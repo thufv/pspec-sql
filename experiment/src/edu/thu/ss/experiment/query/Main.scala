@@ -7,21 +7,13 @@ import scala.collection.mutable.ArrayBuffer
 import java.io.PrintStream
 import java.io.FileInputStream
 
-object Main {
-  def main(args: Array[String]) {
-    adult;
+object Generator {
 
-  }
-
-  def adult() {
+  def adult(path: String, num: Int, simple: Int, ratio: (Double, Double), complex: Int) {
     val generator = new SQLGenerator("adult");
     loadSchema(generator, "adult");
-
-    val attribute = (3, 0.5);
-    val range = (0.1, 0.5);
-    val complex = (0, 0.0);
-    val param = new Parameter(100, attribute, range, complex, "age");
-    val output = new PrintStream(new File("adult.sql"));
+    val param = new Parameter(num, (simple, 0), ratio, (complex, 0), "age");
+    val output = new PrintStream(new File(path));
     generator.generate(param, output);
     output.close();
   }
@@ -45,7 +37,5 @@ object Main {
       line = reader.readLine();
     }
     reader.close();
-
   }
-
 }

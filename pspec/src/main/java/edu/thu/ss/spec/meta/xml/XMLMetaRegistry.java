@@ -1,5 +1,6 @@
 package edu.thu.ss.spec.meta.xml;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -23,6 +24,7 @@ public class XMLMetaRegistry implements MetaRegistry {
 	private Map<String, User> userList = new HashMap<>();
 	private Policy policy = null;
 	private Map<String, Set<String>> scope = null;
+	private URI path = null;
 
 	@Override
 	public boolean applicable(String databaseName, String tableName) {
@@ -32,6 +34,15 @@ public class XMLMetaRegistry implements MetaRegistry {
 
 	void setPolicy(Policy policy) {
 		this.policy = policy;
+	}
+
+	@Override
+	public URI getPath() {
+		return path;
+	}
+
+	public void setPath(URI path) {
+		this.path = path;
 	}
 
 	@Override
@@ -58,7 +69,7 @@ public class XMLMetaRegistry implements MetaRegistry {
 	void addDatabase(Database database) {
 		this.databases.put(database.getName(), database);
 	}
-	
+
 	void addUser(User user) {
 		this.userList.put(user.getName(), user);
 	}

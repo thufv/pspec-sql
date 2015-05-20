@@ -412,9 +412,10 @@ class HiveContext(sc: SparkContext) extends SQLContext(sc) {
 
   //added by luochen
   val hiveInfo: HiveTableInfo = new HiveTableInfo(this);
-  hiveInfo.initialize;
+ // hiveInfo.initialize;
   checker.start(hiveInfo);
   SparkChecker.set(checker);
+  
 }
 
 private object HiveContext {

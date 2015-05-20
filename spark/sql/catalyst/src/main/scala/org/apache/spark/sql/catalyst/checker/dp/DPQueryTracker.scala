@@ -66,7 +66,6 @@ class DPQueryTracker[T <: DPPartition] private[dp] (budget: DPBudgetManager, lim
   extends QueryTracker(budget) with Logging {
 
   protected val context = new Context;
-
   protected val partitions = new Queue[T];
 
   private val EmptyRange = Map.empty[String, Range];
@@ -76,6 +75,10 @@ class DPQueryTracker[T <: DPPartition] private[dp] (budget: DPBudgetManager, lim
   protected val tmpPartitions = new ArrayBuffer[DPQuery];
 
   protected var buildingTime = 0L;
+
+  override def clear() {
+    context.dispose();
+  }
 
   def track(plan: Aggregate) {
     val start = System.currentTimeMillis();
@@ -95,6 +98,7 @@ class DPQueryTracker[T <: DPPartition] private[dp] (budget: DPBudgetManager, lim
   def commit(failed: Set[Int]) {
     //put queries into partitions
     beforeCommit;
+
     currentQueries.foreach(query => {
       if (!failed.contains(query.queryId)) {
         stat.onTrackQuery;
@@ -133,6 +137,7 @@ class DPQueryTracker[T <: DPPartition] private[dp] (budget: DPBudgetManager, lim
   }
 
   protected def commitByConstraint(query: DPQuery) {
+
     var found = false;
     while (!found && pi.hasNext) {
       val partition = pi.next;
@@ -161,6 +166,7 @@ class DPQueryTracker[T <: DPPartition] private[dp] (budget: DPBudgetManager, lim
 
   protected def updatePartition(partition: T, query: DPQuery) {
     partition.add(query);
+    stat.onSuccess;
   }
 
 }

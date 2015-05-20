@@ -80,7 +80,7 @@ abstract class DPPartition(val context: Context, val budget: DPBudgetManager) ex
   def getRanges = ranges;
 
   def getQueries = queries;
-  
+
   def getId = id;
 
   def add(query: DPQuery) {

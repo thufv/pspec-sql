@@ -25,6 +25,7 @@ import org.apache.hadoop.hive.ql.processors.CommandProcessorResponse
 import org.apache.spark.Logging
 import org.apache.spark.sql.hive.{ HiveContext, HiveMetastoreTypes }
 import org.apache.spark.sql.catalyst.checker.PrivacyException
+import edu.thu.ss.spec.global.MetaManager
 
 private[hive] abstract class AbstractSparkSQLDriver(
   val context: HiveContext = SparkSQLEnv.hiveContext) extends Driver with Logging {

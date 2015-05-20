@@ -1,5 +1,6 @@
 package edu.thu.ss.spec.meta;
 
+import java.net.URI;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,6 +27,8 @@ public interface MetaRegistry {
 	public boolean isJoinable(String database, String table, String column);
 
 	public Integer getMultiplicity(String database, String table, String column);
+
+	public URI getPath();
 
 	/**
 	 * lookup conditional {@link DataCategory} for column in table and database

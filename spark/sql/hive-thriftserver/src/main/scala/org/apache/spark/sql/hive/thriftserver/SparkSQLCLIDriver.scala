@@ -39,7 +39,7 @@ import org.apache.spark.sql.hive.HiveShim
 import org.apache.log4j.PropertyConfigurator
 import org.apache.spark.sql.hive.thriftserver.SparkSQLDriver
 
-private[hive] object SparkSQLCLIDriver {
+object SparkSQLCLIDriver {
   private var prompt = "spark-sql"
   private var continuedPrompt = "".padTo(prompt.length, ' ')
   private var transport: TSocket = _
@@ -155,7 +155,7 @@ private[hive] object SparkSQLCLIDriver {
 
     try {
       if (sessionState.fileName != null) {
-        System.exit(cli.processFile(sessionState.fileName))
+        System.exit(cli.processFile(sessionState.fileName));
       }
     } catch {
       case e: FileNotFoundException =>
@@ -226,7 +226,7 @@ private[hive] object SparkSQLCLIDriver {
   }
 }
 
-private[hive] class SparkSQLCLIDriver extends CliDriver with Logging {
+class SparkSQLCLIDriver extends CliDriver with Logging {
   private val sessionState = SessionState.get().asInstanceOf[CliSessionState]
 
   private val LOG = LogFactory.getLog("CliDriver")

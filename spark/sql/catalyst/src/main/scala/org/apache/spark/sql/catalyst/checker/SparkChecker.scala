@@ -133,7 +133,7 @@ class SparkChecker(catalog: Catalog, conf: SparkConf) extends Logging {
     } finally {
       val end = System.currentTimeMillis();
       val time = end - begin;
-      println(s"privacy checking finished in $time ms");
+      logWarning(s"privacy checking finished in $time ms");
     }
   }
 
@@ -163,6 +163,10 @@ class SparkChecker(catalog: Catalog, conf: SparkConf) extends Logging {
       tracker.commit(failedAggregates);
       failedAggregates.clear;
     }
+  }
+
+  def clear() {
+    trackers.foreach(_._2.clear());
   }
 
   def failAggregate(dpId: Int) {

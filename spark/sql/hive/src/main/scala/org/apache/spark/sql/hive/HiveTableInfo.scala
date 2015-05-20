@@ -60,10 +60,10 @@ class HiveTableInfo(val hive: HiveContext) extends TableInfo with Logging {
           case Some(t) => {
             t.get(columnName);
           }
-          case _ => throw new PrivacyException(s"table $tableName not exist.");
+          case _ => null; // throw new PrivacyException(s"table $tableName not exist.");
         }
       }
-      case _ => throw new PrivacyException(s"database $dbName not exist.");
+      case _ => null; //throw new PrivacyException(s"database $dbName not exist.");
     }
     if (info == null) {
       return updateRange(dbName, tableName, columnName);
@@ -263,8 +263,7 @@ class HiveTableInfo(val hive: HiveContext) extends TableInfo with Logging {
     try {
       //disable privacy checker temporarily
       hive.checker.pause();
-      val transformed = TypeUtil.toSQLString(column);
-      val row = queryRange(table, Seq((null, Seq(transformed))));
+      val row = queryRange(table, Seq((null, Seq(column))));
       val info = new ColumnInfo(row(0), row(1), None);
       put(db, table, column, info);
       return info;

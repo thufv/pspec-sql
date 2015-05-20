@@ -70,7 +70,7 @@ class PathBuilder {
     projections.foreach(label => buildPath(label, Action.Projection));
     conditions.foreach(label => buildPath(label, Action.Condition));
 
-    printPaths(projections, conditions, flows);
+    //printPaths(projections, conditions, flows);
 
     return flows;
   }

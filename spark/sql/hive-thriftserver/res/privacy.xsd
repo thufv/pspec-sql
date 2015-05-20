@@ -338,7 +338,7 @@
 						<attribute name="location" type="anyURI"></attribute>
 					</complexType>
 				</element>
-				<element name="privacy-parameters">
+				<element name="privacy-parameters" minOccurs="0">
 					<complexType>
 						<sequence>
 							<choice>

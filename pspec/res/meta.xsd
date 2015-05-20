@@ -191,10 +191,11 @@
 	<element name="meta-mapping">
 		<complexType>
 			<sequence>
-				<element name="userList" type="tns:userListType" minOccurs="1" maxOccurs="1">
+				<element name="userList" type="tns:userListType" minOccurs="1"
+					maxOccurs="1">
 					<unique name="uniqueUser">
-						<selector xpath="tns:user"/>
-						<field xpath="@user-name"/>
+						<selector xpath="tns:user" />
+						<field xpath="@user-name" />
 					</unique>
 				</element>
 				<element name="database" type="tns:databaseType" maxOccurs="unbounded">
@@ -214,12 +215,12 @@
 	</element>
 	<complexType name="userListType">
 		<sequence>
-			<element name="user" type="tns:userType" maxOccurs="unbounded"/>
+			<element name="user" type="tns:userType" maxOccurs="unbounded" />
 		</sequence>
 	</complexType>
 	<complexType name="userType">
-		<attribute name="user-name" type="NCName" use="required"/>
-		<attribute name="user-category" type="NCName" use="required"/>
+		<attribute name="user-name" type="NCName" use="required" />
+		<attribute name="user-category" type="NCName" use="required" />
 	</complexType>
 	<element name="column" type="tns:columnType">
 		<unique name="uniqueOpName">

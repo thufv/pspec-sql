@@ -1,5 +1,6 @@
 package edu.thu.ss.spec.global;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -22,6 +23,8 @@ public class MetaManager {
 
 	private static List<MetaRegistry> registries = new LinkedList<>();
 
+	private static Map<URI, MetaRegistry> pathRegistries = new HashMap<>();
+
 	private static Set<String> extractOperations = new HashSet<>();
 
 	private static Map<Policy, MetaRegistry> policyRegistries = new HashMap<>();
@@ -36,6 +39,10 @@ public class MetaManager {
 
 	public static boolean isExtractOperation(String operation) {
 		return extractOperations.contains(operation);
+	}
+
+	public static MetaRegistry get(URI path) {
+		return pathRegistries.get(path);
 	}
 
 	/**
@@ -83,11 +90,16 @@ public class MetaManager {
 	 *           if a table is covered by multiple registries
 	 */
 	public static synchronized void add(MetaRegistry registry) {
-		registries.add(registry);
+		if (pathRegistries.containsKey(registry.getPath())) {
+			throw new IllegalArgumentException("Duplicate meta file at:" + registry.getPath());
+		}
+
 		if (policyRegistries.containsKey(registry.getPolicy())) {
 			throw new IllegalArgumentException("meta data for policy: " + registry.getPolicy().getPath()
 					+ " is already defined.");
 		}
+		registries.add(registry);
+		pathRegistries.put(registry.getPath(), registry);
 		policyRegistries.put(registry.getPolicy(), registry);
 		
 		Map<String, Set<String>> scope = registry.getScope();

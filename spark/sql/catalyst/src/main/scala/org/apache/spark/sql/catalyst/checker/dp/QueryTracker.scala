@@ -8,18 +8,38 @@ import org.apache.spark.sql.catalyst.expressions.AggregateExpression
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.catalyst.checker.SparkChecker
 
-class TrackerStatistics {
+object TrackerStatistics {
+  private var _stat = new TrackerStatistics;
+
+  def reset() = _stat = new TrackerStatistics;
+
+  def get = _stat;
+
+}
+
+class TrackerStatistics private () {
   private var constraintBuildingTime = 0L;
   private var constraintSolvingTime = 0L;
   private var indexHittingTime = 0L;
-  private var indexHit = 0;
+  var indexHit = 0;
   var queryNum = 0;
   private var partitionNum = 0;
-  private var trackingTimes = new ArrayBuffer[Int](5000);
-
+  //  val trackingTimes = new ArrayBuffer[Int](5000);
+  // val budgetUsages = new ArrayBuffer[Int](5000);
   private var startTime = 0L;
 
+  def budgetUsage = partitionNum;
+
+  def totalTime = constraintSolvingTime + indexHittingTime;
+
+  def averageTime = totalTime / queryNum;
+
   def onCreatePartition {
+    //    if (budgetUsages.length == 0) {
+    //      budgetUsages.append(1);
+    //    } else {
+    //      budgetUsages.append(budgetUsages.last + 1);
+    //    }
     partitionNum += 1;
   }
 
@@ -42,13 +62,17 @@ class TrackerStatistics {
   def endConstraintSolving {
     val time = System.currentTimeMillis() - startTime;
     constraintSolvingTime += time;
-    trackingTimes.append(time.toInt);
+    //    trackingTimes.append(time.toInt);
   }
 
   def endIndexHitting {
     val time = System.currentTimeMillis() - startTime;
     indexHittingTime += time;
-    trackingTimes.append(time.toInt);
+    //   trackingTimes.append(time.toInt);
+  }
+
+  def onSuccess {
+    //    budgetUsages.append(budgetUsages.last);
   }
 
   def show {
@@ -72,8 +96,8 @@ class TrackerStatistics {
     val avgTracking = average(constraintBuildingTime + constraintSolvingTime + indexHittingTime, queryNum);
     println(s"Average Time of Query Tracking:\t$avgTracking ms");
 
-    val detail = trackingTimes.mkString(" ");
-    println(s"Detailed Time of Query Tracking:\t$detail");
+    //  val detail = trackingTimes.mkString(" ");
+    //  println(s"Detailed Time of Query Tracking:\t$detail");
   }
 
   private def average(time: Long, num: Int): Long = {
@@ -119,11 +143,13 @@ object QueryTracker {
 abstract class QueryTracker(val budget: DPBudgetManager) {
   protected val currentQueries = new ArrayBuffer[DPQuery];
 
-  protected val stat = new TrackerStatistics;
+  protected val stat = TrackerStatistics.get;
 
   def track(plan: Aggregate);
 
   def commit(failed: Set[Int]);
+
+  def clear() {}
 
   def testBudget() {
     val copy = budget.copy;

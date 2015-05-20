@@ -1,5 +1,6 @@
 package edu.thu.ss.spec.meta.xml;
 
+import java.net.URI;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,6 +18,11 @@ public class MetaRegistryProxy implements MetaRegistry {
 
 	public MetaRegistryProxy(MetaRegistry registry) {
 		this.registry = registry;
+	}
+	
+	@Override
+	public URI getPath() {
+		return registry.getPath();
 	}
 
 	@Override

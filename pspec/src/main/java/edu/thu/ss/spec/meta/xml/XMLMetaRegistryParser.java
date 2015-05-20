@@ -1,5 +1,6 @@
 package edu.thu.ss.spec.meta.xml;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,9 +48,18 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 	public MetaRegistry parse(String path) throws ParsingException {
 		init();
 		Document policyDoc = null;
+		URI uri = null;
 		try {
 			// load document
 			policyDoc = XMLUtil.parseDocument(XMLUtil.toUri(path), Meta_Schema_Location);
+			uri = XMLUtil.toUri(path);
+			MetaRegistry parsed = MetaManager.get(uri);
+			if (parsed != null) {
+				logger.warn("Meta file at: {} has already been parsed.", uri);
+				return parsed;
+			}
+			registry.setPath(uri);
+			policyDoc = XMLUtil.parseDocument(uri, Meta_Schema_Location);
 		} catch (Exception e) {
 			throw new ParsingException("Fail to load meta file at :" + path, e);
 		}
@@ -65,7 +75,7 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 			//userList
 			Node userListNode = policyDoc.getElementsByTagName(Ele_UserList).item(0);
 			List<User> userList = parseUserList(userListNode);
-			for(int i = 0; i < userList.size(); i++) {
+			for (int i = 0; i < userList.size(); i++) {
 				registry.addUser(userList.get(i));
 			}
 			//database
@@ -119,7 +129,7 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 		}
 		return userList;
 	}
-	
+
 	private Database parseDatabase(Node dbNode) {
 		Database database = new Database();
 		String dbName = XMLUtil.getLowerAttrValue(dbNode, Attr_Name);
