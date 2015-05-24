@@ -2,6 +2,7 @@ package edu.thu.ss.spec.lang.analyzer.redundancy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -151,11 +152,61 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 	 * @return redundant
 	 */
 	private boolean checkRedundancy(ExpandedRule target, ExpandedRule rule) {
+		if (target.isFilter() && rule.isFilter()) {
+			return checkFilter(rule, target);
+		} else if (target.isFilter() || rule.isFilter()) {
+			return false;
+		}
+		
 		if (target.isSingle()) {
 			return checkSingle(rule, target);
 		} else {
 			return checkAssociation(rule, target);
 		}
+	}
+	
+	/**
+	 * both rule1 and rule2 are filter. Check rule1 implies rule2, i.e., whether
+	 * rule2 is redundant
+	 * @param rule1
+	 * @param rule2
+	 * @return redundant
+	 */
+	private boolean checkFilter(ExpandedRule rule1, ExpandedRule rule2) {
+		Set<UserCategory> user1 = rule1.getUsers();
+		Set<UserCategory> user2 = rule2.getUsers();
+		if (!PSpecUtil.contains(user1, user2)) {
+			return false;
+		}
+		
+		Set<DataRef> set1 = new HashSet<>();
+		Set<DataRef> set2 = new HashSet<>();
+		if (rule1.isSingle()) {
+			set1.add(rule1.getDataRef());
+		}
+		else {
+			set1.addAll(rule1.getAssociation().getDataRefs());
+		}
+		if (rule1.isSingle()) {
+			set2.add(rule2.getDataRef());
+		}
+		else {
+			set2.addAll(rule2.getAssociation().getDataRefs());
+		}		
+		if (!PSpecUtil.contains(set1, set2)) {
+			return false;
+		}
+		
+		Set<DataCategory> categories1 =  rule1.getCondition().getDataCategories();
+		Set<DataCategory> categories2 =  rule2.getCondition().getDataCategories();
+		if (!PSpecUtil.contains(categories1, categories2)) {
+			return false;
+		}
+		
+		boolean res = false;
+		res =  Z3Util.implies(rule1.getCondition(), rule2.getCondition());
+
+		return res;
 	}
 
 	/**

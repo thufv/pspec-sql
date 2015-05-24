@@ -1,44 +1,37 @@
 package edu.thu.ss.spec.lang.analyzer.consistency;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.thu.ss.spec.lang.analyzer.BasePolicyAnalyzer;
-import edu.thu.ss.spec.lang.analyzer.LocalExpander;
-import edu.thu.ss.spec.lang.analyzer.stat.AnalyzerStat;
-import edu.thu.ss.spec.lang.analyzer.stat.ConsistencyStat;
 import edu.thu.ss.spec.lang.parser.event.EventTable;
+import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.Policy;
 
-/**
- * consistency analyzer depends on {@link LocalExpander}
- * 
- * @author luochen
- * 
- */
-public class ConsistencyAnalyzer extends BasePolicyAnalyzer {
-
+public abstract class ConsistencyAnalyzer extends BasePolicyAnalyzer {
+	
 	public ConsistencyAnalyzer(EventTable table) {
 		super(table);
 	}
 
-	public enum RuleRelation {
-		disjoint, conflict, consistent, forbid
-	}
+	public abstract boolean analyze(List<ExpandedRule> rules);
 
-	@Override
-	public boolean analyze(Policy policy, AnalyzerStat stat, int n) {
-		ConsistencySearcher searcher = new CachedConsistencySearcher(policy, (ConsistencyStat) stat, n);
-		searcher.search();
-		return false;
-	}
-
-	/**
-	 * support {@link ConsistencySearcher} and {@link CachedConsistencySearcher}
-	 */
 	@Override
 	public boolean analyze(Policy policy) {
+		List<ExpandedRule> rules = policy.getExpandedRules();
+		List<ExpandedRule> restrictionRules = new ArrayList<>();
+		List<ExpandedRule> filterRules = new ArrayList<>();
 
-		ConsistencySearcher searcher = new CachedConsistencySearcher(policy);
-		searcher.search();
+		for (ExpandedRule rule : rules) {
+			if (rule.isFilter()) {
+				filterRules.add(rule);
+			} else if (!rule.getRestriction().isForbid()) {
+				restrictionRules.add(rule);
+			}
+		}
+
+		analyze(restrictionRules);
+		//analyze(filterRules);
 		return false;
 	}
-
 }

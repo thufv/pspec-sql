@@ -12,6 +12,7 @@ public interface MetaParserConstant {
   public static final String Ele_Database = "database";
   public static final String Ele_Table = "table";
   public static final String Ele_Column = "column";
+  public static final String Ele_Column_Value_Map = "value-map";
   public static final String Ele_Desensitize_Operation = "desensitize-operation";
   public static final String Ele_Desensitize_UDF = "UDF";
   public static final String Ele_Condition = "condition";
@@ -33,6 +34,8 @@ public interface MetaParserConstant {
   public static final String Attr_Joinable = "joinable";
   public static final String Attr_Multiplicity = "multiplicity";
 
+  public static final String Attr_Column_Map_Key = "key";
+  public static final String Attr_Column_Map_Value = "value";
   public static final String Attr_Data_Category = "data-category";
   public static final String Attr_User_Category = "user-category";
   public static final String Attr_Join_Table = "table";

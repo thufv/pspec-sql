@@ -91,6 +91,15 @@
 	<complexType name="columnType">
 		<complexContent>
 			<extension base="tns:baseType">
+				<sequence>
+					<element name="value-map" minOccurs="0" maxOccurs="unbounded">
+						<complexType>
+							<attribute name="key" type="string"></attribute>
+							<attribute name="value" type="string"></attribute>
+						</complexType>
+					</element> 							
+				</sequence>
+				
 				<attribute name="name" type="NCName" use="required"></attribute>
 				<attribute name="joinable" type="boolean" use="optional"></attribute>
 				<attribute name="multiplicity" use="optional">
@@ -229,6 +238,10 @@
 		<unique name="uniqueOpUDF">
 			<selector xpath="tns:desensitize-operation/tns:UDF"></selector>
 			<field xpath="."></field>
+		</unique>
+		<unique name="uniqueKey">
+			<selector xpath="tns:value-map"></selector>
+			<field xpath="@key"></field>
 		</unique>
 	</element>
 

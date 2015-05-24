@@ -43,6 +43,8 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 	 */
 	protected DataAssociation association;
 
+	protected Condition condition = null;
+	
 	public ExpandedRule() {
 	}
 
@@ -61,18 +63,27 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 	public ExpandedRule(Rule rule, DataAssociation association, int num) {
 		this(rule, num);
 		this.association = association;
-		this.restrictions = rule.restrictions.toArray(new Restriction[0]);
+		if (rule.isFilter()) {
+			this.condition = rule.condition;
+		} else {
+			this.restrictions = rule.restrictions.toArray(new Restriction[0]);
+		}
 	}
 
 	public ExpandedRule(Rule rule, DataRef ref, int num) {
 		this(rule, num);
 		this.dataRef = ref;
-		this.restrictions = new Restriction[1];
-		this.restrictions[0] = rule.getRestriction().clone();
-		if (!this.restrictions[0].isForbid()) {
-			Desensitization de = this.restrictions[0].getDesensitization(0);
-			de.setDataRef(ref);
-			de.materialize(ref.getMaterialized());
+		
+		if (rule.isFilter()) {
+			this.condition = rule.condition;
+		} else {
+			this.restrictions = new Restriction[1];
+			this.restrictions[0] = rule.getRestriction().clone();
+			if (!this.restrictions[0].isForbid()) {
+				Desensitization de = this.restrictions[0].getDesensitization(0);
+				de.setDataRef(ref);
+				de.materialize(ref.getMaterialized());
+			}
 		}
 	}
 
@@ -143,6 +154,10 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 		return restrictions[0];
 	}
 
+	public Condition getCondition() {
+		return condition;
+	}
+	
 	public List<UserRef> getUserRefs() {
 		return userRefs;
 	}
@@ -202,6 +217,10 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 		}
 		return dataRef.isGlobal();
 	}
+	
+	public boolean isFilter() {
+		return condition != null;
+	}
 
 	@Override
 	public String toString() {
@@ -228,10 +247,19 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 			sb.append(association);
 		}
 		sb.append("\n\t");
-		for (Restriction restriction : restrictions) {
-			sb.append(restriction);
+		
+		if (condition != null) {
+			sb.append(condition);
 			sb.append("\n\t");
+		} else {
+			for (Restriction restriction : restrictions) {
+				sb.append(restriction);
+				sb.append("\n\t");
+			}
 		}
+		
+		
+		
 		return sb.toString();
 	}
 }

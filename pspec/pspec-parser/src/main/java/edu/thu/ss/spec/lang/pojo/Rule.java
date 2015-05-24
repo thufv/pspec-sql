@@ -20,7 +20,8 @@ public class Rule extends DescribedObject {
 	protected DataAssociation association = null;
 
 	protected List<Restriction> restrictions = new ArrayList<>();
-
+	protected Condition condition = null;
+	
 	public List<UserRef> getUserRefs() {
 		return userRefs;
 	}
@@ -53,6 +54,10 @@ public class Rule extends DescribedObject {
 		return association == null;
 	}
 
+	public boolean isFilter() {
+		return condition != null;
+	}
+	
 	public void setRestrictions(List<Restriction> restrictions) {
 		this.restrictions = restrictions;
 	}
@@ -94,6 +99,10 @@ public class Rule extends DescribedObject {
 				Restriction restriction = new Restriction();
 				restriction.parse(node);
 				this.restrictions.add(restriction);
+			} else if (ParserConstant.Ele_Policy_Rule_Filter.equals(name)) {
+				Condition condition = new Condition();
+				condition.parse(node);
+				this.condition = condition;
 			}
 		}
 	}
@@ -125,6 +134,10 @@ public class Rule extends DescribedObject {
 		for (Restriction res : restrictions) {
 			sb.append('\t');
 			sb.append(res);
+		}
+		
+		if (isFilter()) {
+			sb.append(condition);
 		}
 		return sb.toString();
 	}

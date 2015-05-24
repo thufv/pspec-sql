@@ -1,11 +1,14 @@
 package edu.thu.ss.spec.util;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.microsoft.z3.ArithExpr;
 import com.microsoft.z3.BoolExpr;
 import com.microsoft.z3.Context;
 import com.microsoft.z3.Expr;
@@ -17,6 +20,16 @@ import com.microsoft.z3.Symbol;
 import com.microsoft.z3.Z3Exception;
 
 import edu.thu.ss.spec.lang.analyzer.redundancy.BaseRedundancyAnalyzer;
+import edu.thu.ss.spec.lang.expression.BinaryComparison;
+import edu.thu.ss.spec.lang.expression.BinaryPredicate;
+import edu.thu.ss.spec.lang.expression.Expression;
+import edu.thu.ss.spec.lang.expression.Function;
+import edu.thu.ss.spec.lang.expression.Term;
+import edu.thu.ss.spec.lang.expression.BinaryPredicate.binaryPredicateTypes;
+import edu.thu.ss.spec.lang.expression.Expression.ExpressionTypes;
+import edu.thu.ss.spec.lang.expression.Term.TermTypes;
+import edu.thu.ss.spec.lang.pojo.Condition;
+import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.Desensitization;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
@@ -32,6 +45,8 @@ public class Z3Util {
 
 	private static boolean initialized = false;
 
+	private static Map<DataCategory, Integer> refIndex = new HashMap<>();
+	
 	private static void init(int size) {
 		try {
 			context = new Context();
@@ -184,5 +199,166 @@ public class Z3Util {
 			exprs[i++] = context.mkEq(var, num);
 		}
 		return context.mkOr(exprs);
+	}
+	
+	public static boolean implies(Condition condition1, Condition condition2) {
+		int dim = condition1.getDataCategories().size();
+		if (dim > BaseRedundancyAnalyzer.Max_Dimension) {
+			return false;
+		}
+		
+		IntExpr[] vars = new IntExpr[dim];
+		Sort[] types = new Sort[dim];
+		Symbol[] symbols = new Symbol[dim];
+		
+		try {
+			for (int i = 0; i < vars.length; i++) {
+				symbols[i] = allSymbols[i];
+				vars[i] = (IntExpr) context.mkBound(vars.length - i - 1, context.getIntSort());
+				types[i] = context.getIntSort();
+			}
+			
+			refIndex.clear();
+			Set<DataCategory> set1 = condition1.getDataCategories();
+			Set<DataCategory> set2 = condition2.getDataCategories();
+			for (DataCategory category : set1) {
+				int index = refIndex.size();
+				refIndex.put(category, index);
+			}
+			for (DataCategory category : set2) {
+				int index = refIndex.size();
+				refIndex.put(category, index);
+			}
+			
+			BoolExpr pre = buildExpression(condition1.getExpression(), vars);
+			BoolExpr post = buildExpression(condition2.getExpression(), vars);
+			BoolExpr implies = context.mkImplies(pre, post);
+			BoolExpr condition = context.mkForall(types, symbols, implies, 0, null, null, null, null);
+			
+			//	logger.info(condition.toString());
+			Solver solver = context.mkSolver();
+			solver.add(condition);
+			Status status = solver.check();
+			return status.equals(Status.SATISFIABLE);
+		} catch (Z3Exception e) {
+			logger.error("", e);
+			return false;
+		}
+
+	}
+	
+	private static BoolExpr buildExpression(Expression<DataCategory> expression, IntExpr[] vars) throws Z3Exception {
+		ExpressionTypes type = expression.getExpressionType();
+		if (Expression.ExpressionTypes.binaryComparison.equals(type)) {
+			return buildExpression((BinaryComparison) expression, vars);
+		}
+		else if (Expression.ExpressionTypes.binaryPredicate.equals(type)) {
+			return buildExpression((BinaryPredicate) expression, vars);
+		}
+		return null;
+	}
+	
+	private static BoolExpr buildExpression(BinaryPredicate expression, IntExpr[] vars) throws Z3Exception {
+		List<Expression<DataCategory>> expressions = expression.getExpressionList();
+		binaryPredicateTypes type = expression.getPredicateType();
+		
+		if (BinaryPredicate.binaryPredicateTypes.not.equals(type)) {
+			return context.mkNot(buildExpression(expressions.get(0), vars));
+		}
+		
+		List<BoolExpr> exprs = new ArrayList<>();
+		for (Expression<DataCategory> expr : expressions) {
+			exprs.add(buildExpression(expr, vars));
+		}
+		if (BinaryPredicate.binaryPredicateTypes.and.equals(type)) {
+			return context.mkAnd(exprs.toArray(new BoolExpr[exprs.size()]));
+		}
+		else if (BinaryPredicate.binaryPredicateTypes.or.equals(type)) {
+			return context.mkOr(exprs.toArray(new BoolExpr[exprs.size()]));
+		}
+		return null;
+	}
+	
+	private static BoolExpr buildExpression(BinaryComparison expression, IntExpr[] vars) throws Z3Exception {
+		Expression<DataCategory> left = expression.getLeftExpression();
+		Expression<DataCategory> right = expression.getRightExpression();
+		String type = expression.getComparisonType().toString();
+		
+		ArithExpr lexpr = buildArithExpr(left, vars);
+		ArithExpr rexpr = buildArithExpr(right, vars);
+		BoolExpr expr = null;
+		switch(type) {
+		case "EqualTo":
+			expr = context.mkEq(lexpr, rexpr);
+			break;
+		case "LessThan":
+			expr = context.mkLt(lexpr, rexpr);
+			break;
+		case "LessThanOrEqual":
+			expr = context.mkLe(lexpr, rexpr);
+			break;
+		case "GreaterThan":
+			expr = context.mkGt(lexpr, rexpr);
+			break;
+		case "GreaterThanOrEqual":
+			expr = context.mkGe(lexpr, rexpr);
+			break;
+		}
+		
+		return expr;
+	}
+	
+	private static ArithExpr buildArithExpr(Expression<DataCategory> expression, IntExpr[] vars) throws Z3Exception {
+		ExpressionTypes type = expression.getExpressionType();
+		if (Expression.ExpressionTypes.function.equals(type)) {
+			return buildArithExpr((Function) expression, vars);
+		}
+		else if (Expression.ExpressionTypes.term.equals(type)) {
+			return buildArithExpr((Term) expression, vars);
+		}
+		return null;
+	}
+	
+	private static ArithExpr buildArithExpr(Function func, IntExpr[] vars) throws Z3Exception {
+		Expression<DataCategory> left = func.getLeftExpression();
+		Expression<DataCategory> right = func.getRightExpression();
+		String type = func.getFunctionType().toString();
+		
+		ArithExpr lexpr = buildArithExpr(left, vars);
+		ArithExpr rexpr = buildArithExpr(right, vars);
+		ArithExpr expr = null;
+		switch(type) {
+		case "add":
+			expr = context.mkAdd(lexpr, rexpr);
+			break;
+		case "subtract":
+			expr = context.mkSub(lexpr, rexpr);
+			break;
+		case "multiply":
+			expr = context.mkMul(lexpr, rexpr);
+			break;
+		case "divide":
+			expr = context.mkDiv(lexpr, rexpr);
+			break;
+		case "remainder":
+			expr = context.mkMod((IntExpr)lexpr, (IntExpr)rexpr);
+			break;
+		}
+		
+		return expr;
+	}
+	
+	private static ArithExpr buildArithExpr(Term term, IntExpr[] vars) throws Z3Exception {
+		TermTypes type = term.getTermType();
+		ArithExpr expr = null;
+		
+		if (Term.TermTypes.value.equals(type)) {
+			expr = (ArithExpr) context.mkNumeral(term.getData(), context.getIntSort());
+		}
+		else if (Term.TermTypes.dataCategory.equals(type)) {
+			int index = refIndex.get(term.getDataCategory());
+			expr = vars[index];
+		}
+		return expr;
 	}
 }

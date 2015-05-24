@@ -171,7 +171,78 @@
 		</sequence>
 	</complexType>
 
-
+	<complexType name="orType">
+		<sequence>
+			<element name="and" type="tns:andType" minOccurs="0" maxOccurs="unbounded"></element>
+			<element name="predicate" minOccurs="0" maxOccurs="unbounded"></element>
+		</sequence>
+		<attribute name="value" type="boolean" default="true"></attribute>
+	</complexType>
+	
+	<complexType name="andType">
+		<sequence>
+			<element name="or" type="tns:orType" minOccurs="0" maxOccurs="unbounded"></element>
+			<element name="predicate" minOccurs="0" maxOccurs="unbounded"></element>
+		</sequence>
+		<attribute name="value" type="boolean" default="true"></attribute>
+	</complexType>
+	
+	<complexType name="functionType">
+		<sequence>
+			<element name="function" type="tns:functionType" minOccurs="0" maxOccurs="2"></element>
+			<element name="data-category-ref" type="tns:dataCategoryRefType"
+							minOccurs="0" maxOccurs="1"></element>
+		</sequence>
+		<attribute name="name" default="ret">
+			<simpleType>
+				<restriction base="string">
+					<enumeration value="ret"></enumeration>
+					<enumeration value="+"></enumeration>
+					<enumeration value="-"></enumeration>
+					<enumeration value="*"></enumeration>
+					<enumeration value="/"></enumeration>
+					<enumeration value="%"></enumeration>
+				</restriction>
+			</simpleType>	
+		</attribute>
+		<attribute name="type" default="func">
+			<simpleType>
+				<restriction base="string">
+					<enumeration value="func"></enumeration>
+					<enumeration value="dataref"></enumeration>
+					<enumeration value="value"></enumeration>
+				</restriction>
+			</simpleType>		
+		</attribute>
+	</complexType>
+	
+	<complexType name="filterType">
+		<!-- <attribute name="permitNull" use="required" type="string"></attribute> -->
+		<choice>
+			<element name="and" type="tns:andType" minOccurs="0" maxOccurs="1"></element>
+			<element name="or" type="tns:orType" minOccurs="0" maxOccurs="1"></element>
+		</choice>
+	</complexType>
+	
+	<complexType name="predicateType">
+		<sequence>
+			<element name="operator" minOccurs="1" maxOccurs="1">
+				<simpleType>
+					<restriction base="string">
+						<enumeration value="eq"></enumeration>
+						<enumeration value="neq"></enumeration>
+						<enumeration value="gt"></enumeration>
+						<enumeration value="lt"></enumeration>
+						<enumeration value="ge"></enumeration>
+						<enumeration value="le"></enumeration>
+					</restriction>
+				</simpleType>	
+			</element>
+			<element name="function" type="tns:functionType" minOccurs="2" maxOccurs="2"></element>
+		</sequence>
+		<attribute name="value" type="boolean" default="true"></attribute>
+	</complexType>
+	
 	<complexType name="restrictionType">
 		<choice>
 			<element name="desensitize" minOccurs="1" maxOccurs="unbounded">
@@ -194,6 +265,7 @@
 				</unique>
 			</element>
 			<element name="forbid"></element>
+			<element name="filter" type="tns:filterType"></element>
 		</choice>
 	</complexType>
 

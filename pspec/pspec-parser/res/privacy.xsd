@@ -196,6 +196,83 @@
 		</choice>
 	</complexType>
 
+	<complexType name="orType">
+		<sequence>
+			<element name="and" type="tns:andType" minOccurs="0" maxOccurs="unbounded"></element>
+			<element name="comparison" type="tns:compareType" minOccurs="0" maxOccurs="unbounded"></element>
+			<element name="not" type="tns:notType" minOccurs="0" maxOccurs="unbounded"></element>
+		</sequence>
+	</complexType>
+	
+	<complexType name="andType">
+		<sequence>
+			<element name="or" type="tns:orType" minOccurs="0" maxOccurs="unbounded"></element>
+			<element name="comparison" type="tns:compareType" minOccurs="0" maxOccurs="unbounded"></element>
+			<element name="not" type="tns:notType" minOccurs="0" maxOccurs="unbounded"></element>
+		</sequence>
+	</complexType>
+	
+	<complexType name="notType">
+		<choice>
+			<element name="and" type="tns:andType" minOccurs="1" maxOccurs="1"></element>
+			<element name="or" type="tns:orType" minOccurs="1" maxOccurs="1"></element>
+			<element name="comparison" type="tns:compareType" minOccurs="1" maxOccurs="1"></element>
+		</choice>
+	</complexType>
+	
+	<complexType name="termType">
+		<choice>
+			<element name="value" minOccurs="1" maxOccurs="1"></element>
+			<element name="data-category" minOccurs="1" maxOccurs="1"></element>
+		</choice>
+	</complexType>
+	
+	<complexType name="functionType">
+		<sequence>
+			<element name="function" type="tns:functionType" minOccurs="0" maxOccurs="2"></element>
+			<element name="term" type="tns:termType" minOccurs="0" maxOccurs="2"></element>
+		</sequence>
+		<attribute name="name">
+			<simpleType>
+				<restriction base="string">
+					<enumeration value="+"></enumeration>
+					<enumeration value="-"></enumeration>
+					<enumeration value="*"></enumeration>
+					<enumeration value="/"></enumeration>
+					<enumeration value="%"></enumeration>
+				</restriction>
+			</simpleType>	
+		</attribute>
+	</complexType>
+	
+	<complexType name="filterType">
+		<!-- <attribute name="permitNull" use="required" type="string"></attribute> -->
+		<choice>
+			<element name="and" type="tns:andType" minOccurs="0" maxOccurs="1"></element>
+			<element name="or" type="tns:orType" minOccurs="0" maxOccurs="1"></element>
+			<element name="not" type="tns:notType" minOccurs="0" maxOccurs="1"></element>
+		</choice>
+	</complexType>
+	
+	<complexType name="compareType">
+		<sequence>
+			<element name="operator" minOccurs="1" maxOccurs="1">
+				<simpleType>
+					<restriction base="string">
+						<enumeration value="eq"></enumeration>
+						<enumeration value="gt"></enumeration>
+						<enumeration value="lt"></enumeration>
+						<enumeration value="ge"></enumeration>
+						<enumeration value="le"></enumeration>
+					</restriction>
+				</simpleType>	
+			</element>
+			<sequence>
+				<element name="function" type="tns:functionType" minOccurs="0" maxOccurs="2"></element>
+				<element name="term" type="tns:termType" minOccurs="0" maxOccurs="2"></element>
+			</sequence>
+		</sequence>
+	</complexType>
 
 	<complexType name="ruleType">
 		<complexContent>
@@ -214,13 +291,18 @@
 							</unique>
 						</element>
 					</choice>
-					<element name="restriction" type="tns:restrictionType"
-						maxOccurs="unbounded">
-						<unique name="uniqueRestrictedDataCategory">
-							<selector xpath="tns:desensitize/tns:data-category-ref"></selector>
-							<field xpath="@refid"></field>
-						</unique>
-					</element>
+					<choice>
+						<element name="restriction" type="tns:restrictionType"
+							maxOccurs="unbounded">
+							<unique name="uniqueRestrictedDataCategory">
+								<selector xpath="tns:desensitize/tns:data-category-ref"></selector>
+								<field xpath="@refid"></field>
+							</unique>
+						</element>
+						<element name="filter" type="tns:filterType"
+							maxOccurs="1">
+						</element>
+					</choice>
 				</sequence>
 			</extension>
 		</complexContent>
