@@ -29,7 +29,11 @@ public class HierarchicalObject<T extends HierarchicalObject<T>> extends Describ
 	public T getParent() {
 		return parent;
 	}
-
+	
+	public void setChildren(List<T> children) {
+		this.children = children;;
+	}
+	
 	public List<T> getChildren() {
 		return children;
 	}

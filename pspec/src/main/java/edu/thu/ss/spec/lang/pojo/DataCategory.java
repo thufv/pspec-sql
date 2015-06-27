@@ -20,6 +20,14 @@ import edu.thu.ss.spec.util.SetUtil;
  */
 public class DataCategory extends Category<DataCategory> {
 
+	public DataCategory() {
+	}
+
+	public DataCategory(String id, String containerId) {
+		this.id = id;
+		this.containerId = containerId;
+	}
+
 	/**
 	 * all supported {@link DesensitizeOperation} for the data category
 	 */
