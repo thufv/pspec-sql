@@ -51,7 +51,6 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 		URI uri = null;
 		try {
 			// load document
-			policyDoc = XMLUtil.parseDocument(XMLUtil.toUri(path), Meta_Schema_Location);
 			uri = XMLUtil.toUri(path);
 			MetaRegistry parsed = MetaManager.get(uri);
 			if (parsed != null) {
@@ -59,7 +58,7 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 				return parsed;
 			}
 			registry.setPath(uri);
-			policyDoc = XMLUtil.parseDocument(uri, Meta_Schema_Location);
+			policyDoc = XMLUtil.parseDocument(XMLUtil.toUri(path), Meta_Schema_Location);
 		} catch (Exception e) {
 			throw new ParsingException("Fail to load meta file at :" + path, e);
 		}

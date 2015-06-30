@@ -28,7 +28,7 @@ public class PolicyWriter implements ParserConstant {
 		Element root = document.createElement(Ele_Policy);
 		document.appendChild(root);
 
-		root.setAttribute(ParserConstant.Attr_XMLNs, XMLNs);
+		root.setAttribute(ParserConstant.Attr_XMLNs, "xmlns");
 
 		Info info = policy.getInfo();
 		Element infoEle = info.outputType(document, Ele_Policy_Info);

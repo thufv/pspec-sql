@@ -34,36 +34,36 @@ object DefaultOptimizer extends Optimizer {
   val batches =
     Batch("Combine Limits", FixedPoint(100),
       CombineLimits) ::
-    Batch("ConstantFolding", FixedPoint(100),
-      NullPropagation,
-      ConstantFolding,
-      LikeSimplification,
-      BooleanSimplification,
-      SimplifyFilters,
-      SimplifyCasts,
-      SimplifyCaseConversionExpressions,
-      OptimizeIn) ::
-    Batch("Decimal Optimizations", FixedPoint(100),
-      DecimalAggregates) ::
-    Batch("Filter Pushdown", FixedPoint(100),
-      UnionPushdown,
-      CombineFilters,
-      PushPredicateThroughProject,
-      PushPredicateThroughJoin,
-      PushPredicateThroughGenerate,
-      ColumnPruning) ::
-    Batch("LocalRelation", FixedPoint(100),
-      ConvertToLocalRelation) :: Nil
+      Batch("ConstantFolding", FixedPoint(100),
+        NullPropagation,
+        ConstantFolding,
+        LikeSimplification,
+        BooleanSimplification,
+        SimplifyFilters,
+        SimplifyCasts,
+        SimplifyCaseConversionExpressions,
+        OptimizeIn) ::
+        Batch("Decimal Optimizations", FixedPoint(100),
+          DecimalAggregates) ::
+          Batch("Filter Pushdown", FixedPoint(100),
+            UnionPushdown,
+            CombineFilters,
+            PushPredicateThroughProject,
+            PushPredicateThroughJoin,
+            PushPredicateThroughGenerate,
+            ColumnPruning) ::
+            Batch("LocalRelation", FixedPoint(100),
+              ConvertToLocalRelation) :: Nil
 }
 
 /**
-  *  Pushes operations to either side of a Union.
-  */
+ *  Pushes operations to either side of a Union.
+ */
 object UnionPushdown extends Rule[LogicalPlan] {
 
   /**
-    *  Maps Attributes from the left side to the corresponding Attribute on the right side.
-    */
+   *  Maps Attributes from the left side to the corresponding Attribute on the right side.
+   */
   def buildRewrites(union: Union): AttributeMap[Attribute] = {
     assert(union.left.output.size == union.right.output.size)
 
@@ -71,10 +71,10 @@ object UnionPushdown extends Rule[LogicalPlan] {
   }
 
   /**
-    *  Rewrites an expression so that it can be pushed to the right side of a Union operator.
-    *  This method relies on the fact that the output attributes of a union are always equal
-    *  to the left child's output.
-    */
+   *  Rewrites an expression so that it can be pushed to the right side of a Union operator.
+   *  This method relies on the fact that the output attributes of a union are always equal
+   *  to the left child's output.
+   */
   def pushToRight[A <: Expression](e: A, rewrites: AttributeMap[Attribute]): A = {
     val result = e transform {
       case a: Attribute => rewrites(a)
@@ -102,7 +102,6 @@ object UnionPushdown extends Rule[LogicalPlan] {
   }
 }
 
-
 /**
  * Attempts to eliminate the reading of unneeded columns from the query plan using the following
  * transformations:
@@ -119,8 +118,7 @@ object ColumnPruning extends Rule[LogicalPlan] {
     case a @ Aggregate(_, _, child) if (child.outputSet -- a.references).nonEmpty =>
       a.copy(child = Project(a.references.toSeq, child))
 
-    case p @ Project(projectList, a @ Aggregate(groupingExpressions, aggregateExpressions, child))
-        if (a.outputSet -- p.references).nonEmpty =>
+    case p @ Project(projectList, a @ Aggregate(groupingExpressions, aggregateExpressions, child)) if (a.outputSet -- p.references).nonEmpty =>
       Project(
         projectList,
         Aggregate(
@@ -284,9 +282,9 @@ object ConstantFolding extends Rule[LogicalPlan] {
 
       // Fold "literal in (item1, item2, ..., literal, ...)" into true directly.
       case In(Literal(v, _), list) if list.exists {
-          case Literal(candidate, _) if candidate == v => true
-          case _ => false
-        } => Literal(true, BooleanType)
+        case Literal(candidate, _) if candidate == v => true
+        case _ => false
+      } => Literal(true, BooleanType)
     }
   }
 }
@@ -299,8 +297,8 @@ object OptimizeIn extends Rule[LogicalPlan] {
   def apply(plan: LogicalPlan): LogicalPlan = plan transform {
     case q: LogicalPlan => q transformExpressionsDown {
       case In(v, list) if !list.exists(!_.isInstanceOf[Literal]) =>
-          val hSet = list.map(e => e.eval(null))
-          InSet(v, HashSet() ++ hSet)
+        val hSet = list.map(e => e.eval(null))
+        InSet(v, HashSet() ++ hSet)
     }
   }
 }
@@ -351,7 +349,7 @@ object BooleanSimplification extends Rule[LogicalPlan] with PredicateHelper {
               (common + And(ldiff.reduce(Or), rdiff.reduce(Or))).reduce(Or)
             }
           }
-      }  // end of And(left, right)
+      } // end of And(left, right)
 
       case or @ Or(left, right) => (left, right) match {
         // true || r  =>  true
@@ -366,11 +364,11 @@ object BooleanSimplification extends Rule[LogicalPlan] with PredicateHelper {
         case (l, r) if l fastEquals r => l
         // (a && b) || (a && c)  =>  a && (b || c)
         case _ =>
-           // 1. Split left and right to get the conjunctive predicates,
-           //   i.e.  lhsSet = (a, b), rhsSet = (a, c)
-           // 2. Find the common predict between lhsSet and rhsSet, i.e. common = (a)
-           // 3. Remove common predict from lhsSet and rhsSet, i.e. ldiff = (b), rdiff = (c)
-           // 4. Apply the formula, get the optimized predicate: common && (ldiff || rdiff)
+          // 1. Split left and right to get the conjunctive predicates,
+          //   i.e.  lhsSet = (a, b), rhsSet = (a, c)
+          // 2. Find the common predict between lhsSet and rhsSet, i.e. common = (a)
+          // 3. Remove common predict from lhsSet and rhsSet, i.e. ldiff = (b), rdiff = (c)
+          // 4. Apply the formula, get the optimized predicate: common && (ldiff || rdiff)
           val lhsSet = splitConjunctivePredicates(left).toSet
           val rhsSet = splitConjunctivePredicates(right).toSet
           val common = lhsSet.intersect(rhsSet)
@@ -389,7 +387,7 @@ object BooleanSimplification extends Rule[LogicalPlan] with PredicateHelper {
               (common + Or(ldiff.reduce(And), rdiff.reduce(And))).reduce(And)
             }
           }
-      }  // end of Or(left, right)
+      } // end of Or(left, right)
 
       case not @ Not(exp) => exp match {
         // not(true)  =>  false
@@ -407,7 +405,7 @@ object BooleanSimplification extends Rule[LogicalPlan] with PredicateHelper {
         // not(not(e))  =>  e
         case Not(e) => e
         case _ => not
-      }  // end of Not(exp)
+      } // end of Not(exp)
 
       // if (true) a else b  =>  a
       // if (false) a else b  =>  b
@@ -451,8 +449,9 @@ object SimplifyFilters extends Rule[LogicalPlan] {
 object PushPredicateThroughProject extends Rule[LogicalPlan] {
   def apply(plan: LogicalPlan): LogicalPlan = plan transform {
     case filter @ Filter(condition, project @ Project(fields, grandChild)) =>
-      val sourceAliases = fields.collect { case a @ Alias(c, _) =>
-        (a.toAttribute: Attribute) -> c
+      val sourceAliases = fields.collect {
+        case a @ Alias(c, _) =>
+          (a.toAttribute: Attribute) -> c
       }.toMap
       project.copy(child = filter.copy(
         replaceAlias(condition, sourceAliases),
@@ -474,7 +473,7 @@ object PushPredicateThroughGenerate extends Rule[LogicalPlan] with PredicateHelp
 
   def apply(plan: LogicalPlan): LogicalPlan = plan transform {
     case filter @ Filter(condition,
-    generate @ Generate(generator, join, outer, alias, grandChild)) =>
+      generate @ Generate(generator, join, outer, alias, grandChild)) =>
       // Predicates that reference attributes produced by the `Generate` operator cannot
       // be pushed below the operator.
       val (pushDown, stayUp) = splitConjunctivePredicates(condition).partition {
@@ -508,9 +507,9 @@ object PushPredicateThroughJoin extends Rule[LogicalPlan] with PredicateHelper {
    */
   private def split(condition: Seq[Expression], left: LogicalPlan, right: LogicalPlan) = {
     val (leftEvaluateCondition, rest) =
-        condition.partition(_.references subsetOf left.outputSet)
+      condition.partition(_.references subsetOf left.outputSet)
     val (rightEvaluateCondition, commonCondition) =
-        rest.partition(_.references subsetOf right.outputSet)
+      rest.partition(_.references subsetOf right.outputSet)
 
     (leftEvaluateCondition, rightEvaluateCondition, commonCondition)
   }
@@ -541,7 +540,7 @@ object PushPredicateThroughJoin extends Rule[LogicalPlan] with PredicateHelper {
 
           (leftFilterConditions ++ commonFilterCondition).
             reduceLeftOption(And).map(Filter(_, newJoin)).getOrElse(newJoin)
-        case _ @ (LeftOuter | LeftSemi) =>
+        case _@ (LeftOuter | LeftSemi) =>
           // push down the left side only `where` condition
           val newLeft = leftFilterConditions.
             reduceLeftOption(And).map(Filter(_, left)).getOrElse(left)
@@ -577,7 +576,7 @@ object PushPredicateThroughJoin extends Rule[LogicalPlan] with PredicateHelper {
           val newJoinCond = (rightJoinConditions ++ commonJoinCondition).reduceLeftOption(And)
 
           Join(newLeft, newRight, RightOuter, newJoinCond)
-        case _ @ (LeftOuter | LeftSemi) =>
+        case _@ (LeftOuter | LeftSemi) =>
           // push down the right side only join filter for right sub query
           val newLeft = left
           val newRight = rightJoinConditions.
@@ -656,7 +655,7 @@ object DecimalAggregates extends Rule[LogicalPlan] {
  */
 object ConvertToLocalRelation extends Rule[LogicalPlan] {
   def apply(plan: LogicalPlan): LogicalPlan = plan transform {
-    case Project(projectList, LocalRelation(output, data)) =>
+    case Project(projectList, LocalRelation(output, data, _, _)) =>
       val projection = new InterpretedProjection(projectList, output)
       LocalRelation(projectList.map(_.toAttribute), data.map(projection))
   }

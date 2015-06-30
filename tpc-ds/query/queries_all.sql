@@ -7,6 +7,7 @@
 --1. 去掉所有的top
 --start query 1 using template query1.tpl
 -- @public
+
 WITH customer_total_return AS (
         SELECT
                 sr_customer_sk AS ctr_customer_sk

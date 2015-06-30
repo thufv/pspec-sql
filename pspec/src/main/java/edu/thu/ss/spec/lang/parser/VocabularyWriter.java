@@ -25,7 +25,7 @@ public class VocabularyWriter implements ParserConstant {
 		Element root = document.createElement(Ele_Vocabulary);
 		document.appendChild(root);
 
-		root.setAttribute(ParserConstant.Attr_XMLNs, XMLNs);
+		root.setAttribute(ParserConstant.Attr_XMLNs, "xmlns");
 
 		if (vocabulary.getBase() != null) {
 			root.setAttribute(Attr_Vocabulary_Base, vocabulary.getBase().toString());

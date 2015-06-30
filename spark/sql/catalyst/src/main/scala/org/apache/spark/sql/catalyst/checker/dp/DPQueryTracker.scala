@@ -58,6 +58,8 @@ import org.apache.spark.sql.catalyst.structure.RedBlackBST.Node
 import org.apache.spark.sql.types.IntegralType
 import org.apache.spark.sql.types.FractionalType
 import com.microsoft.z3.Sort
+import scala.collection.mutable.PriorityQueue
+import scala.collection.mutable.DoubleLinkedList
 
 /**
  * tracking submitted dp-enabled queries for parallel composition theorem
@@ -66,7 +68,7 @@ class DPQueryTracker[T <: DPPartition] private[dp] (budget: DPBudgetManager, lim
   extends QueryTracker(budget) with Logging {
 
   protected val context = new Context;
-  protected val partitions = new Queue[T];
+  protected val partitions = new ListBuffer[T];
 
   private val EmptyRange = Map.empty[String, Range];
 
@@ -115,7 +117,7 @@ class DPQueryTracker[T <: DPPartition] private[dp] (budget: DPBudgetManager, lim
   protected def resolveRange(plan: Aggregate, columnAttrs: => Map[String, Seq[String]]) = EmptyRange;
 
   protected def beforeCommit() {
-    pi = partitions.reverseIterator;
+    pi = partitions.iterator;
 
   }
 
@@ -137,15 +139,20 @@ class DPQueryTracker[T <: DPPartition] private[dp] (budget: DPBudgetManager, lim
   }
 
   protected def commitByConstraint(query: DPQuery) {
-
+    var checked = 0;
     var found = false;
-    while (!found && pi.hasNext) {
+    val start = System.currentTimeMillis();
+    while (!found && pi.hasNext && checked < limit) {
       val partition = pi.next;
-      if (partition.disjoint(query)) {
-        found = true;
-        updatePartition(partition, query);
+      if (partition.shareColumns(query)) {
+        if (partition.disjoint(query)) {
+          found = true;
+          updatePartition(partition, query);
+        }
+        checked += 1;
       }
     }
+    println(s"checked $checked partitions in ${System.currentTimeMillis()-start}ms");
     if (!found) {
       tmpPartitions.append(query);
     }
@@ -156,16 +163,24 @@ class DPQueryTracker[T <: DPPartition] private[dp] (budget: DPBudgetManager, lim
 
     val partition = partitionBuilder(context);
     partition.add(query);
-    this.partitions.enqueue(partition);
-    if (this.partitions.length > limit) {
-      this.partitions.dequeue;
-    }
+
+    partitions.prepend(partition);
+
     logWarning("fail to locate a disjoint partition, create a new one");
     return partition;
   }
 
   protected def updatePartition(partition: T, query: DPQuery) {
     partition.add(query);
+
+    partitions -= (partition);
+    val index = partitions.indexWhere(partition.getQueries.length < _.getQueries.length);
+    if (index >= 0) {
+      partitions.insert(index, partition);
+    } else {
+      partitions.append(partition);
+    }
+
     stat.onSuccess;
   }
 

@@ -17,9 +17,9 @@
 
 package org.apache.spark.sql.catalyst.plans
 
-import org.apache.spark.sql.catalyst.expressions.{Attribute, AttributeSet, Expression}
+import org.apache.spark.sql.catalyst.expressions.{ Attribute, AttributeSet, Expression }
 import org.apache.spark.sql.catalyst.trees.TreeNode
-import org.apache.spark.sql.types.{ArrayType, DataType, StructField, StructType}
+import org.apache.spark.sql.types.{ ArrayType, DataType, StructField, StructType }
 
 abstract class QueryPlan[PlanType <: TreeNode[PlanType]] extends TreeNode[PlanType] {
   self: PlanType with Product =>
@@ -77,10 +77,16 @@ abstract class QueryPlan[PlanType <: TreeNode[PlanType]] extends TreeNode[PlanTy
       }
     }
 
+    productIterator.foreach(a=>{
+      if(a==null){
+        println(this);
+      }
+    });
+    
     val newArgs = productIterator.map {
       case e: Expression => transformExpressionDown(e)
       case Some(e: Expression) => Some(transformExpressionDown(e))
-      case m: Map[_,_] => m
+      case m: Map[_, _] => m
       case seq: Traversable[_] => seq.map {
         case e: Expression => transformExpressionDown(e)
         case other => other
@@ -112,7 +118,7 @@ abstract class QueryPlan[PlanType <: TreeNode[PlanType]] extends TreeNode[PlanTy
     val newArgs = productIterator.map {
       case e: Expression => transformExpressionUp(e)
       case Some(e: Expression) => Some(transformExpressionUp(e))
-      case m: Map[_,_] => m
+      case m: Map[_, _] => m
       case seq: Traversable[_] => seq.map {
         case e: Expression => transformExpressionUp(e)
         case other => other
@@ -123,8 +129,10 @@ abstract class QueryPlan[PlanType <: TreeNode[PlanType]] extends TreeNode[PlanTy
     if (changed) makeCopy(newArgs) else this
   }
 
-  /** Returns the result of running [[transformExpressions]] on this node
-    * and all its children. */
+  /**
+   * Returns the result of running [[transformExpressions]] on this node
+   * and all its children.
+   */
   def transformAllExpressions(rule: PartialFunction[Expression, Expression]): this.type = {
     transform {
       case q: QueryPlan[_] => q.transformExpressions(rule).asInstanceOf[PlanType]

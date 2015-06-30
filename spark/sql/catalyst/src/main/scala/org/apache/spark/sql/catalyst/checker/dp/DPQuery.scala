@@ -63,7 +63,7 @@ object DPPartition {
 /**
  * a partition represents a set of disjoint queries, the total privacy cost takes the maximum
  */
-abstract class DPPartition(val context: Context, val budget: DPBudgetManager) extends Equals {
+abstract class DPPartition(val context: Context, val budget: DPBudgetManager) extends Equals with Comparable[DPPartition] {
   private val id = DPPartition.getId;
 
   private val queries = new ArrayBuffer[DPQuery];
@@ -82,6 +82,10 @@ abstract class DPPartition(val context: Context, val budget: DPBudgetManager) ex
   def getQueries = queries;
 
   def getId = id;
+
+  def compareTo(that: DPPartition): Int = {
+    return Integer.compare(queries.length, that.queries.length);
+  }
 
   def add(query: DPQuery) {
     queries.append(query);
@@ -106,11 +110,11 @@ abstract class DPPartition(val context: Context, val budget: DPBudgetManager) ex
     return range.disjoint(that);
   }
 
-  def disjoint(query: DPQuery): Boolean = {
-    if (query.columns.forall(!columns.contains(_))) {
-      return false;
-    }
+  def shareColumns(query: DPQuery): Boolean = {
+    return query.columns.exists(columns.contains(_));
+  }
 
+  def fastDisjoint(query: DPQuery): Boolean = {
     query.ranges.foreach(t => {
       val column = t._1;
       val range = t._2;
@@ -118,7 +122,10 @@ abstract class DPPartition(val context: Context, val budget: DPBudgetManager) ex
         return true;
       }
     });
+    return false;
+  }
 
+  def disjoint(query: DPQuery): Boolean = {
     val cond = context.mkAnd(constraint, query.constraint);
     return !satisfiable(cond, context);
   }

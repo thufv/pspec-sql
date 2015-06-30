@@ -248,7 +248,7 @@ class IndexedQueryTracker[T <: DPPartition](budget: DPBudgetManager, limit: Int,
       if (index != null) {
         val partition = index.lookupDisjoint(range.asInstanceOf[index.RangeType]);
         if (partition != null) {
-          assert(partition.disjoint(query));
+          // assert(partition.disjoint(query));
 
           logWarning("find disjoint partition with index, no SMT solving needed");
           updatePartition(partition, query);

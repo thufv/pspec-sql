@@ -34,7 +34,7 @@
 -- Gradient Systems
 --
 
-CREATE TABLE `adult`
+CREATE TABLE `adult` IF NOT EXIST
 (
    `age`              int,
    `workclass`        varchar(45),

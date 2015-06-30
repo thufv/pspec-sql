@@ -301,7 +301,7 @@ class SMTModel {
   }
 }
 
-private object SMTBuilder{
+private object SMTBuilder {
   private val constants = new HashMap[String, Int];
 
   private var constantId = 0;
@@ -318,7 +318,7 @@ private object SMTBuilder{
       }
     }
   }
-  
+
 }
 
 /**
@@ -460,7 +460,6 @@ private class SMTBuilder(val context: Context) extends Logging {
               }
             }
           });
-          leaf.output.map(getAttributeString(_, leaf));
           model.addTable(table, attributes);
           leaf.output.foreach(initializeVariable(_, leaf, table));
         }

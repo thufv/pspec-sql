@@ -64,8 +64,5 @@ public interface ParserConstant {
 
 	public static final String Privacy_Schema_Location = "res/privacy.xsd";
 
-	public static final String Meta_Schema_Location = "res/meta.xsd";
-
-	public static final String XMLNs = "http://www.example.org/privacy";
 
 }

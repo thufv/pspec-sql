@@ -61,13 +61,21 @@ class TrackerStatistics private () {
 
   def endConstraintSolving {
     val time = System.currentTimeMillis() - startTime;
-    constraintSolvingTime += time;
+    if (time < 20 * 1000) {
+      constraintSolvingTime += time;
+    } else {
+      println(s"warning: too long for constraint solving $time ms");
+    }
     //    trackingTimes.append(time.toInt);
   }
 
   def endIndexHitting {
     val time = System.currentTimeMillis() - startTime;
-    indexHittingTime += time;
+    if (time < 20 * 1000) {
+      indexHittingTime += time;
+    } else {
+      println(s"warning: too long for index hitting $time ms");
+    }
     //   trackingTimes.append(time.toInt);
   }
 

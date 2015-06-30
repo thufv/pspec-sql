@@ -35,7 +35,7 @@ object LocalRelation {
   }
 }
 
-case class LocalRelation(output: Seq[Attribute], data: Seq[Row] = Nil)
+case class LocalRelation(output: Seq[Attribute], data: Seq[Row] = Nil, databaseName:String=null, tableName:String=null)
   extends LeafNode with analysis.MultiInstanceRelation {
 
   /**
@@ -44,16 +44,15 @@ case class LocalRelation(output: Seq[Attribute], data: Seq[Row] = Nil)
    * query.
    */
   override final def newInstance(): this.type = {
-    LocalRelation(output.map(_.newInstance()), data).asInstanceOf[this.type]
+    LocalRelation(output.map(_.newInstance()), data, databaseName, tableName).asInstanceOf[this.type]
   }
 
   override protected def stringArgs = Iterator(output)
 
   override def sameResult(plan: LogicalPlan): Boolean = plan match {
-    case LocalRelation(otherOutput, otherData) =>
+    case LocalRelation(otherOutput, otherData,_,_) =>
       otherOutput.map(_.dataType) == output.map(_.dataType) && otherData == data
     case _ => false
   }
 
-  override def calculateLabels = null;
 }

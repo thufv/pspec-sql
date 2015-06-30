@@ -7,7 +7,7 @@ import com.microsoft.z3.Solver
 
 object Z3Example {
 
-  def main1(args: Array[String]) {
+  def main(args: Array[String]) {
     val ctx = new Context();
 
     val a = ctx.mkConst("a", ctx.getRealSort()).asInstanceOf[ArithExpr];
@@ -22,7 +22,8 @@ object Z3Example {
     val solver = ctx.mkSolver();
     solver.add(cond);
     val status = solver.check();
-
+    
+    println(solver.getHelp());
     System.out.println(status);
 
     ctx.dispose();
@@ -74,7 +75,7 @@ object Z3Example {
     ctx.dispose();
   }
 
-  def main(args: Array[String]) {
+  def mainn(args: Array[String]) {
     val ctx = new Context();
 
     val t1 = ctx.mkConst("t", ctx.getRealSort()).asInstanceOf[ArithExpr];

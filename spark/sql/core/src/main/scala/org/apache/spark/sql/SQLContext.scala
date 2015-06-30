@@ -140,7 +140,7 @@ class SQLContext(@transient val sparkContext: SparkContext)
     ddlParser(sql, false).getOrElse(sqlParser(sql))
   }
 
-  protected[sql] def executeSql(sql: String): this.QueryExecution = executePlan(parseSql(sql))
+  def executeSql(sql: String): this.QueryExecution = executePlan(parseSql(sql))
 
   protected[sql] def executePlan(plan: LogicalPlan) = new this.QueryExecution(plan)
 

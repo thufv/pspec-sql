@@ -23,6 +23,9 @@
 			<data-category-ref refid="street" action="projection"></data-category-ref>
 			<restriction>
 				<forbid></forbid>
+				<desensitize>
+          <operation>op1</operation>
+				</desensitize>
 			</restriction>
 		</rule>
 
@@ -126,7 +129,8 @@
 		</rule>
 
 		<rule id="rule13">
-			<user-category-ref refid="analyst"></user-category-ref>
+			<user-category-ref refid="analyst">
+			</user-category-ref>
 			<data-association>
 				<data-category-ref refid="qi" action="all"></data-category-ref>
 				<data-category-ref refid="price" action="all"></data-category-ref>

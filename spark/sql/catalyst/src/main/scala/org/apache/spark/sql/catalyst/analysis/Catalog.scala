@@ -50,6 +50,14 @@ trait Catalog {
 
   def registerTable(tableIdentifier: Seq[String], plan: LogicalPlan): Unit
 
+  def registerTable(database: Option[String], tableName: String, plan: LogicalPlan) {
+    if (database.isDefined) {
+      registerTable(Seq(database.get, tableName), plan);
+    } else {
+      registerTable(Seq(tableName), plan);
+    }
+  }
+
   def unregisterTable(tableIdentifier: Seq[String]): Unit
 
   def unregisterAllTables(): Unit

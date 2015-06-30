@@ -120,7 +120,6 @@ public class Z3Util {
 		List<BoolExpr> list = new ArrayList<>();
 		buildPreCondition(restrictions1, dim1, dataIncludes, dataLength, vars, varIndex, 0, list);
 		BoolExpr pre = context.mkAnd(list.toArray(new BoolExpr[list.size()]));
-
 		BoolExpr post = buildExpr(restrictions2, vars, dummyIndex);
 
 		BoolExpr implies = context.mkImplies(pre, post);
