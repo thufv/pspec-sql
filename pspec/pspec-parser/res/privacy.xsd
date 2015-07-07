@@ -64,7 +64,6 @@
 		</complexContent>
 	</complexType>
 
-
 	<complexType name="userCategoryContainerType">
 		<complexContent>
 			<extension base="tns:describedObjectType">

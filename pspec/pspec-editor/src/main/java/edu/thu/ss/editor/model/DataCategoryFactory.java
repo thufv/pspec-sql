@@ -1,4 +1,4 @@
-package edu.thu.ss.editor.CategoryFactory;
+package edu.thu.ss.editor.model;
 
 import java.util.ArrayList;
 

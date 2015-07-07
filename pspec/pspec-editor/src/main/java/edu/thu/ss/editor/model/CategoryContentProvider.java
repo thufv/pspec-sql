@@ -1,4 +1,4 @@
-package edu.thu.ss.editor.CategoryFactory;
+package edu.thu.ss.editor.model;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import org.eclipse.jface.viewers.Viewer;
 
 import edu.thu.ss.spec.lang.pojo.HierarchicalObject;
 
-public class TreeContentProvider implements IStructuredContentProvider,ITreeContentProvider {
+public class CategoryContentProvider implements IStructuredContentProvider,ITreeContentProvider {
 	
 	@SuppressWarnings("rawtypes")
 	public Object[] getElements(Object inputElement) {

@@ -1,12 +1,10 @@
-package edu.thu.ss.editor.gui;
-
-import java.awt.Dimension;
-import java.awt.Toolkit;
+package edu.thu.ss.editor.view;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -23,8 +21,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 
-import edu.thu.ss.editor.util.EditorConstant;
-import swing2swt.layout.BorderLayout;
+import edu.thu.ss.editor.util.EditorUtil;
 
 public class RuleEdit extends Dialog {
 
@@ -33,7 +30,6 @@ public class RuleEdit extends Dialog {
 	private int restrictionCount = 1;
 
 	protected Shell shell;
-	private Dimension screenSize;
 	private ScrolledComposite scrolledComposite;
 	private Composite composite_Center;
 	private Composite composite_UserRef;
@@ -62,11 +58,10 @@ public class RuleEdit extends Dialog {
 	protected void createContents() {
 		shell = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
 		shell.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		shell.setSize(screenSize.width / 2, screenSize.height / 2);
-		shell.setLocation(screenSize.width / 4, screenSize.height / 4);
+		shell.setSize(800, 600);
+		//shell.setLocation(screenSize.width / 4, screenSize.height / 4);
 		shell.setText("RuleEdit");
-		shell.setLayout(new BorderLayout(0, 0));
+		shell.setLayout(new FillLayout());
 
 		scrolledComposite = new ScrolledComposite(shell, SWT.BORDER | SWT.V_SCROLL);
 		scrolledComposite.setAlwaysShowScrollBars(true);
@@ -77,13 +72,12 @@ public class RuleEdit extends Dialog {
 		scrolledComposite.setMinSize(composite_Center.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
 		composite_Center.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		composite_Center.setLayoutData(BorderLayout.CENTER);
 		composite_Center.setLayout(new GridLayout(1, false));
 
 		//========================================================
 		composite_UserRef = new Composite(composite_Center, SWT.NONE);
 		GridData gd_composite_UserRef = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		gd_composite_UserRef.widthHint = screenSize.height * 2 / 3;
+		//	gd_composite_UserRef.widthHint = screenSize.height * 2 / 3;
 		composite_UserRef.setLayoutData(gd_composite_UserRef);
 		composite_UserRef.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		composite_UserRef.setLayout(new GridLayout(5, false));
@@ -96,7 +90,7 @@ public class RuleEdit extends Dialog {
 		Label lbl_UserRefTitle = new Label(composite_UserRef, SWT.NONE);
 		lbl_UserRefTitle.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 		lbl_UserRefTitle.setText("User reference:");
-		lbl_UserRefTitle.setFont(EditorConstant.getDefaultBoldFont());
+		lbl_UserRefTitle.setFont(EditorUtil.getDefaultBoldFont());
 		lbl_UserRefTitle.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		new Label(composite_UserRef, SWT.NONE);
 		new Label(composite_UserRef, SWT.NONE);
@@ -138,7 +132,7 @@ public class RuleEdit extends Dialog {
 		//========================================================
 		composite_DataRef = new Composite(composite_Center, SWT.NONE);
 		GridData gd_composite_DataRef = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		gd_composite_DataRef.widthHint = screenSize.height * 2 / 3;
+		//	gd_composite_DataRef.widthHint = screenSize.height * 2 / 3;
 		composite_DataRef.setLayoutData(gd_composite_DataRef);
 		composite_DataRef.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		composite_DataRef.setLayout(new GridLayout(7, false));
@@ -146,7 +140,7 @@ public class RuleEdit extends Dialog {
 		Label label_1 = new Label(composite_DataRef, SWT.NONE);
 		label_1.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 		label_1.setText("Data reference:");
-		label_1.setFont(EditorConstant.getDefaultBoldFont());
+		label_1.setFont(EditorUtil.getDefaultBoldFont());
 		label_1.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		new Label(composite_DataRef, SWT.NONE);
 		new Label(composite_DataRef, SWT.NONE);
@@ -193,7 +187,7 @@ public class RuleEdit extends Dialog {
 		//========================================================
 		composite_Restriction = new Composite(composite_Center, SWT.NONE);
 		GridData gd_composite_Restriction = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-		gd_composite_Restriction.widthHint = screenSize.height * 2 / 3;
+		//		gd_composite_Restriction.widthHint = screenSize.height * 2 / 3;
 		composite_Restriction.setLayoutData(gd_composite_Restriction);
 		composite_Restriction.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		composite_Restriction.setLayout(new GridLayout(5, false));
@@ -201,7 +195,7 @@ public class RuleEdit extends Dialog {
 		Label lblRestriction = new Label(composite_Restriction, SWT.NONE);
 		lblRestriction.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 		lblRestriction.setText("Restriction:       ");
-		lblRestriction.setFont(EditorConstant.getDefaultBoldFont());
+		lblRestriction.setFont(EditorUtil.getDefaultBoldFont());
 		lblRestriction.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		new Label(composite_Restriction, SWT.NONE);
 		new Label(composite_Restriction, SWT.NONE);
@@ -244,7 +238,6 @@ public class RuleEdit extends Dialog {
 		//========================================================
 		Composite composite_Bottom = new Composite(shell, SWT.NONE);
 		composite_Bottom.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		composite_Bottom.setLayoutData(BorderLayout.SOUTH);
 		composite_Bottom.setLayout(new FormLayout());
 
 		Button btn_OK = new Button(composite_Bottom, SWT.NONE);
@@ -273,7 +266,7 @@ public class RuleEdit extends Dialog {
 		Label lbl_UserRefID = new Label(composite_UserRef, SWT.NONE);
 		lbl_UserRefID.setText("refid:");
 		lbl_UserRefID.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_GRAY));
-		lbl_UserRefID.setFont(EditorConstant.getDefaultFont());
+		lbl_UserRefID.setFont(EditorUtil.getDefaultFont());
 		lbl_UserRefID.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 
 		Combo combo_UserRefID = new Combo(composite_UserRef, SWT.NONE);
@@ -285,7 +278,7 @@ public class RuleEdit extends Dialog {
 		Label lbl_UserEclud = new Label(composite_UserRef, SWT.NONE);
 		lbl_UserEclud.setText("exclude:");
 		lbl_UserEclud.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_GRAY));
-		lbl_UserEclud.setFont(EditorConstant.getDefaultFont());
+		lbl_UserEclud.setFont(EditorUtil.getDefaultFont());
 		lbl_UserEclud.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 
 		text_UserEclud = new Text(composite_UserRef, SWT.BORDER);
@@ -305,19 +298,19 @@ public class RuleEdit extends Dialog {
 		Label label_2 = new Label(composite_DataRef, SWT.NONE);
 		label_2.setText("refid:");
 		label_2.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_GRAY));
-		label_2.setFont(EditorConstant.getDefaultFont());
+		label_2.setFont(EditorUtil.getDefaultFont());
 		label_2.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 
 		Combo combo = new Combo(composite_DataRef, SWT.NONE);
 		GridData gd_combo = new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1);
-		gd_combo.widthHint = screenSize.height / 3;
+		//gd_combo.widthHint = screenSize.height / 3;
 		combo.setLayoutData(gd_combo);
 
 		Label label_4 = new Label(composite_DataRef, SWT.NONE);
 		label_4.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		label_4.setText("action:");
 		label_4.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_GRAY));
-		label_4.setFont(EditorConstant.getDefaultFont());
+		label_4.setFont(EditorUtil.getDefaultFont());
 		label_4.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 
 		Combo combo_2 = new Combo(composite_DataRef, SWT.NONE);
@@ -328,7 +321,7 @@ public class RuleEdit extends Dialog {
 		Label label_3 = new Label(composite_DataRef, SWT.NONE);
 		label_3.setText("exclude:");
 		label_3.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_GRAY));
-		label_3.setFont(EditorConstant.getDefaultFont());
+		label_3.setFont(EditorUtil.getDefaultFont());
 		label_3.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 
 		text_1 = new Text(composite_DataRef, SWT.BORDER);
@@ -348,7 +341,7 @@ public class RuleEdit extends Dialog {
 		Label label_3 = new Label(composite_Restriction, SWT.NONE);
 		label_3.setText("refid:");
 		label_3.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_GRAY));
-		label_3.setFont(EditorConstant.getDefaultFont());
+		label_3.setFont(EditorUtil.getDefaultFont());
 		label_3.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 
 		text_2 = new Text(composite_Restriction, SWT.BORDER);
@@ -365,7 +358,7 @@ public class RuleEdit extends Dialog {
 		Label label_4 = new Label(composite_Restriction, SWT.NONE);
 		label_4.setText("operation:");
 		label_4.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_GRAY));
-		label_4.setFont(EditorConstant.getDefaultFont());
+		label_4.setFont(EditorUtil.getDefaultFont());
 		label_4.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 
 		text_3 = new Text(composite_Restriction, SWT.BORDER);

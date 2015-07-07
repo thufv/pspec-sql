@@ -1,4 +1,4 @@
-package edu.thu.ss.editor.gui;
+package edu.thu.ss.editor.view;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 
-import edu.thu.ss.editor.util.EditorConstant;
+import edu.thu.ss.editor.util.EditorUtil;
 
 public class RuleInfo extends Dialog {
 	
@@ -68,7 +68,7 @@ public class RuleInfo extends Dialog {
 		Label lbl_RuleID = new Label(shell, SWT.NONE);
 		lbl_RuleID.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		lbl_RuleID.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lbl_RuleID.setFont(EditorConstant.getDefaultFont());
+		lbl_RuleID.setFont(EditorUtil.getDefaultFont());
 		lbl_RuleID.setText("*Rule ID:");
 		
 		text_RuleID = new Text(shell, SWT.BORDER);
@@ -85,7 +85,7 @@ public class RuleInfo extends Dialog {
 		lbl_DataCateRefType = new Label(shell, SWT.NONE);
 		lbl_DataCateRefType.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lbl_DataCateRefType.setText("Data category ref Type:");
-		lbl_DataCateRefType.setFont(EditorConstant.getDefaultFont());
+		lbl_DataCateRefType.setFont(EditorUtil.getDefaultFont());
 		lbl_DataCateRefType.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		
 		btn_Association = new Button(shell, SWT.RADIO);
@@ -104,7 +104,7 @@ public class RuleInfo extends Dialog {
 		Label lbl_RestrType = new Label(shell, SWT.NONE);
 		lbl_RestrType.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		lbl_RestrType.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lbl_RestrType.setFont(EditorConstant.getDefaultFont());
+		lbl_RestrType.setFont(EditorUtil.getDefaultFont());
 		lbl_RestrType.setText("Restriction Type:");
 		
 		btn_Desensi = new Button(shell, SWT.RADIO);
@@ -123,7 +123,7 @@ public class RuleInfo extends Dialog {
 		Label lbl_ShortDes = new Label(shell, SWT.NONE);
 		lbl_ShortDes.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		lbl_ShortDes.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lbl_ShortDes.setFont(EditorConstant.getDefaultFont());
+		lbl_ShortDes.setFont(EditorUtil.getDefaultFont());
 		lbl_ShortDes.setText("Short Description:");
 		
 		text__ShortDes = new Text(shell, SWT.BORDER);
@@ -135,7 +135,7 @@ public class RuleInfo extends Dialog {
 		Label lbl_LongDes = new Label(shell, SWT.NONE);
 		lbl_LongDes.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		lbl_LongDes.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lbl_LongDes.setFont(EditorConstant.getDefaultFont());
+		lbl_LongDes.setFont(EditorUtil.getDefaultFont());
 		lbl_LongDes.setText("Long Description:");
 		
 		text_LongDes = new Text(shell, SWT.BORDER | SWT.V_SCROLL);
