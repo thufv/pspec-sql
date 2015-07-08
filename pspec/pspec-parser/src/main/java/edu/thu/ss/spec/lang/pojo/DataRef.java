@@ -83,7 +83,7 @@ public class DataRef extends CategoryRef<DataCategory> {
 			global = Boolean.valueOf(globalValue);
 		}
 		String actionValue = XMLUtil.getAttrValue(refNode, ParserConstant.Attr_Policy_Action);
-		if (actionValue != null) {
+		if (!actionValue.isEmpty()) {
 			this.action = Action.get(actionValue);
 		}
 	}

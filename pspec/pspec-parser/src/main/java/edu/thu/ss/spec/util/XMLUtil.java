@@ -1,11 +1,13 @@
 package edu.thu.ss.spec.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,20 +70,21 @@ public class XMLUtil {
 
 		Document doc = null;
 
-		InputStream is = XMLUtil.class.getClassLoader().getResourceAsStream(uri.getPath());
-		if (is != null) {
-			//load from class path
-			doc = builder.parse(is);
+		//load from file
+		File docFile = new File(uri.getPath());
+		if (docFile.exists()) {
+			doc = builder.parse(docFile);
 		} else {
-			//load from file
-			File docFile = new File(uri.getPath());
-			if (docFile.exists()) {
-				doc = builder.parse(docFile);
+			InputStream is = XMLUtil.class.getClassLoader().getResourceAsStream(uri.getPath());
+			if (is != null) {
+				//load from class path
+				doc = builder.parse(is);
 			} else {
 				//load from absolute uri
 				doc = builder.parse(uri.toString());
 			}
 		}
+
 		Validator validator = getValidator(xsdPath);
 		if (validator != null) {
 			validator.validate(new DOMSource(doc));
@@ -98,7 +101,15 @@ public class XMLUtil {
 			return schema.newValidator();
 		}
 		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		schema = schemaFactory.newSchema(new File(xsdPath));
+
+		File schemaFile = new File(xsdPath);
+		if (schemaFile.exists()) {
+			schema = schemaFactory.newSchema(new File(xsdPath));
+		} else {
+			URL url = XMLUtil.class.getClassLoader().getResource(xsdPath);
+			schema = schemaFactory.newSchema(url);
+		}
+
 		schemas.put(xsdPath, schema);
 		return schema.newValidator();
 	}
@@ -116,7 +127,7 @@ public class XMLUtil {
 		NamedNodeMap attrs = node.getAttributes();
 		Node baseAttr = attrs.getNamedItem(attr);
 		if (baseAttr == null) {
-			return null;
+			return "";
 		}
 		return baseAttr.getNodeValue();
 	}
@@ -130,12 +141,21 @@ public class XMLUtil {
 		}
 	}
 
-	public static URI toUri(String path) throws URISyntaxException {
+	public static URI toUri(String path) {
+		if (path == null || path.isEmpty()) {
+			return null;
+		}
+
 		File file = new File(path);
 		if (file.exists()) {
 			path = file.getAbsolutePath();
 		}
-		URI uri = new URI(path.replace( '\\','/'));
+		URI uri;
+		try {
+			uri = new URI(path.replace('\\', '/'));
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
 		return uri.normalize();
 	}
 }

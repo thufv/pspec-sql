@@ -12,14 +12,17 @@ import java.util.Set;
  */
 public abstract class Category<T extends Category<T>> extends HierarchicalObject<T> {
 
-	protected String containerId;
+	protected String containerId = "";
+
+	protected CategoryContainer<T> container;
 
 	public String getContainerId() {
 		return containerId;
 	}
 
-	public void setContainerId(String containerId) {
-		this.containerId = containerId;
+	public void setContainer(CategoryContainer<T> container) {
+		this.containerId = container.id;
+		this.container = container;
 	}
 
 	/**

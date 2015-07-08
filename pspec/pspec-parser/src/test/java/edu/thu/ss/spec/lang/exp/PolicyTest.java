@@ -208,9 +208,9 @@ public class PolicyTest {
 			RuleGenerator ruleGenerator, AnalyzerStat stat, PolicyAnalyzer analyzer, int rule)
 			throws Exception {
 		CategoryManager.clear();
-		Vocabulary vocab = vocabParser.parse(vocabPath, userId, dataId);
-		ruleGenerator.setUsers(vocab.getUserContainer(userId));
-		ruleGenerator.setDatas(vocab.getDataContainer(dataId));
+		Vocabulary vocab = vocabParser.parse(vocabPath);
+		ruleGenerator.setUsers(vocab.getUserContainer());
+		ruleGenerator.setDatas(vocab.getDataContainer());
 		for (int i = 0; i < times; i++) {
 			generator.generate(ruleGenerator, rule, outputPath, vocabPath, userId, dataId);
 			LineCounter.count(outputPath, stat, i);

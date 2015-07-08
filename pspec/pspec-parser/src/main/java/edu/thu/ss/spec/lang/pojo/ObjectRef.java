@@ -13,7 +13,7 @@ import edu.thu.ss.spec.util.XMLUtil;
  *
  */
 public class ObjectRef implements Parsable, Writable {
-	protected String refid;
+	protected String refid = "";
 
 	protected boolean resolved = false;
 

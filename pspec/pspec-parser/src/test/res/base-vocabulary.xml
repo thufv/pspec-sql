@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <vocabulary xmlns="http://www.example.org/privacy" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.example.org/privacy ../res/privacy.xsd">
 	<vocabulary-information id="vocab-info">
@@ -16,11 +15,8 @@
 		<user-category id="manager" parent="employee" />
 		<user-category id="ceo" parent="manager" />
 	</user-category-container>
+
 	<data-category-container id="default-data">
-		<data-category id="pii">
-			<desensitize-operations>
-				<operation>anonymize</operation>
-			</desensitize-operations>
-		</data-category>
+
 	</data-category-container>
 </vocabulary>

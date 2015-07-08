@@ -16,7 +16,6 @@
 	</user-category-container>
 
 	<data-category-container id="default-data">
-
 		<data-category id="all">
 			<desensitize-operations>
 				<operation>op1</operation>
@@ -31,7 +30,6 @@
 				<operation>op10</operation>
 			</desensitize-operations>
 		</data-category>
-
 		<data-category id="ka" parent="all"></data-category>
 		<data-category id="qi" parent="all"></data-category>
 		<data-category id="sa" parent="all"></data-category>

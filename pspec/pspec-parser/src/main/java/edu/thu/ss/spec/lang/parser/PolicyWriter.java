@@ -56,16 +56,7 @@ public class PolicyWriter implements ParserConstant {
 	private Element outputVocabularyRef(Policy policy, Document document) {
 		Element vocabEle = document.createElement(Ele_Policy_Vocabulary_Ref);
 
-		Element userEle = document.createElement(Ele_Policy_Vocabulary_User);
-		vocabEle.appendChild(userEle);
-		userEle.setAttribute(ParserConstant.Attr_Refid, policy.getUserContainerRef());
-
-		Element dataEle = document.createElement(Ele_Policy_Vocabulary_Data);
-		vocabEle.appendChild(dataEle);
-		dataEle.setAttribute(ParserConstant.Attr_Refid, policy.getDataContainerRef());
-
-		vocabEle.setAttribute(Attr_Policy_Vocabulary_location,
-				policy.getVocabularyLocation());
+		vocabEle.setAttribute(Attr_Policy_Vocabulary_location, policy.getVocabularyLocation());
 
 		return vocabEle;
 	}

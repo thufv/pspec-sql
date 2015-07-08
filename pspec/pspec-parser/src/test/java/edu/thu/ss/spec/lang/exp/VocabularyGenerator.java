@@ -29,6 +29,7 @@ public class VocabularyGenerator {
 		Vocabulary vocab = new Vocabulary();
 		vocab.setInfo(vocabInfo);
 
+		/*
 		vocab.addUserContainer(generateUsers("expr-user-3", 3));
 		vocab.addUserContainer(generateUsers("expr-user-5", 5));
 		vocab.addUserContainer(generateUsers("expr-user-10", 10));
@@ -46,7 +47,7 @@ public class VocabularyGenerator {
 		vocab.addDataContainer(generateDatas("expr-data-op-15", 60, 15));
 		vocab.addDataContainer(generateDatas("expr-data-op-20", 60, 20));
 		vocab.addDataContainer(generateDatas("expr-data-op-25", 60, 25));
-
+		*/
 		VocabularyWriter writer = new VocabularyWriter();
 		writer.output(vocab, "expr/expr-vocab.xml");
 	}

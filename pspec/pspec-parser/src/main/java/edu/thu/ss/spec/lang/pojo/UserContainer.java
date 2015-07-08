@@ -1,5 +1,7 @@
 package edu.thu.ss.spec.lang.pojo;
 
+import java.util.List;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -25,15 +27,16 @@ public class UserContainer extends CategoryContainer<UserCategory> {
 			if (ParserConstant.Ele_Vocabulary_User_Category.equals(name)) {
 				UserCategory user = new UserCategory();
 				user.parse(node);
-				user.setContainerId(this.id);
-				set(user.getId(), user);
+				user.setContainer(this);
+				add(user);
 			}
 		}
 	}
 
 	@Override
 	public Element outputElement(Document document) {
-		Element element = super.outputType(document, ParserConstant.Ele_Vocabulary_User_Category_Container);
+		Element element = super.outputType(document,
+				ParserConstant.Ele_Vocabulary_User_Category_Container);
 
 		for (UserCategory user : categories.values()) {
 			Element userEle = user.outputElement(document);
@@ -45,6 +48,10 @@ public class UserContainer extends CategoryContainer<UserCategory> {
 	@Override
 	public UserContainer getBaseContainer() {
 		return (UserContainer) baseContainer;
+	}
+
+	public List<UserCategory> getRoot() {
+		return root;
 	}
 
 }

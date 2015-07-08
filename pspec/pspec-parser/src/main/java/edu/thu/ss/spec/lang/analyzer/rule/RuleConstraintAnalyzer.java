@@ -124,7 +124,7 @@ public class RuleConstraintAnalyzer extends BaseRuleAnalyzer {
 			return;
 		}
 		for (DesensitizeOperation op : operations) {
-			if (!data.getOperations().contains(op)) {
+			if (!data.support(op)) {
 				logger.error("Desensitize operation: {} is not supported by data category: {} in rule: {}",
 						op.getName(), data.getId(), ruleId);
 				error = true;

@@ -290,7 +290,7 @@ public class PolicyResolver extends BasePolicyAnalyzer {
 			return;
 		}
 		Desensitization de = res.getList().get(0);
-		if (de.getDataRefId() != null) {
+		if (!de.getDataRefId().isEmpty()) {
 			logger
 					.error("No data-category-ref element should appear in desensitize element when only data category is referenced in rule: "
 							+ rule.getId());
@@ -305,7 +305,7 @@ public class PolicyResolver extends BasePolicyAnalyzer {
 		Desensitization[] des = new Desensitization[rule.getAssociation().getDimension()];
 		DataAssociation association = rule.getAssociation();
 		for (Desensitization de : res.getList()) {
-			if (de.getDataRefId() == null) {
+			if (de.getDataRefId().isEmpty()) {
 				logger
 						.error("Restricted data category must be specified explicitly when data association is referenced by rule: "
 								+ rule.getId());

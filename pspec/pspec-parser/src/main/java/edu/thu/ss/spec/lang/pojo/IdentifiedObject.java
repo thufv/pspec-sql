@@ -14,7 +14,7 @@ import edu.thu.ss.spec.util.XMLUtil;
  */
 public abstract class IdentifiedObject implements Parsable, Writable {
 
-	protected String id;
+	protected String id = "";
 
 	public String getId() {
 		return id;

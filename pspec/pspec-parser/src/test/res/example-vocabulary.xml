@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <vocabulary base="src/test/res/base-vocabulary.xml" xmlns="http://www.example.org/privacy"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.example.org/privacy ../res/privacy.xsd">
-
 	<vocabulary-information id="vocab-info">
 		<issuer>
 			<name>luochen</name>
@@ -14,8 +12,7 @@
 		</issuer>
 	</vocabulary-information>
 
-	<user-category-container id="social-users"
-		base="default-users">
+	<user-category-container id="social-users">
 		<user-category id="student" parent="employee" />
 		<user-category id="teacher" parent="employee" />
 	</user-category-container>

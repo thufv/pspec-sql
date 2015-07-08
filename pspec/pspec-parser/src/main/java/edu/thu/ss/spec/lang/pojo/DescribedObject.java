@@ -13,8 +13,8 @@ import edu.thu.ss.spec.lang.parser.ParserConstant;
  *
  */
 public abstract class DescribedObject extends IdentifiedObject {
-	protected String shortDescription;
-	protected String longDescription;
+	protected String shortDescription="";
+	protected String longDescription="";
 
 	public String getShortDescription() {
 		return shortDescription;

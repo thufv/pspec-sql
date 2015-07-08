@@ -18,7 +18,7 @@ import edu.thu.ss.spec.util.SetUtil;
  */
 public class Desensitization implements Writable {
 
-	protected String dataRefId;
+	protected String dataRefId = "";
 
 	protected DataRef dataRef;
 

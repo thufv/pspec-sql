@@ -2,7 +2,6 @@
 <schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/privacy"
 	xmlns:tns="http://www.example.org/privacy" elementFormDefault="qualified"
 	attributeFormDefault="unqualified">
-
 	<!-- Elements which have an identifier should be of this type -->
 	<complexType name="identifiedObjectType">
 		<attribute name="id" use="required" type="string"></attribute>
@@ -71,7 +70,6 @@
 					<element name="user-category" minOccurs="0" maxOccurs="unbounded"
 						type="tns:hierarchicalType"></element>
 				</sequence>
-				<attribute name="base" type="string"></attribute>
 			</extension>
 		</complexContent>
 	</complexType>
@@ -104,7 +102,6 @@
 						</unique>
 					</element>
 				</sequence>
-				<attribute name="base" type="string"></attribute>
 			</extension>
 		</complexContent>
 	</complexType>
@@ -234,14 +231,14 @@
 				<element name="vocabulary-information" minOccurs="1"
 					maxOccurs="1" type="tns:infoType"></element>
 				<element name="user-category-container" type="tns:userCategoryContainerType"
-					minOccurs="0" maxOccurs="unbounded">
+					minOccurs="0" maxOccurs="1">
 					<key name="user-category-identifier">
 						<selector xpath="tns:user-category"></selector>
 						<field xpath="@id"></field>
 					</key>
 				</element>
 				<element name="data-category-container" type="tns:dataCategoryContainerType"
-					minOccurs="0" maxOccurs="unbounded">
+					minOccurs="0" maxOccurs="1">
 					<key name="data-category-identifier">
 						<selector xpath="tns:data-category"></selector>
 						<field xpath="@id"></field>
@@ -330,10 +327,6 @@
 					type="tns:infoType"></element>
 				<element name="vocabulary-ref">
 					<complexType>
-						<sequence>
-							<element name="user-category-container" type="tns:objectRefType"></element>
-							<element name="data-category-container" type="tns:objectRefType"></element>
-						</sequence>
 						<attribute name="location" type="anyURI"></attribute>
 					</complexType>
 				</element>
@@ -344,7 +337,8 @@
 								<element name="global-budget" type="tns:globalBudgetType"></element>
 								<element name="fine-budget" type="tns:fineBudgetType"></element>
 							</choice>
-							<element name="accuracy" type="tns:accuracyType" minOccurs="0" maxOccurs="1"></element>
+							<element name="accuracy" type="tns:accuracyType"
+								minOccurs="0" maxOccurs="1"></element>
 						</sequence>
 					</complexType>
 				</element>
@@ -375,10 +369,6 @@
 			<selector xpath="tns:rules/tns:rule" />
 			<field xpath="@id" />
 		</unique>
-
-
-
 	</element>
-
 
 </schema>

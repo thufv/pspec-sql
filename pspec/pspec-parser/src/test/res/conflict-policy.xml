@@ -12,10 +12,7 @@
 		</issuer>
 	</policy-information>
 
-	<vocabulary-ref location="src/test/res/example-vocabulary.xml">
-		<user-category-container refid="social-users" />
-		<data-category-container refid="social-data" />
-	</vocabulary-ref>
+	<vocabulary-ref location="src/test/res/example-vocabulary.xml" />
 	<rules>
 		<!-- <rule id="rule1"> <user-category-ref refid="teacher" /> <data-category-ref 
 			refid="phone"> </data-category-ref> <restriction> <forbid></forbid> </restriction> 

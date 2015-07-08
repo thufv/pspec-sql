@@ -52,20 +52,16 @@ public class CategoryManager {
 	 */
 	public static void add(Vocabulary vocab) {
 		parsedVocab.put(vocab.getPath(), vocab);
-		for (UserContainer container : vocab.getUserContainers().values()) {
-			add(container);
-		}
-		for (DataContainer container : vocab.getDataContainers().values()) {
-			add(container);
-		}
+		add(vocab.getUserContainer());
+		add(vocab.getDataContainer());
 	}
 
 	public static boolean containsVocab(URI path) throws Exception {
 		return parsedVocab.containsKey(path);
 	}
 
-	public static Vocabulary getVocab(String path) throws Exception {
-		return parsedVocab.get(XMLUtil.toUri(path));
+	public static Vocabulary getVocab(URI path) throws Exception {
+		return parsedVocab.get(path);
 	}
 
 	public static void clear() {

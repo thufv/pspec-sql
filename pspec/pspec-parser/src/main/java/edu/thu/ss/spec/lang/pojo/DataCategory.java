@@ -38,28 +38,31 @@ public class DataCategory extends Category<DataCategory> {
 		return ops;
 	}
 
-	public DesensitizeOperation getOperation(String op) {
-		return opIndex.get(op.toLowerCase());
+	public Set<DesensitizeOperation> getAllOperations() {
+		Set<DesensitizeOperation> set = new HashSet<>();
+		getAllOperations(set);
+		return set;
 	}
 
-	private void addOperation(DesensitizeOperation op) {
+	private void getAllOperations(Set<DesensitizeOperation> set) {
+		if (parent != null) {
+			parent.getAllOperations(set);
+		}
+		set.addAll(ops);
+	}
+
+	public DesensitizeOperation getOperation(String op) {
+		op = op.toLowerCase();
+		DesensitizeOperation operation = opIndex.get(op);
+		if (operation == null && parent != null) {
+			operation = parent.getOperation(op);
+		}
+		return operation;
+	}
+
+	public void addOperation(DesensitizeOperation op) {
 		ops.add(op);
 		opIndex.put(op.name, op);
-	}
-
-	public void inheritDesensitizeOperation(DataContainer container) {
-		if (parent != null) {
-			for (DesensitizeOperation op : parent.ops) {
-				this.addOperation(op);
-			}
-		}
-		if (children != null) {
-			for (DataCategory data : children) {
-				if (container.contains(data.getId())) {
-					data.inheritDesensitizeOperation(container);
-				}
-			}
-		}
 	}
 
 	@Override
@@ -117,5 +120,14 @@ public class DataCategory extends Category<DataCategory> {
 			sb.append(SetUtil.format(ops, " "));
 		}
 		return sb.toString();
+	}
+
+	public boolean support(DesensitizeOperation op) {
+		return getOperation(op.name) != null;
+	}
+
+	public void removeOperation(DesensitizeOperation desensitizeOperation) {
+		ops.remove(desensitizeOperation);
+		opIndex.remove(desensitizeOperation.name);
 	}
 }

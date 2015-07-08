@@ -14,16 +14,16 @@ import org.w3c.dom.Node;
  */
 public class Vocabulary {
 
-	protected Info info;
+	protected Info info = new Info();
 
 	/**
 	 * path of base vocabulary
 	 */
 	protected URI basePath;
 
-	protected Map<String, UserContainer> userContainers = new HashMap<>();
+	protected UserContainer userContainer = new UserContainer();
 
-	protected Map<String, DataContainer> dataContainers = new HashMap<>();
+	protected DataContainer dataContainer = new DataContainer();
 
 	/**
 	 * only used during parsing
@@ -34,24 +34,15 @@ public class Vocabulary {
 
 	protected boolean resolved = false;
 
+	public Vocabulary() {
+	}
+
+	public Vocabulary(String id) {
+		info.setId(id);
+	}
+
 	public URI getPath() {
 		return path;
-	}
-
-	public void addUserContainer(UserContainer container) {
-		userContainers.put(container.id, container);
-	}
-
-	public void addDataContainer(DataContainer container) {
-		dataContainers.put(container.id, container);
-	}
-
-	public void setUserContainers(Map<String, UserContainer> userContainers) {
-		this.userContainers = userContainers;
-	}
-
-	public void setDataContainers(Map<String, DataContainer> dataContainers) {
-		this.dataContainers = dataContainers;
 	}
 
 	public void setPath(URI path) {
@@ -60,14 +51,6 @@ public class Vocabulary {
 
 	public boolean isResolved() {
 		return resolved;
-	}
-
-	public Map<String, UserContainer> getUserContainers() {
-		return userContainers;
-	}
-
-	public Map<String, DataContainer> getDataContainers() {
-		return dataContainers;
 	}
 
 	public void setResolved(boolean resolved) {
@@ -98,11 +81,11 @@ public class Vocabulary {
 		this.basePath = base;
 	}
 
-	public UserContainer getUserContainer(String id) {
-		return userContainers.get(id);
+	public UserContainer getUserContainer() {
+		return userContainer;
 	}
 
-	public DataContainer getDataContainer(String id) {
-		return dataContainers.get(id);
+	public DataContainer getDataContainer() {
+		return dataContainer;
 	}
 }

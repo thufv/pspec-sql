@@ -14,9 +14,6 @@ public class Policy {
 
 	protected String vocabularyLocation;
 
-	protected String userContainerRef;
-	protected String dataContainerRef;
-
 	/**
 	 * {@link UserContainer} of id {@link #userContainerRef}
 	 */
@@ -44,6 +41,14 @@ public class Policy {
 	protected PrivacyParams privacyParams;
 
 	protected URI path;
+
+	public Policy(String id) {
+		info = new Info();
+		info.id = id;
+	}
+
+	public Policy() {
+	}
 
 	public void setPath(URI path) {
 		this.path = path;
@@ -75,22 +80,6 @@ public class Policy {
 
 	public void setPrivacyBudget(PrivacyParams privacyBudget) {
 		this.privacyParams = privacyBudget;
-	}
-
-	public String getUserContainerRef() {
-		return userContainerRef;
-	}
-
-	public void setUserContainerRef(String userRef) {
-		this.userContainerRef = userRef;
-	}
-
-	public String getDataContainerRef() {
-		return dataContainerRef;
-	}
-
-	public void setDataRef(String dataRef) {
-		this.dataContainerRef = dataRef;
 	}
 
 	public Info getInfo() {
@@ -133,10 +122,6 @@ public class Policy {
 		this.userContainers = userContainers;
 	}
 
-	public void setDataContainerRef(String dataContainerRef) {
-		this.dataContainerRef = dataContainerRef;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -171,14 +156,10 @@ public class Policy {
 		sb.append("\n");
 
 		sb.append("User Categories: ");
-		sb.append(userContainerRef);
-		sb.append("\n");
 		sb.append(userContainer.toString());
 		sb.append("\n");
 
 		sb.append("Data Categories: ");
-		sb.append(dataContainerRef);
-		sb.append("\n");
 		sb.append(dataContainer.toString());
 		sb.append("\n");
 
@@ -199,6 +180,7 @@ public class Policy {
 	public DataCategory getDataCategory(String id) {
 		return dataContainer.get(id);
 	}
+
 	public UserCategory getUserCategory(String id) {
 		return userContainer.get(id);
 	}

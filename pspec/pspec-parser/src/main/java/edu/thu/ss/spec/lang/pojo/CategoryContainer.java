@@ -10,9 +10,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import edu.thu.ss.spec.lang.parser.ParserConstant;
-import edu.thu.ss.spec.util.XMLUtil;
-
 /**
  * a base class for category container
  * 
@@ -24,7 +21,6 @@ public abstract class CategoryContainer<T extends Category<T>> extends Described
 	/**
 	 * container id for base container
 	 */
-	protected String baseId;
 	protected CategoryContainer<T> baseContainer;
 
 	protected Map<String, T> categories = new LinkedHashMap<>();
@@ -38,9 +34,52 @@ public abstract class CategoryContainer<T extends Category<T>> extends Described
 
 	protected boolean leaf = true;
 
-	public void add(T c) {
-		this.set(c.id, c);
-		c.containerId = this.id;
+	public void add(T t) {
+		categories.put(t.id, t);
+		if (t.parentId.isEmpty()) {
+			root.add(t);
+		}
+		t.setContainer(this);
+	}
+
+	public List<T> getRoot() {
+		return root;
+	}
+
+	public List<T> materializeRoots() {
+		List<T> list = new ArrayList<>();
+		materializeRoots(list);
+		return list;
+	}
+
+	private void materializeRoots(List<T> list) {
+		if (baseContainer != null) {
+			baseContainer.materializeRoots(list);
+		}
+		list.addAll(root);
+	}
+
+	public void cascadeRemove(T t) {
+		remove(t);
+		if (t.children != null) {
+			for (T c : t.children) {
+				cascadeRemove(c);
+			}
+		}
+	}
+
+	public void remove(T t) {
+		categories.remove(t.id);
+		if (t.parentId.isEmpty()) {
+			root.remove(t);
+		}
+		t.containerId = "";
+	}
+
+	public void update(String newId, T category) {
+		categories.remove(category.getId());
+		category.setId(newId);
+		categories.put(newId, category);
 	}
 
 	/**
@@ -91,38 +130,26 @@ public abstract class CategoryContainer<T extends Category<T>> extends Described
 		return get(id) != null;
 	}
 
-	public void set(String id, T category) {
-		categories.put(id, category);
-	}
-
-	public String getBase() {
-		return baseId;
+	public boolean directContains(String id) {
+		return categories.containsKey(id);
 	}
 
 	public Map<String, T> getIndex() {
 		return categories;
 	}
 
-	public List<T> getRoot() {
-		return root;
-	}
-
-	public void setBase(String base) {
-		this.baseId = base;
-	}
+	//public List<T> getRoot() {
+	//	return root;
+	//}
 
 	@Override
 	public void parse(Node categoryNode) {
 		super.parse(categoryNode);
-		this.baseId = XMLUtil.getAttrValue(categoryNode, ParserConstant.Attr_Vocabulary_Base);
 	}
 
 	@Override
 	public Element outputType(Document document, String name) {
 		Element element = super.outputType(document, name);
-		if (this.baseId != null) {
-			element.setAttribute(ParserConstant.Attr_Vocabulary_Base, this.baseId);
-		}
 		return element;
 	}
 

@@ -39,6 +39,8 @@ public class VocabularyParser implements ParserConstant {
 	 */
 	protected Map<URI, Vocabulary> vocabularies;
 
+	protected Vocabulary vocabulary;
+
 	protected Map<String, UserContainer> userContainers;
 
 	protected Map<String, DataContainer> dataContainers;
@@ -47,32 +49,30 @@ public class VocabularyParser implements ParserConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(VocabularyParser.class);
 
-	public Vocabulary parse(String path, String user, String data) throws Exception {
+	public Vocabulary parse(String path) throws Exception {
 		init();
-		loadVocabularies(XMLUtil.toUri(path));
 
-		parseUsers();
-		parseDatas();
+		URI uri = XMLUtil.toUri(path);
+		if (CategoryManager.containsVocab(uri)) {
+			return CategoryManager.getVocab(uri);
+		}
+
+		loadVocabularies(uri);
+		parseContainers();
 		if (error) {
 			throw new ParsingException("Fail to parse vocabularies, see error messages above");
 		}
 
 		// semantic analysis
-		resolveReference(userContainers);
-		resolveReference(dataContainers);
+		buildReference(vocabulary.getUserContainer());
+		buildReference(vocabulary.getDataContainer());
 
-		Map<String, UserContainer> mergedUsers = collectUsers(user);
-		Map<String, DataContainer> mergedDatas = collectDatas(data);
 		if (error) {
 			throw new ParsingException("Fail to parse vocabularies, see error messages above");
 		}
 
-		inheritOperations(mergedDatas.values(), mergedDatas.get(data));
 		registerVocabularies();
 
-		Vocabulary vocabulary = new Vocabulary();
-		vocabulary.setUserContainers(mergedUsers);
-		vocabulary.setDataContainers(mergedDatas);
 		return vocabulary;
 	}
 
@@ -83,36 +83,6 @@ public class VocabularyParser implements ParserConstant {
 		this.error = false;
 	}
 
-	private Map<String, UserContainer> collectUsers(String user) {
-		UserContainer current = userContainers.get(user);
-		if (current == null) {
-			logger.error("Fail to locate user category container: {}", user);
-			error = true;
-			return null;
-		}
-		Map<String, UserContainer> containers = new HashMap<>();
-		while (current != null) {
-			containers.put(current.getId(), current);
-			current = current.getBaseContainer();
-		}
-		return containers;
-	}
-
-	private Map<String, DataContainer> collectDatas(String data) {
-		DataContainer current = dataContainers.get(data);
-		if (current == null) {
-			logger.error("Fail to locate data category container: {}", data);
-			error = true;
-			return null;
-		}
-		Map<String, DataContainer> containers = new HashMap<>();
-		while (current != null) {
-			containers.put(current.getId(), current);
-			current = current.getBaseContainer();
-		}
-		return containers;
-	}
-
 	private void registerVocabularies() {
 		for (Vocabulary vocab : vocabularies.values()) {
 			if (!vocab.isResolved()) {
@@ -121,7 +91,6 @@ public class VocabularyParser implements ParserConstant {
 				CategoryManager.add(vocab);
 			}
 		}
-
 	}
 
 	/**
@@ -131,25 +100,36 @@ public class VocabularyParser implements ParserConstant {
 	 * @throws Exception
 	 */
 	private void loadVocabularies(URI uri) throws Exception {
-		while (uri != null) {
-			Vocabulary vocabulary = CategoryManager.getParsedVocab().get(uri);
-			// check vocabulary is parsed before
-			if (CategoryManager.containsVocab(uri)) {
-				vocabularies.put(uri, vocabulary);
-			} else {
+		Vocabulary previous = null;
+		boolean stop = false;
+		URI currentUri = uri;
+		while (currentUri != null) {
+			Vocabulary vocabulary = CategoryManager.getVocab(currentUri);
+			if (vocabulary == null) {
 				vocabulary = new Vocabulary();
-				Document document = XMLUtil.parseDocument(uri, Privacy_Schema_Location);
+				Document document = XMLUtil.parseDocument(currentUri, Privacy_Schema_Location);
 				Node rootNode = document.getElementsByTagName(ParserConstant.Ele_Vocabulary).item(0);
 				vocabulary.setRootNode(rootNode);
-				vocabulary.setPath(uri);
+				vocabulary.setPath(currentUri);
 				parseInfo(vocabulary);
-				if (vocabularies.get(uri) != null) {
-					throw new ParsingException("Cycle reference of vocabularies detected: " + uri);
+				if (vocabularies.get(currentUri) != null) {
+					throw new ParsingException("Cycle reference of vocabularies detected: " + currentUri);
 				}
-				vocabularies.put(uri, vocabulary);
+				vocabularies.put(currentUri, vocabulary);
+			} else {
+				stop = true;
 			}
-			uri = vocabulary.getBase();
+			if (previous != null) {
+				previous.getUserContainer().setBaseContainer(vocabulary.getUserContainer());
+				previous.getDataContainer().setBaseContainer(vocabulary.getDataContainer());
+			}
+			if (stop) {
+				break;
+			}
+			previous = vocabulary;
+			currentUri = vocabulary.getBase();
 		}
+		vocabulary = vocabularies.get(uri);
 	}
 
 	/**
@@ -177,144 +157,22 @@ public class VocabularyParser implements ParserConstant {
 		}
 	}
 
-	private void inheritOperations(Collection<DataContainer> containers, DataContainer target) {
-		for (DataContainer container : containers) {
-			for (DataCategory category : container.getRoot()) {
-				category.inheritDesensitizeOperation(target);
-			}
-		}
-	}
-
-	private void parseUsers() throws Exception {
+	private void parseContainers() throws Exception {
 		for (Vocabulary vocabulary : vocabularies.values()) {
-			if (vocabulary.isResolved()) {
-				for (UserContainer container : vocabulary.getUserContainers().values()) {
-					userContainers.put(container.getId(), container);
-				}
-			} else {
+			if (!vocabulary.isResolved()) {
 				Node root = vocabulary.getRootNode();
 				NodeList list = root.getChildNodes();
 				for (int i = 0; i < list.getLength(); i++) {
 					Node node = list.item(i);
 					String name = node.getLocalName();
 					if (Ele_Vocabulary_User_Category_Container.equals(name)) {
-						UserContainer container = new UserContainer();
-						container.parse(node);
-						addUserContainer(container, vocabulary);
+						vocabulary.getUserContainer().parse(node);
+					} else if (Ele_Vocabulary_Data_Category_Container.equals(name)) {
+						vocabulary.getDataContainer().parse(node);
 					}
 				}
 			}
 		}
-	}
-
-	private void parseDatas() throws Exception {
-		for (Vocabulary vocabulary : vocabularies.values()) {
-			if (vocabulary.isResolved()) {
-				for (DataContainer container : vocabulary.getDataContainers().values()) {
-					dataContainers.put(container.getId(), container);
-				}
-			} else {
-				Node root = vocabulary.getRootNode();
-				NodeList list = root.getChildNodes();
-				for (int i = 0; i < list.getLength(); i++) {
-					Node node = list.item(i);
-					String name = node.getLocalName();
-					if (Ele_Vocabulary_Data_Category_Container.equals(name)) {
-						DataContainer container = new DataContainer();
-						container.parse(node);
-						addDataContainer(container, vocabulary);
-					}
-				}
-			}
-		}
-	}
-
-	private void addUserContainer(UserContainer container, Vocabulary vocabulary) {
-		if (userContainers.containsKey(container.getId())
-				|| CategoryManager.getUsers().containsKey(container.getId())) {
-			logger.error("Duplicate UserCategoryContainer: {} detected, please fix.", container.getId());
-			error = true;
-		}
-		userContainers.put(container.getId(), container);
-		vocabulary.getUserContainers().put(container.getId(), container);
-	}
-
-	private void addDataContainer(DataContainer container, Vocabulary vocabulary) {
-		if (dataContainers.containsKey(container.getId())
-				|| CategoryManager.getDatas().containsKey(container.getId())) {
-			logger.error("Duplicate UserCategoryContainer: {} detected, please fix.", container.getId());
-			error = true;
-		}
-		dataContainers.put(container.getId(), container);
-		vocabulary.getDataContainers().put(container.getId(), container);
-	}
-
-	/**
-	 * resolve reference recursively
-	 * 
-	 * @param container
-	 * @param containers
-	 * @param baseIds
-	 *          : used for detect cycle reference
-	 * @throws ParsingException
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private <T extends CategoryContainer> void resolveReference(CategoryContainer container,
-			Map<String, T> containers, Set<String> baseIds) throws ParsingException {
-		if (container.isResolved()) {
-			return;
-		}
-		String base = container.getBase();
-		if (base != null) {
-			// resolve base container
-			T baseContainer = containers.get(base);
-			if (baseContainer == null) {
-				logger.error("Fail to locate base category container: {} for category container: {}.",
-						base, container.getId());
-				error = true;
-				return;
-			}
-			if (baseIds.contains(base)) {
-				error = true;
-				throw new ParsingException("Cycle reference of category container detected: "
-						+ baseIds.toString());
-			}
-			baseIds.add(base);
-			resolveReference(baseContainer, containers, baseIds);
-			baseIds.remove(base);
-			container.setBaseContainer(baseContainer);
-		}
-		// resolve parent reference of all categories
-		for (Object obj : container.getCategories()) {
-			Category category = (Category) obj;
-			String parentId = category.getParentId();
-			if (parentId == null) {
-				container.getRoot().add(category);
-			} else {
-				Category parent = resolveParent(parentId, container);
-				if (parent == null) {
-					logger.error("Fail to locate parent category: {} for category: {}.", parentId,
-							category.getId());
-					error = true;
-				} else {
-					parent.buildRelation(category);
-				}
-			}
-		}
-		container.setResolved(true);
-	}
-
-	@SuppressWarnings({ "rawtypes" })
-	private Category resolveParent(String parentId, CategoryContainer container) {
-		CategoryContainer current = container;
-		while (current != null) {
-			Category result = container.get(parentId);
-			if (result != null) {
-				return result;
-			}
-			current = current.getBaseContainer();
-		}
-		return null;
 	}
 
 	/**
@@ -324,23 +182,9 @@ public class VocabularyParser implements ParserConstant {
 	 * @throws ParsingException
 	 */
 	@SuppressWarnings({ "rawtypes" })
-	private <T extends CategoryContainer> void resolveReference(Map<String, T> containers)
-			throws ParsingException {
-		for (String id : containers.keySet()) {
-			CategoryContainer container = containers.get(id);
-			if (container.isResolved()) {
-				continue;
-			}
-			Set<String> baseIds = new HashSet<>();
-			resolveReference(container, containers, baseIds);
-		}
-
-		for (CategoryContainer container : containers.values()) {
-			if (!container.isLeaf()) {
-				continue;
-			}
-			checkDuplicates(container);
-		}
+	private <T extends CategoryContainer> void buildReference(T container) throws ParsingException {
+		resolveReference(container);
+		checkDuplicates(container);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -369,6 +213,43 @@ public class VocabularyParser implements ParserConstant {
 			logger.error("Cycle reference of categories detected in container: {}, please fix.",
 					container.getId());
 		}
+	}
+
+	/**
+	 * resolve reference recursively
+	 * 
+	 * @param container
+	 * @param containers
+	 * @param baseIds
+	 *          : used for detect cycle reference
+	 * @throws ParsingException
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private <T extends CategoryContainer> void resolveReference(CategoryContainer container)
+			throws ParsingException {
+		if (container.isResolved()) {
+			return;
+		}
+		CategoryContainer baseContainer = container.getBaseContainer();
+		if (baseContainer != null) {
+			resolveReference(baseContainer);
+		}
+		// resolve parent reference of all categories
+		for (Object obj : container.getCategories()) {
+			Category category = (Category) obj;
+			String parentId = category.getParentId();
+			if (!parentId.isEmpty()) {
+				Category parent = container.get(parentId);
+				if (parent == null) {
+					logger.error("Fail to locate parent category: {} for category: {}.", parentId,
+							category.getId());
+					error = true;
+				} else {
+					parent.buildRelation(category);
+				}
+			}
+		}
+		container.setResolved(true);
 	}
 
 	@SuppressWarnings({ "rawtypes" })

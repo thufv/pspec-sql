@@ -17,7 +17,7 @@ import edu.thu.ss.spec.util.XMLUtil;
  * @param <T>
  */
 public class HierarchicalObject<T extends HierarchicalObject<T>> extends DescribedObject {
-	protected String parentId;
+	protected String parentId = "";
 	protected T parent;
 
 	protected List<T> children = null;
@@ -25,15 +25,15 @@ public class HierarchicalObject<T extends HierarchicalObject<T>> extends Describ
 	public void setParentId(String parentId) {
 		this.parentId = parentId;
 	}
-	
+
 	public T getParent() {
 		return parent;
 	}
-	
+
 	public void setChildren(List<T> children) {
-		this.children = children;;
+		this.children = children;
 	}
-	
+
 	public List<T> getChildren() {
 		return children;
 	}
@@ -49,13 +49,32 @@ public class HierarchicalObject<T extends HierarchicalObject<T>> extends Describ
 
 	@SuppressWarnings("unchecked")
 	public void buildRelation(T... children) {
+		if (this.children == null) {
+			this.children = new ArrayList<>();
+		}
 		for (T child : children) {
-			if (this.children == null) {
-				this.children = new ArrayList<>();
-			}
 			this.children.add(child);
 			child.parent = (T) this;
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public void buildRelation(int index, List<T> list) {
+		if (this.children == null) {
+			this.children = new ArrayList<>();
+		}
+		for (T child : list) {
+			child.parent = (T) this;
+		}
+		this.children.addAll(index, list);
+	}
+
+	public int removeRelation(T child) {
+		child.parent = null;
+		child.parentId = "";
+		int index = this.children.indexOf(child);
+		this.children.remove(child);
+		return index;
 	}
 
 	public boolean ancestorOf(T obj) {

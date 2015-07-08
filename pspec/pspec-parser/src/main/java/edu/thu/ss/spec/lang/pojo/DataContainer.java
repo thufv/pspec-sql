@@ -25,8 +25,8 @@ public class DataContainer extends CategoryContainer<DataCategory> {
 			if (ParserConstant.Ele_Vocabulary_Data_Category.equals(name)) {
 				DataCategory data = new DataCategory();
 				data.parse(node);
-				data.setContainerId(this.id);
-				set(data.getId(), data);
+				data.setContainer(this);
+				add(data);
 			}
 		}
 	}
@@ -38,7 +38,8 @@ public class DataContainer extends CategoryContainer<DataCategory> {
 
 	@Override
 	public Element outputElement(Document document) {
-		Element element = super.outputType(document, ParserConstant.Ele_Vocabulary_Data_Category_Container);
+		Element element = super.outputType(document,
+				ParserConstant.Ele_Vocabulary_Data_Category_Container);
 
 		for (DataCategory data : categories.values()) {
 			Element dataEle = data.outputElement(document);

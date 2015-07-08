@@ -8,7 +8,7 @@ import org.w3c.dom.NodeList;
 import edu.thu.ss.spec.lang.parser.ParserConstant;
 
 public class Info extends DescribedObject {
-	protected ContactInfo contact;
+	protected ContactInfo contact = new ContactInfo();
 	protected String location;
 
 	public ContactInfo getContact() {
@@ -55,7 +55,6 @@ public class Info extends DescribedObject {
 			Node node = list.item(i);
 			String name = node.getLocalName();
 			if (ParserConstant.Ele_Policy_Issuer.equals(name)) {
-				contact = new ContactInfo();
 				contact.parse(node);
 			} else if (ParserConstant.Ele_Policy_Location.equals(name)) {
 				this.location = node.getTextContent();

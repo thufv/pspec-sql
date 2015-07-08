@@ -13,13 +13,13 @@
 		</issuer>
 	</vocabulary-information>
 
-	<user-category-container id="tpcds-user" base="default-user">
+	<user-category-container id="tpcds-user">
 		<user-category id="analyst1" parent="analyst"></user-category>
 		<user-category id="analyst2" parent="analyst"></user-category>
 		<user-category id="analyst3" parent="analyst"></user-category>
 	</user-category-container>
 
-	<data-category-container id="tpcds-data" base="default-data">
+	<data-category-container id="tpcds-data">
 		<data-category id="sk" parent="ka"></data-category>
 		<data-category id="id" parent="ka"></data-category>
 		<data-category id="email" parent="ka"></data-category>

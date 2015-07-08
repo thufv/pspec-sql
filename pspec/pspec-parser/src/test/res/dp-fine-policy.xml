@@ -13,8 +13,6 @@
 	</policy-information>
 
 	<vocabulary-ref location="src/test/res/example-vocabulary.xml">
-		<user-category-container refid="social-users" />
-		<data-category-container refid="social-data" />
 	</vocabulary-ref>
 
 	<privacy-parameters>

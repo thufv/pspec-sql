@@ -35,19 +35,12 @@ public class VocabularyWriter implements ParserConstant {
 		Element infoEle = info.outputType(document, Ele_Vocabulary_Info);
 		root.appendChild(infoEle);
 
-		Collection<UserContainer> users = vocabulary.getUserContainers().values();
+		Element userEle = vocabulary.getUserContainer().outputElement(document);
+		root.appendChild(userEle);
 
-		for (UserContainer user : users) {
-			Element userEle = user.outputElement(document);
-			root.appendChild(userEle);
-		}
-		Collection<DataContainer> datas = vocabulary.getDataContainers().values();
+		Element dataEle = vocabulary.getDataContainer().outputElement(document);
+		root.appendChild(dataEle);
 
-		for (DataContainer data : datas) {
-			Element dataEle = data.outputElement(document);
-			root.appendChild(dataEle);
-
-		}
 		try {
 			XMLUtil.writeDocument(document, path);
 		} catch (Exception e) {

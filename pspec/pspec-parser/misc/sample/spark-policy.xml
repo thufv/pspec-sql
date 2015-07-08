@@ -12,8 +12,6 @@
 		</issuer>
 	</policy-information>
 	<vocabulary-ref location="paper/spark-vocab.xml">
-		<user-category-container refid="default-user" />
-		<data-category-container refid="tpcds-data" />
 	</vocabulary-ref>
 	<rules>
 		<rule id="rule123">

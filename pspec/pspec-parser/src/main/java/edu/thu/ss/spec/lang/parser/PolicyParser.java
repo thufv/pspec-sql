@@ -151,28 +151,11 @@ public class PolicyParser implements ParserConstant {
 	 */
 	private void parseVocabularyRef(Node refNode, Policy policy) throws Exception {
 		String location = XMLUtil.getAttrValue(refNode, Attr_Policy_Vocabulary_location);
-		String userRef = null;
-		String dataRef = null;
-		NodeList list = refNode.getChildNodes();
-		for (int i = 0; i < list.getLength(); i++) {
-			Node node = list.item(i);
-			String name = node.getLocalName();
-			if (Ele_Policy_Vocabulary_User.equals(name)) {
-				userRef = XMLUtil.getAttrValue(node, Attr_Refid);
-			} else if (Ele_Policy_Vocabulary_Data.equals(name)) {
-				dataRef = XMLUtil.getAttrValue(node, Attr_Refid);
-			}
-		}
 		policy.setVocabularyLocation(location);
-		policy.setUserContainerRef(userRef);
-		policy.setDataRef(dataRef);
 		VocabularyParser vocabParser = new VocabularyParser();
-		Vocabulary vocabulary = vocabParser.parse(location, userRef, dataRef);
-		policy.setUserContainer(vocabulary.getUserContainer(userRef));
-		policy.setDataContainer(vocabulary.getDataContainer(dataRef));
-
-		policy.setUserContainers(vocabulary.getUserContainers());
-		policy.setDataContainers(vocabulary.getDataContainers());
+		Vocabulary vocabulary = vocabParser.parse(location);
+		policy.setUserContainer(vocabulary.getUserContainer());
+		policy.setDataContainer(vocabulary.getDataContainer());
 
 	}
 

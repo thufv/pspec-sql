@@ -5,17 +5,17 @@ import org.junit.Test;
 import edu.thu.ss.spec.global.CategoryManager;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Vocabulary;
+import edu.thu.ss.spec.util.XMLUtil;
 
 public class PolicyWriterTest {
 
 	private static final String prefix = "src/main/test/";
-	
 
 	@Test
 	public void testConflict() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse(prefix+"conflict-policy.xml", false, true);
+			Policy policy = parser.parse(prefix + "conflict-policy.xml", false, true);
 			//System.out.println(policy);
 			PolicyWriter writer = new PolicyWriter();
 			writer.output(policy, "tmp/conflict-policy.xml");
@@ -32,7 +32,7 @@ public class PolicyWriterTest {
 	public void testRedundancy() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse(prefix+"redundancy-policy.xml", false);
+			Policy policy = parser.parse(prefix + "redundancy-policy.xml", false);
 			//System.out.println(policy);
 			PolicyWriter writer = new PolicyWriter();
 			writer.output(policy, "tmp/redundancy-policy.xml");
@@ -65,12 +65,12 @@ public class PolicyWriterTest {
 	public void testVocab() {
 		try {
 			VocabularyParser parser = new VocabularyParser();
-			parser.parse("paper/spark-vocab.xml", "default-user", "tpcds-data");
-			Vocabulary vocabulary = CategoryManager.getVocab("paper/spark-vocab.xml");
+			parser.parse("paper/spark-vocab.xml");
+			Vocabulary vocabulary = CategoryManager.getVocab(XMLUtil.toUri("paper/spark-vocab.xml"));
 			CategoryManager.clear();
 			VocabularyWriter writer = new VocabularyWriter();
 			writer.output(vocabulary, "tmp/vocab.xml");
-			parser.parse("tmp/vocab.xml", "default-user", "tpcds-data");
+			parser.parse("tmp/vocab.xml");
 
 		} catch (Exception e) {
 			e.printStackTrace();

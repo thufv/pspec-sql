@@ -65,7 +65,7 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 			//userList
 			Node userListNode = policyDoc.getElementsByTagName(Ele_UserList).item(0);
 			List<User> userList = parseUserList(userListNode);
-			for(int i = 0; i < userList.size(); i++) {
+			for (int i = 0; i < userList.size(); i++) {
 				registry.addUser(userList.get(i));
 			}
 			//database
@@ -119,7 +119,7 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 		}
 		return userList;
 	}
-	
+
 	private Database parseDatabase(Node dbNode) {
 		Database database = new Database();
 		String dbName = XMLUtil.getLowerAttrValue(dbNode, Attr_Name);
@@ -208,10 +208,10 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 		String multiplicity = XMLUtil.getAttrValue(columnNode, Attr_Multiplicity);
 
 		column.setName(columnName);
-		if (joinable != null) {
+		if (!joinable.isEmpty()) {
 			column.setJoinable(Boolean.valueOf(joinable));
 		}
-		if (multiplicity != null) {
+		if (!multiplicity.isEmpty()) {
 			column.setMultiplicity(Integer.valueOf(multiplicity));
 		}
 
@@ -223,7 +223,7 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 
 	private BaseType parseType(Node columnNode, String columnName) {
 		String dataCategoryId = XMLUtil.getLowerAttrValue(columnNode, Attr_Data_Category);
-		if (dataCategoryId != null) {
+		if (!dataCategoryId.isEmpty()) {
 			return parsePrimitiveType(columnNode, columnName);
 		} else {
 			return parseComplexType(columnNode, columnName);

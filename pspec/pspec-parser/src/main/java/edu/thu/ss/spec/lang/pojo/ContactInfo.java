@@ -9,11 +9,11 @@ import edu.thu.ss.spec.lang.parser.ParserConstant;
 
 public class ContactInfo implements Parsable {
 
-	protected String name;
-	protected String organization;
-	protected String email;
-	protected String address;
-	protected String country;
+	protected String name = "";
+	protected String organization = "";
+	protected String email = "";
+	protected String address = "";
+	protected String country = "";
 
 	@Override
 	public void parse(Node contactNode) {
@@ -61,8 +61,6 @@ public class ContactInfo implements Parsable {
 
 		return element;
 	}
-	
-	
 
 	public String getName() {
 		return name;
@@ -103,7 +101,6 @@ public class ContactInfo implements Parsable {
 	public void setCountry(String country) {
 		this.country = country;
 	}
-
 
 	@Override
 	public String toString() {

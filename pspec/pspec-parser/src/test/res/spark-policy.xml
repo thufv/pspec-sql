@@ -11,10 +11,7 @@
 			<country>China</country>
 		</issuer>
 	</policy-information>
-	<vocabulary-ref location="src/test/res/spark-vocab.xml">
-		<user-category-container refid="default-user" />
-		<data-category-container refid="store-data" />
-	</vocabulary-ref>
+	<vocabulary-ref location="src/test/res/spark-vocab.xml" />
 
 	<privacy-parameters>
 		<!-- <fine-budget> <budget-allocation> <user-category-ref refid="app"></user-category-ref> 
