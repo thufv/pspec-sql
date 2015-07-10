@@ -15,7 +15,7 @@ import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.Restriction;
 import edu.thu.ss.spec.lang.pojo.Rule;
 import edu.thu.ss.spec.lang.pojo.UserContainer;
-import edu.thu.ss.spec.util.SetUtil;
+import edu.thu.ss.spec.util.PSpecUtil;
 
 /**
  * check rule constraints after rule is parsed.
@@ -71,8 +71,8 @@ public class RuleConstraintAnalyzer extends BaseRuleAnalyzer {
 			DataRef ref1 = refs[i];
 			for (int j = i + 1; j < refs.length; j++) {
 				DataRef ref2 = refs[j];
-				if (SetUtil.bottom(ref1.getAction(), ref2.getAction()) != null
-						&& SetUtil.intersects(ref1.getMaterialized(), ref2.getMaterialized())) {
+				if (PSpecUtil.bottom(ref1.getAction(), ref2.getAction()) != null
+						&& PSpecUtil.intersects(ref1.getMaterialized(), ref2.getMaterialized())) {
 					logger.error(
 							"Overlap of data category: {} and {} detected in data association in rule: {}.",
 							ref1.getRefid(), ref2.getRefid(), ruleId);
@@ -97,7 +97,7 @@ public class RuleConstraintAnalyzer extends BaseRuleAnalyzer {
 			return;
 		}
 
-		Desensitization de = restriction.getDesensitization();
+		Desensitization de = restriction.getDesensitization(0);
 		for (DataRef ref : rule.getDataRefs()) {
 			checkInclusion(ref.getData(), de.getOperations());
 		}
@@ -110,11 +110,10 @@ public class RuleConstraintAnalyzer extends BaseRuleAnalyzer {
 				continue;
 			}
 			for (Desensitization de : restriction.getDesensitizations()) {
-				if (de == null) {
-					continue;
+				if (de.effective()) {
+					DataRef ref = de.getDataRef();
+					checkInclusion(ref.getCategory(), de.getOperations());
 				}
-				DataRef ref = de.getDataRef();
-				checkInclusion(ref.getCategory(), de.getOperations());
 			}
 		}
 	}

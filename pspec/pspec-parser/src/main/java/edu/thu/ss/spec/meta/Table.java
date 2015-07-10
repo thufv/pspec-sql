@@ -8,7 +8,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.thu.ss.spec.util.SetUtil;
+import edu.thu.ss.spec.util.PSpecUtil;
 
 public class Table extends DBObject {
 	private static Logger logger = LoggerFactory.getLogger(Table.class);
@@ -90,7 +90,7 @@ public class Table extends DBObject {
 
 	public String toString(int l) {
 		StringBuilder sb = new StringBuilder();
-		sb.append(SetUtil.spaces(l));
+		sb.append(PSpecUtil.spaces(l));
 		sb.append("Table: ");
 		sb.append(name);
 		sb.append("\n");

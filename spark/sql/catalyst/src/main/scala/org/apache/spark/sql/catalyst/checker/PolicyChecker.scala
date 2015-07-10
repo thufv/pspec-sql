@@ -1,6 +1,6 @@
 package org.apache.spark.sql.catalyst.checker
 
-import scala.collection.JavaConverters._
+import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
 import org.apache.spark.Logging
 import org.apache.spark.sql.catalyst.analysis.Catalog
@@ -95,7 +95,7 @@ private class FlowIndex(val flows: Map[Policy, Set[Flow]]) {
   }
 
   private def collect(index: Map[DataCategory, Set[Flow]], ref: DataRef, list: ListBuffer[Flow]) {
-    ref.getMaterialized().asScala.foreach(data => {
+    ref.getMaterialized().foreach(data => {
       val set = index.get(data);
       set match {
         case Some(s) => list ++= s;
@@ -120,7 +120,7 @@ class PolicyChecker(val username: String, val _budget: DPBudgetManager, val epsi
     }
     this.flowIndex = new FlowIndex(flows);
 
-    policies.foreach(p => p.getExpandedRules().asScala.foreach(checkRule(_, p)));
+    policies.foreach(p => p.getExpandedRules().foreach(checkRule(_, p)));
     if (violated) {
       throw new PrivacyException("");
     }
@@ -223,12 +223,7 @@ class PolicyChecker(val username: String, val _budget: DPBudgetManager, val epsi
     val des = res.getDesensitizations();
     var i = 0;
     for (de <- res.getDesensitizations()) {
-      if (de != null) {
-        val ref = if (rule.isSingle()) {
-          rule.getDataRef();
-        } else {
-          rule.getAssociation().get(i);
-        }
+      if (de.effective()) {
         val flow = flows(i);
         if (!checkDesensitization(flow, de)) {
           return false;
@@ -243,22 +238,15 @@ class PolicyChecker(val username: String, val _budget: DPBudgetManager, val epsi
    * check whether a desensitization is satisfied
    */
   private def checkDesensitization(flow: Flow, de: Desensitization): Boolean = {
-    val required =
-      if (de.getOperations() != null) {
-        de.getOperations();
-      } else {
-        flow.data.getOperations();
-      }
-    if (!required.contains(flow.path.op)) {
-      return false;
-    }
+    val required = de.getOperations();
+    assert(!required.isEmpty());
     return required.contains(flow.path.op);
   }
 
   private def estimateCost(res: Restriction, flows: Array[Flow]): Double = {
     var total = 0.0;
     for (i <- 0 to flows.length - 1) {
-      total += estimateCost(res.getDesensitizations()(i), flows(i));
+      total += estimateCost(res.getDesensitizations().get(i), flows(i));
     }
     return total;
   }
@@ -295,7 +283,6 @@ class PolicyChecker(val username: String, val _budget: DPBudgetManager, val epsi
 
       }
     }
-
   }
 
   private def setDP(res: Restriction, flows: Array[Flow]) {

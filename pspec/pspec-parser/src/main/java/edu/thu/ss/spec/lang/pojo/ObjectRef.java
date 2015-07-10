@@ -17,6 +17,14 @@ public class ObjectRef implements Parsable, Writable {
 
 	protected boolean resolved = false;
 
+	public ObjectRef() {
+
+	}
+
+	public ObjectRef(String refid) {
+		this.refid = refid;
+	}
+
 	public boolean isResolved() {
 		return resolved;
 	}
@@ -73,6 +81,11 @@ public class ObjectRef implements Parsable, Writable {
 		} else if (!refid.equals(other.refid))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return refid;
 	}
 
 }

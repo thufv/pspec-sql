@@ -295,11 +295,9 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>edu.thss</groupId>
-				<artifactId>privacy</artifactId>
-				<version>1.0</version>
-				<scope>system</scope>
-				<systemPath>${root.basedir}/lib/privacy.jar</systemPath>
+				<groupId>edu.thu.ss.privacy</groupId>
+				<artifactId>pspec-parser</artifactId>
+				<version>1.0.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>choco</groupId>

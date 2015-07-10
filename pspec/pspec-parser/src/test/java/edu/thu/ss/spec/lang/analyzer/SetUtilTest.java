@@ -13,8 +13,8 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import edu.thu.ss.spec.util.SetUtil;
-import edu.thu.ss.spec.util.SetUtil.SetRelation;
+import edu.thu.ss.spec.util.PSpecUtil;
+import edu.thu.ss.spec.util.PSpecUtil.SetRelation;
 
 public class SetUtilTest {
 
@@ -24,32 +24,32 @@ public class SetUtilTest {
 		Set<Integer> set3 = new HashSet<>(Arrays.asList(2, 3));
 		Set<Integer> set4 = new HashSet<>(Arrays.asList(3));
 
-		assertEquals(SetRelation.contain, SetUtil.relation(set1, set2));
-		assertEquals(SetRelation.intersect, SetUtil.relation(set2, set3));
-		assertEquals(SetRelation.disjoint, SetUtil.relation(set2, set4));
+		assertEquals(SetRelation.contain, PSpecUtil.relation(set1, set2));
+		assertEquals(SetRelation.intersect, PSpecUtil.relation(set2, set3));
+		assertEquals(SetRelation.disjoint, PSpecUtil.relation(set2, set4));
 	}
 
 	public void testMergeList() {
 		List<Set<Integer>> list = new ArrayList<>();
 
-		SetUtil.mergeOperations(list, null);
+		PSpecUtil.mergeOperations(list, null);
 		assertEquals(1, list.size());
 		assertEquals(null, list.get(0));
 
-		SetUtil.mergeOperations(list, new HashSet<>(Arrays.asList(1, 2, 3)));
+		PSpecUtil.mergeOperations(list, new HashSet<>(Arrays.asList(1, 2, 3)));
 		assertEquals(1, list.size());
 		assertEquals(new HashSet<>(Arrays.asList(1, 2, 3)), list.get(0));
 
-		SetUtil.mergeOperations(list, null);
+		PSpecUtil.mergeOperations(list, null);
 		assertEquals(1, list.size());
 		assertEquals(new HashSet<>(Arrays.asList(1, 2, 3)), list.get(0));
 
-		SetUtil.mergeOperations(list, new HashSet<>(Arrays.asList(2, 3, 4)));
+		PSpecUtil.mergeOperations(list, new HashSet<>(Arrays.asList(2, 3, 4)));
 		assertEquals(2, list.size());
 		assertEquals(new HashSet<>(Arrays.asList(1, 2, 3)), list.get(0));
 		assertEquals(new HashSet<>(Arrays.asList(2, 3, 4)), list.get(1));
 
-		SetUtil.mergeOperations(list, new HashSet<>(Arrays.asList(2, 3)));
+		PSpecUtil.mergeOperations(list, new HashSet<>(Arrays.asList(2, 3)));
 		assertEquals(1, list.size());
 		assertEquals(new HashSet<>(Arrays.asList(2, 3)), list.get(0));
 	}

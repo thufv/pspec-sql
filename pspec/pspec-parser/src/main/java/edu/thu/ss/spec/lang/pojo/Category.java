@@ -25,6 +25,7 @@ public abstract class Category<T extends Category<T>> extends HierarchicalObject
 		this.container = container;
 	}
 
+	
 	/**
 	 * @param container
 	 * @return all descendants in the container of a given category

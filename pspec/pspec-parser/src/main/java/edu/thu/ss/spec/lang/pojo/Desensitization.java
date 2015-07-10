@@ -8,7 +8,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import edu.thu.ss.spec.lang.parser.ParserConstant;
-import edu.thu.ss.spec.util.SetUtil;
+import edu.thu.ss.spec.util.PSpecUtil;
 
 /**
  * class for desensitization, requires some data categories must be desensitized with
@@ -30,7 +30,19 @@ public class Desensitization implements Writable {
 	/**
 	 * required {@link DesensitizeOperation}s must be supported by all {@link DataCategory} in {@link #datas} 
 	 */
-	protected Set<DesensitizeOperation> operations;
+	protected Set<DesensitizeOperation> operations = new LinkedHashSet<>();
+
+	public Desensitization() {
+	}
+
+	public boolean effective() {
+		return !operations.isEmpty();
+	}
+
+	public Desensitization(DataRef ref) {
+		this.dataRefId = ref.refid;
+		this.dataRef = ref;
+	}
 
 	public Desensitization clone() {
 		Desensitization de = new Desensitization();
@@ -39,9 +51,7 @@ public class Desensitization implements Writable {
 		if (this.datas != null) {
 			de.datas = new HashSet<>(this.datas);
 		}
-		if (this.operations != null) {
-			de.operations = new LinkedHashSet<>(this.operations);
-		}
+		de.operations = new LinkedHashSet<>(this.operations);
 		return de;
 	}
 
@@ -54,13 +64,10 @@ public class Desensitization implements Writable {
 			refEle.setAttribute(ParserConstant.Attr_Refid, this.dataRef.refid);
 			element.appendChild(refEle);
 		}
-		if (this.operations != null) {
-			for (DesensitizeOperation op : operations) {
-				Element opEle = document
-						.createElement(ParserConstant.Ele_Policy_Rule_Desensitize_Operation);
-				opEle.appendChild(document.createTextNode(op.name));
-				element.appendChild(opEle);
-			}
+		for (DesensitizeOperation op : operations) {
+			Element opEle = document.createElement(ParserConstant.Ele_Policy_Rule_Desensitize_Operation);
+			opEle.appendChild(document.createTextNode(op.name));
+			element.appendChild(opEle);
 		}
 
 		return element;
@@ -77,6 +84,7 @@ public class Desensitization implements Writable {
 
 	public void setDataRef(DataRef dataRef) {
 		this.dataRef = dataRef;
+		this.dataRefId = dataRef.refid;
 	}
 
 	public DataRef getDataRef() {
@@ -89,10 +97,6 @@ public class Desensitization implements Writable {
 
 	public String getDataRefId() {
 		return dataRefId;
-	}
-
-	public boolean isDefaultOperation() {
-		return operations == null;
 	}
 
 	public Set<DesensitizeOperation> getOperations() {
@@ -117,7 +121,7 @@ public class Desensitization implements Writable {
 		StringBuilder sb = new StringBuilder();
 		sb.append("operation: ");
 		if (operations != null) {
-			sb.append(SetUtil.format(operations, " "));
+			sb.append(PSpecUtil.format(operations, " "));
 		} else {
 			sb.append("default");
 		}

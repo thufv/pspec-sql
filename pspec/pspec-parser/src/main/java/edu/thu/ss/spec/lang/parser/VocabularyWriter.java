@@ -1,15 +1,10 @@
 package edu.thu.ss.spec.lang.parser;
 
-import java.util.Collection;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import edu.thu.ss.spec.lang.pojo.DataContainer;
 import edu.thu.ss.spec.lang.pojo.Info;
-import edu.thu.ss.spec.lang.pojo.UserContainer;
 import edu.thu.ss.spec.lang.pojo.Vocabulary;
-import edu.thu.ss.spec.util.WritingException;
 import edu.thu.ss.spec.util.XMLUtil;
 
 public class VocabularyWriter implements ParserConstant {

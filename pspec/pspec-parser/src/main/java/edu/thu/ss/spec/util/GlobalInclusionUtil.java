@@ -13,7 +13,7 @@ public class GlobalInclusionUtil extends InclusionUtil {
 		if (!data1.getAction().ancestorOf(data2.getAction())) {
 			return false;
 		}
-		return SetUtil.contains(data1.getMaterialized(), data2.getMaterialized());
+		return PSpecUtil.contains(data1.getMaterialized(), data2.getMaterialized());
 	}
 
 	@Override

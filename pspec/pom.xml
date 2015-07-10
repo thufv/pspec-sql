@@ -16,6 +16,13 @@
 		<project.version>1.0.0-SNAPSHOT</project.version>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>jabylon</id>
+			<url>http://www.jabylon.org/maven</url>
+		</repository>
+	</repositories>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -55,7 +62,7 @@
 			<dependency>
 				<groupId>org.eclipse</groupId>
 				<artifactId>jface</artifactId>
-				<version>3.3.0-I20070606-0010</version>
+				<version>3.9.1</version>
 			</dependency>
 
 		</dependencies>

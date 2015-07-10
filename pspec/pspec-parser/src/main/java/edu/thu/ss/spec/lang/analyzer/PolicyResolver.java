@@ -1,5 +1,6 @@
 package edu.thu.ss.spec.lang.analyzer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -177,7 +178,7 @@ public class PolicyResolver extends BasePolicyAnalyzer {
 		}
 	}
 
-	private void resolveUserRef(UserRef ref, UserContainer users, ResolveListener listener) {
+	public void resolveUserRef(UserRef ref, UserContainer users, ResolveListener listener) {
 		if (ref.isResolved()) {
 			return;
 		}
@@ -204,7 +205,7 @@ public class PolicyResolver extends BasePolicyAnalyzer {
 
 	}
 
-	private void resolveDataRef(DataRef ref, DataContainer datas, ResolveListener listener) {
+	public void resolveDataRef(DataRef ref, DataContainer datas, ResolveListener listener) {
 		if (ref.isResolved()) {
 			return;
 		}
@@ -284,12 +285,12 @@ public class PolicyResolver extends BasePolicyAnalyzer {
 	}
 
 	private void resolveSingleRestriction(Restriction res, Rule rule) {
-		if (res.getList().size() > 1) {
+		if (res.getDesensitizations().size() > 1) {
 			logger.error("Only 1 desensitization is allowed for single rule: {}", rule.getId());
 			error = true;
 			return;
 		}
-		Desensitization de = res.getList().get(0);
+		Desensitization de = res.getDesensitization(0);
 		if (!de.getDataRefId().isEmpty()) {
 			logger
 					.error("No data-category-ref element should appear in desensitize element when only data category is referenced in rule: "
@@ -297,20 +298,17 @@ public class PolicyResolver extends BasePolicyAnalyzer {
 			error = true;
 			return;
 		}
-		Desensitization[] des = new Desensitization[] { de };
-		res.setDesensitizations(des);
 	}
 
 	private void resolveAssociateRestriction(Restriction res, Rule rule) {
-		Desensitization[] des = new Desensitization[rule.getAssociation().getDimension()];
 		DataAssociation association = rule.getAssociation();
-		for (Desensitization de : res.getList()) {
+		for (Desensitization de : res.getDesensitizations()) {
 			if (de.getDataRefId().isEmpty()) {
 				logger
 						.error("Restricted data category must be specified explicitly when data association is referenced by rule: "
 								+ rule.getId());
 				error = true;
-				return;
+				continue;
 			}
 			String refid = de.getDataRefId();
 			DataRef ref = association.get(refid);
@@ -322,13 +320,20 @@ public class PolicyResolver extends BasePolicyAnalyzer {
 				error = true;
 				continue;
 			}
+		}
+		//adjust desensitization
+		List<Desensitization> list = new ArrayList<>(rule.getAssociation().getDimension());
+		for (DataRef ref : association.getDataRefs()) {
+			Desensitization de = res.getDesensitization(ref.getRefid());
+			if (de == null) {
+				de = new Desensitization();
+			}
 			de.setDataRef(ref);
 			de.materialize();
-			int index = association.getIndex(refid);
-			des[index] = de;
+			list.add(de);
 		}
 
-		res.setDesensitizations(des);
+		res.setDesensitizationList(list);
 
 	}
 

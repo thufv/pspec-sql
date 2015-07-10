@@ -1,4 +1,4 @@
-package edu.thu.ss.spec.util;
+package edu.thu.ss.spec.lang.parser;
 
 public class WritingException extends Exception {
 

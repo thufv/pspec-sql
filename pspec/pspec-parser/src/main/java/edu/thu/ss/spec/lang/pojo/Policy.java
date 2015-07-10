@@ -1,6 +1,7 @@
 package edu.thu.ss.spec.lang.pojo;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -10,31 +11,23 @@ import java.util.Map;
  *
  */
 public class Policy {
-	protected Info info;
+	protected Info info = new Info();
 
-	protected String vocabularyLocation;
+	protected URI vocabularyLocation;
+
+	protected Vocabulary vocabulary;
 
 	/**
 	 * {@link UserContainer} of id {@link #userContainerRef}
 	 */
-	protected UserContainer userContainer;
+	protected UserContainer userContainer = new UserContainer();
 
 	/**
 	 * {@link DataContainer} of id {@link #dataContainerRef}
 	 */
-	protected DataContainer dataContainer;
+	protected DataContainer dataContainer = new DataContainer();
 
-	/**
-	 * all referenced {@link UserContainer}
-	 */
-	protected Map<String, UserContainer> userContainers;
-
-	/**
-	 * all referenced {@link DataContainer}
-	 */
-	protected Map<String, DataContainer> dataContainers;
-
-	protected List<Rule> rules;
+	protected List<Rule> rules = new ArrayList<>();
 
 	protected List<ExpandedRule> expandedRules;
 
@@ -66,11 +59,11 @@ public class Policy {
 		return expandedRules;
 	}
 
-	public String getVocabularyLocation() {
+	public URI getVocabularyLocation() {
 		return vocabularyLocation;
 	}
 
-	public void setVocabularyLocation(String vocabularyLocation) {
+	public void setVocabularyLocation(URI vocabularyLocation) {
 		this.vocabularyLocation = vocabularyLocation;
 	}
 
@@ -112,14 +105,6 @@ public class Policy {
 
 	public void setDataContainer(DataContainer dataContainer) {
 		this.dataContainer = dataContainer;
-	}
-
-	public void setDataContainers(Map<String, DataContainer> dataContainers) {
-		this.dataContainers = dataContainers;
-	}
-
-	public void setUserContainers(Map<String, UserContainer> userContainers) {
-		this.userContainers = userContainers;
 	}
 
 	@Override
@@ -183,5 +168,11 @@ public class Policy {
 
 	public UserCategory getUserCategory(String id) {
 		return userContainer.get(id);
+	}
+
+	public void setVocabulary(Vocabulary vocabulary) {
+		this.vocabulary = vocabulary;
+		this.userContainer = vocabulary.getUserContainer();
+		this.dataContainer = vocabulary.getDataContainer();
 	}
 }

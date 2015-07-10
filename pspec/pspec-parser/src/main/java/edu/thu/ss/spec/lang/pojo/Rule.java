@@ -25,6 +25,18 @@ public class Rule extends DescribedObject {
 		return userRefs;
 	}
 
+	public void setUserRefs(List<UserRef> userRefs) {
+		this.userRefs = userRefs;
+	}
+
+	public void setDataRefs(List<DataRef> dataRefs) {
+		this.dataRefs = dataRefs;
+	}
+
+	public void setAssociation(DataAssociation association) {
+		this.association = association;
+	}
+
 	public List<DataRef> getDataRefs() {
 		return dataRefs;
 	}
@@ -33,6 +45,10 @@ public class Rule extends DescribedObject {
 		return association == null;
 	}
 
+	public void setRestrictions(List<Restriction> restrictions) {
+		this.restrictions = restrictions;
+	}
+	
 	public List<Restriction> getRestrictions() {
 		return restrictions;
 	}

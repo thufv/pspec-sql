@@ -9,7 +9,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.spec.lang.parser.ParserConstant;
-import edu.thu.ss.spec.util.SetUtil;
+import edu.thu.ss.spec.util.PSpecUtil;
 
 /**
  * class for data association
@@ -30,6 +30,10 @@ public class DataAssociation implements Parsable, Writable {
 
 	public DataRef get(int i) {
 		return dataRefs.get(i);
+	}
+
+	public void setDataRefs(List<DataRef> dataRefs) {
+		this.dataRefs = dataRefs;
 	}
 
 	@Override
@@ -65,7 +69,7 @@ public class DataAssociation implements Parsable, Writable {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Data Association: {");
-		sb.append(SetUtil.format(dataRefs, ","));
+		sb.append(PSpecUtil.format(dataRefs, ","));
 		sb.append("}");
 		return sb.toString();
 	}

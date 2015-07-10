@@ -2,9 +2,11 @@ package edu.thu.ss.spec.lang.pojo;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -34,6 +36,14 @@ public abstract class CategoryContainer<T extends Category<T>> extends Described
 
 	protected boolean leaf = true;
 
+	@Override
+	public void setId(String id) {
+		super.setId(id);
+		for (T category : categories.values()) {
+			category.containerId = id;
+		}
+	}
+
 	public void add(T t) {
 		categories.put(t.id, t);
 		if (t.parentId.isEmpty()) {
@@ -57,6 +67,24 @@ public abstract class CategoryContainer<T extends Category<T>> extends Described
 			baseContainer.materializeRoots(list);
 		}
 		list.addAll(root);
+	}
+
+	public void setParent(T category, T newParent) {
+		T oldParent = category.getParent();
+		if (oldParent == null) {
+			root.remove(category);
+		} else {
+			oldParent.removeRelation(category);
+
+		}
+
+		category.setParent(newParent);
+		if (newParent != null) {
+			newParent.buildRelation(category);
+		} else {
+			category.setParentId("");
+			root.add(category);
+		}
 	}
 
 	public void cascadeRemove(T t) {
@@ -138,10 +166,6 @@ public abstract class CategoryContainer<T extends Category<T>> extends Described
 		return categories;
 	}
 
-	//public List<T> getRoot() {
-	//	return root;
-	//}
-
 	@Override
 	public void parse(Node categoryNode) {
 		super.parse(categoryNode);
@@ -175,5 +199,18 @@ public abstract class CategoryContainer<T extends Category<T>> extends Described
 			}
 		}
 
+	}
+
+	public List<T> getChildren(T t) {
+		if (t.getChildren() == null) {
+			return null;
+		}
+		List<T> result = new ArrayList<>(t.getChildren().size());
+		for (T child : t.getChildren()) {
+			if (this.contains(child.id)) {
+				result.add(child);
+			}
+		}
+		return result;
 	}
 }

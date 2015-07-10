@@ -16,6 +16,7 @@ import org.w3c.dom.NodeList;
 
 import edu.thu.ss.spec.global.MetaManager;
 import edu.thu.ss.spec.global.PolicyManager;
+import edu.thu.ss.spec.lang.parser.ParsingException;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.Policy;
@@ -32,7 +33,6 @@ import edu.thu.ss.spec.meta.PrimitiveType;
 import edu.thu.ss.spec.meta.StructType;
 import edu.thu.ss.spec.meta.Table;
 import edu.thu.ss.spec.meta.User;
-import edu.thu.ss.spec.util.ParsingException;
 import edu.thu.ss.spec.util.XMLUtil;
 
 public class XMLMetaRegistryParser implements MetaParserConstant {

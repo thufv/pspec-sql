@@ -2,6 +2,7 @@ package edu.thu.ss.spec.lang.pojo;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,7 +28,7 @@ public abstract class CategoryRef<T extends Category<T>> extends ObjectRef {
 	/**
 	 * excluded category ids
 	 */
-	protected Set<ObjectRef> excludeRefs = new HashSet<>();
+	protected Set<ObjectRef> excludeRefs = new LinkedHashSet<>();
 
 	/**
 	 * excluded categories

@@ -27,7 +27,6 @@ import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.PrivacyParams;
 import edu.thu.ss.spec.lang.pojo.Rule;
 import edu.thu.ss.spec.lang.pojo.Vocabulary;
-import edu.thu.ss.spec.util.ParsingException;
 import edu.thu.ss.spec.util.XMLUtil;
 
 /**
@@ -113,9 +112,7 @@ public class PolicyParser implements ParserConstant {
 				Node node = list.item(i);
 				String name = node.getLocalName();
 				if (Ele_Policy_Info.equals(name)) {
-					Info info = new Info();
-					info.parse(node);
-					policy.setInfo(info);
+					policy.getInfo().parse(node);
 				} else if (Ele_Policy_Vocabulary_Ref.equals(name)) {
 					//parse referred vocabulary first
 					parseVocabularyRef(node, policy);
@@ -151,7 +148,7 @@ public class PolicyParser implements ParserConstant {
 	 */
 	private void parseVocabularyRef(Node refNode, Policy policy) throws Exception {
 		String location = XMLUtil.getAttrValue(refNode, Attr_Policy_Vocabulary_location);
-		policy.setVocabularyLocation(location);
+		policy.setVocabularyLocation(XMLUtil.toUri(location));
 		VocabularyParser vocabParser = new VocabularyParser();
 		Vocabulary vocabulary = vocabParser.parse(location);
 		policy.setUserContainer(vocabulary.getUserContainer());
@@ -166,7 +163,7 @@ public class PolicyParser implements ParserConstant {
 	}
 
 	private void parseRules(Node rulesNode, Policy policy) {
-		List<Rule> rules = new ArrayList<>();
+		List<Rule> rules = policy.getRules();
 		NodeList list = rulesNode.getChildNodes();
 		for (int i = 0; i < list.getLength(); i++) {
 			Node node = list.item(i);
@@ -177,7 +174,6 @@ public class PolicyParser implements ParserConstant {
 				rules.add(rule);
 			}
 		}
-		policy.setRules(rules);
 	}
 
 	private void analyzePolicy(Policy policy) throws ParsingException {

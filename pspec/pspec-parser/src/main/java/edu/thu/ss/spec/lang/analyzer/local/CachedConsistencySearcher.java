@@ -16,7 +16,7 @@ import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
-import edu.thu.ss.spec.util.SetUtil;
+import edu.thu.ss.spec.util.PSpecUtil;
 
 /**
  * an enhanced consistency search with caching results in each level.
@@ -68,7 +68,7 @@ public class CachedConsistencySearcher extends ConsistencySearcher {
 
 		RuleObject result = new RuleObject();
 
-		Set<UserCategory> users = SetUtil.intersect(rule1.users, rule2.users);
+		Set<UserCategory> users = PSpecUtil.intersect(rule1.users, rule2.users);
 		if (users.size() == 0) {
 			return false;
 		}
@@ -77,11 +77,11 @@ public class CachedConsistencySearcher extends ConsistencySearcher {
 		boolean match = false;
 		for (Triple t1 : rule1.triples) {
 			for (Triple t2 : rule2.triples) {
-				Action action = SetUtil.bottom(t1.action, t2.action);
+				Action action = PSpecUtil.bottom(t1.action, t2.action);
 				if (action == null) {
 					continue;
 				}
-				Set<DataCategory> datas = SetUtil.intersect(t1.datas, t2.datas);
+				Set<DataCategory> datas = PSpecUtil.intersect(t1.datas, t2.datas);
 				if (datas.size() == 0) {
 					continue;
 				}
@@ -115,7 +115,7 @@ public class CachedConsistencySearcher extends ConsistencySearcher {
 				logger
 						.warn(
 								"Possible conflicts between expanded rules: {}, since rule :#{} forbids the data access.",
-								SetUtil.toString(key.index, sortedRules), sortedRules.get(index).getRuleId());
+								PSpecUtil.toString(key.index, sortedRules), sortedRules.get(index).getRuleId());
 			}
 			return null;
 		}
@@ -123,20 +123,20 @@ public class CachedConsistencySearcher extends ConsistencySearcher {
 		for (Set<DesensitizeOperation> ops1 : list1) {
 			for (Set<DesensitizeOperation> ops2 : list2) {
 				if (ops1 == null) {
-					SetUtil.mergeOperations(list, ops2);
+					PSpecUtil.mergeOperations(list, ops2);
 				} else if (ops2 == null) {
-					SetUtil.mergeOperations(list, ops1);
+					PSpecUtil.mergeOperations(list, ops1);
 				} else {
-					Set<DesensitizeOperation> ops = SetUtil.intersect(ops1, ops2);
+					Set<DesensitizeOperation> ops = PSpecUtil.intersect(ops1, ops2);
 					if (ops.size() == 0) {
 						conflicts++;
 						logger
 								.warn(
 										"Desensitize operation conflicts detected between expanded rules: #{} for data categories: {}.",
-										SetUtil.toString(key.index, sortedRules), SetUtil.format(datas, ","));
+										PSpecUtil.toString(key.index, sortedRules), PSpecUtil.format(datas, ","));
 						return null;
 					}
-					SetUtil.mergeOperations(list, ops);
+					PSpecUtil.mergeOperations(list, ops);
 
 				}
 			}

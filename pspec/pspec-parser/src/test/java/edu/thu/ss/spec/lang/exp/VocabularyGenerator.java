@@ -1,6 +1,7 @@
 package edu.thu.ss.spec.lang.exp;
 
 import edu.thu.ss.spec.lang.parser.VocabularyWriter;
+import edu.thu.ss.spec.lang.parser.WritingException;
 import edu.thu.ss.spec.lang.pojo.ContactInfo;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DataContainer;
@@ -9,7 +10,6 @@ import edu.thu.ss.spec.lang.pojo.Info;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
 import edu.thu.ss.spec.lang.pojo.UserContainer;
 import edu.thu.ss.spec.lang.pojo.Vocabulary;
-import edu.thu.ss.spec.util.WritingException;
 
 public class VocabularyGenerator {
 

@@ -6,7 +6,6 @@ import org.w3c.dom.Element;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.Info;
 import edu.thu.ss.spec.lang.pojo.Policy;
-import edu.thu.ss.spec.util.WritingException;
 import edu.thu.ss.spec.util.XMLUtil;
 
 /**
@@ -56,7 +55,8 @@ public class PolicyWriter implements ParserConstant {
 	private Element outputVocabularyRef(Policy policy, Document document) {
 		Element vocabEle = document.createElement(Ele_Policy_Vocabulary_Ref);
 
-		vocabEle.setAttribute(Attr_Policy_Vocabulary_location, policy.getVocabularyLocation());
+		vocabEle.setAttribute(Attr_Policy_Vocabulary_location, policy.getVocabularyLocation()
+				.toString());
 
 		return vocabEle;
 	}

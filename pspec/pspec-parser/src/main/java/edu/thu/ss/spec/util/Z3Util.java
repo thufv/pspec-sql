@@ -82,7 +82,7 @@ public class Z3Util {
 			for (Restriction res2 : restrictions2) {
 				boolean retain = true;
 				for (int i = 0; i < dim2; i++) {
-					if (!covered[i] && res2.getDesensitizations()[i] != null) {
+					if (!covered[i] && res2.getDesensitization(i).effective()) {
 						retain = false;
 						break;
 					}
@@ -162,11 +162,11 @@ public class Z3Util {
 
 	private static BoolExpr buildExpr(Restriction res, IntExpr[] vars, int[] varIndex)
 			throws Z3Exception {
-		Desensitization[] des = res.getDesensitizations();
-		BoolExpr[] exprs = new BoolExpr[des.length];
-		for (int i = 0; i < des.length; i++) {
-			if (des[i] != null) {
-				exprs[i] = buildExpr(i, des[i], vars, varIndex);
+		List<Desensitization> des = res.getDesensitizations();
+		BoolExpr[] exprs = new BoolExpr[des.size()];
+		for (int i = 0; i < des.size(); i++) {
+			if (des.get(i).effective()) {
+				exprs[i] = buildExpr(i, des.get(i), vars, varIndex);
 			} else {
 				exprs[i] = context.mkTrue();
 			}

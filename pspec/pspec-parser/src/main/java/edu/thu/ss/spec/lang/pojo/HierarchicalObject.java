@@ -30,6 +30,10 @@ public class HierarchicalObject<T extends HierarchicalObject<T>> extends Describ
 		return parent;
 	}
 
+	public void setParent(T parent) {
+		this.parent = parent;
+	}
+
 	public void setChildren(List<T> children) {
 		this.children = children;
 	}
@@ -55,6 +59,7 @@ public class HierarchicalObject<T extends HierarchicalObject<T>> extends Describ
 		for (T child : children) {
 			this.children.add(child);
 			child.parent = (T) this;
+			child.parentId = this.id;
 		}
 	}
 
@@ -65,6 +70,7 @@ public class HierarchicalObject<T extends HierarchicalObject<T>> extends Describ
 		}
 		for (T child : list) {
 			child.parent = (T) this;
+			child.parentId = this.id;
 		}
 		this.children.addAll(index, list);
 	}

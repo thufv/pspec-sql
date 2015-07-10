@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-import edu.thu.ss.spec.util.SetUtil;
+import edu.thu.ss.spec.util.PSpecUtil;
 
 public class JoinCondition {
 
@@ -100,7 +100,7 @@ public class JoinCondition {
 		sb.append("table: ");
 		sb.append(joinTable);
 		sb.append("\t");
-		sb.append(SetUtil.format(joinColumns, ","));
+		sb.append(PSpecUtil.format(joinColumns, ","));
 		return sb.toString();
 	}
 

@@ -24,8 +24,8 @@ import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Restriction;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
-import edu.thu.ss.spec.util.SetUtil;
-import edu.thu.ss.spec.util.SetUtil.SetRelation;
+import edu.thu.ss.spec.util.PSpecUtil;
+import edu.thu.ss.spec.util.PSpecUtil.SetRelation;
 
 /**
  * performs consistency search based on level wise search algorithm
@@ -74,7 +74,7 @@ class ConsistencySearcher extends LevelwiseSearcher {
 
 		public List<Set<DesensitizeOperation>> getList(Set<DataCategory> datas) {
 			for (Triple t : triples) {
-				if (SetUtil.containOrDisjoint(t.datas, datas).equals(SetRelation.contain)) {
+				if (PSpecUtil.containOrDisjoint(t.datas, datas).equals(SetRelation.contain)) {
 					return t.list;
 				}
 			}
@@ -138,13 +138,15 @@ class ConsistencySearcher extends LevelwiseSearcher {
 
 	}
 
-	private RuleRelation processDatas(SearchKey key, int i, Action joinAction, Set<DataCategory> joinDatas) {
+	private RuleRelation processDatas(SearchKey key, int i, Action joinAction,
+			Set<DataCategory> joinDatas) {
 		if (i == key.index.length) {
 			RuleRelation relation = checkRestrictions(key, joinAction, joinDatas);
 			if (relation.equals(RuleRelation.conflict)) {
-				logger.error(
-						"Desensitize operation conflicts detected between expanded sortedRules: #{} for data categories: {}.",
-						SetUtil.toString(key.index, sortedRules), SetUtil.format(joinDatas, ","));
+				logger
+						.error(
+								"Desensitize operation conflicts detected between expanded sortedRules: #{} for data categories: {}.",
+								PSpecUtil.toString(key.index, sortedRules), PSpecUtil.format(joinDatas, ","));
 			}
 			return relation;
 		}
@@ -158,11 +160,11 @@ class ConsistencySearcher extends LevelwiseSearcher {
 				action = triple.action;
 				datas = new HashSet<>(triple.datas);
 			} else {
-				action = SetUtil.bottom(triple.action, joinAction);
+				action = PSpecUtil.bottom(triple.action, joinAction);
 				if (action == null) {
 					continue;
 				}
-				datas = SetUtil.intersect(triple.datas, joinDatas);
+				datas = PSpecUtil.intersect(triple.datas, joinDatas);
 				if (datas.size() == 0) {
 					continue;
 				}
@@ -182,22 +184,20 @@ class ConsistencySearcher extends LevelwiseSearcher {
 		}
 	}
 
-	protected List<Set<DesensitizeOperation>> collectOperations(ExpandedRule rule, Set<DataCategory> datas) {
+	protected List<Set<DesensitizeOperation>> collectOperations(ExpandedRule rule,
+			Set<DataCategory> datas) {
 		Restriction[] restrictions = rule.getRestrictions();
 		List<Set<DesensitizeOperation>> list = null;
 		for (Restriction res : restrictions) {
 			boolean match = false;
-			Desensitization[] des = res.getDesensitizations();
 			Set<DesensitizeOperation> ops = null;
-			if (des != null) {
-				for (Desensitization de : des) {
-					if (de != null) {
-						Set<DataCategory> set = de.getDatas();
-						if (SetUtil.containOrDisjoint(set, datas).equals(SetRelation.contain)) {
-							ops = de.getOperations();
-							match = true;
-							break;
-						}
+			for (Desensitization de : res.getDesensitizations()) {
+				if (de.effective()) {
+					Set<DataCategory> set = de.getDatas();
+					if (PSpecUtil.containOrDisjoint(set, datas).equals(SetRelation.contain)) {
+						ops = de.getOperations();
+						match = true;
+						break;
 					}
 				}
 			}
@@ -207,7 +207,7 @@ class ConsistencySearcher extends LevelwiseSearcher {
 			if (list == null) {
 				list = new ArrayList<>();
 			}
-			SetUtil.mergeOperations(list, ops);
+			PSpecUtil.mergeOperations(list, ops);
 		}
 		return list;
 	}
@@ -218,8 +218,11 @@ class ConsistencySearcher extends LevelwiseSearcher {
 			RuleObject rule = ruleObjects[key.index[i]];
 			List<Set<DesensitizeOperation>> list = rule.getList(datas);
 			if (list == null) {
-				logger.error("Possible conflicts between expanded sortedRules: #{}, since rule :#{} forbids the data access.",
-						SetUtil.toString(key.index, sortedRules), sortedRules.get(key.index[i]).getRuleId());
+				logger
+						.error(
+								"Possible conflicts between expanded sortedRules: #{}, since rule :#{} forbids the data access.",
+								PSpecUtil.toString(key.index, sortedRules), sortedRules.get(key.index[i])
+										.getRuleId());
 				return RuleRelation.forbid;
 			}
 			if (joins == null) {
@@ -236,15 +239,15 @@ class ConsistencySearcher extends LevelwiseSearcher {
 				for (Set<DesensitizeOperation> ops1 : joins) {
 					for (Set<DesensitizeOperation> ops2 : list) {
 						if (ops1 == null) {
-							SetUtil.mergeOperations(tmp, ops2);
+							PSpecUtil.mergeOperations(tmp, ops2);
 						} else if (ops2 == null) {
-							SetUtil.mergeOperations(tmp, ops1);
+							PSpecUtil.mergeOperations(tmp, ops1);
 						} else {
-							Set<DesensitizeOperation> ops = SetUtil.intersect(ops1, ops2);
+							Set<DesensitizeOperation> ops = PSpecUtil.intersect(ops1, ops2);
 							if (ops.size() == 0) {
 								return RuleRelation.conflict;
 							}
-							SetUtil.mergeOperations(tmp, ops);
+							PSpecUtil.mergeOperations(tmp, ops);
 						}
 					}
 				}
@@ -272,7 +275,8 @@ class ConsistencySearcher extends LevelwiseSearcher {
 			List<Triple> triples = new ArrayList<>();
 			if (rule.isSingle()) {
 				DataRef ref = rule.getDataRef();
-				List<Set<DesensitizeOperation>> list = collectOperations(rule, rule.getDataRef().getMaterialized());
+				List<Set<DesensitizeOperation>> list = collectOperations(rule, rule.getDataRef()
+						.getMaterialized());
 				if (list != null) {
 					Triple triple = new Triple(ref, list);
 					triples.add(triple);

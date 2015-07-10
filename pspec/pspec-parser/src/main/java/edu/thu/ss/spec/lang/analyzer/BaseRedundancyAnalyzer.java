@@ -22,9 +22,9 @@ import edu.thu.ss.spec.lang.pojo.Restriction;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
 import edu.thu.ss.spec.lang.pojo.UserRef;
 import edu.thu.ss.spec.util.InclusionUtil;
-import edu.thu.ss.spec.util.SetUtil;
+import edu.thu.ss.spec.util.PSpecUtil;
 import edu.thu.ss.spec.util.Z3Util;
-import edu.thu.ss.spec.util.SetUtil.SetRelation;
+import edu.thu.ss.spec.util.PSpecUtil.SetRelation;
 
 /**
  * performs policy redundancy analysis, for all rule r1 and r2, if r1 covers r2,
@@ -181,14 +181,14 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 
 		Set<UserCategory> user1 = rule1.getUsers();
 		Set<UserCategory> user2 = rule2.getUsers();
-		SetRelation userRelation = SetUtil.relation(user1, user2);
+		SetRelation userRelation = PSpecUtil.relation(user1, user2);
 		if (userRelation.equals(SetRelation.disjoint)) {
 			return false;
 		}
 
 		Set<DataCategory> data1 = ref1.getMaterialized();
 		Set<DataCategory> data2 = ref2.getMaterialized();
-		SetRelation dataRelation = SetUtil.relation(data1, data2);
+		SetRelation dataRelation = PSpecUtil.relation(data1, data2);
 		if (dataRelation.equals(SetRelation.disjoint)) {
 			return false;
 		}
@@ -244,7 +244,7 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 		Set<UserCategory> user1 = rule1.getUsers();
 		Set<UserCategory> user2 = rule2.getUsers();
 
-		if (!SetUtil.contains(user1, user2)) {
+		if (!PSpecUtil.contains(user1, user2)) {
 			return false;
 		}
 
@@ -289,7 +289,7 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 
 		Set<UserCategory> user1 = rule1.getUsers();
 		Set<UserCategory> user2 = rule2.getUsers();
-		if (!SetUtil.contains(user1, user2)) {
+		if (!PSpecUtil.contains(user1, user2)) {
 			return false;
 		}
 

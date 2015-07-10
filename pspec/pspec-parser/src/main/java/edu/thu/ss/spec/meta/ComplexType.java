@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import edu.thu.ss.spec.util.SetUtil;
+import edu.thu.ss.spec.util.PSpecUtil;
 
 public abstract class ComplexType<K> extends BaseType {
 
@@ -109,11 +109,11 @@ public abstract class ComplexType<K> extends BaseType {
 	public String toString(int l) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("\n");
-		sb.append(SetUtil.spaces(l));
+		sb.append(PSpecUtil.spaces(l));
 		sb.append(getTypeName());
 		sb.append("\n");
 		for (Entry<K, BaseType> e : subtypes.entrySet()) {
-			sb.append(SetUtil.spaces(l));
+			sb.append(PSpecUtil.spaces(l));
 			sb.append(getSelectorName());
 			sb.append(":");
 			sb.append(e.getKey());
@@ -122,7 +122,7 @@ public abstract class ComplexType<K> extends BaseType {
 			sb.append("\n");
 		}
 		if (defaultType != null) {
-			sb.append(SetUtil.spaces(l));
+			sb.append(PSpecUtil.spaces(l));
 			sb.append("Default: ");
 			sb.append(defaultType.toString(l + 1));
 		}

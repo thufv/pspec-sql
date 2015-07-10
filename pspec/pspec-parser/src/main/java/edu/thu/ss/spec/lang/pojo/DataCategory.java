@@ -2,6 +2,7 @@ package edu.thu.ss.spec.lang.pojo;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,7 +12,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.spec.lang.parser.ParserConstant;
-import edu.thu.ss.spec.util.SetUtil;
+import edu.thu.ss.spec.util.PSpecUtil;
 
 /**
  * class for data category
@@ -31,7 +32,7 @@ public class DataCategory extends Category<DataCategory> {
 	/**
 	 * all supported {@link DesensitizeOperation} for the data category
 	 */
-	protected Set<DesensitizeOperation> ops = new HashSet<>();
+	protected Set<DesensitizeOperation> ops = new LinkedHashSet<>();
 	protected Map<String, DesensitizeOperation> opIndex = new HashMap<>();
 
 	public Set<DesensitizeOperation> getOperations() {
@@ -39,7 +40,7 @@ public class DataCategory extends Category<DataCategory> {
 	}
 
 	public Set<DesensitizeOperation> getAllOperations() {
-		Set<DesensitizeOperation> set = new HashSet<>();
+		Set<DesensitizeOperation> set = new LinkedHashSet<>();
 		getAllOperations(set);
 		return set;
 	}
@@ -48,7 +49,9 @@ public class DataCategory extends Category<DataCategory> {
 		if (parent != null) {
 			parent.getAllOperations(set);
 		}
-		set.addAll(ops);
+		for (DesensitizeOperation op : ops) {
+			set.add(op);
+		}
 	}
 
 	public DesensitizeOperation getOperation(String op) {
@@ -58,6 +61,10 @@ public class DataCategory extends Category<DataCategory> {
 			operation = parent.getOperation(op);
 		}
 		return operation;
+	}
+
+	public DesensitizeOperation directGetOperation(String op) {
+		return opIndex.get(op.toLowerCase());
 	}
 
 	public void addOperation(DesensitizeOperation op) {
@@ -117,7 +124,7 @@ public class DataCategory extends Category<DataCategory> {
 		sb.append(super.toFullString());
 		if (ops.size() > 0) {
 			sb.append("\tdesensitize UDF: ");
-			sb.append(SetUtil.format(ops, " "));
+			sb.append(PSpecUtil.format(ops, " "));
 		}
 		return sb.toString();
 	}

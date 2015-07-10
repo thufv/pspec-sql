@@ -23,7 +23,6 @@ import edu.thu.ss.spec.lang.pojo.DataContainer;
 import edu.thu.ss.spec.lang.pojo.Info;
 import edu.thu.ss.spec.lang.pojo.UserContainer;
 import edu.thu.ss.spec.lang.pojo.Vocabulary;
-import edu.thu.ss.spec.util.ParsingException;
 import edu.thu.ss.spec.util.XMLUtil;
 
 /**

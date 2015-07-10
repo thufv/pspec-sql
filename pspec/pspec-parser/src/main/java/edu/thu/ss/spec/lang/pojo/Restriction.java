@@ -21,11 +21,15 @@ import edu.thu.ss.spec.util.XMLUtil;
  */
 public class Restriction implements Parsable, Writable {
 
-	private List<Desensitization> list = new ArrayList<>();
-
-	private Desensitization[] desensitizations;
+	/**
+	 * used by first parsing
+	 */
+	private List<Desensitization> desensitizationList = new ArrayList<>();
 
 	private boolean forbid = false;
+
+	public Restriction() {
+	}
 
 	public void setForbid(boolean forbid) {
 		this.forbid = forbid;
@@ -35,34 +39,35 @@ public class Restriction implements Parsable, Writable {
 		return forbid;
 	}
 
-	public List<Desensitization> getList() {
-		return list;
+	public List<Desensitization> getDesensitizations() {
+		return desensitizationList;
 	}
 
-	public void setDesensitizations(Desensitization[] desensitizations) {
-		this.desensitizations = desensitizations;
+	public Desensitization getDesensitization(String dataRef) {
+		for (Desensitization de : desensitizationList) {
+			if (de.dataRefId.equals(dataRef)) {
+				return de;
+			}
+		}
+		return null;
 	}
 
-	public Desensitization[] getDesensitizations() {
-		return desensitizations;
+	public Desensitization getDesensitization(int i) {
+		return desensitizationList.get(i);
 	}
 
-	public Desensitization getDesensitization() {
-		return desensitizations[0];
+	public void setDesensitizationList(List<Desensitization> list) {
+		this.desensitizationList = list;
 	}
 
 	@Override
 	public Restriction clone() {
 		Restriction res = new Restriction();
 		res.forbid = this.forbid;
-		if (this.desensitizations != null) {
-			res.desensitizations = new Desensitization[desensitizations.length];
-			for (int i = 0; i < res.desensitizations.length; i++) {
-				if (desensitizations[i] != null) {
-					res.desensitizations[i] = desensitizations[i].clone();
-				}
-			}
+		for (Desensitization de : desensitizationList) {
+			res.desensitizationList.add(de.clone());
 		}
+
 		return res;
 	}
 
@@ -98,13 +103,13 @@ public class Restriction implements Parsable, Writable {
 		if (dataRefIds.size() == 0) {
 			Desensitization de = new Desensitization();
 			de.setOperations(operations);
-			this.list.add(de);
+			this.desensitizationList.add(de);
 		} else {
 			for (String refId : dataRefIds) {
 				Desensitization de = new Desensitization();
 				de.setOperations(operations);
 				de.setDataRefId(refId);
-				this.list.add(de);
+				this.desensitizationList.add(de);
 			}
 		}
 	}
@@ -117,8 +122,8 @@ public class Restriction implements Parsable, Writable {
 			Element forbidEle = document.createElement(ParserConstant.Ele_Policy_Rule_Forbid);
 			element.appendChild(forbidEle);
 		} else {
-			for (Desensitization de : desensitizations) {
-				if (de != null) {
+			for (Desensitization de : desensitizationList) {
+				if (de.effective()) {
 					element.appendChild(de.outputElement(document));
 				}
 			}
@@ -138,7 +143,7 @@ public class Restriction implements Parsable, Writable {
 		if (forbid) {
 			sb.append("forbid");
 		} else {
-			for (Desensitization de : desensitizations) {
+			for (Desensitization de : desensitizationList) {
 				sb.append("{");
 				sb.append(de);
 				sb.append("} ");
@@ -146,4 +151,5 @@ public class Restriction implements Parsable, Writable {
 		}
 		return sb.toString();
 	}
+
 }

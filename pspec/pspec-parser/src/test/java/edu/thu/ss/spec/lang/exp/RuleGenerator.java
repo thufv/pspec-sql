@@ -221,18 +221,17 @@ public class RuleGenerator {
 
 	private Restriction generateRestriction(ExpandedRule rule) {
 		Restriction res = new Restriction();
-		Desensitization[] des = new Desensitization[rule.getDimension()];
-		res.setDesensitizations(des);
 		if (rule.isSingle()) {
-			des[0] = generateDesensitization(rule.getDataRef());
-			des[0].setDataRef(null);
+			Desensitization de = generateDesensitization(rule.getDataRef());
+			de.setDataRef(null);
+			res.getDesensitizations().add(de);
 		} else {
-			int deCount = (int) Math.ceil(desensitizeRatio * des.length);
+			int deCount = (int) Math.ceil(desensitizeRatio * rule.getDimension());
 			DataAssociation association = rule.getAssociation();
-			for (int i = 0; i < des.length; i++) {
-				int r = rand.nextInt(des.length - i);
+			for (int i = 0; i < rule.getDimension(); i++) {
+				int r = rand.nextInt(rule.getDimension() - i);
 				if (r < deCount) {
-					des[i] = generateDesensitization(association.get(i));
+					res.getDesensitizations().add(generateDesensitization(association.get(i)));
 					deCount--;
 				}
 			}

@@ -9,6 +9,7 @@ import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.Info;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Vocabulary;
+import edu.thu.ss.spec.util.XMLUtil;
 
 public class PolicyGenerator {
 
@@ -26,7 +27,7 @@ public class PolicyGenerator {
 		contact.setName("Luo Chen");
 
 		policy.setInfo(policyInfo);
-		policy.setVocabularyLocation(vocabPath);
+		policy.setVocabularyLocation(XMLUtil.toUri(vocabPath));
 	}
 
 	public void generate(RuleGenerator generator, int num, String outputPath, String vocabPath,

@@ -68,4 +68,16 @@ public class UserRef extends CategoryRef<UserCategory> {
 		}
 		return sb.toString();
 	}
+
+	@Override
+	public UserRef clone() {
+		UserRef ref = new UserRef();
+		ref.refid = refid;
+		ref.resolved = resolved;
+		ref.category = category;
+		for (ObjectRef exclude : excludeRefs) {
+			ref.excludeRefs.add(exclude);
+		}
+		return ref;
+	}
 }

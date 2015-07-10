@@ -8,7 +8,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import edu.thu.ss.spec.lang.parser.ParserConstant;
-import edu.thu.ss.spec.util.SetUtil;
+import edu.thu.ss.spec.util.PSpecUtil;
 
 /**
  * an expanded version of {@link Rule}
@@ -70,7 +70,7 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 		this.restrictions = new Restriction[1];
 		this.restrictions[0] = rule.getRestriction().clone();
 		if (!this.restrictions[0].isForbid()) {
-			Desensitization de = this.restrictions[0].getDesensitization();
+			Desensitization de = this.restrictions[0].getDesensitization(0);
 			de.setDataRef(ref);
 			de.materialize(ref.getMaterialized());
 		}
@@ -211,7 +211,7 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 
 		sb.append("\n\t");
 		sb.append("Users: ");
-		sb.append(SetUtil.format(users, ","));
+		sb.append(PSpecUtil.format(users, ","));
 		sb.append("\n\t");
 
 		if (dataRef != null) {
@@ -221,7 +221,7 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 				sb.append(dataRef.getCategory().getId());
 			} else {
 				sb.append("local\t");
-				sb.append(SetUtil.format(dataRef.getMaterialized(), ","));
+				sb.append(PSpecUtil.format(dataRef.getMaterialized(), ","));
 			}
 
 		} else {

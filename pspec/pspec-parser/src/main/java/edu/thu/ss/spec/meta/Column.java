@@ -1,6 +1,6 @@
 package edu.thu.ss.spec.meta;
 
-import edu.thu.ss.spec.util.SetUtil;
+import edu.thu.ss.spec.util.PSpecUtil;
 
 public class Column extends DBObject {
 
@@ -36,7 +36,7 @@ public class Column extends DBObject {
 
   public String toString(int l) {
     StringBuilder sb = new StringBuilder();
-    sb.append(SetUtil.spaces(l));
+    sb.append(PSpecUtil.spaces(l));
     sb.append("Column: ");
     sb.append(name);
     sb.append(type.toString(l + 1));

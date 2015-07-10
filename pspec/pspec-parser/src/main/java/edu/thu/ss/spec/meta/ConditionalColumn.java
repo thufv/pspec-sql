@@ -4,19 +4,19 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.thu.ss.spec.util.SetUtil;
+import edu.thu.ss.spec.util.PSpecUtil;
 
 public class ConditionalColumn extends DBObject {
 	protected Map<JoinCondition, BaseType> types = new HashMap<>();
 
 	public String toString(int l) {
 		StringBuilder sb = new StringBuilder();
-		sb.append(SetUtil.spaces(l));
+		sb.append(PSpecUtil.spaces(l));
 		sb.append("Column: ");
 		sb.append(name);
 		sb.append("\n");
 		for (JoinCondition join : types.keySet()) {
-			sb.append(SetUtil.spaces(l + 1));
+			sb.append(PSpecUtil.spaces(l + 1));
 			sb.append("Join: ");
 			sb.append(join);
 			sb.append(types.get(join).toString(l + 1));

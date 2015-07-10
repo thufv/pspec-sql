@@ -1,7 +1,8 @@
 package edu.thu.ss.spec.util;
 
+import java.util.List;
+
 import edu.thu.ss.spec.lang.pojo.Action;
-import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DataRef;
 import edu.thu.ss.spec.lang.pojo.Desensitization;
 import edu.thu.ss.spec.lang.pojo.Restriction;
@@ -18,7 +19,7 @@ public class InclusionUtil {
 	 * @return boolean
 	 */
 	public boolean includes(UserRef user1, UserRef user2) {
-		return SetUtil.contains(user1.getMaterialized(), user2.getMaterialized());
+		return PSpecUtil.contains(user1.getMaterialized(), user2.getMaterialized());
 	}
 
 	/**
@@ -45,7 +46,7 @@ public class InclusionUtil {
 		if (!includes(data1.getAction(), data2.getAction())) {
 			return false;
 		}
-		return SetUtil.contains(data1.getMaterialized(), data2.getMaterialized());
+		return PSpecUtil.contains(data1.getMaterialized(), data2.getMaterialized());
 	}
 
 	/**
@@ -65,16 +66,16 @@ public class InclusionUtil {
 		if (res2.isForbid()) {
 			return false;
 		}
-		Desensitization[] des1 = res1.getDesensitizations();
-		Desensitization[] des2 = res2.getDesensitizations();
-		for (int i = 0; i < des1.length; i++) {
-			if (des1[i] == null) {
+		List<Desensitization> des1 = res1.getDesensitizations();
+		List<Desensitization> des2 = res2.getDesensitizations();
+		for (int i = 0; i < des1.size(); i++) {
+			if (!des1.get(i).effective()) {
 				continue;
 			}
-			if (des2[i] == null) {
+			if (!des2.get(i).effective()) {
 				return false;
 			}
-			if (!operationIncludes(des1[i], des2[i])) {
+			if (!operationIncludes(des1.get(i), des2.get(i))) {
 				return false;
 			}
 		}
@@ -94,8 +95,8 @@ public class InclusionUtil {
 		if (res2.isForbid()) {
 			return false;
 		}
-		Desensitization de1 = res1.getDesensitization();
-		Desensitization de2 = res2.getDesensitization();
+		Desensitization de1 = res1.getDesensitization(0);
+		Desensitization de2 = res2.getDesensitization(0);
 		return operationIncludes(de2, de1);
 	}
 
@@ -106,20 +107,8 @@ public class InclusionUtil {
 	 * @return boolean
 	 */
 	public boolean operationIncludes(Desensitization de1, Desensitization de2) {
-		if (de1.isDefaultOperation()) {
-			return true;
-		}
-		if (de2.isDefaultOperation()) {
-			for (DataCategory data2 : de2.getDatas()) {
-				if (!SetUtil.contains(de1.getOperations(), data2.getOperations())) {
-					return false;
-				}
-			}
-			return true;
-		}
-		return SetUtil.contains(de1.getOperations(), de2.getOperations());
+		return PSpecUtil.contains(de1.getOperations(), de2.getOperations());
 	}
-
 
 	/**
 	 * test whether list1 is stricter than list2,

@@ -147,4 +147,17 @@ public class DataRef extends CategoryRef<DataCategory> {
 
 	}
 
+	@Override
+	public DataRef clone() {
+		DataRef ref = new DataRef();
+		ref.refid = refid;
+		ref.resolved = resolved;
+		ref.category = category;
+		ref.action = action;
+		for (ObjectRef exclude : excludeRefs) {
+			ref.excludeRefs.add(exclude);
+		}
+		return ref;
+	}
+
 }

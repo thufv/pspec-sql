@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import edu.thu.ss.spec.lang.pojo.Category;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.HierarchicalObject;
 
@@ -14,7 +15,7 @@ import edu.thu.ss.spec.lang.pojo.HierarchicalObject;
  * @author luochen
  *
  */
-public class SetUtil {
+public class PSpecUtil {
 
 	public enum SetRelation {
 		contain, intersect, disjoint
@@ -164,5 +165,25 @@ public class SetUtil {
 			sb.append(' ');
 		}
 		return sb.toString();
+	}
+
+	public static <T extends Category<T>> boolean checkCycleRefernece(T category, T newParent) {
+		if (newParent == null) {
+			return false;
+		}
+		Set<String> set = new HashSet<>();
+		set.add(category.getId());
+		return checkCycleRefernece(newParent, set);
+	}
+
+	private static <T extends Category<T>> boolean checkCycleRefernece(T category, Set<String> ids) {
+		if (ids.contains(category.getId())) {
+			return true;
+		}
+		if (category.getParent() == null) {
+			return false;
+		}
+		ids.add(category.getId());
+		return checkCycleRefernece(category.getParent(), ids);
 	}
 }
