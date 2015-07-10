@@ -6,9 +6,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -29,18 +33,24 @@ import edu.thu.ss.editor.view.PolicyView;
 import edu.thu.ss.editor.view.RuleView;
 import edu.thu.ss.editor.view.UserContainerView;
 import edu.thu.ss.editor.view.VocabularyView;
+import edu.thu.ss.spec.lang.pojo.Policy;
+import edu.thu.ss.spec.lang.pojo.Vocabulary;
 
 public class PSpecEditor {
 
-	protected Shell shell;
+	private Shell shell;
 
-	protected Display display;
+	private Display display;
 
-	protected EditorModel model;
+	private EditorModel model;
 
-	protected TreeItem vocabularyItem;
+	private TreeItem vocabularyItem;
 
-	protected TreeItem policyItem;
+	private TreeItem policyItem;
+
+	private Composite content;
+
+	private Tree editorTree;
 
 	/**
 	 * Open the window.
@@ -48,8 +58,9 @@ public class PSpecEditor {
 	public void show() {
 		model = new EditorModel();
 		initializeShell();
-		initializeMenus();
-		initializeContents();
+		initializeMenu();
+		initializeToolbar();
+		initializeContent();
 
 		shell.open();
 		shell.layout();
@@ -79,14 +90,13 @@ public class PSpecEditor {
 		int defaultHeight = 768;
 		shell.setMinimumSize(defaultWidth, defaultHeight);
 		shell.setSize(defaultWidth, defaultHeight);
-		shell.setLocation(Display.getCurrent().getClientArea().width / 2 - shell.getShell().getSize().x
-				/ 2, Display.getCurrent().getClientArea().height / 2 - shell.getSize().y / 2);
+		EditorUtil.centerLocation(shell);
 		shell.setText(MessagesUtil.getMessage(MessagesUtil.Editor_Name));
-		shell.setLayout(new FillLayout());
 
+		shell.setLayout(new GridLayout());
 	}
 
-	private void initializeMenus() {
+	private void initializeMenu() {
 		Menu menu = new Menu(shell, SWT.BAR);
 		shell.setMenuBar(menu);
 
@@ -132,48 +142,86 @@ public class PSpecEditor {
 		MenuItem about = new MenuItem(helpMenu, SWT.NONE);
 		about.setText(getMessage(About));
 
-		/*
-				ToolBar toolBar = new ToolBar(shell, SWT.FLAT | SWT.RIGHT);
-				toolBar.setBackground(SWTResourceManager.getColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT));
-				toolBar.setLayoutData(BorderLayout.NORTH);
+		newVocab.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Vocabulary vocabulary = new Vocabulary(model.getNewVocabularyId());
+				addVocabulary(vocabulary);
+			}
+		});
 
-				ToolItem tltm_Open = new ToolItem(toolBar, SWT.NONE);
-				tltm_Open.setToolTipText("Open File");
-				tltm_Open.setImage(SWTResourceManager.getImage("img/test.png"));
+		newPolicy.addSelectionListener(new SelectionAdapter() {
 
-				ToolItem tltm_Save = new ToolItem(toolBar, SWT.NONE);
-				tltm_Save.setToolTipText("Save File");
-				tltm_Save.setImage(SWTResourceManager.getImage("img/test.png"));
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Policy policy = new Policy(model.getNewPolicyId());
+				addPolicy(policy);
+			}
+		});
 
-				ToolItem tltm_CleanUp = new ToolItem(toolBar, SWT.NONE);
-				tltm_CleanUp.setToolTipText("Clean Up");
-				tltm_CleanUp.setImage(SWTResourceManager.getImage("img/test.png"));
-		*/
 	}
 
-	private void initializeContents() {
-		SashForm mainForm = new SashForm(shell, SWT.NONE);
-		//sashForm.setSashWidth(4);
+	private void initializeToolbar() {
+		ToolBar toolBar = new ToolBar(shell, SWT.FLAT | SWT.RIGHT);
 
-		Tree editorTree = new Tree(mainForm, SWT.NONE);
-		TreeItem vocabItem = EditorUtil.newTreeItem(editorTree, getMessage(Vocabulary));
-		vocabItem.setImage(SWTResourceManager.getImage(EditorUtil.Image_Vocabular_Item));
+		ToolItem openVocabulary = EditorUtil.newToolItem(toolBar, getMessage(Open_Vocabulary));
 
-		TreeItem userItem = EditorUtil.newTreeItem(vocabItem, getMessage(User_Container));
+		ToolItem openPolicy = EditorUtil.newToolItem(toolBar, getMessage(Open_Policy));
 
-		TreeItem dataItem = EditorUtil.newTreeItem(vocabItem, getMessage(Data_Container));
+		ToolItem save = EditorUtil.newToolItem(toolBar, getMessage(Save));
 
-		vocabItem.setExpanded(true);
+	}
 
-		TreeItem policyItem = EditorUtil.newTreeItem(editorTree, getMessage(Policy));
+	private void initializeContent() {
+		Composite composite = EditorUtil.newComposite(shell);
+		composite.setLayout(new FillLayout());
+		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		SashForm mainForm = new SashForm(composite, SWT.NONE);
+
+		editorTree = new Tree(mainForm, SWT.BORDER | SWT.V_SCROLL);
+		vocabularyItem = EditorUtil.newTreeItem(editorTree, getMessage(Vocabulary));
+		vocabularyItem.setImage(SWTResourceManager.getImage(EditorUtil.Image_Vocabular_Item));
+
+		policyItem = EditorUtil.newTreeItem(editorTree, getMessage(Policy));
 		policyItem.setImage(SWTResourceManager.getImage(EditorUtil.Image_Policy_Item));
 
-		policyItem.setExpanded(true);
+		Vocabulary vocabulary = new Vocabulary(model.getNewVocabularyId());
+		addVocabulary(vocabulary);
+
+		Policy policy = new Policy(model.getNewPolicyId());
+		addPolicy(policy);
+
+		EditorUtil.processTree(editorTree);
+
+		editorTree.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				TreeItem item = (TreeItem) e.item;
+				//TODO view switch
+				for (Control sub : content.getChildren()) {
+					sub.dispose();
+				}
+				if (item.getParentItem() == vocabularyItem) {
+					new VocabularyView(shell, content, SWT.NONE, (Vocabulary) item.getData(), item);
+				} else if (item.getParentItem() == policyItem) {
+					new PolicyView(shell, content, SWT.NONE, (Policy) item.getData(), item);
+				} else if (item.getText().equals(getMessage(User_Container))) {
+					Vocabulary vocabulary = (Vocabulary) item.getData();
+					new UserContainerView(shell, content, SWT.NONE, vocabulary);
+				} else if (item.getText().equals(getMessage(Data_Container))) {
+					Vocabulary vocabulary = (Vocabulary) item.getData();
+					new DataContainerView(shell, content, SWT.NONE, vocabulary);
+				} else if (item.getText().equals(getMessage(Rule))) {
+					new RuleView(shell, content, SWT.NONE, (Policy) item.getData());
+				}
+				content.layout();
+			}
+		});
 
 		final SashForm contentForm = new SashForm(mainForm, SWT.VERTICAL);
-		//rightForm.setSashWidth(4);
 
-		final Composite content = new Composite(contentForm, SWT.BORDER);
+		content = new Composite(contentForm, SWT.BORDER);
 		content.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		content.setLayout(new FillLayout());
 
@@ -187,31 +235,29 @@ public class PSpecEditor {
 
 		mainForm.setWeights(new int[] { 1, 5 });
 		contentForm.setWeights(new int[] { 5, 1 });
+	}
 
-		//TODO view switch
-		editorTree.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				TreeItem item = (TreeItem) e.item;
-				for (Control sub : content.getChildren()) {
-					sub.dispose();
-				}
-				String name = item.getText();
-				if (name.equals(getMessage(Vocabulary))) {
-					new VocabularyView(shell, content, SWT.NONE);
-				} else if (name.equals(getMessage(User_Container))) {
-					new UserContainerView(shell, content, SWT.NONE);
-				} else if (name.equals(getMessage(Data_Container))) {
-					new DataContainerView(shell, content, SWT.NONE);
-				} else if (name.equals(getMessage(Policy))) {
-					new PolicyView(shell, content, SWT.NONE);
-				} else if (name.equals(getMessage(Rule))) {
-					new RuleView(shell, content, SWT.NONE);
-				}
-				content.layout();
-			}
-		});
+	private void addVocabulary(Vocabulary vocabulary) {
+		model.getVocabularies().add(vocabulary);
+
+		TreeItem item = EditorUtil.newTreeItem(vocabularyItem, vocabulary.getInfo().getId());
+		item.setData(vocabulary);
+
+		TreeItem userItem = EditorUtil.newTreeItem(item, getMessage(User_Container));
+		userItem.setData(vocabulary);
+		TreeItem dataItem = EditorUtil.newTreeItem(item, getMessage(Data_Container));
+		dataItem.setData(vocabulary);
 
 	}
 
+	private void addPolicy(Policy policy) {
+		model.getPolicies().add(policy);
+
+		TreeItem item = EditorUtil.newTreeItem(policyItem, policy.getInfo().getId());
+		item.setData(policy);
+
+		TreeItem ruleItem = EditorUtil.newTreeItem(item, getMessage(Rule));
+		ruleItem.setData(policy);
+
+	}
 }

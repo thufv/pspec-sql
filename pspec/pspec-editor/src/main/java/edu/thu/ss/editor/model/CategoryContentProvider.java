@@ -6,31 +6,34 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
+import edu.thu.ss.spec.lang.pojo.Category;
+import edu.thu.ss.spec.lang.pojo.CategoryContainer;
 import edu.thu.ss.spec.lang.pojo.HierarchicalObject;
 
-public class CategoryContentProvider implements IStructuredContentProvider,ITreeContentProvider {
-	
-	@SuppressWarnings("rawtypes")
-	public Object[] getElements(Object inputElement) {
-		if (inputElement instanceof List) {
-			@SuppressWarnings("unchecked")
-			List<HierarchicalObject> input = (List<HierarchicalObject>) inputElement;
-			return input.toArray();
-		}
-		return new Object[0];
+public class CategoryContentProvider<T extends Category<T>> implements IStructuredContentProvider,
+		ITreeContentProvider {
+
+	private static Object[] empty = new Object[0];
+	private CategoryContainer<T> container;
+
+	public CategoryContentProvider(CategoryContainer<T> container) {
+		this.container = container;
 	}
 
-	@SuppressWarnings("rawtypes")
+	public Object[] getElements(Object inputElement) {
+		CategoryContainer<?> container = (CategoryContainer<?>) inputElement;
+		return container.materializeRoots().toArray();
+	}
+
 	public Object[] getChildren(Object parentElement) {
-		HierarchicalObject node = (HierarchicalObject) parentElement;
-		@SuppressWarnings("unchecked")
-		List<HierarchicalObject> list = node.getChildren();
+		T node = (T) parentElement;
+		List<T> list = container.getChildren(node);
 		if (list == null) {
-			return new Object[0];
+			return empty;
 		}
 		return list.toArray();
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	public boolean hasChildren(Object element) {
 		HierarchicalObject node = (HierarchicalObject) element;
@@ -45,7 +48,9 @@ public class CategoryContentProvider implements IStructuredContentProvider,ITree
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 	}
 
+	@SuppressWarnings("rawtypes")
 	public Object getParent(Object element) {
-		return null;
+		HierarchicalObject node = (HierarchicalObject) element;
+		return node.getParent();
 	}
 }

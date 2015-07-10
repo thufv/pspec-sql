@@ -5,7 +5,6 @@ import static edu.thu.ss.editor.util.MessagesUtil.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
@@ -18,29 +17,28 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import edu.thu.ss.editor.util.EditorUtil;
-import edu.thu.ss.spec.lang.pojo.UserCategory;
-import edu.thu.ss.spec.lang.pojo.UserContainer;
+import edu.thu.ss.spec.lang.pojo.DataCategory;
+import edu.thu.ss.spec.lang.pojo.DataContainer;
 
-public class UserCategoryDialog extends Dialog {
+public class DataCategoryDialog extends Dialog {
 
 	protected Shell dialog;
-	private UserCategory userCategory;
-	private UserContainer userContainer;
-
-	private Text userId;
+	private DataCategory dataCategory;
+	private DataContainer dataContainer;
+	private Text dataId;
 
 	private Button cancel;
 	private Button ok;
 	private int returnCode;
 
-	public UserCategoryDialog(Shell parent, UserCategory userCategory, UserContainer userContainer) {
+	public DataCategoryDialog(Shell parent, DataCategory dataCategory, DataContainer dataContainer) {
 		super(parent, SWT.NONE);
-		this.userCategory = userCategory;
-		this.userContainer = userContainer;
+		this.dataCategory = dataCategory;
+		this.dataContainer = dataContainer;
 
 		dialog = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.RESIZE);
 		dialog.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		dialog.setText(getMessage(User_Category));
+		dialog.setText(getMessage(Data_Category));
 	}
 
 	public int open() {
@@ -64,11 +62,11 @@ public class UserCategoryDialog extends Dialog {
 
 	protected void initializeContent(Composite parent) {
 
-		EditorUtil.newLabel(parent, getMessage(User_Category_ID), EditorUtil.labelData());
-		userId = EditorUtil.newText(parent, EditorUtil.textData());
-		userId.setText(userCategory.getId());
-		GridData userIdData = (GridData) userId.getLayoutData();
-		userIdData.widthHint = 200;
+		EditorUtil.newLabel(parent, getMessage(Data_Category_ID), EditorUtil.labelData());
+		dataId = EditorUtil.newText(parent, EditorUtil.textData());
+		dataId.setText(dataCategory.getId());
+		GridData dataIdData = (GridData) dataId.getLayoutData();
+		dataIdData.widthHint = 200;
 
 		Composite buttons = new Composite(parent, SWT.RIGHT_TO_LEFT);
 		buttons.setBackground(EditorUtil.getDefaultBackground());
@@ -80,17 +78,17 @@ public class UserCategoryDialog extends Dialog {
 		ok.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				//check empty
-				String text = userId.getText().trim();
+				String text = dataId.getText().trim();
 				if (text.isEmpty()) {
-					EditorUtil.showMessageBox(dialog, "", getMessage(User_Category_ID_Empty_Message));
+					EditorUtil.showMessageBox(dialog, "", getMessage(Data_Category_ID_Empty_Message));
 					return;
 				}
 				//check duplicate
-				if (userContainer.get(text) != null) {
-					EditorUtil.showMessageBox(dialog, "", getMessage(User_Category_ID_Unique_Message, text));
+				if (dataContainer.get(text) != null) {
+					EditorUtil.showMessageBox(dialog, "", getMessage(Data_Category_ID_Unique_Message, text));
 					return;
 				}
-				userCategory.setId(text);
+				dataCategory.setId(text);
 				returnCode = SWT.OK;
 				dialog.dispose();
 			}
