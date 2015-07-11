@@ -31,13 +31,11 @@ import org.eclipse.swt.widgets.TreeItem;
 
 import edu.thu.ss.editor.model.CategoryContentProvider;
 import edu.thu.ss.editor.model.CategoryLabelProvider;
+import edu.thu.ss.editor.model.VocabularyModel;
 import edu.thu.ss.editor.util.EditorUtil;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DataContainer;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
-import edu.thu.ss.spec.lang.pojo.DataCategory;
-import edu.thu.ss.spec.lang.pojo.UserCategory;
-import edu.thu.ss.spec.lang.pojo.Vocabulary;
 import edu.thu.ss.spec.util.PSpecUtil;
 
 public class DataContainerView extends Composite {
@@ -60,9 +58,11 @@ public class DataContainerView extends Composite {
 	private Button deleteOperation;
 
 	private DataContainer dataContainer;
-	private Vocabulary vocabulary;
+	private VocabularyModel model;
 	private DataCategory selectedData;
 	private TreeItem selectedItem;
+
+	private final static double dataOperationHeightRatio = (double) 1 / 8;
 
 	/**
 	 * Create the composite
@@ -70,12 +70,12 @@ public class DataContainerView extends Composite {
 	 * @param parent
 	 * @param style
 	 */
-	public DataContainerView(Shell shell, Composite parent, int style, Vocabulary vocabulary) {
+	public DataContainerView(Shell shell, Composite parent, int style, VocabularyModel model) {
 		super(parent, SWT.NONE);
 		this.shell = shell;
 		this.display = Display.getDefault();
-		this.vocabulary = vocabulary;
-		this.dataContainer = vocabulary.getDataContainer();
+		this.model = model;
+		this.dataContainer = model.getVocabulary().getDataContainer();
 
 		setBackground(EditorUtil.getDefaultBackground());
 		setLayout(new GridLayout(1, false));
@@ -118,9 +118,10 @@ public class DataContainerView extends Composite {
 					EditorUtil.showMessage(shell, getMessage(Data_Container_ID_Empty_Message), containerId);
 					containerId.setText(dataContainer.getId());
 					containerId.selectAll();
-				} else {
-					dataContainer.setId(containerId.getText().trim());
+					return;
 				}
+				dataContainer.setId(containerId.getText().trim());
+				
 			}
 		});
 
@@ -131,6 +132,7 @@ public class DataContainerView extends Composite {
 			@Override
 			public void focusLost(FocusEvent e) {
 				dataContainer.setShortDescription(shortDescription.getText().trim());
+				
 			}
 		});
 
@@ -142,6 +144,7 @@ public class DataContainerView extends Composite {
 			@Override
 			public void focusLost(FocusEvent e) {
 				dataContainer.setLongDescription(longDescription.getText().trim());
+				
 			}
 		});
 	}
@@ -227,7 +230,9 @@ public class DataContainerView extends Composite {
 					dataId.selectAll();
 					return;
 				}
+				EditorUtil.updateItem(dataParentId, selectedData.getId(), text);
 				dataContainer.update(text, selectedData);
+				
 				dataViewer.refresh(selectedData);
 			}
 		});
@@ -239,7 +244,8 @@ public class DataContainerView extends Composite {
 			public void widgetSelected(SelectionEvent e) {
 				String text = dataParentId.getText().trim();
 				if (text.equals(selectedData.getId())) {
-					EditorUtil.showMessage(shell, getMessage(Data_Category_Parent_Same), dataParentId);
+					EditorUtil
+							.showMessage(shell, getMessage(Data_Category_Parent_Same_Message), dataParentId);
 					EditorUtil.setSelectedItem(dataParentId, selectedData.getParentId());
 					return;
 				}
@@ -250,13 +256,15 @@ public class DataContainerView extends Composite {
 				DataCategory oldParent = selectedData.getParent();
 				DataCategory newParent = dataContainer.get(text);
 				if (PSpecUtil.checkCycleRefernece(selectedData, newParent)) {
-					EditorUtil.showMessage(shell, getMessage(Data_Category_Parent_Cycle), dataParentId);
+					EditorUtil.showMessage(shell, getMessage(Data_Category_Parent_Cycle_Message),
+							dataParentId);
 					EditorUtil.setSelectedItem(dataParentId, selectedData.getParentId());
 					return;
 				}
 
 				//set new parent
 				dataContainer.setParent(selectedData, newParent);
+				
 				dataParentId.setItems(EditorUtil.getCategoryItems(dataContainer));
 				EditorUtil.setSelectedItem(dataParentId, selectedData.getParentId());
 				refreshViewer(oldParent);
@@ -290,6 +298,7 @@ public class DataContainerView extends Composite {
 
 				dataOperation.setText("");
 				dataOperations.add(op);
+				
 				selectedData.addOperation(DesensitizeOperation.get(op));
 			}
 		});
@@ -301,18 +310,19 @@ public class DataContainerView extends Composite {
 			public void widgetSelected(SelectionEvent e) {
 				String[] selected = dataOperations.getSelection();
 				if (selected.length == 0) {
-					//TODO check
+					return;
 				}
 				for (String op : selected) {
-					dataOperations.remove(op);
 					selectedData.removeOperation(DesensitizeOperation.get(op));
 				}
+				dataOperations.remove(dataOperations.getSelectionIndices());
+				
 			}
 		});
 
 		dataOperations = new List(operationComposite, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL);
 		GridData listData = new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1);
-		listData.heightHint = shell.getSize().y / 8;
+		listData.heightHint = (int) (shell.getSize().y * dataOperationHeightRatio);
 		dataOperations.setLayoutData(listData);
 
 		GridData compositeData = new GridData();
@@ -326,6 +336,7 @@ public class DataContainerView extends Composite {
 			@Override
 			public void focusLost(FocusEvent e) {
 				selectedData.setShortDescription(dataShortDescription.getText());
+				
 			}
 		});
 
@@ -336,6 +347,7 @@ public class DataContainerView extends Composite {
 			@Override
 			public void focusLost(FocusEvent e) {
 				selectedData.setLongDescription(dataLongDescription.getText());
+				
 			}
 		});
 
@@ -368,6 +380,7 @@ public class DataContainerView extends Composite {
 						parent.buildRelation(data);
 					}
 					dataContainer.add(data);
+					
 					if (parentItem != null) {
 						dataViewer.refresh(dataContainer.get(parentItem.getText()));
 					} else {
@@ -390,7 +403,7 @@ public class DataContainerView extends Composite {
 					DataCategory parent = dataContainer.get(selected.getText());
 					parent.buildRelation(data);
 					dataContainer.add(data);
-
+					
 					dataViewer.refresh(parent);
 				}
 			}
@@ -423,6 +436,7 @@ public class DataContainerView extends Composite {
 						dataViewer.refresh();
 					}
 					disableDataInfo(true);
+					
 				} else if (ret == SWT.NO) {
 					dataContainer.remove(data);
 					if (parent != null) {
@@ -438,6 +452,7 @@ public class DataContainerView extends Composite {
 						dataViewer.refresh();
 					}
 					disableDataInfo(true);
+					
 				}
 			}
 		});

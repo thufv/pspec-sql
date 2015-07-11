@@ -40,7 +40,7 @@ public class ContactInfo implements Parsable {
 		Element element = document.createElement(name);
 
 		Element tmpEle = document.createElement(ParserConstant.Ele_Contact_Name);
-		tmpEle.appendChild(document.createTextNode(name));
+		tmpEle.appendChild(document.createTextNode(this.name));
 		element.appendChild(tmpEle);
 
 		tmpEle = document.createElement(ParserConstant.Ele_Contact_Organization);

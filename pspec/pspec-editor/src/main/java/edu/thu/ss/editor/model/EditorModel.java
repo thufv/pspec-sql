@@ -15,16 +15,46 @@ public class EditorModel {
 
 	private int nextPolicyId = 1;
 
-	private List<Vocabulary> vocabularies = new ArrayList<>();
+	private List<VocabularyModel> vocabularies = new ArrayList<>();
 
-	private List<Policy> policies = new ArrayList<>();
+	private List<PolicyModel> policies = new ArrayList<>();
 
-	public List<Policy> getPolicies() {
+	public List<VocabularyModel> getVocabularies() {
+		return vocabularies;
+	}
+
+	public List<PolicyModel> getPolicies() {
 		return policies;
 	}
 
-	public List<Vocabulary> getVocabularies() {
-		return vocabularies;
+	public boolean containVocabulary(String path) {
+		for (VocabularyModel model : vocabularies) {
+			if (model.getPath().equals(path)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean containPolicy(String path) {
+		for (PolicyModel model : policies) {
+			if (model.getPath().equals(path)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public VocabularyModel addVocabulary(Vocabulary vocabulary, String path) {
+		VocabularyModel model = new VocabularyModel(vocabulary, path);
+		vocabularies.add(model);
+		return model;
+	}
+
+	public PolicyModel addPolicy(Policy policy, String path) {
+		PolicyModel model = new PolicyModel(policy, path);
+		policies.add(model);
+		return model;
 	}
 
 	public String getNewVocabularyId() {

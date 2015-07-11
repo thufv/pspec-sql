@@ -147,10 +147,8 @@ public class VocabularyParser implements ParserConstant {
 		for (int i = 0; i < list.getLength(); i++) {
 			Node node = list.item(i);
 			String name = node.getLocalName();
-			if (Ele_Vocabulary_Info.equals(name) && vocabulary.getInfo() == null) {
-				Info info = new Info();
-				info.parse(node);
-				vocabulary.setInfo(info);
+			if (Ele_Vocabulary_Info.equals(name)) {
+				vocabulary.getInfo().parse(node);
 				return;
 			}
 		}

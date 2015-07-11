@@ -33,6 +33,8 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
+import edu.thu.ss.editor.model.PolicyModel;
+import edu.thu.ss.editor.model.RuleModel;
 import edu.thu.ss.editor.util.EditorUtil;
 import edu.thu.ss.spec.lang.analyzer.PolicyResolver;
 import edu.thu.ss.spec.lang.pojo.Action;
@@ -42,7 +44,6 @@ import edu.thu.ss.spec.lang.pojo.DataRef;
 import edu.thu.ss.spec.lang.pojo.Desensitization;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.ObjectRef;
-import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Restriction;
 import edu.thu.ss.spec.lang.pojo.Rule;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
@@ -50,43 +51,12 @@ import edu.thu.ss.spec.lang.pojo.UserRef;
 import edu.thu.ss.spec.util.PSpecUtil;
 
 public class RuleDialog extends Dialog {
-	private class RuleModel {
-		List<UserRef> userRefs = new ArrayList<>();
-		List<DataRef> dataRefs = new ArrayList<>();
-		//only non-forbid restrictions
-		List<Restriction> restrictions = new ArrayList<>();
-		boolean forbid = false;
-
-		public RuleModel(Rule rule) {
-			for (UserRef ref : rule.getUserRefs()) {
-				userRefs.add(ref.clone());
-			}
-
-			List<DataRef> list = rule.isSingle() ? rule.getDataRefs() : rule.getAssociation()
-					.getDataRefs();
-			for (DataRef ref : list) {
-				dataRefs.add(ref.clone());
-			}
-
-			if (rule.getRestrictions().size() == 0 || rule.getRestriction().isForbid()) {
-				forbid = true;
-			} else {
-				for (Restriction res : rule.getRestrictions()) {
-					restrictions.add(res.clone());
-				}
-			}
-
-		}
-
-	}
 
 	private static final String Label_Separator = ",";
 
 	private Shell dialog;
-	private Rule rule;
-	private RuleModel model;
-
-	private Policy policy;
+	private RuleModel ruleModel;
+	private PolicyModel policyModel;
 
 	private int retCode;
 
@@ -118,11 +88,10 @@ public class RuleDialog extends Dialog {
 
 	private final static double longDescriptionHeightRatio = (double) 1 / 6;
 
-	public RuleDialog(Shell parent, Rule rule, Policy policy) {
+	public RuleDialog(Shell parent, Rule rule, PolicyModel model) {
 		super(parent, SWT.NONE);
-		this.policy = policy;
-		this.rule = rule;
-		this.model = new RuleModel(rule);
+		this.policyModel = model;
+		this.ruleModel = new RuleModel(rule);
 
 		dialog = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.RESIZE);
 		dialog.setBackground(EditorUtil.getDefaultBackground());
@@ -166,6 +135,7 @@ public class RuleDialog extends Dialog {
 
 	private void initializeContent(final Composite parent) {
 		EditorUtil.newLabel(parent, getMessage(Rule_ID), EditorUtil.labelData());
+		Rule rule = ruleModel.getRule();
 		ruleId = EditorUtil.newText(parent, EditorUtil.textData());
 		ruleId.setText(rule.getId());
 
@@ -201,14 +171,14 @@ public class RuleDialog extends Dialog {
 
 				}
 
-				for (UserRef ref : model.userRefs) {
+				for (UserRef ref : ruleModel.getUserRefs()) {
 					if (ref.getRefid().isEmpty()) {
 						EditorUtil.showMessageBox(dialog, "", getMessage(Rule_User_Ref_Non_Empty_Message));
 						return;
 					}
 				}
 				//check data reference
-				for (DataRef ref : model.dataRefs) {
+				for (DataRef ref : ruleModel.getDataRefs()) {
 					if (ref.getRefid().isEmpty()) {
 						EditorUtil.showMessageBox(dialog, "", getMessage(Rule_Data_Ref_Non_Empty_Message));
 						return;
@@ -217,13 +187,13 @@ public class RuleDialog extends Dialog {
 				if (dataAssociationType.getSelection()) {
 					//check data association overlapping
 					PolicyResolver resolver = new PolicyResolver();
-					for (DataRef ref : model.dataRefs) {
-						resolver.resolveDataRef(ref, policy.getDataContainer(), null);
+					for (DataRef ref : ruleModel.getDataRefs()) {
+						resolver.resolveDataRef(ref, policyModel.getPolicy().getDataContainer(), null);
 					}
-					for (int i = 0; i < model.dataRefs.size(); i++) {
-						for (int j = i + 1; j < model.dataRefs.size(); j++) {
-							if (PSpecUtil.intersects(model.dataRefs.get(i).getMaterialized(),
-									model.dataRefs.get(j).getMaterialized())) {
+					for (int i = 0; i < ruleModel.getDataRefs().size(); i++) {
+						for (int j = i + 1; j < ruleModel.getDataRefs().size(); j++) {
+							if (PSpecUtil.intersects(ruleModel.getDataRefs().get(i).getMaterialized(), ruleModel
+									.getDataRefs().get(j).getMaterialized())) {
 								EditorUtil.showMessageBox(dialog, "",
 										getMessage(Rule_Data_Association_Non_Overlap_Message));
 								return;
@@ -232,8 +202,8 @@ public class RuleDialog extends Dialog {
 					}
 				}
 				//check restrictions
-				for (int i = 0; i < model.restrictions.size(); i++) {
-					Restriction res = model.restrictions.get(i);
+				for (int i = 0; i < ruleModel.getRestrictions().size(); i++) {
+					Restriction res = ruleModel.getRestrictions().get(i);
 					boolean effective = false;
 					for (Desensitization de : res.getDesensitizations()) {
 						if (de.effective()) {
@@ -247,19 +217,21 @@ public class RuleDialog extends Dialog {
 					}
 				}
 
+				Rule rule = ruleModel.getRule();
+
 				//set
 				rule.setId(ruleId.getText().trim());
 				rule.setShortDescription(shortDescription.getText().trim());
 				rule.setLongDescription(longDescription.getText().trim());
 
-				rule.setUserRefs(model.userRefs);
+				rule.setUserRefs(ruleModel.getUserRefs());
 
 				if (dataSingleType.getSelection()) {
-					rule.setDataRefs(model.dataRefs);
+					rule.setDataRefs(ruleModel.getDataRefs());
 				} else {
 					rule.getDataRefs().clear();
 					DataAssociation association = new DataAssociation();
-					association.setDataRefs(model.dataRefs);
+					association.setDataRefs(ruleModel.getDataRefs());
 					rule.setAssociation(association);
 				}
 
@@ -269,7 +241,7 @@ public class RuleDialog extends Dialog {
 					res.setForbid(true);
 					rule.getRestrictions().add(res);
 				} else {
-					rule.setRestrictions(model.restrictions);
+					rule.setRestrictions(ruleModel.getRestrictions());
 				}
 
 				retCode = SWT.OK;
@@ -296,6 +268,7 @@ public class RuleDialog extends Dialog {
 		Button addUser = EditorUtil.newButton(userComposite, getMessage(Add));
 		final Button deleteUser = EditorUtil.newButton(userComposite, getMessage(Delete));
 		deleteUser.setEnabled(false);
+		
 		Composite tableComposite = newTableComposite(userComposite);
 		TableColumnLayout tableLayout = new TableColumnLayout();
 		tableComposite.setLayout(tableLayout);
@@ -310,13 +283,13 @@ public class RuleDialog extends Dialog {
 			columns[i].setResizable(false);
 		}
 		//add a new row
-		for (UserRef ref : model.userRefs) {
+		for (UserRef ref : ruleModel.getUserRefs()) {
 			addUserRow(ref);
 		}
-		if (model.userRefs.size() == 0) {
+		if (ruleModel.getUserRefs().size() == 0) {
 			UserRef ref = new UserRef();
 			addUserRow(ref);
-			model.userRefs.add(ref);
+			ruleModel.getUserRefs().add(ref);
 		}
 		tableLayout.setColumnData(columns[0], new ColumnWeightData(1, columns[0].getWidth()));
 		tableLayout.setColumnData(columns[1], new ColumnWeightData(2, columns[1].getWidth()));
@@ -329,7 +302,7 @@ public class RuleDialog extends Dialog {
 			public void widgetSelected(SelectionEvent e) {
 				UserRef ref = new UserRef();
 				addUserRow(ref);
-				model.userRefs.add(ref);
+				ruleModel.getUserRefs().add(ref);
 			}
 		});
 
@@ -346,7 +319,7 @@ public class RuleDialog extends Dialog {
 
 				for (TableItem item : userTable.getSelection()) {
 					EditorUtil.dispose(item);
-					model.userRefs.remove((UserRef) item.getData());
+					ruleModel.getUserRefs().remove((UserRef) item.getData());
 				}
 				userTable.remove(userTable.getSelectionIndices());
 				deleteUser.setEnabled(false);
@@ -376,7 +349,7 @@ public class RuleDialog extends Dialog {
 		Composite typeComposite = newRadioComposite(dataComposite);
 		dataSingleType = EditorUtil.newRadio(typeComposite, getMessage(Single));
 		dataAssociationType = EditorUtil.newRadio(typeComposite, getMessage(Association));
-		if (rule.isSingle()) {
+		if (ruleModel.getRule().isSingle()) {
 			dataSingleType.setSelection(true);
 		} else {
 			dataAssociationType.setSelection(true);
@@ -400,13 +373,13 @@ public class RuleDialog extends Dialog {
 			columns[i].setText(titles[i]);
 			columns[i].setResizable(false);
 		}
-		for (DataRef ref : model.dataRefs) {
+		for (DataRef ref : ruleModel.getDataRefs()) {
 			addDataRow(ref);
 		}
-		if (model.dataRefs.size() == 0) {
+		if (ruleModel.getDataRefs().size() == 0) {
 			DataRef ref = new DataRef();
 			addDataRow(ref);
-			model.dataRefs.add(ref);
+			ruleModel.getDataRefs().add(ref);
 		}
 
 		tableLayout.setColumnData(columns[0], new ColumnWeightData(1, columns[0].getWidth()));
@@ -422,10 +395,10 @@ public class RuleDialog extends Dialog {
 				if (!dataSingleType.getSelection()) {
 					return;
 				}
-				model.restrictions.clear();
+				ruleModel.getRestrictions().clear();
 				disposeRestrictTables();
 				Restriction res = newRestriction();
-				model.restrictions.add(res);
+				ruleModel.getRestrictions().add(res);
 
 				addRestrictTable(restrictComposite, res);
 				adjustEffectLayout();
@@ -444,10 +417,10 @@ public class RuleDialog extends Dialog {
 				addRestriction.setEnabled(true);
 				deleteRestriction.setEnabled(true);
 
-				model.restrictions.clear();
+				ruleModel.getRestrictions().clear();
 				disposeRestrictTables();
 				Restriction res = newRestriction();
-				model.restrictions.add(res);
+				ruleModel.getRestrictions().add(res);
 				addRestrictTable(restrictComposite, res);
 				adjustEffectLayout();
 
@@ -459,7 +432,7 @@ public class RuleDialog extends Dialog {
 			public void widgetSelected(SelectionEvent e) {
 				DataRef ref = new DataRef();
 				addDataRow(ref);
-				model.dataRefs.add(ref);
+				ruleModel.getDataRefs().add(ref);
 				//update restrictions
 				if (dataAssociationType.getSelection()) {
 					for (Table table : restrictTables) {
@@ -500,7 +473,7 @@ public class RuleDialog extends Dialog {
 						}
 					}
 					EditorUtil.dispose(item);
-					model.dataRefs.remove(ref);
+					ruleModel.getDataRefs().remove(ref);
 				}
 
 				dataTable.remove(index);
@@ -538,9 +511,9 @@ public class RuleDialog extends Dialog {
 		forbidType = EditorUtil.newRadio(typeComposite, getMessage(Forbid));
 		restrictType = EditorUtil.newRadio(typeComposite, getMessage(Restrict));
 
-		if (model.forbid) {
+		if (ruleModel.isForbid()) {
 			forbidType.setSelection(true);
-			model.restrictions.add(newRestriction());
+			ruleModel.getRestrictions().add(newRestriction());
 		} else {
 			restrictType.setSelection(true);
 		}
@@ -557,11 +530,11 @@ public class RuleDialog extends Dialog {
 		restrictData.horizontalSpan = 3;
 
 		if (forbidType.getSelection()) {
-			addRestrictTable(restrictComposite, model.restrictions.get(0));
+			addRestrictTable(restrictComposite, ruleModel.getRestrictions().get(0));
 			forbidType.setSelection(true);
 			hideRestrictions();
 		} else {
-			for (Restriction res : model.restrictions) {
+			for (Restriction res : ruleModel.getRestrictions()) {
 				addRestrictTable(restrictComposite, res);
 			}
 			showRestrictions();
@@ -574,7 +547,7 @@ public class RuleDialog extends Dialog {
 					return;
 				}
 				hideRestrictions();
-				model.forbid = true;
+				ruleModel.setForbid(true);
 			}
 		});
 
@@ -585,7 +558,7 @@ public class RuleDialog extends Dialog {
 					return;
 				}
 				showRestrictions();
-				model.forbid = false;
+				ruleModel.setForbid(false);
 			}
 		});
 
@@ -593,7 +566,7 @@ public class RuleDialog extends Dialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Restriction res = newRestriction();
-				model.restrictions.add(res);
+				ruleModel.getRestrictions().add(res);
 				addRestrictTable(restrictComposite, res);
 				adjustEffectLayout();
 			}
@@ -634,7 +607,7 @@ public class RuleDialog extends Dialog {
 		item.setData(EditorUtil.Table_Editor, editors);
 		item.setData(ref);
 		final Combo userCombo = EditorUtil.newCombo(userTable, null);
-		userCombo.setItems(EditorUtil.getCategoryItems(policy.getUserContainer()));
+		userCombo.setItems(EditorUtil.getCategoryItems(policyModel.getPolicy().getUserContainer()));
 		EditorUtil.setSelectedItem(userCombo, ref.getRefid());
 
 		editors.add(newTableEditor(userTable, userCombo, item, 0));
@@ -644,8 +617,9 @@ public class RuleDialog extends Dialog {
 		final Combo excludeUser = EditorUtil.newCombo(userTable, null);
 		editors.add(newTableEditor(userTable, excludeUser, item, 2));
 		if (!ref.getRefid().isEmpty()) {
-			UserCategory user = policy.getUserCategory(ref.getRefid());
-			excludeUser.setItems(EditorUtil.getChildCategoryItems(user, policy.getUserContainer()));
+			UserCategory user = policyModel.getPolicy().getUserCategory(ref.getRefid());
+			excludeUser.setItems(EditorUtil.getChildCategoryItems(user, policyModel.getPolicy()
+					.getUserContainer()));
 		}
 
 		Button addExclude = EditorUtil.newButton(userTable, "+");
@@ -662,7 +636,7 @@ public class RuleDialog extends Dialog {
 
 				if (!text.isEmpty()) {
 					//check duplicate
-					for (UserRef exist : model.userRefs) {
+					for (UserRef exist : ruleModel.getUserRefs()) {
 						if (exist.getRefid().equals(text) && ref != exist) {
 							EditorUtil.showMessage(dialog, getMessage(Rule_User_Ref_Unique_Message, text),
 									Display.getCurrent().getCursorLocation());
@@ -672,9 +646,10 @@ public class RuleDialog extends Dialog {
 					}
 				}
 
-				UserCategory user = policy.getUserContainer().get(text);
+				UserCategory user = policyModel.getPolicy().getUserContainer().get(text);
 				excludeUser.removeAll();
-				excludeUser.setItems(EditorUtil.getChildCategoryItems(user, policy.getUserContainer()));
+				excludeUser.setItems(EditorUtil.getChildCategoryItems(user, policyModel.getPolicy()
+						.getUserContainer()));
 
 				ref.setRefid(text);
 				ref.getExcludeRefs().clear();
@@ -729,7 +704,7 @@ public class RuleDialog extends Dialog {
 		item.setData(ref);
 
 		final Combo dataCombo = EditorUtil.newCombo(dataTable, null);
-		dataCombo.setItems(EditorUtil.getCategoryItems(policy.getDataContainer()));
+		dataCombo.setItems(EditorUtil.getCategoryItems(policyModel.getPolicy().getDataContainer()));
 		EditorUtil.setSelectedItem(dataCombo, ref.getRefid());
 		editors.add(newTableEditor(dataTable, dataCombo, item, 0));
 
@@ -743,8 +718,9 @@ public class RuleDialog extends Dialog {
 		final Combo excludeData = EditorUtil.newCombo(dataTable, null);
 		editors.add(newTableEditor(dataTable, excludeData, item, 3));
 		if (!ref.getRefid().isEmpty()) {
-			DataCategory data = policy.getDataCategory(ref.getRefid());
-			excludeData.setItems(EditorUtil.getChildCategoryItems(data, policy.getDataContainer()));
+			DataCategory data = policyModel.getPolicy().getDataCategory(ref.getRefid());
+			excludeData.setItems(EditorUtil.getChildCategoryItems(data, policyModel.getPolicy()
+					.getDataContainer()));
 		}
 
 		Button addExclude = EditorUtil.newButton(dataTable, "+");
@@ -764,7 +740,7 @@ public class RuleDialog extends Dialog {
 				String text = dataCombo.getText().trim();
 				if (!text.isEmpty()) {
 					//check duplicate
-					for (DataRef exist : model.dataRefs) {
+					for (DataRef exist : ruleModel.getDataRefs()) {
 						if (exist.getRefid().equals(text) && ref != exist) {
 							EditorUtil.showMessage(dialog, getMessage(Rule_Data_Ref_Unique_Message, text),
 									Display.getCurrent().getCursorLocation());
@@ -774,11 +750,12 @@ public class RuleDialog extends Dialog {
 					}
 				}
 
-				DataCategory data = policy.getDataContainer().get(text);
+				DataCategory data = policyModel.getPolicy().getDataContainer().get(text);
 				ref.setRefid(text);
 				ref.getExcludeRefs().clear();
 				excludeData.removeAll();
-				excludeData.setItems(EditorUtil.getChildCategoryItems(data, policy.getDataContainer()));
+				excludeData.setItems(EditorUtil.getChildCategoryItems(data, policyModel.getPolicy()
+						.getDataContainer()));
 				item.setText(2, PSpecUtil.format(ref.getExcludeRefs(), Label_Separator));
 
 				if (dataSingleType.getSelection()) {
@@ -797,8 +774,8 @@ public class RuleDialog extends Dialog {
 
 						//update desensitize operation items
 						Combo operationCombo = (Combo) editors.get(0).getEditor();
-						operationCombo.setItems(EditorUtil.getOperationItems(model.dataRefs,
-								policy.getDataContainer()));
+						operationCombo.setItems(EditorUtil.getOperationItems(ruleModel.getDataRefs(),
+								policyModel.getPolicy().getDataContainer()));
 					}
 				} else {
 					for (Table table : restrictTables) {
@@ -816,7 +793,8 @@ public class RuleDialog extends Dialog {
 
 						//update desensitize operation items
 						Combo operationCombo = (Combo) editors.get(0).getEditor();
-						operationCombo.setItems(EditorUtil.getOperationItems(ref, policy.getDataContainer()));
+						operationCombo.setItems(EditorUtil.getOperationItems(ref, policyModel.getPolicy()
+								.getDataContainer()));
 					}
 				}
 			}
@@ -943,9 +921,11 @@ public class RuleDialog extends Dialog {
 
 		final Combo operation = EditorUtil.newCombo(table, null);
 		if (dataSingleType.getSelection()) {
-			operation.setItems(EditorUtil.getOperationItems(model.dataRefs, policy.getDataContainer()));
+			operation.setItems(EditorUtil.getOperationItems(ruleModel.getDataRefs(), policyModel
+					.getPolicy().getDataContainer()));
 		} else {
-			operation.setItems(EditorUtil.getOperationItems(de.getDataRef(), policy.getDataContainer()));
+			operation.setItems(EditorUtil.getOperationItems(de.getDataRef(), policyModel.getPolicy()
+					.getDataContainer()));
 		}
 
 		editors.add(newTableEditor(table, operation, item, 2));
@@ -1055,7 +1035,7 @@ public class RuleDialog extends Dialog {
 		if (dataSingleType.getSelection()) {
 			res.getDesensitizations().add(new Desensitization());
 		} else {
-			for (DataRef ref : model.dataRefs) {
+			for (DataRef ref : ruleModel.getDataRefs()) {
 				res.getDesensitizations().add(new Desensitization(ref));
 			}
 		}

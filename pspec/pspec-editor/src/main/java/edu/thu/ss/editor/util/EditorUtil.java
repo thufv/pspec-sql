@@ -55,6 +55,9 @@ public class EditorUtil {
 
 	public static final String Image_Policy_Item = "img/policy.png";
 
+	public static final String Image_Save = "img/save.gif";
+	public static final String Image_Save_As = "img/saveas.gif";
+
 	public static final String Image_Add_Button = "img/add_button.png";
 
 	public static final String Image_Add_Rule = "img/add_rule.png";
@@ -67,6 +70,9 @@ public class EditorUtil {
 	public static final String Image_Bar = "img/bar.png";
 
 	public static final String Image_Rule = "img/rule.png";
+	
+	public static final String Image_Error = "img/error.gif";
+	public static final String Image_Warning = "img/warning.gif";
 
 	public static final String Table_Editor = "table.editor";
 
@@ -100,7 +106,7 @@ public class EditorUtil {
 	}
 
 	public static Color getSelectedBackground() {
-		return SWTResourceManager.getColor(17, 108, 214);
+		return SWTResourceManager.getColor(168, 208, 231);
 	}
 
 	private static void setStyle(Control control) {
@@ -207,9 +213,18 @@ public class EditorUtil {
 		return layout;
 	}
 
-	public static FileDialog newFileDialog(Shell shell) {
+	public static FileDialog newOpenFileDialog(Shell shell) {
 		FileDialog dlg = new FileDialog(shell, SWT.SINGLE);
+		dlg.setFilterExtensions(new String[] { "XML Files" });
 		dlg.setFilterExtensions(new String[] { "*.xml" });
+		return dlg;
+	}
+
+	public static FileDialog newSaveFileDialog(Shell shell, String name) {
+		FileDialog dlg = new FileDialog(shell, SWT.SAVE);
+		dlg.setFilterExtensions(new String[] { "XML Files" });
+		dlg.setFilterExtensions(new String[] { "*.xml" });
+		dlg.setFileName(name);
 		return dlg;
 	}
 

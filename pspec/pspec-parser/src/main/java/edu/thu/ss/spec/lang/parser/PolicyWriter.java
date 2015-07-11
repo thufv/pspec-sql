@@ -55,8 +55,11 @@ public class PolicyWriter implements ParserConstant {
 	private Element outputVocabularyRef(Policy policy, Document document) {
 		Element vocabEle = document.createElement(Ele_Policy_Vocabulary_Ref);
 
-		vocabEle.setAttribute(Attr_Policy_Vocabulary_location, policy.getVocabularyLocation()
-				.toString());
+		if (policy.getVocabularyLocation() != null) {
+			//TODO check location
+			vocabEle.setAttribute(Attr_Policy_Vocabulary_location, policy.getVocabularyLocation()
+					.toString());
+		}
 
 		return vocabEle;
 	}

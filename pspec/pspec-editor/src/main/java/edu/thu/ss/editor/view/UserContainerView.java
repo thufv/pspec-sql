@@ -29,10 +29,10 @@ import org.eclipse.swt.widgets.TreeItem;
 
 import edu.thu.ss.editor.model.CategoryContentProvider;
 import edu.thu.ss.editor.model.CategoryLabelProvider;
+import edu.thu.ss.editor.model.VocabularyModel;
 import edu.thu.ss.editor.util.EditorUtil;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
 import edu.thu.ss.spec.lang.pojo.UserContainer;
-import edu.thu.ss.spec.lang.pojo.Vocabulary;
 import edu.thu.ss.spec.util.PSpecUtil;
 
 public class UserContainerView extends Composite {
@@ -50,8 +50,8 @@ public class UserContainerView extends Composite {
 	private Text userShortDescription;
 	private Text userLongDescription;
 
+	private VocabularyModel model;
 	private UserContainer userContainer;
-	private Vocabulary vocabulary;
 	private UserCategory selectedUser;
 	private TreeItem selectedItem;
 
@@ -61,12 +61,12 @@ public class UserContainerView extends Composite {
 	 * @param parent
 	 * @param style
 	 */
-	public UserContainerView(Shell shell, Composite parent, int style, Vocabulary vocabulary) {
+	public UserContainerView(Shell shell, Composite parent, int style, VocabularyModel model) {
 		super(parent, SWT.NONE);
 		this.shell = shell;
 		this.display = Display.getDefault();
-		this.vocabulary = vocabulary;
-		this.userContainer = vocabulary.getUserContainer();
+		this.model = model;
+		this.userContainer = model.getVocabulary().getUserContainer();
 
 		setBackground(EditorUtil.getDefaultBackground());
 		setLayout(new GridLayout(1, false));
@@ -107,9 +107,9 @@ public class UserContainerView extends Composite {
 					EditorUtil.showMessage(shell, getMessage(User_Container_ID_Empty_Message), containerId);
 					containerId.setText(userContainer.getId());
 					containerId.selectAll();
-				} else {
-					userContainer.setId(containerId.getText().trim());
+					return;
 				}
+				userContainer.setId(containerId.getText().trim());
 
 			}
 		});
@@ -121,6 +121,7 @@ public class UserContainerView extends Composite {
 			@Override
 			public void focusLost(FocusEvent e) {
 				userContainer.setShortDescription(shortDescription.getText().trim());
+
 			}
 		});
 
@@ -132,6 +133,7 @@ public class UserContainerView extends Composite {
 			@Override
 			public void focusLost(FocusEvent e) {
 				userContainer.setLongDescription(longDescription.getText().trim());
+
 			}
 		});
 	}
@@ -194,6 +196,7 @@ public class UserContainerView extends Composite {
 
 		EditorUtil.newLabel(parent, getMessage(User_Category_ID), EditorUtil.labelData());
 		userId = EditorUtil.newText(parent, EditorUtil.textData());
+
 		userId.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent e) {
@@ -214,9 +217,10 @@ public class UserContainerView extends Composite {
 				}
 
 				EditorUtil.updateItem(userParentId, selectedUser.getId(), text);
-				userContainer.update(text, selectedUser);
-				userViewer.refresh(selectedUser);
 
+				userContainer.update(text, selectedUser);
+
+				userViewer.refresh(selectedUser);
 			}
 		});
 
@@ -227,7 +231,8 @@ public class UserContainerView extends Composite {
 			public void widgetSelected(SelectionEvent e) {
 				String text = userParentId.getText().trim();
 				if (text.equals(selectedUser.getId())) {
-					EditorUtil.showMessage(shell, getMessage(User_Category_Parent_Same_Message), userParentId);
+					EditorUtil
+							.showMessage(shell, getMessage(User_Category_Parent_Same_Message), userParentId);
 					EditorUtil.setSelectedItem(userParentId, selectedUser.getParentId());
 					return;
 				}
@@ -238,13 +243,15 @@ public class UserContainerView extends Composite {
 				UserCategory oldParent = selectedUser.getParent();
 				UserCategory newParent = userContainer.get(text);
 				if (PSpecUtil.checkCycleRefernece(selectedUser, newParent)) {
-					EditorUtil.showMessage(shell, getMessage(User_Category_Parent_Cycle_Message), userParentId);
+					EditorUtil.showMessage(shell, getMessage(User_Category_Parent_Cycle_Message),
+							userParentId);
 					EditorUtil.setSelectedItem(userParentId, selectedUser.getParentId());
 					return;
 				}
 
 				//set new parent
 				userContainer.setParent(selectedUser, newParent);
+
 				userParentId.setItems(EditorUtil.getCategoryItems(userContainer));
 				EditorUtil.setSelectedItem(userParentId, selectedUser.getParentId());
 				refreshViewer(oldParent);
@@ -258,6 +265,7 @@ public class UserContainerView extends Composite {
 			@Override
 			public void focusLost(FocusEvent e) {
 				selectedUser.setShortDescription(userShortDescription.getText());
+
 			}
 		});
 
@@ -268,6 +276,7 @@ public class UserContainerView extends Composite {
 			@Override
 			public void focusLost(FocusEvent e) {
 				selectedUser.setLongDescription(userLongDescription.getText());
+
 			}
 		});
 
@@ -308,6 +317,7 @@ public class UserContainerView extends Composite {
 						parent.buildRelation(user);
 					}
 					userContainer.add(user);
+
 					if (parentItem != null) {
 						userViewer.refresh(userContainer.get(parentItem.getText()));
 					} else {
@@ -361,6 +371,7 @@ public class UserContainerView extends Composite {
 					}
 					refreshViewer(parent);
 					disableUserInfo(true);
+
 				} else if (ret == SWT.NO) {
 					userContainer.remove(user);
 					if (parent != null) {
@@ -372,8 +383,8 @@ public class UserContainerView extends Composite {
 						userContainer.getRoot().addAll(user.getChildren());
 					}
 					refreshViewer(parent);
-
 					disableUserInfo(true);
+
 				}
 			}
 		});

@@ -2,8 +2,6 @@ package edu.thu.ss.editor.view;
 
 import static edu.thu.ss.editor.util.MessagesUtil.*;
 
-import java.net.URI;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -16,12 +14,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.ToolTip;
 import org.eclipse.swt.widgets.TreeItem;
 
+import edu.thu.ss.editor.model.VocabularyModel;
 import edu.thu.ss.editor.util.EditorUtil;
 import edu.thu.ss.spec.global.CategoryManager;
 import edu.thu.ss.spec.lang.parser.VocabularyParser;
@@ -44,20 +41,21 @@ public class VocabularyView extends Composite {
 	private Text address;
 	private Text longDescription;
 	private Text shortDescription;
-	private Vocabulary vocabulary;
 	private TreeItem item;
+
+	private VocabularyModel model;
 
 	/**
 	 * Create the composite
 	 * @param parent
 	 * @param style
 	 */
-	public VocabularyView(final Shell shell, Composite parent, int style, Vocabulary vocabulary,
+	public VocabularyView(final Shell shell, Composite parent, int style, VocabularyModel model,
 			TreeItem item) {
 		super(parent, style);
 		this.shell = shell;
 		this.item = item;
-		this.vocabulary = vocabulary;
+		this.model = model;
 
 		this.setBackground(EditorUtil.getDefaultBackground());
 		this.setBackgroundMode(SWT.INHERIT_FORCE);
@@ -82,22 +80,24 @@ public class VocabularyView extends Composite {
 	}
 
 	private void initializeBasic(Composite parent) {
+		final Vocabulary vocabulary = model.getVocabulary();
+
 		EditorUtil.newLabel(parent, getMessage(Vocabulary_ID), EditorUtil.labelData());
 		vocabularyID = EditorUtil.newText(parent, EditorUtil.textData());
 		vocabularyID.setText(vocabulary.getInfo().getId());
 		vocabularyID.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent e) {
+				//check uniqueness?
 				String text = vocabularyID.getText().trim();
 				if (text.isEmpty()) {
 					EditorUtil.showMessage(shell, getMessage(Vocabulary_ID_Empty_Message), vocabularyID);
-
 					vocabularyID.setText(vocabulary.getInfo().getId());
 					vocabularyID.selectAll();
-				} else {
-					vocabulary.getInfo().setId(text);
-					item.setText(text);
+					return;
 				}
+				vocabulary.getInfo().setId(text);
+				item.setText(text);
 
 			}
 		});
@@ -121,7 +121,7 @@ public class VocabularyView extends Composite {
 		open.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				FileDialog dlg = EditorUtil.newFileDialog(shell);
+				FileDialog dlg = EditorUtil.newOpenFileDialog(shell);
 				String file = dlg.open();
 				if (file != null) {
 					baseVocabulary.setText(file);
@@ -135,21 +135,12 @@ public class VocabularyView extends Composite {
 						vocabulary.setBase(XMLUtil.toUri(file));
 						vocabulary.getUserContainer().setBaseContainer(baseUser);
 						vocabulary.getDataContainer().setBaseContainer(baseData);
+
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
 
 				}
-			}
-		});
-
-		vocabularyID.setText(vocabulary.getInfo().getId());
-		vocabularyID.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusLost(FocusEvent e) {
-				//TODO: verify
-				vocabulary.getInfo().setId(vocabularyID.getText().trim());
-				item.setText(vocabularyID.getText().trim());
 			}
 		});
 
@@ -160,6 +151,7 @@ public class VocabularyView extends Composite {
 			@Override
 			public void focusLost(FocusEvent e) {
 				vocabulary.getInfo().setShortDescription(shortDescription.getText().trim());
+
 			}
 		});
 
@@ -172,13 +164,13 @@ public class VocabularyView extends Composite {
 			@Override
 			public void focusLost(FocusEvent e) {
 				vocabulary.getInfo().setLongDescription(longDescription.getText().trim());
+
 			}
 		});
-
 	}
 
 	private void initializeIssuer(Composite parent) {
-		final ContactInfo contact = vocabulary.getInfo().getContact();
+		final ContactInfo contact = model.getVocabulary().getInfo().getContact();
 
 		EditorUtil.newLabel(parent, getMessage(Issuer_Name), EditorUtil.labelData());
 		name = EditorUtil.newText(parent, EditorUtil.textData());
@@ -187,6 +179,7 @@ public class VocabularyView extends Composite {
 			@Override
 			public void focusLost(FocusEvent e) {
 				contact.setName(name.getText().trim());
+
 			}
 		});
 
@@ -197,6 +190,7 @@ public class VocabularyView extends Composite {
 			@Override
 			public void focusLost(FocusEvent e) {
 				contact.setEmail(email.getText().trim());
+
 			}
 		});
 
@@ -207,6 +201,7 @@ public class VocabularyView extends Composite {
 			@Override
 			public void focusLost(FocusEvent e) {
 				contact.setOrganization(organization.getText().trim());
+
 			}
 		});
 
@@ -217,6 +212,7 @@ public class VocabularyView extends Composite {
 			@Override
 			public void focusLost(FocusEvent e) {
 				contact.setAddress(address.getText().trim());
+
 			}
 		});
 
@@ -227,6 +223,7 @@ public class VocabularyView extends Composite {
 			@Override
 			public void focusLost(FocusEvent e) {
 				contact.setCountry(country.getText().trim());
+
 			}
 		});
 	}

@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
+import edu.thu.ss.editor.model.PolicyModel;
 import edu.thu.ss.editor.util.EditorUtil;
 import edu.thu.ss.editor.util.MessagesUtil;
 import edu.thu.ss.spec.lang.pojo.Action;
@@ -51,7 +52,7 @@ public class RuleView extends Composite {
 
 	private ExpandItem selectedItem;
 
-	private Policy policy;
+	private PolicyModel model;
 
 	/**
 	 * Create the composite
@@ -59,10 +60,10 @@ public class RuleView extends Composite {
 	 * @param parent
 	 * @param style
 	 */
-	public RuleView(Shell shell, Composite parent, int style, Policy policy) {
+	public RuleView(Shell shell, Composite parent, int style, PolicyModel model) {
 		super(parent, style);
 		this.shell = shell;
-		this.policy = policy;
+		this.model = model;
 		this.setBackground(EditorUtil.getDefaultBackground());
 
 		this.setLayout(new FillLayout());
@@ -95,10 +96,11 @@ public class RuleView extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Rule rule = new Rule();
-				int ret = new RuleDialog(shell, rule, policy).open();
+				int ret = new RuleDialog(shell, rule, model).open();
 				if (ret == SWT.OK) {
-					policy.getRules().add(rule);
 					initializeRuleItem(rule);
+					model.getPolicy().getRules().add(rule);
+
 				}
 			}
 		});
@@ -112,7 +114,7 @@ public class RuleView extends Composite {
 			public void widgetSelected(SelectionEvent e) {
 				assert (selectedItem != null);
 				Rule rule = (Rule) selectedItem.getData();
-				policy.getRules().remove(rule);
+				model.getPolicy().getRules().remove(rule);
 
 				selectedItem.getControl().dispose();
 				selectedItem.dispose();
@@ -124,42 +126,9 @@ public class RuleView extends Composite {
 	}
 
 	private void initializeRules() {
-		Rule rule = new Rule();
-		rule.setId("rule1");
-		UserRef user1 = new UserRef();
-		user1.setRefid("manager");
-		rule.getUserRefs().add(user1);
-		UserRef user2 = new UserRef();
-		user2.setRefid("ceo");
-		rule.getUserRefs().add(user2);
-
-		DataRef data1 = new DataRef();
-		data1.setRefid("pii");
-		data1.setAction(Action.All);
-		rule.getDataRefs().add(data1);
-		DataRef data2 = new DataRef();
-		data2.setRefid("financial");
-		data2.setAction(Action.Projection);
-		rule.getDataRefs().add(data2);
-
-		Restriction res = new Restriction();
-		Desensitization de = new Desensitization();
-		de.getOperations().add(DesensitizeOperation.get("sum"));
-		de.getOperations().add(DesensitizeOperation.get("avg"));
-		res.getDesensitizations().add(de);
-
-		rule.getRestrictions().add(res);
-
-		initializeRuleItem(rule);
-
-		rule = new Rule();
-		rule.getRestrictions().add(res);
-		initializeRuleItem(rule);
-
-		for (Rule r : policy.getRules()) {
+		for (Rule r : model.getPolicy().getRules()) {
 			initializeRuleItem(r);
 		}
-
 	}
 
 	private void initializeRuleItem(Rule rule) {
@@ -210,9 +179,10 @@ public class RuleView extends Composite {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
 				Rule rule = (Rule) item.getData();
-				int ret = new RuleDialog(shell, rule, policy).open();
+				int ret = new RuleDialog(shell, rule, model).open();
 				if (ret == SWT.OK) {
 					updateRuleItem(item);
+
 				}
 			}
 		});

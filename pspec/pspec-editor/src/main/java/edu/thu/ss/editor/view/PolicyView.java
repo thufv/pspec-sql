@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
 
+import edu.thu.ss.editor.model.PolicyModel;
 import edu.thu.ss.editor.util.EditorUtil;
 import edu.thu.ss.spec.lang.parser.VocabularyParser;
 import edu.thu.ss.spec.lang.pojo.ContactInfo;
@@ -39,19 +40,20 @@ public class PolicyView extends Composite {
 
 	private Text vocabularyLocation;
 
-	private Policy policy;
-	private TreeItem item;
+	private PolicyModel model;
+	private TreeItem editorItem;
 
 	/**
 	 * Create the composite
 	 * @param parent
 	 * @param style
 	 */
-	public PolicyView(final Shell shell, Composite parent, int style, Policy policy, TreeItem item) {
+	public PolicyView(final Shell shell, Composite parent, int style, PolicyModel model,
+			TreeItem editorItem) {
 		super(parent, style);
 		this.shell = shell;
-		this.policy = policy;
-		this.item = item;
+		this.model = model;
+		this.editorItem = editorItem;
 		this.setBackground(EditorUtil.getDefaultBackground());
 
 		this.setLayout(new FillLayout());
@@ -73,6 +75,7 @@ public class PolicyView extends Composite {
 	}
 
 	private void initializeBasic(Composite parent) {
+		final Policy policy = model.getPolicy();
 		EditorUtil.newLabel(parent, getMessage(Policy_ID), EditorUtil.labelData());
 		policyID = EditorUtil.newText(parent, EditorUtil.textData());
 		policyID.setText(policy.getInfo().getId());
@@ -84,10 +87,11 @@ public class PolicyView extends Composite {
 					EditorUtil.showMessage(shell, getMessage(Vocabulary_ID_Empty_Message), policyID);
 					policyID.setText(policy.getInfo().getId());
 					policyID.selectAll();
-				} else {
-					policy.getInfo().setId(text);
-					item.setText(text);
+					return;
 				}
+				policy.getInfo().setId(text);
+
+				editorItem.setText(text);
 			}
 		});
 
@@ -109,7 +113,7 @@ public class PolicyView extends Composite {
 		open.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				FileDialog dlg = EditorUtil.newFileDialog(shell);
+				FileDialog dlg = EditorUtil.newOpenFileDialog(shell);
 				String file = dlg.open();
 				if (file != null) {
 					vocabularyLocation.setText(file);
@@ -119,6 +123,7 @@ public class PolicyView extends Composite {
 						Vocabulary vocabulary = parser.parse(file);
 						policy.setVocabularyLocation(XMLUtil.toUri(file));
 						policy.setVocabulary(vocabulary);
+
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
@@ -133,6 +138,7 @@ public class PolicyView extends Composite {
 			@Override
 			public void focusLost(FocusEvent e) {
 				policy.getInfo().setShortDescription(shortDescription.getText().trim());
+
 			}
 		});
 
@@ -144,12 +150,13 @@ public class PolicyView extends Composite {
 			@Override
 			public void focusLost(FocusEvent e) {
 				policy.getInfo().setLongDescription(longDescription.getText().trim());
+
 			}
 		});
 	}
 
 	private void initializeIssuer(Composite parent) {
-		final ContactInfo contact = policy.getInfo().getContact();
+		final ContactInfo contact = model.getPolicy().getInfo().getContact();
 		EditorUtil.newLabel(parent, getMessage(Issuer_Name), EditorUtil.labelData());
 		name = EditorUtil.newText(parent, EditorUtil.textData());
 		name.setText(contact.getName());
@@ -157,6 +164,7 @@ public class PolicyView extends Composite {
 			@Override
 			public void focusLost(FocusEvent e) {
 				contact.setName(name.getText().trim());
+
 			}
 		});
 
@@ -167,6 +175,7 @@ public class PolicyView extends Composite {
 			@Override
 			public void focusLost(FocusEvent e) {
 				contact.setEmail(email.getText().trim());
+
 			}
 		});
 
@@ -177,6 +186,7 @@ public class PolicyView extends Composite {
 			@Override
 			public void focusLost(FocusEvent e) {
 				contact.setOrganization(organization.getText().trim());
+
 			}
 		});
 
@@ -187,6 +197,7 @@ public class PolicyView extends Composite {
 			@Override
 			public void focusLost(FocusEvent e) {
 				contact.setAddress(address.getText().trim());
+
 			}
 		});
 
@@ -197,6 +208,7 @@ public class PolicyView extends Composite {
 			@Override
 			public void focusLost(FocusEvent e) {
 				contact.setCountry(country.getText().trim());
+
 			}
 		});
 	}
