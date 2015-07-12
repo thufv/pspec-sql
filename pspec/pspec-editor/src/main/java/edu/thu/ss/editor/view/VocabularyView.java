@@ -20,17 +20,16 @@ import org.eclipse.swt.widgets.TreeItem;
 
 import edu.thu.ss.editor.model.VocabularyModel;
 import edu.thu.ss.editor.util.EditorUtil;
-import edu.thu.ss.spec.global.CategoryManager;
 import edu.thu.ss.spec.lang.parser.VocabularyParser;
 import edu.thu.ss.spec.lang.pojo.ContactInfo;
 import edu.thu.ss.spec.lang.pojo.DataContainer;
 import edu.thu.ss.spec.lang.pojo.UserContainer;
 import edu.thu.ss.spec.lang.pojo.Vocabulary;
+import edu.thu.ss.spec.manager.VocabularyManager;
 import edu.thu.ss.spec.util.XMLUtil;
 
-public class VocabularyView extends Composite {
+public class VocabularyView extends BaseView<VocabularyModel> {
 
-	private Shell shell;
 	private Text name;
 	private Text email;
 	private Text country;
@@ -43,8 +42,6 @@ public class VocabularyView extends Composite {
 	private Text shortDescription;
 	private TreeItem item;
 
-	private VocabularyModel model;
-
 	/**
 	 * Create the composite
 	 * @param parent
@@ -52,11 +49,8 @@ public class VocabularyView extends Composite {
 	 */
 	public VocabularyView(final Shell shell, Composite parent, int style, VocabularyModel model,
 			TreeItem item) {
-		super(parent, style);
-		this.shell = shell;
+		super(shell, parent, style, model);
 		this.item = item;
-		this.model = model;
-
 		this.setBackground(EditorUtil.getDefaultBackground());
 		this.setBackgroundMode(SWT.INHERIT_FORCE);
 
@@ -128,7 +122,7 @@ public class VocabularyView extends Composite {
 					VocabularyParser parser = new VocabularyParser();
 					try {
 						parser.parse(file);
-						Vocabulary base = CategoryManager.getVocab(XMLUtil.toUri(file));
+						Vocabulary base = VocabularyManager.getVocab(XMLUtil.toUri(file));
 						UserContainer baseUser = base.getUserContainer();
 						DataContainer baseData = base.getDataContainer();
 
@@ -227,4 +221,5 @@ public class VocabularyView extends Composite {
 			}
 		});
 	}
+
 }

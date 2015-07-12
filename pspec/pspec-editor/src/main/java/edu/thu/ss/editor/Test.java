@@ -1,139 +1,94 @@
 package edu.thu.ss.editor;
 
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.EditingSupport;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.TextCellEditor;
+/******************************************************************************
+ * All Right Reserved. 
+ * Copyright (c) 1998, 2004 Jackwind Li Guojie
+ * 
+ * Created on 2004-4-9 14:11:34 by JACK
+ * $Id$
+ * 
+ *****************************************************************************/
+
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.swt.widgets.Text;
 
 public class Test {
+	Display display = new Display();
+	Shell shell = new Shell(display);
 
-	protected static Shell shell;
-
-	protected static Display display;
-
-	/**
-	 * Open the window.
-	 */
-	public static void main1(String[] args) {
-		display = Display.getDefault();
-
-		shell = new Shell();
+	public Test() {
 		shell.setLayout(new FillLayout());
-		Composite composite = new Composite(shell, SWT.NONE);
-		composite.setLayout(new GridLayout());
 
-		Button button = new Button(composite, SWT.NONE);
-		button.setText("luochen");
+		final TabFolder tabFolder = new TabFolder(shell, SWT.BOTTOM);
+		tabFolder.pack();
+		Button button = new Button(tabFolder, SWT.NULL);
+		button.setText("This is a button.");
 
-		button.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		TabItem tabItem1 = new TabItem(tabFolder, SWT.NULL);
+		tabItem1.setText("item #1");
+		tabItem1.setControl(button);
 
-		shell.open();
-		shell.layout();
-		shell.addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				Display.getDefault().dispose();
-				System.exit(0);
+		Text text = new Text(tabFolder, SWT.MULTI);
+		text.setText("This is a text control.");
+
+		TabItem tabItem2 = new TabItem(tabFolder, SWT.NULL);
+		tabItem2.setText("item #2");
+		tabItem2.setControl(text);
+
+		Label label = new Label(tabFolder, SWT.NULL);
+		label.setText("This is a text lable.");
+
+		TabItem tabItem3 = new TabItem(tabFolder, SWT.NULL);
+		tabItem3.setText("item #3");
+		tabItem3.setControl(label);
+
+		tabFolder.addSelectionListener(new SelectionListener() {
+			public void widgetSelected(SelectionEvent e) {
+				System.out.println("Selected item index = " + tabFolder.getSelectionIndex());
+				System.out.println("Selected item = "
+						+ (tabFolder.getSelection() == null ? "null" : tabFolder.getSelection()[0].toString()));
+			}
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+				widgetSelected(e);
 			}
 		});
 
+		//tabFolder.setSelection(new TabItem[]{tabItem2, tabItem3});
+		//tabFolder.setSelection(2);
+
+		shell.setSize(400, 120);
+		shell.open();
+		//textUser.forceFocus();
+
+		System.out.println(tabFolder.getSelectionIndex());
+
+		// Set up the event loop.
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
+				// If no more entries in event queue
 				display.sleep();
 			}
-		}
-	}
-
-	public class MyModel {
-		public int counter;
-
-		public MyModel(int counter) {
-			this.counter = counter;
-		}
-
-		@Override
-		public String toString() {
-			return "Item " + this.counter;
-		}
-	}
-
-	public Test(Shell shell) {
-		final TableViewer v = new TableViewer(shell, SWT.BORDER | SWT.FULL_SELECTION);
-		v.setContentProvider(new ArrayContentProvider());
-
-		TableViewerColumn viewerColumn = new TableViewerColumn(v, SWT.NONE);
-		viewerColumn.getColumn().setText("Column1");
-		viewerColumn.getColumn().setWidth(300);
-		viewerColumn.setLabelProvider(new ColumnLabelProvider());
-		viewerColumn.setEditingSupport(new EditingSupport(v) {
-
-			@Override
-			protected void setValue(Object element, Object value) {
-				((MyModel) element).counter = Integer.parseInt(value.toString());
-				getViewer().update(element, null);
-			}
-
-			@Override
-			protected Object getValue(Object element) {
-				return ((MyModel) element).counter + "";
-			}
-
-			@Override
-			protected CellEditor getCellEditor(Object element) {
-				return new TextCellEditor((Composite) getViewer().getControl());
-			}
-
-			@Override
-			protected boolean canEdit(Object element) {
-				return ((MyModel) element).counter % 2 == 0;
-			}
-		});
-
-		MyModel[] model = createModel();
-		v.setInput(model);
-		v.getTable().setLinesVisible(true);
-	}
-
-	private MyModel[] createModel() {
-		MyModel[] elements = new MyModel[10];
-
-		for (int i = 0; i < 10; i++) {
-			elements[i] = new MyModel(i);
-		}
-
-		return elements;
-	}
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		Display display = new Display();
-		Shell shell = new Shell(display);
-		shell.setLayout(new FillLayout());
-		new Test(shell);
-		shell.open();
-
-		while (!shell.isDisposed()) {
-			if (!display.readAndDispatch())
-				display.sleep();
 		}
 
 		display.dispose();
+	}
+
+	private void init() {
 
 	}
 
+	public static void main(String[] args) {
+		new Test();
+	}
 }

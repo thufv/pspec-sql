@@ -9,7 +9,8 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import edu.thu.ss.spec.lang.analyzer.LevelwiseSearcher.SearchKey;
+import edu.thu.ss.spec.lang.analyzer.consistency.LevelwiseSearcher;
+import edu.thu.ss.spec.lang.analyzer.consistency.LevelwiseSearcher.SearchKey;
 
 public class LevelwiseSearcherTest {
 

@@ -26,9 +26,8 @@ import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Vocabulary;
 import edu.thu.ss.spec.util.XMLUtil;
 
-public class PolicyView extends Composite {
+public class PolicyView extends BaseView<PolicyModel> {
 
-	private Shell shell;
 	private Text name;
 	private Text email;
 	private Text country;
@@ -40,7 +39,6 @@ public class PolicyView extends Composite {
 
 	private Text vocabularyLocation;
 
-	private PolicyModel model;
 	private TreeItem editorItem;
 
 	/**
@@ -50,7 +48,7 @@ public class PolicyView extends Composite {
 	 */
 	public PolicyView(final Shell shell, Composite parent, int style, PolicyModel model,
 			TreeItem editorItem) {
-		super(parent, style);
+		super(shell, parent, style, model);
 		this.shell = shell;
 		this.model = model;
 		this.editorItem = editorItem;

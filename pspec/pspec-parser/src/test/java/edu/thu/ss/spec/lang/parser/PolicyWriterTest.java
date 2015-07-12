@@ -2,9 +2,9 @@ package edu.thu.ss.spec.lang.parser;
 
 import org.junit.Test;
 
-import edu.thu.ss.spec.global.CategoryManager;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Vocabulary;
+import edu.thu.ss.spec.manager.VocabularyManager;
 import edu.thu.ss.spec.util.XMLUtil;
 
 public class PolicyWriterTest {
@@ -66,8 +66,8 @@ public class PolicyWriterTest {
 		try {
 			VocabularyParser parser = new VocabularyParser();
 			parser.parse("paper/spark-vocab.xml");
-			Vocabulary vocabulary = CategoryManager.getVocab(XMLUtil.toUri("paper/spark-vocab.xml"));
-			CategoryManager.clear();
+			Vocabulary vocabulary = VocabularyManager.getVocab(XMLUtil.toUri("paper/spark-vocab.xml"));
+			VocabularyManager.clear();
 			VocabularyWriter writer = new VocabularyWriter();
 			writer.output(vocabulary, "tmp/vocab.xml");
 			parser.parse("tmp/vocab.xml");

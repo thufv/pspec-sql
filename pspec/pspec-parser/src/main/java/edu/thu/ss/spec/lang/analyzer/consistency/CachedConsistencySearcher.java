@@ -1,4 +1,4 @@
-package edu.thu.ss.spec.lang.analyzer.local;
+package edu.thu.ss.spec.lang.analyzer.consistency;
 
 import java.util.Arrays;
 import java.util.HashMap;

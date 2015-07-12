@@ -11,10 +11,7 @@
 			<country>China</country>
 		</issuer>
 	</policy-information>
-	<vocabulary-ref location="intel/spark-vocab.xml">
-		<user-category-container refid="default-user" />
-		<data-category-container refid="tpcds-data" />
-	</vocabulary-ref>
+	<vocabulary-ref location="misc/intel/spark-vocab.xml" />
 	<rules>
 		<rule id="single_data_category_projection">
 			<user-category-ref refid="app"></user-category-ref>

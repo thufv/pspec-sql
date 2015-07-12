@@ -56,6 +56,10 @@ public abstract class CategoryRef<T extends Category<T>> extends ObjectRef {
 		return category;
 	}
 
+	public void setCategory(T category) {
+		this.category = category;
+	}
+
 	/**
 	 * adds a excluded data category with simplification
 	 * @param exclude
@@ -87,31 +91,16 @@ public abstract class CategoryRef<T extends Category<T>> extends ObjectRef {
 	 * @param container
 	 * @param cache
 	 */
-	public void materialize(CategoryContainer<T> container, Map<T, Set<T>> cache) {
-		Set<T> descendants = getDescendants(category, container, cache);
-		materialized = new HashSet<>(descendants);
+	public void materialize(CategoryContainer<T> container) {
+		materialized = new HashSet<>();
+		materialized.addAll(category.getDescendants(container));
 		for (T excluded : excludes) {
-			Set<T> excludes = getDescendants(excluded, container, cache);
-			materialized.removeAll(excludes);
+			materialized.removeAll(excluded.getDescendants(container));
 		}
 	}
 
-	/**
-	 * set already materialized category
-	 * @param materialized
-	 */
 	public void materialize(Set<T> materialized) {
 		this.materialized = materialized;
-	}
-
-	private Set<T> getDescendants(T category, CategoryContainer<T> container, Map<T, Set<T>> cache) {
-		Set<T> descendants = cache.get(category);
-		if (descendants == null) {
-			descendants = category.getDescendants(container);
-			cache.put(category, descendants);
-		}
-		return descendants;
-
 	}
 
 	@Override

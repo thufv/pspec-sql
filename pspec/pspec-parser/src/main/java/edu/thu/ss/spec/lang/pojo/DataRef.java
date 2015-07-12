@@ -40,7 +40,7 @@ public class DataRef extends CategoryRef<DataCategory> {
 	}
 
 	public void setData(DataCategory data) {
-		this.category = data;
+		this.setCategory(data);
 	}
 
 	public DataCategory getData() {

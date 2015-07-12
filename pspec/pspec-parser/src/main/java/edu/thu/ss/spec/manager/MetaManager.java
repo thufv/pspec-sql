@@ -1,4 +1,4 @@
-package edu.thu.ss.spec.global;
+package edu.thu.ss.spec.manager;
 
 import java.util.HashMap;
 import java.util.HashSet;

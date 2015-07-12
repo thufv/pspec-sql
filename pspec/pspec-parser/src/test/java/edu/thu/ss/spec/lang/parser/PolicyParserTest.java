@@ -15,7 +15,6 @@ public class PolicyParserTest {
 
 	private static final String prefix = "src/test/res/";
 
-	@Test
 	public void testMeta() {
 		try {
 			PolicyParser parser = new PolicyParser();
@@ -31,7 +30,6 @@ public class PolicyParserTest {
 		}
 	}
 
-	@Test
 	public void testConflict() {
 		try {
 			PolicyParser parser = new PolicyParser();
@@ -42,7 +40,6 @@ public class PolicyParserTest {
 		}
 	}
 
-	@Test
 	public void testRedundancy() {
 		try {
 			PolicyParser parser = new PolicyParser();
@@ -53,7 +50,6 @@ public class PolicyParserTest {
 		}
 	}
 
-	@Test
 	public void testGlobalRedundancy() {
 		try {
 			PolicyParser parser = new PolicyParser();
@@ -68,7 +64,7 @@ public class PolicyParserTest {
 	public void testIntel() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse("intel/spark-policy.xml", false, true);
+			Policy policy = parser.parse("misc/intel/spark-policy.xml", false, true);
 			System.out.println(policy);
 		} catch (Exception e) {
 			e.printStackTrace();

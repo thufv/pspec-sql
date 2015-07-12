@@ -70,11 +70,12 @@ public class EditorUtil {
 	public static final String Image_Bar = "img/bar.png";
 
 	public static final String Image_Rule = "img/rule.png";
-	
+
 	public static final String Image_Error = "img/error.gif";
 	public static final String Image_Warning = "img/warning.gif";
 
 	public static final String Table_Editor = "table.editor";
+	public static final String View = "view";
 
 	private static ToolTip previousTip;
 
@@ -441,4 +442,25 @@ public class EditorUtil {
 		}
 		return result;
 	}
+
+	public static void exclude(Control composite) {
+		composite.setVisible(false);
+		GridData data = (GridData) composite.getLayoutData();
+		if (data == null) {
+			data = new GridData();
+			composite.setLayoutData(data);
+		}
+		data.exclude = true;
+	}
+
+	public static void include(Control composite) {
+		composite.setVisible(true);
+		GridData data = (GridData) composite.getLayoutData();
+		if (data == null) {
+			data = new GridData();
+			composite.setLayoutData(data);
+		}
+		data.exclude = false;
+	}
+
 }

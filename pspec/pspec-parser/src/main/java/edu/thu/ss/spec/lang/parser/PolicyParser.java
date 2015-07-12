@@ -10,23 +10,20 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import edu.thu.ss.spec.global.PolicyManager;
-import edu.thu.ss.spec.lang.analyzer.FineBudgetAnalyzer;
-import edu.thu.ss.spec.lang.analyzer.GlobalBudgetAnalyzer;
-import edu.thu.ss.spec.lang.analyzer.PolicyAnalyzer;
-import edu.thu.ss.spec.lang.analyzer.PolicyResolver;
-import edu.thu.ss.spec.lang.analyzer.global.GlobalExpander;
-import edu.thu.ss.spec.lang.analyzer.global.GlobalRedundancyAnalyzer;
-import edu.thu.ss.spec.lang.analyzer.local.ConsistencyAnalyzer;
-import edu.thu.ss.spec.lang.analyzer.local.LocalExpander;
-import edu.thu.ss.spec.lang.analyzer.local.LocalRedundancyAnalyzer;
-import edu.thu.ss.spec.lang.analyzer.rule.RuleConstraintAnalyzer;
-import edu.thu.ss.spec.lang.analyzer.rule.RuleSimplifier;
-import edu.thu.ss.spec.lang.pojo.Info;
+import edu.thu.ss.spec.lang.analyzer.GlobalExpander;
+import edu.thu.ss.spec.lang.analyzer.IPolicyAnalyzer;
+import edu.thu.ss.spec.lang.analyzer.LocalExpander;
+import edu.thu.ss.spec.lang.analyzer.budget.BudgetResolver;
+import edu.thu.ss.spec.lang.analyzer.budget.FineBudgetAllocator;
+import edu.thu.ss.spec.lang.analyzer.budget.GlobalBudgetAllocator;
+import edu.thu.ss.spec.lang.analyzer.rule.RuleResolver;
+import edu.thu.ss.spec.lang.parser.event.EventTable;
+import edu.thu.ss.spec.lang.parser.event.PolicyEvent;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.PrivacyParams;
 import edu.thu.ss.spec.lang.pojo.Rule;
 import edu.thu.ss.spec.lang.pojo.Vocabulary;
+import edu.thu.ss.spec.manager.PolicyManager;
 import edu.thu.ss.spec.util.XMLUtil;
 
 /**
@@ -39,34 +36,22 @@ public class PolicyParser implements ParserConstant {
 	private static Logger logger = LoggerFactory.getLogger(PolicyParser.class);
 
 	/**
-	 * a list of {@link PolicyAnalyzer}, executed sequentially
+	 * a list of {@link IPolicyAnalyzer}, executed sequentially
 	 */
-	private List<PolicyAnalyzer> analyzers;
+	private List<IPolicyAnalyzer> analyzers;
+
+	private EventTable<PolicyEvent> table = new EventTable<>();
 
 	protected void init(boolean global, boolean analyze) {
 		analyzers = new ArrayList<>();
-		analyzers.add(new PolicyResolver());
-
-		analyzers.add(new RuleConstraintAnalyzer());
-
-		analyzers.add(new RuleSimplifier());
-		analyzers.add(new GlobalBudgetAnalyzer());
-		analyzers.add(new FineBudgetAnalyzer());
-
+		analyzers.add(new RuleResolver(table));
+		analyzers.add(new BudgetResolver(table));
+		analyzers.add(new GlobalBudgetAllocator());
+		analyzers.add(new FineBudgetAllocator());
 		if (global) {
-			//online
-			analyzers.add(new GlobalExpander());
-			if (analyze) {
-				analyzers.add(new GlobalRedundancyAnalyzer());
-			}
+			analyzers.add(new GlobalExpander(table));
 		} else {
-			//offline
-			analyzers.add(new LocalExpander());
-			if (analyze) {
-				analyzers.add(new LocalRedundancyAnalyzer());
-				analyzers.add(new ConsistencyAnalyzer());
-			}
-
+			analyzers.add(new LocalExpander(table));
 		}
 	}
 
@@ -102,7 +87,7 @@ public class PolicyParser implements ParserConstant {
 			// load document
 			policyDoc = XMLUtil.parseDocument(uri, Privacy_Schema_Location);
 		} catch (Exception e) {
-			throw new ParsingException("Fail to load privacy policy at " + path, e);
+			throw new ParseException("Fail to load privacy policy at " + path, e);
 		}
 		try {
 			// parse document
@@ -124,10 +109,10 @@ public class PolicyParser implements ParserConstant {
 			}
 			//perform policy analysis
 			analyzePolicy(policy);
-		} catch (ParsingException e) {
+		} catch (ParseException e) {
 			throw e;
 		} catch (Exception e) {
-			throw new ParsingException("Fail to parse privacy policy at " + path, e);
+			throw new ParseException("Fail to parse privacy policy at " + path, e);
 		} finally {
 			cleanup();
 		}
@@ -176,11 +161,11 @@ public class PolicyParser implements ParserConstant {
 		}
 	}
 
-	private void analyzePolicy(Policy policy) throws ParsingException {
-		for (PolicyAnalyzer analyzer : analyzers) {
+	private void analyzePolicy(Policy policy) throws ParseException {
+		for (IPolicyAnalyzer analyzer : analyzers) {
 			boolean error = analyzer.analyze(policy);
 			if (error && analyzer.stopOnError()) {
-				throw new ParsingException(analyzer.errorMsg());
+				throw new ParseException(analyzer.errorMsg());
 			}
 		}
 	}

@@ -1,16 +1,16 @@
-package edu.thu.ss.spec.lang.analyzer.stat;
+package edu.thu.ss.spec.lang.analyzer;
 
-import edu.thu.ss.spec.lang.analyzer.BasePolicyAnalyzer;
-import edu.thu.ss.spec.lang.analyzer.PolicyAnalyzer;
+import edu.thu.ss.spec.lang.analyzer.stat.AnalyzerStat;
 import edu.thu.ss.spec.lang.pojo.Policy;
 
 public class TiminingAnalyzer extends BasePolicyAnalyzer {
 
-	private PolicyAnalyzer analyzer;
+	private IPolicyAnalyzer analyzer;
 	private AnalyzerStat stat;
 	private int n;
 
-	public TiminingAnalyzer(PolicyAnalyzer analyzer, AnalyzerStat stat, int n) {
+	public TiminingAnalyzer(IPolicyAnalyzer analyzer, AnalyzerStat stat, int n) {
+		super(null);
 		this.analyzer = analyzer;
 		this.stat = stat;
 		this.n = n;
@@ -18,7 +18,6 @@ public class TiminingAnalyzer extends BasePolicyAnalyzer {
 
 	@Override
 	public boolean analyze(Policy policy) {
-
 		long start = System.currentTimeMillis();
 		try {
 			return analyzer.analyze(policy, stat, n);

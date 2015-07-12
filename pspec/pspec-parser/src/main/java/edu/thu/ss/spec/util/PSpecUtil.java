@@ -1,14 +1,30 @@
 package edu.thu.ss.spec.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import edu.thu.ss.spec.lang.parser.PSpec;
+import edu.thu.ss.spec.lang.parser.event.EventTable;
+import edu.thu.ss.spec.lang.parser.event.PolicyEvent;
 import edu.thu.ss.spec.lang.pojo.Category;
+import edu.thu.ss.spec.lang.pojo.CategoryContainer;
+import edu.thu.ss.spec.lang.pojo.CategoryRef;
+import edu.thu.ss.spec.lang.pojo.DataAssociation;
+import edu.thu.ss.spec.lang.pojo.DataRef;
+import edu.thu.ss.spec.lang.pojo.Desensitization;
+import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.HierarchicalObject;
+import edu.thu.ss.spec.lang.pojo.ObjectRef;
+import edu.thu.ss.spec.lang.pojo.Restriction;
+import edu.thu.ss.spec.lang.pojo.Rule;
 
 /**
  * Utility class for set operations
@@ -16,6 +32,8 @@ import edu.thu.ss.spec.lang.pojo.HierarchicalObject;
  *
  */
 public class PSpecUtil {
+
+	private static final Logger logger = LoggerFactory.getLogger(PSpecUtil.class);
 
 	public enum SetRelation {
 		contain, intersect, disjoint
@@ -167,16 +185,21 @@ public class PSpecUtil {
 		return sb.toString();
 	}
 
-	public static <T extends Category<T>> boolean checkCycleRefernece(T category, T newParent) {
-		if (newParent == null) {
+	public static <T extends Category<T>> boolean checkCategoryCycleReference(T category, T parent,
+			Set<T> checked) {
+		if (parent == null) {
 			return false;
 		}
 		Set<String> set = new HashSet<>();
 		set.add(category.getId());
-		return checkCycleRefernece(newParent, set);
+		if (checked != null) {
+			checked.add(category);
+		}
+		return checkCycleRefernece(parent, set, checked);
 	}
 
-	private static <T extends Category<T>> boolean checkCycleRefernece(T category, Set<String> ids) {
+	private static <T extends Category<T>> boolean checkCycleRefernece(T category, Set<String> ids,
+			Set<T> checked) {
 		if (ids.contains(category.getId())) {
 			return true;
 		}
@@ -184,6 +207,61 @@ public class PSpecUtil {
 			return false;
 		}
 		ids.add(category.getId());
-		return checkCycleRefernece(category.getParent(), ids);
+		if (checked != null) {
+			checked.add(category);
+		}
+		return checkCycleRefernece(category.getParent(), ids, checked);
+	}
+
+	public static <T extends Category<T>> boolean resolveCategoryRef(CategoryRef<T> ref,
+			CategoryContainer<T> container, boolean refresh, EventTable<PolicyEvent> table) {
+		boolean error = false;
+		if (ref.isResolved() && !refresh) {
+			return error;
+		}
+		T category = container.get(ref.getRefid());
+		if (category != null) {
+			ref.setCategory(category);
+		} else {
+			PolicyEvent event = new PolicyEvent(PSpec.Policy_Category_Ref_Not_Exist, null, null, ref,
+					ref.getRefid());
+			table.sendEvent(event);
+			error = true;
+		}
+		for (ObjectRef excludeRef : ref.getExcludeRefs()) {
+			T exclude = container.get(excludeRef.getRefid());
+			if (exclude != null) {
+				if (!checkExclusion(ref.getCategory(), exclude)) {
+					ref.getExcludes().add(exclude);
+				} else {
+					//handle error
+					logger.error("Excluded category: {} must be a sub-category of referenced category: {}",
+							exclude.getId(), category.getId());
+					PolicyEvent event = new PolicyEvent(PSpec.Policy_Category_Exclude_Invalid, null, null,
+							ref, excludeRef.getRefid());
+					table.sendEvent(event);
+					error = true;
+				}
+			} else {
+				PolicyEvent event = new PolicyEvent(PSpec.Policy_Category_Ref_Not_Exist, null, null, ref,
+						excludeRef.getRefid());
+				table.sendEvent(event);
+				error = true;
+			}
+		}
+		if (!error) {
+			ref.materialize(container);
+		}
+		return error;
+	}
+
+	public static <T extends Category<T>> boolean checkExclusion(T category, T exclude) {
+		if (category == null) {
+			return true;
+		}
+		if (!category.ancestorOf((T) exclude) || category.equals(exclude)) {
+			return true;
+		}
+		return false;
 	}
 }

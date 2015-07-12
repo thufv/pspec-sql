@@ -1,7 +1,6 @@
 package edu.thu.ss.spec.util;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -26,6 +25,8 @@ import javax.xml.validation.Validator;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+
+import edu.thu.ss.spec.lang.parser.InvalidDocumentException;
 
 /**
  * a utility class for xml related functionalities
@@ -63,39 +64,42 @@ public class XMLUtil {
 		transformer.transform(source, result);
 	}
 
-	public static Document parseDocument(URI uri, String xsdPath) throws Exception {
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		factory.setNamespaceAware(true);
-		DocumentBuilder builder = factory.newDocumentBuilder();
+	public static Document parseDocument(URI uri, String xsdPath) throws InvalidDocumentException {
+		try {
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			factory.setNamespaceAware(true);
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			Document doc = null;
 
-		Document doc = null;
-
-		//load from file
-		File docFile = new File(uri.getPath());
-		if (docFile.exists()) {
-			doc = builder.parse(docFile);
-		} else {
-			InputStream is = XMLUtil.class.getClassLoader().getResourceAsStream(uri.getPath());
-			if (is != null) {
-				//load from class path
-				doc = builder.parse(is);
+			//load from file
+			File docFile = new File(uri.getPath());
+			if (docFile.exists()) {
+				doc = builder.parse(docFile);
 			} else {
-				//load from absolute uri
-				doc = builder.parse(uri.toString());
+				InputStream is = XMLUtil.class.getClassLoader().getResourceAsStream(uri.getPath());
+				if (is != null) {
+					//load from class path
+					doc = builder.parse(is);
+				} else {
+					//load from absolute uri
+					doc = builder.parse(uri.toString());
+				}
 			}
+
+			Validator validator = getValidator(xsdPath);
+			if (validator != null) {
+				validator.validate(new DOMSource(doc));
+			}
+			return doc;
+		} catch (RuntimeException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new InvalidDocumentException(uri, e);
 		}
 
-		Validator validator = getValidator(xsdPath);
-		if (validator != null) {
-			validator.validate(new DOMSource(doc));
-		}
-		return doc;
 	}
 
-	public static Validator getValidator(String xsdPath) throws Exception {
-		if (xsdPath == null) {
-			return null;
-		}
+	public static Validator getValidator(String xsdPath) {
 		Schema schema = schemas.get(xsdPath);
 		if (schema != null) {
 			return schema.newValidator();
@@ -103,15 +107,25 @@ public class XMLUtil {
 		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
 		File schemaFile = new File(xsdPath);
-		if (schemaFile.exists()) {
-			schema = schemaFactory.newSchema(new File(xsdPath));
-		} else {
-			URL url = XMLUtil.class.getClassLoader().getResource(xsdPath);
-			schema = schemaFactory.newSchema(url);
+		try {
+			if (schemaFile.exists()) {
+				schema = schemaFactory.newSchema(new File(xsdPath));
+			} else {
+				URL url = XMLUtil.class.getClassLoader().getResource(xsdPath);
+				if (url != null) {
+					schema = schemaFactory.newSchema(url);
+				}
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
-
+		if (schema == null) {
+			//fail to load schema xsd
+			throw new RuntimeException("Fail to load xsd from path:" + xsdPath);
+		}
 		schemas.put(xsdPath, schema);
 		return schema.newValidator();
+
 	}
 
 	public static URI validateURI(String path) {

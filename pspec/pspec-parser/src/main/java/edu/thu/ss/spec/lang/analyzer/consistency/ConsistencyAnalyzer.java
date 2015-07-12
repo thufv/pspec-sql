@@ -1,8 +1,11 @@
-package edu.thu.ss.spec.lang.analyzer.local;
+package edu.thu.ss.spec.lang.analyzer.consistency;
 
 import edu.thu.ss.spec.lang.analyzer.BasePolicyAnalyzer;
+import edu.thu.ss.spec.lang.analyzer.LocalExpander;
 import edu.thu.ss.spec.lang.analyzer.stat.AnalyzerStat;
 import edu.thu.ss.spec.lang.analyzer.stat.ConsistencyStat;
+import edu.thu.ss.spec.lang.parser.event.EventTable;
+import edu.thu.ss.spec.lang.parser.event.PolicyEvent;
 import edu.thu.ss.spec.lang.pojo.Policy;
 
 /**
@@ -13,14 +16,17 @@ import edu.thu.ss.spec.lang.pojo.Policy;
  */
 public class ConsistencyAnalyzer extends BasePolicyAnalyzer {
 
+	public ConsistencyAnalyzer(EventTable<PolicyEvent> table) {
+		super(table);
+	}
+
 	public enum RuleRelation {
 		disjoint, conflict, consistent, forbid
 	}
 
 	@Override
 	public boolean analyze(Policy policy, AnalyzerStat stat, int n) {
-		ConsistencySearcher searcher = new CachedConsistencySearcher(policy,
-				(ConsistencyStat) stat, n);
+		ConsistencySearcher searcher = new CachedConsistencySearcher(policy, (ConsistencyStat) stat, n);
 		searcher.search();
 		return false;
 	}

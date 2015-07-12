@@ -16,7 +16,7 @@ import com.microsoft.z3.Status;
 import com.microsoft.z3.Symbol;
 import com.microsoft.z3.Z3Exception;
 
-import edu.thu.ss.spec.lang.analyzer.BaseRedundancyAnalyzer;
+import edu.thu.ss.spec.lang.analyzer.redundancy.BaseRedundancyAnalyzer;
 import edu.thu.ss.spec.lang.pojo.Desensitization;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;

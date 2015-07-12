@@ -2,11 +2,9 @@ package edu.thu.ss.spec.lang.pojo;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -36,55 +34,12 @@ public abstract class CategoryContainer<T extends Category<T>> extends Described
 
 	protected boolean leaf = true;
 
-	@Override
-	public void setId(String id) {
-		super.setId(id);
-		for (T category : categories.values()) {
-			category.containerId = id;
-		}
-	}
-
 	public void add(T t) {
 		categories.put(t.id, t);
 		if (t.parentId.isEmpty()) {
 			root.add(t);
 		}
 		t.setContainer(this);
-	}
-
-	public List<T> getRoot() {
-		return root;
-	}
-
-	public List<T> materializeRoots() {
-		List<T> list = new ArrayList<>();
-		materializeRoots(list);
-		return list;
-	}
-
-	private void materializeRoots(List<T> list) {
-		if (baseContainer != null) {
-			baseContainer.materializeRoots(list);
-		}
-		list.addAll(root);
-	}
-
-	public void setParent(T category, T newParent) {
-		T oldParent = category.getParent();
-		if (oldParent == null) {
-			root.remove(category);
-		} else {
-			oldParent.removeRelation(category);
-
-		}
-
-		category.setParent(newParent);
-		if (newParent != null) {
-			newParent.buildRelation(category);
-		} else {
-			category.setParentId("");
-			root.add(category);
-		}
 	}
 
 	public void cascadeRemove(T t) {
@@ -96,18 +51,12 @@ public abstract class CategoryContainer<T extends Category<T>> extends Described
 		}
 	}
 
-	public void remove(T t) {
-		categories.remove(t.id);
-		if (t.parentId.isEmpty()) {
-			root.remove(t);
-		}
-		t.containerId = "";
+	public boolean contains(String id) {
+		return get(id) != null;
 	}
 
-	public void update(String newId, T category) {
-		categories.remove(category.getId());
-		category.setId(newId);
-		categories.put(newId, category);
+	public boolean directContains(String id) {
+		return categories.containsKey(id);
 	}
 
 	/**
@@ -137,33 +86,52 @@ public abstract class CategoryContainer<T extends Category<T>> extends Described
 		return categories.values();
 	}
 
-	public void setBaseContainer(CategoryContainer<T> baseContainer) {
-		this.baseContainer = baseContainer;
-		baseContainer.leaf = false;
+	public List<T> getChildren(T t) {
+		if (t.getChildren() == null) {
+			return null;
+		}
+		List<T> result = new ArrayList<>(t.getChildren().size());
+		for (T child : t.getChildren()) {
+			if (this.contains(child.id)) {
+				result.add(child);
+			}
+		}
+		return result;
 	}
 
-	public boolean isResolved() {
-		return resolved;
+	public Map<String, T> getIndex() {
+		return categories;
+	}
+
+	public List<T> getRoot() {
+		return root;
 	}
 
 	public boolean isLeaf() {
 		return leaf;
 	}
 
-	public void setResolved(boolean resolved) {
-		this.resolved = resolved;
+	public boolean isResolved() {
+		return resolved;
 	}
 
-	public boolean contains(String id) {
-		return get(id) != null;
+	public List<T> materializeRoots() {
+		List<T> list = new ArrayList<>();
+		materializeRoots(list);
+		return list;
 	}
 
-	public boolean directContains(String id) {
-		return categories.containsKey(id);
+	private void materializeRoots(List<T> list) {
+		if (baseContainer != null) {
+			baseContainer.materializeRoots(list);
+		}
+		list.addAll(root);
 	}
 
-	public Map<String, T> getIndex() {
-		return categories;
+	@Override
+	public Element outputType(Document document, String name) {
+		Element element = super.outputType(document, name);
+		return element;
 	}
 
 	@Override
@@ -171,10 +139,47 @@ public abstract class CategoryContainer<T extends Category<T>> extends Described
 		super.parse(categoryNode);
 	}
 
+	public void remove(T t) {
+		categories.remove(t.id);
+		if (t.parentId.isEmpty()) {
+			root.remove(t);
+		}
+		t.containerId = "";
+	}
+
+	public void setBaseContainer(CategoryContainer<T> baseContainer) {
+		this.baseContainer = baseContainer;
+		baseContainer.leaf = false;
+	}
+
 	@Override
-	public Element outputType(Document document, String name) {
-		Element element = super.outputType(document, name);
-		return element;
+	public void setId(String id) {
+		super.setId(id);
+		for (T category : categories.values()) {
+			category.containerId = id;
+		}
+	}
+
+	public void setParent(T category, T newParent) {
+		T oldParent = category.getParent();
+		if (oldParent == null) {
+			root.remove(category);
+		} else {
+			oldParent.removeRelation(category);
+
+		}
+
+		category.setParent(newParent);
+		if (newParent != null) {
+			newParent.buildRelation(category);
+		} else {
+			category.setParentId("");
+			root.add(category);
+		}
+	}
+
+	public void setResolved(boolean resolved) {
+		this.resolved = resolved;
 	}
 
 	@Override
@@ -201,16 +206,9 @@ public abstract class CategoryContainer<T extends Category<T>> extends Described
 
 	}
 
-	public List<T> getChildren(T t) {
-		if (t.getChildren() == null) {
-			return null;
-		}
-		List<T> result = new ArrayList<>(t.getChildren().size());
-		for (T child : t.getChildren()) {
-			if (this.contains(child.id)) {
-				result.add(child);
-			}
-		}
-		return result;
+	public void update(String newId, T category) {
+		categories.remove(category.getId());
+		category.setId(newId);
+		categories.put(newId, category);
 	}
 }

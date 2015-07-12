@@ -1,4 +1,4 @@
-package edu.thu.ss.spec.lang.analyzer.global;
+package edu.thu.ss.spec.lang.analyzer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,7 +10,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import edu.thu.ss.spec.lang.analyzer.BasePolicyAnalyzer;
+import edu.thu.ss.spec.lang.parser.event.EventTable;
+import edu.thu.ss.spec.lang.parser.event.PolicyEvent;
 import edu.thu.ss.spec.lang.pojo.Action;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DataRef;
@@ -26,6 +27,10 @@ import edu.thu.ss.spec.lang.pojo.Rule;
  */
 public class GlobalExpander extends BasePolicyAnalyzer {
 	private Map<Action, Set<DataCategory>> actionMap = new HashMap<>();
+
+	public GlobalExpander(EventTable<PolicyEvent> table) {
+		super(table);
+	}
 
 	@Override
 	public boolean analyze(Policy policy) {

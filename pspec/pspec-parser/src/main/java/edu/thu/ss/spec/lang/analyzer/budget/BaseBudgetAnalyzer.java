@@ -1,5 +1,6 @@
-package edu.thu.ss.spec.lang.analyzer;
+package edu.thu.ss.spec.lang.analyzer.budget;
 
+import edu.thu.ss.spec.lang.analyzer.BasePolicyAnalyzer;
 import edu.thu.ss.spec.lang.pojo.Category;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.PrivacyBudget;
@@ -7,11 +8,10 @@ import edu.thu.ss.spec.lang.pojo.PrivacyParams;
 
 public abstract class BaseBudgetAnalyzer<T extends PrivacyBudget<?>> extends BasePolicyAnalyzer {
 
-	protected boolean error = false;
-
 	protected Class<T> target;
 
 	protected BaseBudgetAnalyzer(Class<T> target) {
+		super(null);
 		this.target = target;
 	}
 
@@ -21,26 +21,22 @@ public abstract class BaseBudgetAnalyzer<T extends PrivacyBudget<?>> extends Bas
 	}
 
 	@Override
-	public boolean stopOnError() {
-		return true;
-	}
-
-	@Override
 	public boolean analyze(Policy policy) {
+		boolean error = false;
 		PrivacyParams params = policy.getPrivacyParams();
-		if(params == null){
+		if (params == null) {
 			return false;
 		}
 		PrivacyBudget<?> budget = params.getPrivacyBudget();
 
 		if (target.isInstance(budget)) {
-			analyze(target.cast(budget), policy);
+			error = error || analyze(target.cast(budget), policy);
 		}
 
 		return error;
 	}
 
-	protected abstract void analyze(T budget, Policy policy);
+	protected abstract boolean analyze(T budget, Policy policy);
 
 	protected int distance(Category<? extends Category<?>> child,
 			Category<? extends Category<?>> parent) {
@@ -50,7 +46,6 @@ public abstract class BaseBudgetAnalyzer<T extends PrivacyBudget<?>> extends Bas
 			distance++;
 			current = current.getParent();
 		}
-
 		return distance;
 
 	}

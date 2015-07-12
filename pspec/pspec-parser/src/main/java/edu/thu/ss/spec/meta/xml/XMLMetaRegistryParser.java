@@ -14,13 +14,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import edu.thu.ss.spec.global.MetaManager;
-import edu.thu.ss.spec.global.PolicyManager;
-import edu.thu.ss.spec.lang.parser.ParsingException;
+import edu.thu.ss.spec.lang.parser.ParseException;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
+import edu.thu.ss.spec.manager.MetaManager;
+import edu.thu.ss.spec.manager.PolicyManager;
 import edu.thu.ss.spec.meta.ArrayType;
 import edu.thu.ss.spec.meta.BaseType;
 import edu.thu.ss.spec.meta.Column;
@@ -44,14 +44,14 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 	private Policy policy = null;
 	private Map<String, DesensitizeOperation> udfs = null;
 
-	public MetaRegistry parse(String path) throws ParsingException {
+	public MetaRegistry parse(String path) throws ParseException {
 		init();
 		Document policyDoc = null;
 		try {
 			// load document
 			policyDoc = XMLUtil.parseDocument(XMLUtil.toUri(path), Meta_Schema_Location);
 		} catch (Exception e) {
-			throw new ParsingException("Fail to load meta file at :" + path, e);
+			throw new ParseException("Fail to load meta file at :" + path, e);
 		}
 		try {
 			// parse document
@@ -60,7 +60,7 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 			String policyPath = XMLUtil.getAttrValue(rootNode, Attr_Policy);
 			policy = PolicyManager.getPolicy(XMLUtil.toUri(policyPath));
 			if (policy == null) {
-				throw new ParsingException("Policy: " + policyPath + " has not been loaded yet.");
+				throw new ParseException("Policy: " + policyPath + " has not been loaded yet.");
 			}
 			//userList
 			Node userListNode = policyDoc.getElementsByTagName(Ele_UserList).item(0);
@@ -76,10 +76,10 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 				registry.addDatabase(database);
 			}
 		} catch (Exception e) {
-			throw new ParsingException("Fail to parse meta file at " + path, e);
+			throw new ParseException("Fail to parse meta file at " + path, e);
 		}
 		if (error) {
-			throw new ParsingException("Error occured when parsing meta file at " + path
+			throw new ParseException("Error occured when parsing meta file at " + path
 					+ ", see error messages above.");
 		}
 

@@ -35,11 +35,9 @@ import edu.thu.ss.spec.lang.pojo.UserCategory;
 import edu.thu.ss.spec.lang.pojo.UserContainer;
 import edu.thu.ss.spec.util.PSpecUtil;
 
-public class UserContainerView extends Composite {
+public class UserContainerView extends BaseView<VocabularyModel> {
 
 	private TreeViewer userViewer;
-	private Display display;
-	private Shell shell;
 
 	private Text containerId;
 	private Text shortDescription;
@@ -50,7 +48,6 @@ public class UserContainerView extends Composite {
 	private Text userShortDescription;
 	private Text userLongDescription;
 
-	private VocabularyModel model;
 	private UserContainer userContainer;
 	private UserCategory selectedUser;
 	private TreeItem selectedItem;
@@ -62,10 +59,7 @@ public class UserContainerView extends Composite {
 	 * @param style
 	 */
 	public UserContainerView(Shell shell, Composite parent, int style, VocabularyModel model) {
-		super(parent, SWT.NONE);
-		this.shell = shell;
-		this.display = Display.getDefault();
-		this.model = model;
+		super(shell, parent, style, model);
 		this.userContainer = model.getVocabulary().getUserContainer();
 
 		setBackground(EditorUtil.getDefaultBackground());
@@ -181,6 +175,7 @@ public class UserContainerView extends Composite {
 					Menu menu = createTreePopup(userViewer.getTree());
 					menu.setLocation(p);
 					menu.setVisible(true);
+					Display display = Display.getCurrent();
 					while (!menu.isDisposed() && menu.isVisible()) {
 						if (!display.readAndDispatch())
 							display.sleep();
@@ -242,7 +237,7 @@ public class UserContainerView extends Composite {
 				//check cycle reference
 				UserCategory oldParent = selectedUser.getParent();
 				UserCategory newParent = userContainer.get(text);
-				if (PSpecUtil.checkCycleRefernece(selectedUser, newParent)) {
+				if (PSpecUtil.checkCategoryCycleReference(selectedUser, newParent, null)) {
 					EditorUtil.showMessage(shell, getMessage(User_Category_Parent_Cycle_Message),
 							userParentId);
 					EditorUtil.setSelectedItem(userParentId, selectedUser.getParentId());

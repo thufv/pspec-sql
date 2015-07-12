@@ -1,4 +1,4 @@
-package edu.thu.ss.spec.global;
+package edu.thu.ss.spec.manager;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ import edu.thu.ss.spec.util.XMLUtil;
  * @author luochen
  * 
  */
-public class CategoryManager {
+public class VocabularyManager {
 	//private static Logger logger = LoggerFactory.getLogger(CategoryManager.class);
 
 	/**
@@ -56,11 +56,11 @@ public class CategoryManager {
 		add(vocab.getDataContainer());
 	}
 
-	public static boolean containsVocab(URI path) throws Exception {
+	public static boolean containsVocab(URI path) {
 		return parsedVocab.containsKey(path);
 	}
 
-	public static Vocabulary getVocab(URI path) throws Exception {
+	public static Vocabulary getVocab(URI path) {
 		return parsedVocab.get(path);
 	}
 

@@ -1,6 +1,8 @@
-package edu.thu.ss.spec.lang.analyzer.local;
+package edu.thu.ss.spec.lang.analyzer.redundancy;
 
-import edu.thu.ss.spec.lang.analyzer.BaseRedundancyAnalyzer;
+import edu.thu.ss.spec.lang.analyzer.LocalExpander;
+import edu.thu.ss.spec.lang.parser.event.EventTable;
+import edu.thu.ss.spec.lang.parser.event.PolicyEvent;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.UserRef;
 import edu.thu.ss.spec.util.InclusionUtil;
@@ -13,7 +15,8 @@ import edu.thu.ss.spec.util.InclusionUtil;
  */
 public class LocalRedundancyAnalyzer extends BaseRedundancyAnalyzer {
 
-	public LocalRedundancyAnalyzer() {
+	public LocalRedundancyAnalyzer(EventTable<PolicyEvent> table) {
+		super(table);
 		this.instance = InclusionUtil.instance;
 	}
 

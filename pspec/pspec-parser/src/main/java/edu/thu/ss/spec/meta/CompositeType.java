@@ -1,6 +1,6 @@
 package edu.thu.ss.spec.meta;
 
-import edu.thu.ss.spec.global.MetaManager;
+import edu.thu.ss.spec.manager.MetaManager;
 
 public class CompositeType extends ComplexType<String> {
 	@Override

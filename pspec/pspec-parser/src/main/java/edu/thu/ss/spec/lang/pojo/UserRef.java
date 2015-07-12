@@ -15,7 +15,7 @@ import edu.thu.ss.spec.lang.parser.ParserConstant;
 public class UserRef extends CategoryRef<UserCategory> {
 
 	public void setUser(UserCategory user) {
-		this.category = user;
+		this.setCategory(user);
 	}
 
 	public UserCategory getUser() {

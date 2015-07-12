@@ -1,4 +1,4 @@
-package edu.thu.ss.spec.lang.analyzer.local;
+package edu.thu.ss.spec.lang.analyzer.consistency;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,8 +12,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.thu.ss.spec.lang.analyzer.LevelwiseSearcher;
-import edu.thu.ss.spec.lang.analyzer.local.ConsistencyAnalyzer.RuleRelation;
+import edu.thu.ss.spec.lang.analyzer.consistency.ConsistencyAnalyzer.RuleRelation;
 import edu.thu.ss.spec.lang.pojo.Action;
 import edu.thu.ss.spec.lang.pojo.DataAssociation;
 import edu.thu.ss.spec.lang.pojo.DataCategory;

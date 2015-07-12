@@ -14,5 +14,4 @@ public class VocabularyModel extends BaseModel {
 		return vocabulary;
 	}
 
-
 }

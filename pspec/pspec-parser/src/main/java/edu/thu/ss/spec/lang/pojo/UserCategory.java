@@ -30,6 +30,4 @@ public class UserCategory extends Category<UserCategory> {
 		return super.outputType(document, ParserConstant.Ele_Vocabulary_User_Category);
 	}
 
-
-
 }

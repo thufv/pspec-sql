@@ -2,14 +2,11 @@ package edu.thu.ss.editor.view;
 
 import static edu.thu.ss.editor.util.MessagesUtil.*;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
@@ -17,12 +14,10 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.ExpandBar;
 import org.eclipse.swt.widgets.ExpandItem;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
@@ -31,19 +26,14 @@ import org.eclipse.wb.swt.SWTResourceManager;
 import edu.thu.ss.editor.model.PolicyModel;
 import edu.thu.ss.editor.util.EditorUtil;
 import edu.thu.ss.editor.util.MessagesUtil;
-import edu.thu.ss.spec.lang.pojo.Action;
 import edu.thu.ss.spec.lang.pojo.DataRef;
 import edu.thu.ss.spec.lang.pojo.Desensitization;
-import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
-import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Restriction;
 import edu.thu.ss.spec.lang.pojo.Rule;
 import edu.thu.ss.spec.lang.pojo.UserRef;
 import edu.thu.ss.spec.util.PSpecUtil;
 
-public class RuleView extends Composite {
-
-	private Shell shell;
+public class RuleView extends BaseView<PolicyModel> {
 
 	private ToolItem add;
 	private ToolItem delete;
@@ -52,8 +42,6 @@ public class RuleView extends Composite {
 
 	private ExpandItem selectedItem;
 
-	private PolicyModel model;
-
 	/**
 	 * Create the composite
 	 * 
@@ -61,9 +49,7 @@ public class RuleView extends Composite {
 	 * @param style
 	 */
 	public RuleView(Shell shell, Composite parent, int style, PolicyModel model) {
-		super(parent, style);
-		this.shell = shell;
-		this.model = model;
+		super(shell, parent, style, model);
 		this.setBackground(EditorUtil.getDefaultBackground());
 
 		this.setLayout(new FillLayout());
@@ -182,7 +168,6 @@ public class RuleView extends Composite {
 				int ret = new RuleDialog(shell, rule, model).open();
 				if (ret == SWT.OK) {
 					updateRuleItem(item);
-
 				}
 			}
 		});

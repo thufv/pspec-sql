@@ -1,4 +1,4 @@
-package edu.thu.ss.spec.lang.analyzer;
+package edu.thu.ss.spec.lang.analyzer.budget;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,35 +14,30 @@ import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.PrivacyBudget;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
 
-public class GlobalBudgetAnalyzer extends BaseBudgetAnalyzer<GlobalBudget> {
+public class GlobalBudgetAllocator extends BaseBudgetAnalyzer<GlobalBudget> {
 
-	private static Logger logger = LoggerFactory.getLogger(GlobalBudgetAnalyzer.class);
+	private static Logger logger = LoggerFactory.getLogger(GlobalBudgetAllocator.class);
 
 	private Map<UserCategory, BudgetAllocation> allocations = new HashMap<>();
 
-	public GlobalBudgetAnalyzer() {
+	public GlobalBudgetAllocator() {
 		super(GlobalBudget.class);
 	}
 
 	@Override
-	protected void analyze(GlobalBudget budget, Policy policy) {
+	protected boolean analyze(GlobalBudget budget, Policy policy) {
+		boolean error = false;
 		for (PrivacyBudget.BudgetAllocation alloc : budget.getAllocations()) {
 			BudgetAllocation galloc = (BudgetAllocation) alloc;
-			allocateBudget(galloc);
+			error = error || allocateBudget(galloc);
 		}
 
 		budget.materialize(transform(allocations));
+		return error;
 	}
 
-	private Map<UserCategory, Double> transform(Map<UserCategory, BudgetAllocation> allocations) {
-		Map<UserCategory, Double> materialized = new HashMap<>();
-		for (Entry<UserCategory, BudgetAllocation> e : allocations.entrySet()) {
-			materialized.put(e.getKey(), e.getValue().budget);
-		}
-		return materialized;
-	}
-
-	private void allocateBudget(BudgetAllocation alloc) {
+	private boolean allocateBudget(BudgetAllocation alloc) {
+		boolean error = false;
 		Set<UserCategory> users = alloc.userRef.getMaterialized();
 		for (UserCategory user : users) {
 			BudgetAllocation allocated = allocations.get(user);
@@ -51,8 +46,12 @@ public class GlobalBudgetAnalyzer extends BaseBudgetAnalyzer<GlobalBudget> {
 			} else {
 				BudgetAllocation resolved = resolveConflict(user, alloc, allocated);
 				allocations.put(user, resolved);
+				if (resolved == null) {
+					error = true;
+				}
 			}
 		}
+		return error;
 	}
 
 	private BudgetAllocation resolveConflict(UserCategory user, BudgetAllocation alloc1,
@@ -65,10 +64,17 @@ public class GlobalBudgetAnalyzer extends BaseBudgetAnalyzer<GlobalBudget> {
 		} else if (ud1 > ud2) {
 			return alloc2;
 		} else {
-			error = true;
 			logger.error("cannot specify multiple privacy budgets for user:{}.", user.getId());
 			return null;
 		}
+	}
+
+	private Map<UserCategory, Double> transform(Map<UserCategory, BudgetAllocation> allocations) {
+		Map<UserCategory, Double> materialized = new HashMap<>();
+		for (Entry<UserCategory, BudgetAllocation> e : allocations.entrySet()) {
+			materialized.put(e.getKey(), e.getValue().budget);
+		}
+		return materialized;
 	}
 
 }

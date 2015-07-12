@@ -10,7 +10,7 @@ import edu.thu.ss.spec.lang.pojo.Policy;
  * @author luochen
  * 
  */
-public interface PolicyAnalyzer {
+public interface IPolicyAnalyzer {
 
 	/**
 	 * @param policy

@@ -1,11 +1,17 @@
 package edu.thu.ss.spec.lang.analyzer.rule;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.thu.ss.spec.lang.parser.event.EventTable;
+import edu.thu.ss.spec.lang.parser.event.PolicyEvent;
 import edu.thu.ss.spec.lang.pojo.DataContainer;
 import edu.thu.ss.spec.lang.pojo.DataRef;
 import edu.thu.ss.spec.lang.pojo.Restriction;
@@ -20,21 +26,64 @@ import edu.thu.ss.spec.util.InclusionUtil;
  *
  */
 public class RuleSimplifier extends BaseRuleAnalyzer {
+
+	private static class SimplificationLog {
+		List<UserRef> redundantUsers = new ArrayList<>();
+
+		List<DataRef> redundantDatas = new ArrayList<>();
+
+		List<Restriction> redundantRestrictions = new ArrayList<>();
+	}
+
 	private static Logger logger = LoggerFactory.getLogger(RuleSimplifier.class);
 
+	private boolean remove;
+
+	private Map<Rule, SimplificationLog> logs = new HashMap<>();
+
+	public RuleSimplifier(EventTable<PolicyEvent> table, boolean remove) {
+		super(table);
+		this.remove = remove;
+	}
+
 	@Override
-	protected boolean analyzeRule(Rule rule, UserContainer users, DataContainer datas) {
-
-		simplifyUsers(rule.getUserRefs(), rule.getId());
-		simplifyDatas(rule.getDataRefs(), rule.getId());
-
-		//simplifyDataAssociations(rule.getAssociations());
-
-		simplifyRestrictions(rule.getRestrictions());
+	public boolean analyzeRule(Rule rule, UserContainer users, DataContainer datas) {
+		SimplificationLog log = new SimplificationLog();
+		simplifyUsers(rule.getUserRefs(), rule.getId(), log);
+		simplifyDatas(rule.getDataRefs(), rule.getId(), log);
+		simplifyRestrictions(rule.getRestrictions(), rule.getId(), log);
+		if (remove) {
+			commit(rule, log);
+		} else {
+			logs.put(rule, log);
+		}
 		return false;
 	}
 
-	private void simplifyUsers(List<UserRef> users, String ruleId) {
+	public SimplificationLog getSimplificationL(Rule rule) {
+		return logs.get(rule);
+	}
+
+	public void commit() {
+		for (Entry<Rule, SimplificationLog> e : logs.entrySet()) {
+			commit(e.getKey(), e.getValue());
+		}
+	}
+
+	public void commit(Rule rule) {
+		SimplificationLog log = logs.remove(rule);
+		if (log != null) {
+			commit(rule, log);
+		}
+	}
+
+	private void commit(Rule rule, SimplificationLog log) {
+		rule.getUserRefs().removeAll(log.redundantUsers);
+		rule.getDataRefs().removeAll(log.redundantDatas);
+		rule.getRestrictions().removeAll(log.redundantRestrictions);
+	}
+
+	private void simplifyUsers(List<UserRef> users, String ruleId, SimplificationLog log) {
 		Iterator<UserRef> it = users.iterator();
 		while (it.hasNext()) {
 			UserRef user1 = it.next();
@@ -46,8 +95,9 @@ public class RuleSimplifier extends BaseRuleAnalyzer {
 				}
 			}
 			if (removable) {
-				it.remove();
-				logger.warn("User category: {} is removed from rule: {} since it is redundant.", user1.getRefid(), ruleId);
+				//TODO
+				logger.warn("User category: {} is redundant in rule: {}", user1.getRefid(), ruleId);
+				log.redundantUsers.add(user1);
 			}
 		}
 	}
@@ -57,7 +107,7 @@ public class RuleSimplifier extends BaseRuleAnalyzer {
 	 * @param datas
 	 * @param ruleId
 	 */
-	private void simplifyDatas(List<DataRef> datas, String ruleId) {
+	private void simplifyDatas(List<DataRef> datas, String ruleId, SimplificationLog log) {
 		Iterator<DataRef> it = datas.iterator();
 		while (it.hasNext()) {
 			DataRef data1 = it.next();
@@ -72,13 +122,15 @@ public class RuleSimplifier extends BaseRuleAnalyzer {
 				}
 			}
 			if (removable) {
-				it.remove();
-				logger.warn("Data category: {} is removed from rule: {} since it is redundant.", data1.getRefid(), ruleId);
+				//TODO
+				log.redundantDatas.add(data1);
+				logger.warn("Data category: {} is redundant in rule: {}", data1.getRefid(), ruleId);
 			}
 		}
 	}
 
-	private void simplifyRestrictions(List<Restriction> restrictions) {
+	private void simplifyRestrictions(List<Restriction> restrictions, String ruleId,
+			SimplificationLog log) {
 		if (restrictions.size() <= 1) {
 			return;
 		}
@@ -94,12 +146,12 @@ public class RuleSimplifier extends BaseRuleAnalyzer {
 				}
 			}
 			if (removable) {
-				it.remove();
-				logger.warn("The #{} restriction is removed from rule: {} since it is redundant.", i, ruleId);
+				//TODO
+				log.redundantRestrictions.add(res1);
+				logger.warn("The #{} restriction is redundant in rule: {}", i, ruleId);
 			}
 			i++;
 		}
-
 	}
 
 }

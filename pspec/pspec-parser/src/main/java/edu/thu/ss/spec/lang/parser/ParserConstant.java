@@ -68,4 +68,5 @@ public interface ParserConstant {
 
 	public static final String XMLNs = "http://www.example.org/privacy";
 
+
 }

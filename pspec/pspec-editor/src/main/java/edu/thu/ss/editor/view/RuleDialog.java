@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Text;
 import edu.thu.ss.editor.model.PolicyModel;
 import edu.thu.ss.editor.model.RuleModel;
 import edu.thu.ss.editor.util.EditorUtil;
-import edu.thu.ss.spec.lang.analyzer.PolicyResolver;
+import edu.thu.ss.spec.lang.analyzer.rule.RuleResolver;
 import edu.thu.ss.spec.lang.pojo.Action;
 import edu.thu.ss.spec.lang.pojo.DataAssociation;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
@@ -164,6 +164,7 @@ public class RuleDialog extends Dialog {
 
 		ok.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
+				//TODO
 				//check user reference
 				if (ruleId.getText().trim().isEmpty()) {
 					EditorUtil.showMessageBox(dialog, "", getMessage(Rule_ID_Non_Empty_Message));
@@ -186,9 +187,9 @@ public class RuleDialog extends Dialog {
 				}
 				if (dataAssociationType.getSelection()) {
 					//check data association overlapping
-					PolicyResolver resolver = new PolicyResolver();
 					for (DataRef ref : ruleModel.getDataRefs()) {
-						resolver.resolveDataRef(ref, policyModel.getPolicy().getDataContainer(), null);
+						PSpecUtil.resolveCategoryRef(ref, policyModel.getPolicy().getDataContainer(), true,
+								null);
 					}
 					for (int i = 0; i < ruleModel.getDataRefs().size(); i++) {
 						for (int j = i + 1; j < ruleModel.getDataRefs().size(); j++) {
@@ -202,21 +203,22 @@ public class RuleDialog extends Dialog {
 					}
 				}
 				//check restrictions
-				for (int i = 0; i < ruleModel.getRestrictions().size(); i++) {
-					Restriction res = ruleModel.getRestrictions().get(i);
-					boolean effective = false;
-					for (Desensitization de : res.getDesensitizations()) {
-						if (de.effective()) {
-							effective = true;
+				if (restrictType.getSelection()) {
+					for (int i = 0; i < ruleModel.getRestrictions().size(); i++) {
+						Restriction res = ruleModel.getRestrictions().get(i);
+						boolean effective = false;
+						for (Desensitization de : res.getDesensitizations()) {
+							if (de.effective()) {
+								effective = true;
+							}
+						}
+						if (!effective) {
+							EditorUtil.showMessageBox(dialog, "",
+									getMessage(Rule_Restriction_Effective_Message, String.valueOf(i)));
+							return;
 						}
 					}
-					if (!effective) {
-						EditorUtil.showMessageBox(dialog, "",
-								getMessage(Rule_Restriction_Effective_Message, String.valueOf(i)));
-						return;
-					}
 				}
-
 				Rule rule = ruleModel.getRule();
 
 				//set
@@ -268,7 +270,7 @@ public class RuleDialog extends Dialog {
 		Button addUser = EditorUtil.newButton(userComposite, getMessage(Add));
 		final Button deleteUser = EditorUtil.newButton(userComposite, getMessage(Delete));
 		deleteUser.setEnabled(false);
-		
+
 		Composite tableComposite = newTableComposite(userComposite);
 		TableColumnLayout tableLayout = new TableColumnLayout();
 		tableComposite.setLayout(tableLayout);
@@ -1043,37 +1045,17 @@ public class RuleDialog extends Dialog {
 	}
 
 	private void hideRestrictions() {
-		exclude(addRestriction);
-		exclude(deleteRestriction);
-		exclude(restrictComposite);
+		EditorUtil.exclude(addRestriction);
+		EditorUtil.exclude(deleteRestriction);
+		EditorUtil.exclude(restrictComposite);
 		adjustEffectLayout();
 	}
 
 	private void showRestrictions() {
-		include(addRestriction);
-		include(deleteRestriction);
-		include(restrictComposite);
+		EditorUtil.include(addRestriction);
+		EditorUtil.include(deleteRestriction);
+		EditorUtil.include(restrictComposite);
 		adjustEffectLayout();
-	}
-
-	private void exclude(Control composite) {
-		composite.setVisible(false);
-		GridData data = (GridData) composite.getLayoutData();
-		if (data == null) {
-			data = new GridData();
-			composite.setLayoutData(data);
-		}
-		data.exclude = true;
-	}
-
-	private void include(Control composite) {
-		composite.setVisible(true);
-		GridData data = (GridData) composite.getLayoutData();
-		if (data == null) {
-			data = new GridData();
-			composite.setLayoutData(data);
-		}
-		data.exclude = false;
 	}
 
 	private void resize(Composite composite) {

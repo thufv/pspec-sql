@@ -38,7 +38,11 @@ public class Rule extends DescribedObject {
 	}
 
 	public List<DataRef> getDataRefs() {
-		return dataRefs;
+		if (isSingle()) {
+			return dataRefs;
+		} else {
+			return association.dataRefs;
+		}
 	}
 
 	public boolean isSingle() {
@@ -48,7 +52,7 @@ public class Rule extends DescribedObject {
 	public void setRestrictions(List<Restriction> restrictions) {
 		this.restrictions = restrictions;
 	}
-	
+
 	public List<Restriction> getRestrictions() {
 		return restrictions;
 	}

@@ -38,11 +38,9 @@ import edu.thu.ss.spec.lang.pojo.DataContainer;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.util.PSpecUtil;
 
-public class DataContainerView extends Composite {
+public class DataContainerView extends BaseView<VocabularyModel> {
 
 	private TreeViewer dataViewer;
-	private Display display;
-	private Shell shell;
 
 	private Text containerId;
 	private Text shortDescription;
@@ -58,7 +56,6 @@ public class DataContainerView extends Composite {
 	private Button deleteOperation;
 
 	private DataContainer dataContainer;
-	private VocabularyModel model;
 	private DataCategory selectedData;
 	private TreeItem selectedItem;
 
@@ -71,10 +68,7 @@ public class DataContainerView extends Composite {
 	 * @param style
 	 */
 	public DataContainerView(Shell shell, Composite parent, int style, VocabularyModel model) {
-		super(parent, SWT.NONE);
-		this.shell = shell;
-		this.display = Display.getDefault();
-		this.model = model;
+		super(shell, parent, style, model);
 		this.dataContainer = model.getVocabulary().getDataContainer();
 
 		setBackground(EditorUtil.getDefaultBackground());
@@ -121,7 +115,7 @@ public class DataContainerView extends Composite {
 					return;
 				}
 				dataContainer.setId(containerId.getText().trim());
-				
+
 			}
 		});
 
@@ -132,7 +126,7 @@ public class DataContainerView extends Composite {
 			@Override
 			public void focusLost(FocusEvent e) {
 				dataContainer.setShortDescription(shortDescription.getText().trim());
-				
+
 			}
 		});
 
@@ -144,7 +138,7 @@ public class DataContainerView extends Composite {
 			@Override
 			public void focusLost(FocusEvent e) {
 				dataContainer.setLongDescription(longDescription.getText().trim());
-				
+
 			}
 		});
 	}
@@ -197,6 +191,7 @@ public class DataContainerView extends Composite {
 					Menu menu = createTreePopup(dataViewer.getTree());
 					menu.setLocation(p);
 					menu.setVisible(true);
+					Display display = Display.getCurrent();
 					while (!menu.isDisposed() && menu.isVisible()) {
 						if (!display.readAndDispatch())
 							display.sleep();
@@ -232,7 +227,7 @@ public class DataContainerView extends Composite {
 				}
 				EditorUtil.updateItem(dataParentId, selectedData.getId(), text);
 				dataContainer.update(text, selectedData);
-				
+
 				dataViewer.refresh(selectedData);
 			}
 		});
@@ -255,7 +250,7 @@ public class DataContainerView extends Composite {
 				//check cycle reference
 				DataCategory oldParent = selectedData.getParent();
 				DataCategory newParent = dataContainer.get(text);
-				if (PSpecUtil.checkCycleRefernece(selectedData, newParent)) {
+				if (PSpecUtil.checkCategoryCycleReference(selectedData, newParent, null)) {
 					EditorUtil.showMessage(shell, getMessage(Data_Category_Parent_Cycle_Message),
 							dataParentId);
 					EditorUtil.setSelectedItem(dataParentId, selectedData.getParentId());
@@ -264,7 +259,7 @@ public class DataContainerView extends Composite {
 
 				//set new parent
 				dataContainer.setParent(selectedData, newParent);
-				
+
 				dataParentId.setItems(EditorUtil.getCategoryItems(dataContainer));
 				EditorUtil.setSelectedItem(dataParentId, selectedData.getParentId());
 				refreshViewer(oldParent);
@@ -298,7 +293,7 @@ public class DataContainerView extends Composite {
 
 				dataOperation.setText("");
 				dataOperations.add(op);
-				
+
 				selectedData.addOperation(DesensitizeOperation.get(op));
 			}
 		});
@@ -316,7 +311,7 @@ public class DataContainerView extends Composite {
 					selectedData.removeOperation(DesensitizeOperation.get(op));
 				}
 				dataOperations.remove(dataOperations.getSelectionIndices());
-				
+
 			}
 		});
 
@@ -336,7 +331,7 @@ public class DataContainerView extends Composite {
 			@Override
 			public void focusLost(FocusEvent e) {
 				selectedData.setShortDescription(dataShortDescription.getText());
-				
+
 			}
 		});
 
@@ -347,7 +342,7 @@ public class DataContainerView extends Composite {
 			@Override
 			public void focusLost(FocusEvent e) {
 				selectedData.setLongDescription(dataLongDescription.getText());
-				
+
 			}
 		});
 
@@ -380,7 +375,7 @@ public class DataContainerView extends Composite {
 						parent.buildRelation(data);
 					}
 					dataContainer.add(data);
-					
+
 					if (parentItem != null) {
 						dataViewer.refresh(dataContainer.get(parentItem.getText()));
 					} else {
@@ -403,7 +398,7 @@ public class DataContainerView extends Composite {
 					DataCategory parent = dataContainer.get(selected.getText());
 					parent.buildRelation(data);
 					dataContainer.add(data);
-					
+
 					dataViewer.refresh(parent);
 				}
 			}
@@ -436,7 +431,7 @@ public class DataContainerView extends Composite {
 						dataViewer.refresh();
 					}
 					disableDataInfo(true);
-					
+
 				} else if (ret == SWT.NO) {
 					dataContainer.remove(data);
 					if (parent != null) {
@@ -452,7 +447,7 @@ public class DataContainerView extends Composite {
 						dataViewer.refresh();
 					}
 					disableDataInfo(true);
-					
+
 				}
 			}
 		});

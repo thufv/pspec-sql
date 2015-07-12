@@ -1,4 +1,4 @@
-package edu.thu.ss.spec.lang.analyzer;
+package edu.thu.ss.spec.lang.analyzer.redundancy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,8 +10,11 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.thu.ss.spec.lang.analyzer.BasePolicyAnalyzer;
 import edu.thu.ss.spec.lang.analyzer.stat.AnalyzerStat;
 import edu.thu.ss.spec.lang.analyzer.stat.RedundancyStat;
+import edu.thu.ss.spec.lang.parser.event.EventTable;
+import edu.thu.ss.spec.lang.parser.event.PolicyEvent;
 import edu.thu.ss.spec.lang.pojo.Action;
 import edu.thu.ss.spec.lang.pojo.DataAssociation;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
@@ -40,17 +43,14 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 		public List<UserRef> userRefs;
 		public DataRef dataRef;
 
-		public SimplificationLog(ExpandedRule rule, List<UserRef> userRefs,
-				DataRef dataRef) {
+		public SimplificationLog(ExpandedRule rule, List<UserRef> userRefs, DataRef dataRef) {
 			this.rule = rule;
 			this.userRefs = userRefs;
 			this.dataRef = dataRef;
 		}
-
 	}
 
-	protected static Logger logger = LoggerFactory
-			.getLogger(BaseRedundancyAnalyzer.class);
+	protected static Logger logger = LoggerFactory.getLogger(BaseRedundancyAnalyzer.class);
 
 	protected List<SimplificationLog> logs = new LinkedList<>();
 
@@ -63,6 +63,10 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 	protected final boolean[] covered = new boolean[Max_Dimension];
 
 	protected boolean simplify = false;
+
+	public BaseRedundancyAnalyzer(EventTable<PolicyEvent> table) {
+		super(table);
+	}
 
 	/**
 	 * initialized by sub classes
@@ -164,8 +168,7 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 		if (rule1.isAssociation()) {
 			return false;
 		}
-		if (instance.isGlobal(rule2.getDataRef())
-				&& !instance.isGlobal(rule1.getDataRef())) {
+		if (instance.isGlobal(rule2.getDataRef()) && !instance.isGlobal(rule1.getDataRef())) {
 			// global rule cannot be covered by local rules.
 			return false;
 		}
@@ -200,12 +203,10 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 			return false;
 		}
 
-		if (userRelation.equals(SetRelation.contain)
-				&& dataRelation.equals(SetRelation.contain)) {
+		if (userRelation.equals(SetRelation.contain) && dataRelation.equals(SetRelation.contain)) {
 			return true;
 		} else if (simplify) {
-			if (userRelation.equals(SetRelation.contain)
-					&& dataRelation.equals(SetRelation.intersect)) {
+			if (userRelation.equals(SetRelation.contain) && dataRelation.equals(SetRelation.intersect)) {
 				logs.add(new SimplificationLog(rule2, null, ref1));
 			} else if (userRelation.equals(SetRelation.intersect)
 					&& dataRelation.equals(SetRelation.contain)) {
