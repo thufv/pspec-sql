@@ -36,7 +36,7 @@ public abstract class PSpecListener {
 
 	}
 
-	public void onRestrictionError(RestrictionErrorType type, Rule rule, Restriction res) {
+	public void onRestrictionError(RestrictionErrorType type, Rule rule, Restriction res, String refid) {
 
 	}
 

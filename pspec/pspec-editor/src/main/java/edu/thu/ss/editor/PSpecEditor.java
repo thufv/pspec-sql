@@ -5,8 +5,6 @@ import static edu.thu.ss.editor.util.MessagesUtil.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.text.CompositeView;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
@@ -17,7 +15,6 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
@@ -34,22 +31,23 @@ import org.eclipse.wb.swt.SWTResourceManager;
 
 import edu.thu.ss.editor.model.BaseModel;
 import edu.thu.ss.editor.model.EditorModel;
+import edu.thu.ss.editor.model.OutputEntry;
 import edu.thu.ss.editor.model.PolicyModel;
 import edu.thu.ss.editor.model.VocabularyModel;
+import edu.thu.ss.editor.model.OutputEntry.OutputType;
 import edu.thu.ss.editor.util.EditorUtil;
 import edu.thu.ss.editor.util.MessagesUtil;
-import edu.thu.ss.editor.view.BaseView;
+import edu.thu.ss.editor.view.EditorView;
 import edu.thu.ss.editor.view.DataContainerView;
 import edu.thu.ss.editor.view.OutputView;
 import edu.thu.ss.editor.view.PolicyView;
 import edu.thu.ss.editor.view.RuleView;
 import edu.thu.ss.editor.view.UserContainerView;
 import edu.thu.ss.editor.view.VocabularyView;
-import edu.thu.ss.spec.lang.parser.PolicyParser;
 import edu.thu.ss.spec.lang.parser.PolicyWriter;
-import edu.thu.ss.spec.lang.parser.VocabularyParser;
 import edu.thu.ss.spec.lang.parser.VocabularyWriter;
 import edu.thu.ss.spec.lang.parser.WritingException;
+import edu.thu.ss.spec.lang.parser.event.EventTable;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Vocabulary;
 
@@ -77,7 +75,7 @@ public class PSpecEditor {
 
 	private OutputView outputView;
 
-	private BaseView<?> currentView;
+	private EditorView<?> currentView;
 
 	/**
 	 * Open the window.
@@ -323,10 +321,16 @@ public class PSpecEditor {
 				TreeItem item = (TreeItem) e.item;
 				editingModel = (BaseModel) item.getData();
 				if (editingModel == null) {
+					if (currentView != null) {
+						EditorUtil.exclude(currentView);
+						currentView = null;
+						contentComposite.layout();
+					}
+
 					enableSave(false);
 					return;
 				}
-				BaseView<?> view = (BaseView<?>) item.getData(EditorUtil.View);
+				EditorView<?> view = (EditorView<?>) item.getData(EditorUtil.View);
 				if (currentView != view) {
 					if (currentView != null) {
 						EditorUtil.exclude(currentView);
@@ -346,21 +350,8 @@ public class PSpecEditor {
 		contentComposite.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		contentComposite.setLayout(EditorUtil.newNoMarginGridLayout(1, false));
 
-		outputView = new OutputView(shell, rightForm, SWT.NONE);
+		outputView = new OutputView(shell, rightForm, SWT.NONE, editorModel);
 
-		outputView.addWarning("Test warning 1", null, new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				System.out.println(event);
-			}
-		});
-		outputView.addError("Test error 1", null, new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				System.out.println(event);
-			}
-		});
-		outputView.refresh();
 		mainForm.setWeights(new int[] { 1, 5 });
 		rightForm.setWeights(new int[] { 5, 1 });
 
@@ -370,6 +361,7 @@ public class PSpecEditor {
 		Policy policy = new Policy(editorModel.getNewPolicyId());
 		addPolicy(policy, "");
 
+		outputView.refresh();
 	}
 
 	private void addVocabulary(Vocabulary vocabulary, String path) {
@@ -377,7 +369,7 @@ public class PSpecEditor {
 
 		TreeItem item = EditorUtil.newTreeItem(vocabularyItems, vocabulary.getInfo().getId());
 		item.setData(model);
-		VocabularyView vocabularyView = new VocabularyView(shell, contentComposite, SWT.NONE, model,
+		VocabularyView vocabularyView = new VocabularyView(shell, contentComposite, model, outputView,
 				item);
 		vocabularyView.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		EditorUtil.exclude(vocabularyView);
@@ -385,14 +377,14 @@ public class PSpecEditor {
 
 		TreeItem userItem = EditorUtil.newTreeItem(item, getMessage(User_Container));
 		userItem.setData(model);
-		UserContainerView userView = new UserContainerView(shell, contentComposite, SWT.NONE, model);
+		UserContainerView userView = new UserContainerView(shell, contentComposite, model, outputView);
 		userView.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		EditorUtil.exclude(userView);
 		userItem.setData(EditorUtil.View, userView);
 
 		TreeItem dataItem = EditorUtil.newTreeItem(item, getMessage(Data_Container));
 		dataItem.setData(model);
-		DataContainerView dataView = new DataContainerView(shell, contentComposite, SWT.NONE, model);
+		DataContainerView dataView = new DataContainerView(shell, contentComposite, model, outputView);
 		dataView.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		EditorUtil.exclude(dataView);
 		dataItem.setData(EditorUtil.View, dataView);
@@ -401,16 +393,19 @@ public class PSpecEditor {
 	private void addPolicy(Policy policy, String path) {
 		PolicyModel model = editorModel.addPolicy(policy, path);
 
+		//TODO test
+		model.addOutput(new OutputEntry("this is a test output", OutputType.error, null, null));
+
 		TreeItem item = EditorUtil.newTreeItem(policyItems, policy.getInfo().getId());
 		item.setData(model);
-		PolicyView policyView = new PolicyView(shell, contentComposite, SWT.NONE, model, item);
+		PolicyView policyView = new PolicyView(shell, contentComposite, model, outputView, item);
 		policyView.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		EditorUtil.exclude(policyView);
 		item.setData(EditorUtil.View, policyView);
 
 		TreeItem ruleItem = EditorUtil.newTreeItem(item, getMessage(Rule));
 		ruleItem.setData(model);
-		RuleView ruleView = new RuleView(shell, contentComposite, SWT.NONE, model);
+		RuleView ruleView = new RuleView(shell, contentComposite, model, outputView);
 		ruleView.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		EditorUtil.exclude(ruleView);
 		ruleItem.setData(EditorUtil.View, ruleView);
@@ -424,14 +419,11 @@ public class PSpecEditor {
 				EditorUtil.showMessageBox(shell, "", getMessage(Vocabulary_Opened_Message, file));
 				return;
 			}
-			VocabularyParser parser = new VocabularyParser();
-			try {
-				Vocabulary vocabulary = parser.parse(file);
+			Vocabulary vocabulary = EditorUtil.openVocabulary(file, shell, EventTable.getDummy());
+			if (vocabulary != null) {
 				addVocabulary(vocabulary, file);
-			} catch (Exception e) {
-				//TODO add check
-				e.printStackTrace();
 			}
+
 		}
 	}
 
@@ -443,13 +435,10 @@ public class PSpecEditor {
 				EditorUtil.showMessageBox(shell, "", getMessage(Policy_Opened_Message, file));
 				return;
 			}
-			PolicyParser parser = new PolicyParser();
-			try {
-				Policy policy = parser.parse(file);
+			//TODO event table
+			Policy policy = EditorUtil.openPolicy(file, shell, EventTable.getDummy());
+			if (policy != null) {
 				addPolicy(policy, file);
-			} catch (Exception e) {
-				//TODO add check
-				e.printStackTrace();
 			}
 		}
 	}

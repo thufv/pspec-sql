@@ -73,7 +73,7 @@ public class RuleResolver extends BaseRuleAnalyzer {
 		if (!rule.isSingle()) {
 			error = error || checkAssociation(rule);
 		}
-		error = resolveRestrictions(rule);
+		error = error || resolveRestrictions(rule);
 		table.remove(listener);
 		return error;
 	}
@@ -109,7 +109,7 @@ public class RuleResolver extends BaseRuleAnalyzer {
 					rule.getId());
 
 			table.onRestrictionError(RestrictionErrorType.Single_One_Restriction, rule,
-					rule.getRestriction());
+					rule.getRestriction(), null);
 			//fix
 			Restriction res = rule.getRestriction();
 			rule.getRestrictions().clear();
@@ -122,7 +122,7 @@ public class RuleResolver extends BaseRuleAnalyzer {
 				error = true;
 				logger.error("Only one restriction element is allowed in rule:{} when forbidden",
 						rule.getId());
-				table.onRestrictionError(RestrictionErrorType.One_Forbid, rule, restriction);
+				table.onRestrictionError(RestrictionErrorType.One_Forbid, rule, restriction, null);
 				//fix
 				rule.getRestrictions().clear();
 				rule.getRestrictions().add(restriction);
@@ -147,7 +147,8 @@ public class RuleResolver extends BaseRuleAnalyzer {
 		boolean error = false;
 		if (res.getDesensitizations().size() > 1) {
 			logger.error("Only one desensitization is allowed for non-associated rule: {}", rule.getId());
-			table.onRestrictionError(RestrictionErrorType.Single_Restriction_One_Desensitize, rule, res);
+			table.onRestrictionError(RestrictionErrorType.Single_Restriction_One_Desensitize, rule, res,
+					null);
 			//fix
 			Desensitization de = res.getDesensitization(0);
 			res.getDesensitizations().clear();
@@ -158,7 +159,8 @@ public class RuleResolver extends BaseRuleAnalyzer {
 			logger
 					.error("No data-category-ref element should appear in desensitize element when only data category is referenced in rule: "
 							+ rule.getId());
-			table.onRestrictionError(RestrictionErrorType.Single_Restriction_No_DataRef, rule, res);
+			table.onRestrictionError(RestrictionErrorType.Single_Restriction_No_DataRef, rule, res,
+					de.getDataRefId());
 
 			//fix
 			de.setDataRefId("");
@@ -172,7 +174,7 @@ public class RuleResolver extends BaseRuleAnalyzer {
 			}
 		}
 		if (inclusionError) {
-			table.onRestrictionError(RestrictionErrorType.Unsupported_Operation, rule, res);
+			table.onRestrictionError(RestrictionErrorType.Unsupported_Operation, rule, res, null);
 
 		}
 		return error;
@@ -188,7 +190,7 @@ public class RuleResolver extends BaseRuleAnalyzer {
 						.error("Restricted data category must be specified explicitly when data association is referenced by rule: "
 								+ rule.getId());
 				table.onRestrictionError(RestrictionErrorType.Associate_Restriction_Explicit_DataRef, rule,
-						res);
+						res, null);
 
 				error = true;
 				continue;
@@ -201,7 +203,7 @@ public class RuleResolver extends BaseRuleAnalyzer {
 								"Restricted data category: {} must be contained in referenced data association in rule: {}",
 								refid, rule.getId());
 				table.onRestrictionError(RestrictionErrorType.Associate_Restriction_DataRef_Not_Exist,
-						rule, res);
+						rule, res, refid);
 				error = true;
 				continue;
 			}
@@ -212,7 +214,7 @@ public class RuleResolver extends BaseRuleAnalyzer {
 			}
 		}
 		if (inclusionError) {
-			table.onRestrictionError(RestrictionErrorType.Unsupported_Operation, rule, res);
+			table.onRestrictionError(RestrictionErrorType.Unsupported_Operation, rule, res, null);
 
 		}
 

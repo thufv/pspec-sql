@@ -14,6 +14,9 @@ import edu.thu.ss.spec.util.InclusionUtil;
  */
 public class LocalRedundancyAnalyzer extends BaseRedundancyAnalyzer {
 
+	public LocalRedundancyAnalyzer() {
+	}
+
 	public LocalRedundancyAnalyzer(EventTable table) {
 		super(table);
 		this.instance = InclusionUtil.instance;

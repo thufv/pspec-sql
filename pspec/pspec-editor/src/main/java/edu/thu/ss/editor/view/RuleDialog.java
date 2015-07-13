@@ -14,6 +14,7 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -22,7 +23,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
@@ -37,6 +37,7 @@ import edu.thu.ss.editor.model.PolicyModel;
 import edu.thu.ss.editor.model.RuleModel;
 import edu.thu.ss.editor.util.EditorUtil;
 import edu.thu.ss.spec.lang.analyzer.rule.RuleResolver;
+import edu.thu.ss.spec.lang.parser.event.EventTable;
 import edu.thu.ss.spec.lang.pojo.Action;
 import edu.thu.ss.spec.lang.pojo.DataAssociation;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
@@ -50,15 +51,12 @@ import edu.thu.ss.spec.lang.pojo.UserCategory;
 import edu.thu.ss.spec.lang.pojo.UserRef;
 import edu.thu.ss.spec.util.PSpecUtil;
 
-public class RuleDialog extends Dialog {
+public class RuleDialog extends EditorDialog {
 
 	private static final String Label_Separator = ",";
 
-	private Shell dialog;
 	private RuleModel ruleModel;
 	private PolicyModel policyModel;
-
-	private int retCode;
 
 	private Text ruleId;
 	private Text shortDescription;
@@ -88,23 +86,23 @@ public class RuleDialog extends Dialog {
 
 	private final static double longDescriptionHeightRatio = (double) 1 / 6;
 
-	public RuleDialog(Shell parent, Rule rule, PolicyModel model) {
-		super(parent, SWT.NONE);
+	private final static int minHeight = 480;
+
+	private final static int minWidth = 640;
+
+	public RuleDialog(Shell parent, RuleModel ruleModel, PolicyModel model) {
+		super(parent);
 		this.policyModel = model;
-		this.ruleModel = new RuleModel(rule);
+		this.ruleModel = ruleModel;
 
 		dialog = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.RESIZE);
 		dialog.setBackground(EditorUtil.getDefaultBackground());
-		Display display = Display.getCurrent();
-		dialog.setSize(display.getClientArea().width / 2, display.getClientArea().height * 2 / 3);
-		dialog
-				.setMinimumSize(display.getClientArea().width / 3, display.getClientArea().height * 2 / 3);
-
+		Point size = EditorUtil.getScreenSize();
+		dialog.setSize(size.x / 2, size.y * 2 / 3);
+		dialog.setMinimumSize(minWidth, minHeight);
 		dialog.setText(getMessage(Rule));
 		dialog.setLayout(new FillLayout());
-	}
 
-	public int open() {
 		scroll = new ScrolledComposite(dialog, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER
 				| SWT.NO_BACKGROUND);
 		scroll.setBackground(EditorUtil.getDefaultBackground());
@@ -117,14 +115,7 @@ public class RuleDialog extends Dialog {
 		scroll.setExpandHorizontal(true);
 		scroll.setExpandVertical(true);
 		scroll.setMinSize(scrollContent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-		dialog.open();
-		dialog.layout();
-		Display display = getParent().getDisplay();
-		while (!dialog.isDisposed()) {
-			if (!display.readAndDispatch())
-				display.sleep();
-		}
-		return retCode;
+
 	}
 
 	private void layoutScroll() {
@@ -160,16 +151,14 @@ public class RuleDialog extends Dialog {
 		buttons.setLayoutData(buttonsData);
 		buttons.setLayout(new RowLayout());
 
-		Button ok = EditorUtil.newButton(buttons, getMessage(OK));
+		ok = EditorUtil.newButton(buttons, getMessage(OK));
 
 		ok.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				//TODO
 				//check user reference
 				if (ruleId.getText().trim().isEmpty()) {
 					EditorUtil.showMessageBox(dialog, "", getMessage(Rule_ID_Non_Empty_Message));
 					return;
-
 				}
 
 				for (UserRef ref : ruleModel.getUserRefs()) {
@@ -185,73 +174,24 @@ public class RuleDialog extends Dialog {
 						return;
 					}
 				}
-				if (dataAssociationType.getSelection()) {
-					//check data association overlapping
-					for (DataRef ref : ruleModel.getDataRefs()) {
-						PSpecUtil.resolveCategoryRef(ref, policyModel.getPolicy().getDataContainer(), true,
-								null);
-					}
-					for (int i = 0; i < ruleModel.getDataRefs().size(); i++) {
-						for (int j = i + 1; j < ruleModel.getDataRefs().size(); j++) {
-							if (PSpecUtil.intersects(ruleModel.getDataRefs().get(i).getMaterialized(), ruleModel
-									.getDataRefs().get(j).getMaterialized())) {
-								EditorUtil.showMessageBox(dialog, "",
-										getMessage(Rule_Data_Association_Non_Overlap_Message));
-								return;
-							}
-						}
-					}
-				}
-				//check restrictions
-				if (restrictType.getSelection()) {
-					for (int i = 0; i < ruleModel.getRestrictions().size(); i++) {
-						Restriction res = ruleModel.getRestrictions().get(i);
-						boolean effective = false;
-						for (Desensitization de : res.getDesensitizations()) {
-							if (de.effective()) {
-								effective = true;
-							}
-						}
-						if (!effective) {
-							EditorUtil.showMessageBox(dialog, "",
-									getMessage(Rule_Restriction_Effective_Message, String.valueOf(i)));
-							return;
-						}
-					}
+				Rule tmpRule = new Rule();
+				fillRule(tmpRule);
+				List<String> messages = new ArrayList<>();
+				RuleResolver resolver = new RuleResolver(EditorUtil.addPolicyLogListeners(new EventTable(),
+						messages));
+				if (resolver.analyzeRule(tmpRule, policyModel.getPolicy().getUserContainer(), policyModel
+						.getPolicy().getDataContainer())) {
+					EditorUtil.showMessageBox(dialog, "", messages);
+					return;
 				}
 				Rule rule = ruleModel.getRule();
-
-				//set
-				rule.setId(ruleId.getText().trim());
-				rule.setShortDescription(shortDescription.getText().trim());
-				rule.setLongDescription(longDescription.getText().trim());
-
-				rule.setUserRefs(ruleModel.getUserRefs());
-
-				if (dataSingleType.getSelection()) {
-					rule.setDataRefs(ruleModel.getDataRefs());
-				} else {
-					rule.getDataRefs().clear();
-					DataAssociation association = new DataAssociation();
-					association.setDataRefs(ruleModel.getDataRefs());
-					rule.setAssociation(association);
-				}
-
-				if (forbidType.getSelection()) {
-					rule.getRestrictions().clear();
-					Restriction res = new Restriction();
-					res.setForbid(true);
-					rule.getRestrictions().add(res);
-				} else {
-					rule.setRestrictions(ruleModel.getRestrictions());
-				}
-
+				fillRule(rule);
 				retCode = SWT.OK;
 				dialog.dispose();
 			}
 		});
 
-		Button cancel = EditorUtil.newButton(buttons, getMessage(Cancel));
+		cancel = EditorUtil.newButton(buttons, getMessage(Cancel));
 		cancel.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				retCode = SWT.CANCEL;
@@ -688,7 +628,7 @@ public class RuleDialog extends Dialog {
 				}
 				ObjectRef newRef = new ObjectRef(text);
 				if (!ref.getExcludeRefs().contains(newRef)) {
-					EditorUtil.showMessage(dialog, getMessage(User_Category_Exclude_Not_Exist_Message, text),
+					EditorUtil.showMessage(dialog, getMessage(User_Category_Not_Excluded_Message, text),
 							Display.getCurrent().getCursorLocation());
 					return;
 				}
@@ -840,7 +780,7 @@ public class RuleDialog extends Dialog {
 				}
 				ObjectRef newRef = new ObjectRef(text);
 				if (!ref.getExcludeRefs().contains(newRef)) {
-					EditorUtil.showMessage(dialog, getMessage(Data_Category_Exclude_Not_Exist_Message, text),
+					EditorUtil.showMessage(dialog, getMessage(Data_Category_Not_Excluded_Message, text),
 							Display.getCurrent().getCursorLocation());
 					return;
 				}
@@ -1056,6 +996,33 @@ public class RuleDialog extends Dialog {
 		EditorUtil.include(deleteRestriction);
 		EditorUtil.include(restrictComposite);
 		adjustEffectLayout();
+	}
+
+	private void fillRule(Rule rule) {
+		//set
+		rule.setId(ruleId.getText().trim());
+		rule.setShortDescription(shortDescription.getText().trim());
+		rule.setLongDescription(longDescription.getText().trim());
+
+		rule.setUserRefs(ruleModel.getUserRefs());
+
+		if (dataSingleType.getSelection()) {
+			rule.setDataRefs(ruleModel.getDataRefs());
+		} else {
+			rule.getRawDataRefs().clear();
+			DataAssociation association = new DataAssociation();
+			association.setDataRefs(ruleModel.getDataRefs());
+			rule.setAssociation(association);
+		}
+
+		if (forbidType.getSelection()) {
+			rule.getRestrictions().clear();
+			Restriction res = new Restriction();
+			res.setForbid(true);
+			rule.getRestrictions().add(res);
+		} else {
+			rule.setRestrictions(ruleModel.getRestrictions());
+		}
 	}
 
 	private void resize(Composite composite) {

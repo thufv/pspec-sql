@@ -63,6 +63,9 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 
 	protected boolean simplify = false;
 
+	public BaseRedundancyAnalyzer() {
+	}
+
 	public BaseRedundancyAnalyzer(EventTable table) {
 		super(table);
 	}

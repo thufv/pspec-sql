@@ -8,7 +8,7 @@ import edu.thu.ss.spec.lang.pojo.Restriction;
 import edu.thu.ss.spec.lang.pojo.Rule;
 import edu.thu.ss.spec.lang.pojo.UserRef;
 
-public class RuleModel {
+public class RuleModel extends BaseModel {
 	private Rule rule;
 
 	private List<UserRef> userRefs = new ArrayList<>();
@@ -18,16 +18,23 @@ public class RuleModel {
 	private boolean forbid = false;
 
 	public RuleModel(Rule rule) {
+		super("");
 		this.rule = rule;
+		reset();
+	}
+
+	public void reset() {
+		userRefs.clear();
 		for (UserRef ref : rule.getUserRefs()) {
 			userRefs.add(ref.clone());
 		}
 
-		List<DataRef> list = rule.isSingle() ? rule.getDataRefs() : rule.getAssociation().getDataRefs();
-		for (DataRef ref : list) {
+		dataRefs.clear();
+		for (DataRef ref : rule.getDataRefs()) {
 			dataRefs.add(ref.clone());
 		}
 
+		restrictions.clear();
 		if (rule.getRestrictions().size() == 0 || rule.getRestriction().isForbid()) {
 			forbid = true;
 		} else {

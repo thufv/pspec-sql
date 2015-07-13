@@ -12,6 +12,12 @@ import edu.thu.ss.spec.lang.pojo.Restriction;
 import edu.thu.ss.spec.lang.pojo.Rule;
 
 public class EventTable {
+	private static EventTable dummy = new EventTable();
+
+	public static EventTable getDummy() {
+		return dummy;
+	}
+
 	private List<PSpecListener> listeners = new ArrayList<>();
 
 	public void add(PSpecListener listener) {
@@ -34,9 +40,9 @@ public class EventTable {
 		}
 	}
 
-	public void onRestrictionError(RestrictionErrorType type, Rule rule, Restriction res) {
+	public void onRestrictionError(RestrictionErrorType type, Rule rule, Restriction res, String refid) {
 		for (PSpecListener listener : listeners) {
-			listener.onRestrictionError(type, rule, res);
+			listener.onRestrictionError(type, rule, res, refid);
 		}
 
 	}

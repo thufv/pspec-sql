@@ -15,12 +15,12 @@ public class PolicyWriterTest {
 	public void testConflict() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse(prefix + "conflict-policy.xml", false, true);
+			Policy policy = parser.parse(prefix + "conflict-policy.xml");
 			//System.out.println(policy);
 			PolicyWriter writer = new PolicyWriter();
 			writer.output(policy, "tmp/conflict-policy.xml");
 
-			policy = parser.parse("tmp/conflict-policy.xml", false, true);
+			policy = parser.parse("tmp/conflict-policy.xml");
 			System.out.println(policy);
 
 		} catch (Exception e) {
@@ -32,12 +32,12 @@ public class PolicyWriterTest {
 	public void testRedundancy() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse(prefix + "redundancy-policy.xml", false);
+			Policy policy = parser.parse(prefix + "redundancy-policy.xml");
 			//System.out.println(policy);
 			PolicyWriter writer = new PolicyWriter();
 			writer.output(policy, "tmp/redundancy-policy.xml");
 
-			policy = parser.parse("tmp/redundancy-policy.xml", false);
+			policy = parser.parse("tmp/redundancy-policy.xml");
 			System.out.println(policy);
 
 		} catch (Exception e) {
@@ -49,12 +49,12 @@ public class PolicyWriterTest {
 	public void testIntel() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse("intel/spark-policy.xml", false);
+			Policy policy = parser.parse("intel/spark-policy.xml");
 			//System.out.println(policy);
 			PolicyWriter writer = new PolicyWriter();
 			writer.output(policy, "tmp/intel-policy.xml");
 
-			policy = parser.parse("tmp/intel-policy.xml", false);
+			policy = parser.parse("tmp/intel-policy.xml");
 			System.out.println(policy);
 
 		} catch (Exception e) {

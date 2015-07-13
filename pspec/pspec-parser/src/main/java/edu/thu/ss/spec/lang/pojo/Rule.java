@@ -45,6 +45,10 @@ public class Rule extends DescribedObject {
 		}
 	}
 
+	public List<DataRef> getRawDataRefs() {
+		return dataRefs;
+	}
+
 	public boolean isSingle() {
 		return association == null;
 	}

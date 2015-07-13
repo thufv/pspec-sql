@@ -21,6 +21,8 @@ public class Vocabulary {
 	 */
 	protected URI basePath;
 
+	protected Vocabulary baseVocabulary;
+
 	protected UserContainer userContainer = new UserContainer();
 
 	protected DataContainer dataContainer = new DataContainer();
@@ -79,6 +81,13 @@ public class Vocabulary {
 
 	public void setBase(URI base) {
 		this.basePath = base;
+	}
+
+	public void setBaseVocabulary(Vocabulary baseVocabulary) {
+		this.basePath = baseVocabulary.path;
+		this.baseVocabulary = baseVocabulary;
+		this.userContainer.setBaseContainer(baseVocabulary.getUserContainer());
+		this.dataContainer.setBaseContainer(baseVocabulary.getDataContainer());
 	}
 
 	public UserContainer getUserContainer() {

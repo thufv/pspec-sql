@@ -2,8 +2,6 @@ package edu.thu.ss.editor.view;
 
 import static edu.thu.ss.editor.util.MessagesUtil.*;
 
-import java.util.List;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -24,6 +22,7 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import edu.thu.ss.editor.model.PolicyModel;
+import edu.thu.ss.editor.model.RuleModel;
 import edu.thu.ss.editor.util.EditorUtil;
 import edu.thu.ss.editor.util.MessagesUtil;
 import edu.thu.ss.spec.lang.pojo.DataRef;
@@ -33,7 +32,7 @@ import edu.thu.ss.spec.lang.pojo.Rule;
 import edu.thu.ss.spec.lang.pojo.UserRef;
 import edu.thu.ss.spec.util.PSpecUtil;
 
-public class RuleView extends BaseView<PolicyModel> {
+public class RuleView extends EditorView<PolicyModel> {
 
 	private ToolItem add;
 	private ToolItem delete;
@@ -48,8 +47,8 @@ public class RuleView extends BaseView<PolicyModel> {
 	 * @param parent
 	 * @param style
 	 */
-	public RuleView(Shell shell, Composite parent, int style, PolicyModel model) {
-		super(shell, parent, style, model);
+	public RuleView(Shell shell, Composite parent, PolicyModel model, OutputView outputView) {
+		super(shell, parent, model, outputView);
 		this.setBackground(EditorUtil.getDefaultBackground());
 
 		this.setLayout(new FillLayout());
@@ -62,14 +61,16 @@ public class RuleView extends BaseView<PolicyModel> {
 	private void initializeContent(Composite parent) {
 		initializeToolbar(parent);
 
-		ruleBar = new ExpandBar(parent, SWT.SINGLE | SWT.V_SCROLL);
+		ruleBar = new ExpandBar(parent, SWT.V_SCROLL);
 		GridData barData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		ruleBar.setLayoutData(barData);
 		ruleBar.setFont(EditorUtil.getDefaultFont());
 		ruleBar.setBackground(EditorUtil.getDefaultBackground());
-
 		initializeRules();
 
+		if (model.getPolicy().getRules().size() == 0 && ruleBar.getVerticalBar() != null) {
+			ruleBar.getVerticalBar().setVisible(false);
+		}
 	}
 
 	private void initializeToolbar(Composite parent) {
@@ -81,12 +82,11 @@ public class RuleView extends BaseView<PolicyModel> {
 		add.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Rule rule = new Rule();
-				int ret = new RuleDialog(shell, rule, model).open();
+				RuleModel ruleModel = new RuleModel(new Rule());
+				int ret = new RuleDialog(shell, ruleModel, model).open();
 				if (ret == SWT.OK) {
-					initializeRuleItem(rule);
-					model.getPolicy().getRules().add(rule);
-
+					initializeRuleItem(ruleModel);
+					model.addRuleModel(ruleModel);
 				}
 			}
 		});
@@ -112,44 +112,45 @@ public class RuleView extends BaseView<PolicyModel> {
 	}
 
 	private void initializeRules() {
-		for (Rule r : model.getPolicy().getRules()) {
-			initializeRuleItem(r);
+		for (RuleModel ruleModel : model.getRuleModels()) {
+			initializeRuleItem(ruleModel);
 		}
+
 	}
 
-	private void initializeRuleItem(Rule rule) {
-		final ExpandItem item = EditorUtil.newExpandItem(ruleBar, rule.getId());
+	private void initializeRuleItem(RuleModel ruleModel) {
+		final ExpandItem item = EditorUtil.newExpandItem(ruleBar, ruleModel.getRule().getId());
 		item.setImage(SWTResourceManager.getImage(EditorUtil.Image_Rule));
-		item.setData(rule);
+		item.setData(ruleModel);
 
-		initializeRuleItemContent(item, rule);
+		initializeRuleItemContent(item, ruleModel);
 
 	}
 
 	private void updateRuleItem(ExpandItem item) {
-		Rule rule = (Rule) item.getData();
+		RuleModel ruleModel = (RuleModel) item.getData();
 		int index = EditorUtil.indexOf(ruleBar.getItems(), item);
 		item.getControl().dispose();
 		item.dispose();
 
-		item = EditorUtil.newExpandItem(ruleBar, rule.getId(), index);
+		item = EditorUtil.newExpandItem(ruleBar, ruleModel.getRule().getId(), index);
 		item.setImage(SWTResourceManager.getImage(EditorUtil.Image_Rule));
-		item.setData(rule);
+		item.setData(ruleModel);
 
-		initializeRuleItemContent(item, rule);
+		initializeRuleItemContent(item, ruleModel);
 		item.getControl().setBackground(EditorUtil.getSelectedBackground());
 		item.setExpanded(true);
 		selectedItem = item;
 	}
 
-	private void initializeRuleItemContent(final ExpandItem item, Rule rule) {
+	private void initializeRuleItemContent(final ExpandItem item, RuleModel ruleModel) {
 		Composite ruleComposite = newItemComposite(ruleBar, 2);
 		item.setControl(ruleComposite);
 		ruleComposite.setLayout(new GridLayout());
 
-		initializeRuleUser(rule, ruleComposite);
-		initializeRuleData(rule, ruleComposite);
-		initializeRuleRestrictions(rule, ruleComposite);
+		initializeRuleUser(ruleModel, ruleComposite);
+		initializeRuleData(ruleModel, ruleComposite);
+		initializeRuleRestrictions(ruleModel, ruleComposite);
 
 		ruleComposite.addMouseListener(new MouseAdapter() {
 			@Override
@@ -164,10 +165,12 @@ public class RuleView extends BaseView<PolicyModel> {
 
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
-				Rule rule = (Rule) item.getData();
-				int ret = new RuleDialog(shell, rule, model).open();
+				RuleModel ruleModel = (RuleModel) item.getData();
+				int ret = new RuleDialog(shell, ruleModel, model).open();
 				if (ret == SWT.OK) {
 					updateRuleItem(item);
+				} else {
+					ruleModel.reset();
 				}
 			}
 		});
@@ -176,12 +179,12 @@ public class RuleView extends BaseView<PolicyModel> {
 		item.setHeight(size.y);
 	}
 
-	private void initializeRuleUser(Rule rule, Composite parent) {
+	private void initializeRuleUser(RuleModel ruleModel, Composite parent) {
 		EditorUtil.newLabel(parent, getMessage(User_Ref));
 
 		Composite userComposite = newRuleComposite(parent, 2);
 
-		for (UserRef ref : rule.getUserRefs()) {
+		for (UserRef ref : ruleModel.getUserRefs()) {
 			newPointLabel(userComposite);
 			StringBuilder sb = new StringBuilder();
 			sb.append(ref.getRefid());
@@ -194,20 +197,17 @@ public class RuleView extends BaseView<PolicyModel> {
 		}
 	}
 
-	private void initializeRuleData(Rule rule, Composite parent) {
-		List<DataRef> refs = null;
+	private void initializeRuleData(RuleModel ruleModel, Composite parent) {
 
-		if (rule.isSingle()) {
+		if (ruleModel.getRule().isSingle()) {
 			EditorUtil.newLabel(parent, getMessage(Data_Ref));
-			refs = rule.getDataRefs();
 		} else {
 			EditorUtil.newLabel(parent, getMessage(Data_Association));
-			refs = rule.getAssociation().getDataRefs();
 		}
 
 		Composite dataComposite = newRuleComposite(parent, 4);
 
-		for (DataRef ref : refs) {
+		for (DataRef ref : ruleModel.getDataRefs()) {
 			newPointLabel(dataComposite);
 
 			StringBuilder sb = new StringBuilder();
@@ -224,18 +224,18 @@ public class RuleView extends BaseView<PolicyModel> {
 
 	}
 
-	private void initializeRuleRestrictions(Rule rule, Composite parent) {
-		if (rule.getRestriction().isForbid()) {
+	private void initializeRuleRestrictions(RuleModel ruleModel, Composite parent) {
+		if (ruleModel.isForbid()) {
 			Label forbidLabel = EditorUtil.newLabel(parent, getMessage(Forbid), null, false);
 			forbidLabel.setFont(EditorUtil.getDefaultFont());
 		} else {
-			for (Restriction res : rule.getRestrictions()) {
-				initializeRestriction(res, rule, parent);
+			for (Restriction res : ruleModel.getRestrictions()) {
+				initializeRestriction(res, ruleModel, parent);
 			}
 		}
 	}
 
-	private void initializeRestriction(Restriction restriction, Rule rule, Composite parent) {
+	private void initializeRestriction(Restriction restriction, RuleModel ruleModel, Composite parent) {
 		EditorUtil.newLabel(parent, getMessage(Restriction));
 
 		Composite restrictionComposite = newRuleComposite(parent, 4);

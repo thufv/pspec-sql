@@ -11,9 +11,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.spec.lang.analyzer.VocabularyAnalyzer;
-import edu.thu.ss.spec.lang.parser.PSpec.PSpecEventType;
-import edu.thu.ss.spec.lang.parser.event.EventTable;
-import edu.thu.ss.spec.lang.parser.event.PSpecListener;
 import edu.thu.ss.spec.lang.parser.event.PSpecListener.VocabularyErrorType;
 import edu.thu.ss.spec.lang.pojo.DataContainer;
 import edu.thu.ss.spec.lang.pojo.Info;
@@ -28,7 +25,9 @@ import edu.thu.ss.spec.util.XMLUtil;
  * @author luochen
  * 
  */
-public class VocabularyParser implements ParserConstant {
+public class VocabularyParser extends BaseParser implements ParserConstant {
+
+	private static Logger logger = LoggerFactory.getLogger(VocabularyParser.class);
 
 	/**
 	 * parsed vocabulary in current instance
@@ -41,40 +40,26 @@ public class VocabularyParser implements ParserConstant {
 
 	protected Map<String, DataContainer> dataContainers = new HashMap<>();
 
-	protected boolean error = false;
-
-	protected EventTable table = new EventTable();
-
 	protected VocabularyAnalyzer analyzer = new VocabularyAnalyzer(table);
 
-	private static Logger logger = LoggerFactory.getLogger(VocabularyParser.class);
-
-	private URI uri;
-
-	public Vocabulary parse(String path) throws ParseException {
+	public Vocabulary parse(String path) throws InvalidVocabularyException {
 		uri = XMLUtil.toUri(path);
 		if (VocabularyManager.containsVocab(uri)) {
 			return VocabularyManager.getVocab(uri);
 		}
 
 		loadVocabularies(uri);
+		
 		parseContainers();
 
 		// semantic analysis
 		analyzer.analyze(vocabulary.getUserContainer(), false);
 		analyzer.analyze(vocabulary.getDataContainer(), false);
 
-		if (error) {
-			//TODO
-			throw new ParseException("Fail to parse vocabularies, see error messages above");
+		if (forceRegister || !error) {
+			registerVocabularies();
 		}
-
-		registerVocabularies();
 		return vocabulary;
-	}
-
-	public void addListener(PSpecEventType type, PSpecListener listener) {
-		table.add(listener);
 	}
 
 	private void registerVocabularies() {
@@ -93,7 +78,7 @@ public class VocabularyParser implements ParserConstant {
 	 * @param uri
 	 * @throws Exception
 	 */
-	private void loadVocabularies(URI uri) throws ParseException {
+	private void loadVocabularies(URI uri) throws InvalidVocabularyException {
 		Vocabulary previous = null;
 		URI currentUri = uri;
 
@@ -101,10 +86,15 @@ public class VocabularyParser implements ParserConstant {
 			Vocabulary vocabulary = VocabularyManager.getVocab(currentUri);
 			if (vocabulary == null) {
 				vocabulary = new Vocabulary();
-				Document document = XMLUtil.parseDocument(currentUri, Privacy_Schema_Location);
+				Document document = null;
+				try {
+					document = XMLUtil.parseDocument(currentUri, Privacy_Schema_Location);
+				} catch (Exception e) {
+					throw new InvalidVocabularyException(uri, e);
+				}
 				Node rootNode = document.getElementsByTagName(ParserConstant.Ele_Vocabulary).item(0);
 				if (rootNode == null) {
-					throw new InvalidDocumentException(currentUri);
+					throw new InvalidVocabularyException(uri, null);
 				}
 				vocabulary.setRootNode(rootNode);
 				vocabulary.setPath(currentUri);
@@ -112,8 +102,7 @@ public class VocabularyParser implements ParserConstant {
 				parseInfo(vocabulary);
 				vocabularies.put(currentUri, vocabulary);
 				if (previous != null) {
-					previous.getUserContainer().setBaseContainer(vocabulary.getUserContainer());
-					previous.getDataContainer().setBaseContainer(vocabulary.getDataContainer());
+					previous.setBaseVocabulary(vocabulary);
 				}
 
 				previous = vocabulary;
@@ -142,7 +131,7 @@ public class VocabularyParser implements ParserConstant {
 	 * @param vocabulary
 	 * @throws Exception
 	 */
-	private void parseInfo(Vocabulary vocabulary) throws ParseException {
+	private void parseInfo(Vocabulary vocabulary) {
 		Node root = vocabulary.getRootNode();
 		NodeList list = root.getChildNodes();
 		String base = XMLUtil.getAttrValue(root, Attr_Vocabulary_Base);

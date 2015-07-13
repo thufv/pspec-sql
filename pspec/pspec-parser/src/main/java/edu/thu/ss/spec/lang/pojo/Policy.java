@@ -3,7 +3,6 @@ package edu.thu.ss.spec.lang.pojo;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * class for policy
@@ -171,6 +170,7 @@ public class Policy {
 	}
 
 	public void setVocabulary(Vocabulary vocabulary) {
+		this.vocabularyLocation = vocabulary.path;
 		this.vocabulary = vocabulary;
 		this.userContainer = vocabulary.getUserContainer();
 		this.dataContainer = vocabulary.getDataContainer();

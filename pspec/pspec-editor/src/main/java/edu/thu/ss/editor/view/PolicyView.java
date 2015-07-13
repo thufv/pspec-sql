@@ -20,13 +20,12 @@ import org.eclipse.swt.widgets.TreeItem;
 
 import edu.thu.ss.editor.model.PolicyModel;
 import edu.thu.ss.editor.util.EditorUtil;
-import edu.thu.ss.spec.lang.parser.VocabularyParser;
+import edu.thu.ss.spec.lang.parser.event.EventTable;
 import edu.thu.ss.spec.lang.pojo.ContactInfo;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Vocabulary;
-import edu.thu.ss.spec.util.XMLUtil;
 
-public class PolicyView extends BaseView<PolicyModel> {
+public class PolicyView extends EditorView<PolicyModel> {
 
 	private Text name;
 	private Text email;
@@ -46,9 +45,9 @@ public class PolicyView extends BaseView<PolicyModel> {
 	 * @param parent
 	 * @param style
 	 */
-	public PolicyView(final Shell shell, Composite parent, int style, PolicyModel model,
+	public PolicyView(final Shell shell, Composite parent, PolicyModel model, OutputView outputView,
 			TreeItem editorItem) {
-		super(shell, parent, style, model);
+		super(shell, parent, model, outputView);
 		this.shell = shell;
 		this.model = model;
 		this.editorItem = editorItem;
@@ -114,16 +113,12 @@ public class PolicyView extends BaseView<PolicyModel> {
 				FileDialog dlg = EditorUtil.newOpenFileDialog(shell);
 				String file = dlg.open();
 				if (file != null) {
-					vocabularyLocation.setText(file);
-					//TODO verify vocabulary
-					VocabularyParser parser = new VocabularyParser();
-					try {
-						Vocabulary vocabulary = parser.parse(file);
-						policy.setVocabularyLocation(XMLUtil.toUri(file));
+					//TODO event table
+					Vocabulary vocabulary = EditorUtil.openVocabulary(file, shell, EventTable.getDummy());
+					if (vocabulary != null) {
 						policy.setVocabulary(vocabulary);
 
-					} catch (Exception e1) {
-						e1.printStackTrace();
+						vocabularyLocation.setText(file);
 					}
 				}
 			}

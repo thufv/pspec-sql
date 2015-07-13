@@ -35,7 +35,7 @@ import edu.thu.ss.spec.lang.pojo.UserCategory;
 import edu.thu.ss.spec.lang.pojo.UserContainer;
 import edu.thu.ss.spec.util.PSpecUtil;
 
-public class UserContainerView extends BaseView<VocabularyModel> {
+public class UserContainerView extends EditorView<VocabularyModel> {
 
 	private TreeViewer userViewer;
 
@@ -58,8 +58,9 @@ public class UserContainerView extends BaseView<VocabularyModel> {
 	 * @param parent
 	 * @param style
 	 */
-	public UserContainerView(Shell shell, Composite parent, int style, VocabularyModel model) {
-		super(shell, parent, style, model);
+	public UserContainerView(Shell shell, Composite parent, VocabularyModel model,
+			OutputView outputView) {
+		super(shell, parent, model, outputView);
 		this.userContainer = model.getVocabulary().getUserContainer();
 
 		setBackground(EditorUtil.getDefaultBackground());
@@ -238,8 +239,8 @@ public class UserContainerView extends BaseView<VocabularyModel> {
 				UserCategory oldParent = selectedUser.getParent();
 				UserCategory newParent = userContainer.get(text);
 				if (PSpecUtil.checkCategoryCycleReference(selectedUser, newParent, null)) {
-					EditorUtil.showMessage(shell, getMessage(User_Category_Parent_Cycle_Message),
-							userParentId);
+					EditorUtil.showMessage(shell,
+							getMessage(User_Category_Parent_Cycle_Message, selectedUser.getId()), userParentId);
 					EditorUtil.setSelectedItem(userParentId, selectedUser.getParentId());
 					return;
 				}

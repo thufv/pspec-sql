@@ -14,6 +14,10 @@ public abstract class BasePolicyAnalyzer implements IPolicyAnalyzer {
 
 	protected EventTable table;
 
+	public BasePolicyAnalyzer() {
+		this.table = EventTable.getDummy();
+	}
+
 	public BasePolicyAnalyzer(EventTable table) {
 		this.table = table;
 	}

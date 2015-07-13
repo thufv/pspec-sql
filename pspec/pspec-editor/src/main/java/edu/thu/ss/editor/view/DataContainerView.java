@@ -38,7 +38,7 @@ import edu.thu.ss.spec.lang.pojo.DataContainer;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.util.PSpecUtil;
 
-public class DataContainerView extends BaseView<VocabularyModel> {
+public class DataContainerView extends EditorView<VocabularyModel> {
 
 	private TreeViewer dataViewer;
 
@@ -67,8 +67,9 @@ public class DataContainerView extends BaseView<VocabularyModel> {
 	 * @param parent
 	 * @param style
 	 */
-	public DataContainerView(Shell shell, Composite parent, int style, VocabularyModel model) {
-		super(shell, parent, style, model);
+	public DataContainerView(Shell shell, Composite parent, VocabularyModel model,
+			OutputView outputView) {
+		super(shell, parent, model, outputView);
 		this.dataContainer = model.getVocabulary().getDataContainer();
 
 		setBackground(EditorUtil.getDefaultBackground());
@@ -251,8 +252,8 @@ public class DataContainerView extends BaseView<VocabularyModel> {
 				DataCategory oldParent = selectedData.getParent();
 				DataCategory newParent = dataContainer.get(text);
 				if (PSpecUtil.checkCategoryCycleReference(selectedData, newParent, null)) {
-					EditorUtil.showMessage(shell, getMessage(Data_Category_Parent_Cycle_Message),
-							dataParentId);
+					EditorUtil.showMessage(shell,
+							getMessage(Data_Category_Parent_Cycle_Message, selectedData.getId()), dataParentId);
 					EditorUtil.setSelectedItem(dataParentId, selectedData.getParentId());
 					return;
 				}

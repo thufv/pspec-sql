@@ -1,5 +1,7 @@
 package edu.thu.ss.editor.util;
 
+import static edu.thu.ss.editor.util.MessagesUtil.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -16,6 +18,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -39,13 +42,27 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
+import edu.thu.ss.spec.lang.parser.InvalidPolicyException;
+import edu.thu.ss.spec.lang.parser.InvalidVocabularyException;
+import edu.thu.ss.spec.lang.parser.PolicyParser;
+import edu.thu.ss.spec.lang.parser.VocabularyParser;
+import edu.thu.ss.spec.lang.parser.event.EventTable;
+import edu.thu.ss.spec.lang.parser.event.PSpecListener;
 import edu.thu.ss.spec.lang.pojo.Action;
 import edu.thu.ss.spec.lang.pojo.Category;
 import edu.thu.ss.spec.lang.pojo.CategoryContainer;
+import edu.thu.ss.spec.lang.pojo.CategoryRef;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DataContainer;
 import edu.thu.ss.spec.lang.pojo.DataRef;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
+import edu.thu.ss.spec.lang.pojo.Policy;
+import edu.thu.ss.spec.lang.pojo.Restriction;
+import edu.thu.ss.spec.lang.pojo.Rule;
+import edu.thu.ss.spec.lang.pojo.UserCategory;
+import edu.thu.ss.spec.lang.pojo.UserRef;
+import edu.thu.ss.spec.lang.pojo.Vocabulary;
+import edu.thu.ss.spec.util.PSpecUtil;
 
 public class EditorUtil {
 
@@ -94,6 +111,12 @@ public class EditorUtil {
 		return data;
 	}
 
+	public static Point getScreenSize() {
+		Display display = Display.getCurrent();
+		Rectangle rec = display.getMonitors()[0].getClientArea();
+		return new Point(rec.width, rec.height);
+	}
+
 	public static Font getDefaultFont() {
 		return SWTResourceManager.getFont("Arial", 12, SWT.NORMAL);
 	}
@@ -113,6 +136,40 @@ public class EditorUtil {
 	private static void setStyle(Control control) {
 		control.setFont(getDefaultFont());
 		control.setBackground(getDefaultBackground());
+	}
+
+	public static Vocabulary openVocabulary(String path, Shell shell, EventTable table) {
+		Vocabulary vocabulary = null;
+		try {
+			VocabularyParser parser = new VocabularyParser();
+			parser.setEventTable(table);
+			parser.setForceRegister(true);
+			vocabulary = parser.parse(path);
+			if (parser.isError()) {
+				showMessageBox(shell, "", getMessage(Vocabulary_Parse_Error_Message, path));
+			}
+		} catch (InvalidVocabularyException e) {
+			showMessageBox(shell, "", getMessage(Vocabulary_Invalid_Document_Message, path));
+		}
+		return vocabulary;
+	}
+
+	public static Policy openPolicy(String path, Shell shell, EventTable table) {
+		Policy policy = null;
+		try {
+			PolicyParser parser = new PolicyParser();
+			parser.setEventTable(table);
+			parser.setForceRegister(true);
+			policy = parser.parse(path);
+			if (parser.isError()) {
+				showMessageBox(shell, "", getMessage(Policy_Parse_Error_Message, path));
+			}
+		} catch (InvalidPolicyException e) {
+			showMessageBox(shell, "", getMessage(Policy_Invalid_Document_Message, path));
+		} catch (InvalidVocabularyException e) {
+			showMessageBox(shell, "", getMessage(Policy_Invalid_Vocabulary_Document_Message, path, e.uri));
+		}
+		return policy;
 	}
 
 	public static Label newLabel(Composite parent, String text, GridData data, boolean prompt) {
@@ -260,6 +317,13 @@ public class EditorUtil {
 		MessageBox box = new MessageBox(parent, SWT.ICON_ERROR | SWT.OK);
 		box.setText(title);
 		box.setMessage(message);
+		box.open();
+	}
+
+	public static void showMessageBox(Shell parent, String title, List<String> messages) {
+		MessageBox box = new MessageBox(parent, SWT.ICON_ERROR | SWT.OK);
+		box.setText(title);
+		box.setMessage(PSpecUtil.format(messages, System.lineSeparator()));
 		box.open();
 	}
 
@@ -461,6 +525,115 @@ public class EditorUtil {
 			composite.setLayoutData(data);
 		}
 		data.exclude = false;
+	}
+
+	public static EventTable addPolicyLogListeners(EventTable table, final List<String> messages) {
+		table.add(new PSpecListener() {
+			@Override
+			public void onRuleRefError(RefErrorType type, Rule rule, CategoryRef<?> ref, String refid) {
+				if (rule == null) {
+					return;
+				}
+				switch (type) {
+				case Data_Association_Overlap:
+					messages.add(getMessage(Rule_Data_Association_Non_Overlap_Message, rule.getId()));
+					break;
+				case Category_Ref_Not_Exist:
+					if (ref instanceof UserRef) {
+						messages.add(getMessage(User_Category_Not_Exist_Message, ref.getRefid(), rule.getId()));
+					} else {
+						messages.add(getMessage(Data_Category_Not_Exist_Message, ref.getRefid(), rule.getId()));
+					}
+					break;
+				case Category_Exclude_Invalid:
+					if (ref instanceof UserRef) {
+						messages.add(getMessage(User_Category_Exclude_Invalid_Message, ref.getRefid(), refid,
+								rule.getId()));
+					} else {
+						messages.add(getMessage(Data_Category_Exclude_Invalid_Message, ref.getRefid(), refid,
+								rule.getId()));
+					}
+					break;
+				case Category_Exclude_Not_Exist:
+					if (ref instanceof UserRef) {
+						messages.add(getMessage(User_Category_Exclude_Not_Exist_Message, ref.getRefid(), refid,
+								rule.getId()));
+					} else {
+						messages.add(getMessage(Data_Category_Exclude_Not_Exist_Message, ref.getRefid(), refid,
+								rule.getId()));
+					}
+					break;
+				default:
+					break;
+				}
+			}
+
+			@Override
+			public void onRestrictionError(RestrictionErrorType type, Rule rule, Restriction res,
+					String refId) {
+				switch (type) {
+				case Associate_Restriction_DataRef_Not_Exist:
+					messages.add(getMessage(Rule_Restriction_DataRef_Not_Exist_Message, refId,
+							rule.getRestrictionIndex(res), rule.getId()));
+					break;
+				case Associate_Restriction_Explicit_DataRef:
+					messages.add(getMessage(Rule_Restriction_Explicit_DataRef_Message, rule.getId()));
+					break;
+				case One_Forbid:
+					messages.add(getMessage(Rule_Restriction_One_Forbid_Message, rule.getId()));
+					break;
+				case Single_One_Restriction:
+					messages.add(getMessage(Rule_Restriction_Single_One_Message, rule.getId()));
+					break;
+				case Single_Restriction_No_DataRef:
+					messages.add(getMessage(Rule_Restriction_Single_No_DataRef_Message, rule.getId()));
+					break;
+				case Single_Restriction_One_Desensitize:
+					messages.add(getMessage(Rule_Restriction_Single_One_Desensitize_Message, rule.getId()));
+					break;
+				case Unsupported_Operation:
+					messages.add(getMessage(Rule_Restriction_Unsupported_Operation_Message, rule.getId(),
+							rule.getRestrictionIndex(res)));
+					break;
+				default:
+					break;
+				}
+			}
+
+			@Override
+			public void onVocabularyError(VocabularyErrorType type, Category<?> category, String refid) {
+				switch (type) {
+				case Category_Cycle_Reference:
+					if (category instanceof UserCategory) {
+						messages.add(getMessage(User_Category_Parent_Cycle_Message, category.getId()));
+					} else {
+						messages.add(getMessage(Data_Category_Parent_Cycle_Message, category.getId()));
+					}
+					break;
+				case Category_Duplicate:
+					if (category instanceof UserCategory) {
+						messages.add(getMessage(User_Category_ID_Unique_Message, category.getId()));
+					} else {
+						messages.add(getMessage(Data_Category_ID_Unique_Message, category.getId()));
+					}
+					break;
+				case Category_Parent_Not_Exist:
+					if (category instanceof UserCategory) {
+						messages.add(getMessage(User_Category_Parent_Not_Exist_Message, category.getId(), refid));
+					} else {
+						messages.add(getMessage(Data_Category_Parent_Not_Exist_Message, category.getId(), refid));
+					}
+					break;
+				case Cycle_Reference:
+					messages.add(getMessage(Vocabulary_Cycle_Reference_Message));
+					break;
+				default:
+					break;
+				}
+			}
+		});
+		return table;
+
 	}
 
 }

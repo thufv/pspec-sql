@@ -3,6 +3,7 @@ package edu.thu.ss.editor.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.thu.ss.editor.model.OutputEntry.OutputType;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Vocabulary;
 
@@ -65,4 +66,39 @@ public class EditorModel {
 		return "Policy" + (nextPolicyId++);
 	}
 
+	public boolean hasOutput(OutputType type) {
+		for (VocabularyModel vocabularyModel : vocabularies) {
+			if (vocabularyModel.hasOutput(type)) {
+				return true;
+			}
+		}
+		for (PolicyModel policyModel : policies) {
+			if (policyModel.hasOutput(type)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public List<OutputEntry> getOutput(OutputType type) {
+		List<OutputEntry> result = new ArrayList<>();
+		for (VocabularyModel vocabularyModel : vocabularies) {
+			vocabularyModel.getOutput(type, result);
+		}
+		for (PolicyModel policyModel : policies) {
+			policyModel.getOutput(type, result);
+		}
+		return result;
+	}
+
+	public int countOutput(OutputType type) {
+		int count = 0;
+		for (VocabularyModel vocabularyModel : vocabularies) {
+			count += vocabularyModel.countOutput(type);
+		}
+		for (PolicyModel policyModel : policies) {
+			count += policyModel.countOutput(type);
+		}
+		return count;
+	}
 }

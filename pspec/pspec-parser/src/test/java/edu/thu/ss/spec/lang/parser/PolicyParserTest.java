@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import edu.thu.ss.spec.lang.analyzer.redundancy.LocalRedundancyAnalyzer;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.meta.MetaRegistry;
 import edu.thu.ss.spec.meta.xml.XMLMetaRegistryParser;
@@ -18,7 +19,7 @@ public class PolicyParserTest {
 	public void testMeta() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse(prefix + "spark-policy.xml", false, false);
+			Policy policy = parser.parse(prefix + "spark-policy.xml");
 			System.out.println(policy);
 
 			XMLMetaRegistryParser metaParser = new XMLMetaRegistryParser();
@@ -33,7 +34,7 @@ public class PolicyParserTest {
 	public void testConflict() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse(prefix + "conflict-policy.xml", false, true);
+			Policy policy = parser.parse(prefix + "conflict-policy.xml");
 			System.out.println(policy);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -43,7 +44,8 @@ public class PolicyParserTest {
 	public void testRedundancy() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse(prefix + "redundancy-policy.xml", false, true);
+			parser.addAnalyzer(new LocalRedundancyAnalyzer());
+			Policy policy = parser.parse(prefix + "redundancy-policy.xml");
 			System.out.println(policy);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -53,7 +55,8 @@ public class PolicyParserTest {
 	public void testGlobalRedundancy() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse(prefix + "global-redundancy-policy.xml", true, true);
+			parser.setGlobal(true);
+			Policy policy = parser.parse(prefix + "global-redundancy-policy.xml");
 			System.out.println(policy);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -64,7 +67,7 @@ public class PolicyParserTest {
 	public void testIntel() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse("misc/intel/spark-policy.xml", false, true);
+			Policy policy = parser.parse("misc/intel/spark-policy.xml");
 			System.out.println(policy);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -74,7 +77,7 @@ public class PolicyParserTest {
 	public void testGlobalDP() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse(prefix + "dp-global-policy.xml", false, false);
+			Policy policy = parser.parse(prefix + "dp-global-policy.xml");
 			System.out.println(policy);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -84,7 +87,7 @@ public class PolicyParserTest {
 	public void testFineDP() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse(prefix + "dp-fine-policy.xml", false, false);
+			Policy policy = parser.parse(prefix + "dp-fine-policy.xml");
 			System.out.println(policy);
 		} catch (Exception e) {
 			e.printStackTrace();

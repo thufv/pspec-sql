@@ -1,6 +1,5 @@
 package edu.thu.ss.editor.util;
 
-import java.text.Format;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -49,6 +48,9 @@ public class MessagesUtil {
 	public static final String Vocabulary_ID_Empty_Message = "vocabulary.id.empty.message";
 	public static final String Vocabulary_Opened_Message = "vocabulary.opened.message";
 	public static final String Vocabulary_Save_Success_Message = "vocabulary.save.success.message";
+	public static final String Vocabulary_Cycle_Reference_Message = "vocabulary.cycle.reference.message";
+	public static final String Vocabulary_Invalid_Document_Message = "vocabulary.invalid.document.message";
+	public static final String Vocabulary_Parse_Error_Message = "vocabulary.parse.error.message";
 
 	public static final String Issuer = "issuer";
 	public static final String Issuer_Name = "issuer.name";
@@ -81,7 +83,11 @@ public class MessagesUtil {
 	public static final String User_Category_Parent_Same_Message = "user.category.parent.same.message";
 	public static final String User_Category_Parent_Cycle_Message = "user.category.parent.cycle.message";
 	public static final String User_Category_Exclude_Unique_Message = "user.category.exclude.unique.message";
+	public static final String User_Category_Not_Excluded_Message = "user.category.not.excluded.message";
 	public static final String User_Category_Exclude_Not_Exist_Message = "user.category.exclude.not.exist.message";
+	public static final String User_Category_Exclude_Invalid_Message = "user.category.exclude.invalid.message";
+	public static final String User_Category_Not_Exist_Message = "user.category.not.exist.message";
+	public static final String User_Category_Parent_Not_Exist_Message = "user.category.parent.not.exist.message";
 
 	public static final String Data_Ref = "data.ref";
 	public static final String Data_Association = "data.association";
@@ -96,7 +102,11 @@ public class MessagesUtil {
 	public static final String Data_Category_Parent_Same_Message = "data.category.parent.same.message";
 	public static final String Data_Category_Parent_Cycle_Message = "data.category.parent.cycle.message";
 	public static final String Data_Category_Exclude_Unique_Message = "data.category.exclude.unique.message";
+	public static final String Data_Category_Not_Excluded_Message = "data.category.exclude.not.exist.message";
 	public static final String Data_Category_Exclude_Not_Exist_Message = "data.category.exclude.not.exist.message";
+	public static final String Data_Category_Exclude_Invalid_Message = "data.category.exclude.invalid.message";
+	public static final String Data_Category_Not_Exist_Message = "data.category.not.exist.message";
+	public static final String Data_Category_Parent_Not_Exist_Message = "data.category.parent.not.exist.message";
 
 	public static final String Policy = "policy";
 	public static final String Policy_ID = "policy.id";
@@ -104,10 +114,14 @@ public class MessagesUtil {
 	public static final String Policy_Rules = "policy.rules";
 	public static final String Policy_Opened_Message = "policy.opened.message";
 	public static final String Policy_Save_Success_Message = "policy.save.success.message";
+	public static final String Policy_Invalid_Document_Message = "policy.invalid.document.message";
+	public static final String Policy_Parse_Error_Message = "policy.parse.error.message";
+	public static final String Policy_Invalid_Vocabulary_Document_Message = "policy.invalid.vocabulary.document.message";
 
 	public static final String Rule = "rule";
 	public static final String Rule_Type = "rule.type";
 	public static final String Rule_ID = "rule.id";
+	public static final String Rule_Error_Message = "rule.error.message";
 	public static final String Rule_ID_Non_Empty_Message = "rule.id.none.empty.message";
 	public static final String Rule_User_Ref_Non_Empty_Message = "rule.user.ref.non.empty.message";
 	public static final String Rule_User_Ref_Unique_Message = "rule.user.ref.unique.message";
@@ -118,6 +132,20 @@ public class MessagesUtil {
 	public static final String Rule_Restriction_Not_Empty_Message = "rule.restriction.not.empty.message";
 	public static final String Rule_Data_Association_Non_Overlap_Message = "rule.data.association.non.overlap.message";
 	public static final String Rule_Restriction_Effective_Message = "rule.restriction.effective.message";
+	@ParseOnly
+	public static final String Rule_Restriction_DataRef_Not_Exist_Message = "rule.restriction.dataref.not.exist.message";
+	@ParseOnly
+	public static final String Rule_Restriction_Explicit_DataRef_Message = "rule.restriction.explicit.dataref.message";
+	@ParseOnly
+	public static final String Rule_Restriction_One_Forbid_Message = "rule.restriction.one.forbid.message";
+	public static final String Rule_Restriction_Unsupported_Operation_Message = "rule.restriction.unsupported.operation.message";
+	@ParseOnly
+	public static final String Rule_Restriction_Single_One_Message = "rule.restriction.single.one.message";
+	@ParseOnly
+	public static final String Rule_Restriction_Single_No_DataRef_Message = "rule.restriction.single.no.dataref.message";
+	@ParseOnly
+	public static final String Rule_Restriction_Single_One_Desensitize_Message = "rule.restriction.single.one.desensitize.message";
+
 	public static final String Forbid = "forbid";
 	public static final String Restriction = "restriction";
 	public static final String Restrict = "restrict";
@@ -135,7 +163,7 @@ public class MessagesUtil {
 	public static final String Delete_Data = "delete.data";
 	public static final String Delete_Data_Message = "delete.data.message";
 
-	public static String getMessage(String key, String... contents) {
+	public static String getMessage(String key, Object... contents) {
 		try {
 			String msg = bundle.getString(key);
 			return MessageFormat.format(msg, contents);
@@ -143,5 +171,9 @@ public class MessagesUtil {
 			e.printStackTrace();
 			throw e;
 		}
+	}
+
+	public static @interface ParseOnly {
+
 	}
 }

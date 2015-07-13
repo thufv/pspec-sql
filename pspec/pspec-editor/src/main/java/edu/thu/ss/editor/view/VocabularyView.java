@@ -20,15 +20,11 @@ import org.eclipse.swt.widgets.TreeItem;
 
 import edu.thu.ss.editor.model.VocabularyModel;
 import edu.thu.ss.editor.util.EditorUtil;
-import edu.thu.ss.spec.lang.parser.VocabularyParser;
+import edu.thu.ss.spec.lang.parser.event.EventTable;
 import edu.thu.ss.spec.lang.pojo.ContactInfo;
-import edu.thu.ss.spec.lang.pojo.DataContainer;
-import edu.thu.ss.spec.lang.pojo.UserContainer;
 import edu.thu.ss.spec.lang.pojo.Vocabulary;
-import edu.thu.ss.spec.manager.VocabularyManager;
-import edu.thu.ss.spec.util.XMLUtil;
 
-public class VocabularyView extends BaseView<VocabularyModel> {
+public class VocabularyView extends EditorView<VocabularyModel> {
 
 	private Text name;
 	private Text email;
@@ -47,9 +43,9 @@ public class VocabularyView extends BaseView<VocabularyModel> {
 	 * @param parent
 	 * @param style
 	 */
-	public VocabularyView(final Shell shell, Composite parent, int style, VocabularyModel model,
-			TreeItem item) {
-		super(shell, parent, style, model);
+	public VocabularyView(final Shell shell, Composite parent, VocabularyModel model,
+			OutputView outputView, TreeItem item) {
+		super(shell, parent, model, outputView);
 		this.item = item;
 		this.setBackground(EditorUtil.getDefaultBackground());
 		this.setBackgroundMode(SWT.INHERIT_FORCE);
@@ -118,22 +114,12 @@ public class VocabularyView extends BaseView<VocabularyModel> {
 				FileDialog dlg = EditorUtil.newOpenFileDialog(shell);
 				String file = dlg.open();
 				if (file != null) {
-					baseVocabulary.setText(file);
-					VocabularyParser parser = new VocabularyParser();
-					try {
-						parser.parse(file);
-						Vocabulary base = VocabularyManager.getVocab(XMLUtil.toUri(file));
-						UserContainer baseUser = base.getUserContainer();
-						DataContainer baseData = base.getDataContainer();
-
-						vocabulary.setBase(XMLUtil.toUri(file));
-						vocabulary.getUserContainer().setBaseContainer(baseUser);
-						vocabulary.getDataContainer().setBaseContainer(baseData);
-
-					} catch (Exception e1) {
-						e1.printStackTrace();
+					//TODO event table
+					Vocabulary base = EditorUtil.openVocabulary(file, shell, EventTable.getDummy());
+					if (base != null) {
+						vocabulary.setBaseVocabulary(base);
+						baseVocabulary.setText(file);
 					}
-
 				}
 			}
 		});

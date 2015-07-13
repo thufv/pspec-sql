@@ -5,7 +5,6 @@ import static edu.thu.ss.editor.util.MessagesUtil.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
@@ -21,29 +20,22 @@ import edu.thu.ss.editor.util.EditorUtil;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
 import edu.thu.ss.spec.lang.pojo.UserContainer;
 
-public class UserCategoryDialog extends Dialog {
+public class UserCategoryDialog extends EditorDialog {
 
-	protected Shell dialog;
 	private UserCategory userCategory;
 	private UserContainer userContainer;
 
 	private Text userId;
 
-	private Button cancel;
-	private Button ok;
-	private int returnCode;
-
 	public UserCategoryDialog(Shell parent, UserCategory userCategory, UserContainer userContainer) {
-		super(parent, SWT.NONE);
+		super(parent);
 		this.userCategory = userCategory;
 		this.userContainer = userContainer;
 
 		dialog = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.RESIZE);
 		dialog.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		dialog.setText(getMessage(User_Category));
-	}
 
-	public int open() {
 		dialog.setLayout(new GridLayout(2, false));
 		initializeContent(dialog);
 
@@ -51,15 +43,6 @@ public class UserCategoryDialog extends Dialog {
 		dialog.setMinimumSize(dialog.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
 		EditorUtil.centerLocation(dialog);
-
-		dialog.open();
-		dialog.layout();
-		Display display = getParent().getDisplay();
-		while (!dialog.isDisposed()) {
-			if (!display.readAndDispatch())
-				display.sleep();
-		}
-		return returnCode;
 	}
 
 	protected void initializeContent(Composite parent) {
@@ -91,7 +74,7 @@ public class UserCategoryDialog extends Dialog {
 					return;
 				}
 				userCategory.setId(text);
-				returnCode = SWT.OK;
+				retCode = SWT.OK;
 				dialog.dispose();
 			}
 		});
@@ -99,7 +82,7 @@ public class UserCategoryDialog extends Dialog {
 		cancel = EditorUtil.newButton(buttons, getMessage(Cancel));
 		cancel.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				returnCode = SWT.CANCEL;
+				retCode = SWT.CANCEL;
 				dialog.dispose();
 			}
 		});

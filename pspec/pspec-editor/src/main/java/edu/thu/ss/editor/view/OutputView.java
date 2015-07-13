@@ -1,9 +1,14 @@
 package edu.thu.ss.editor.view;
 
-import static edu.thu.ss.editor.util.MessagesUtil.*;
+import static edu.thu.ss.editor.util.MessagesUtil.Description;
+import static edu.thu.ss.editor.util.MessagesUtil.Output_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Type;
+import static edu.thu.ss.editor.util.MessagesUtil.getMessage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -27,29 +32,34 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
+import edu.thu.ss.editor.model.EditorModel;
 import edu.thu.ss.editor.model.OutputEntry;
-import edu.thu.ss.editor.model.OutputEntry.MessageType;
 import edu.thu.ss.editor.model.OutputEntry.OutputType;
-import edu.thu.ss.editor.model.OutputModel;
 import edu.thu.ss.editor.util.EditorUtil;
 
 public class OutputView extends Composite {
 
 	private Shell shell;
-	private OutputModel model = new OutputModel();
+
+	private EditorModel model;
 	private TreeViewer viewer;
 
 	private Label outputLabel;
+
+	private OutputContentProvider contentProvider;
+	private OutputLabelProvider labelProvider;
+
+	private Map<OutputType, Integer> outputCounts = new HashMap<>();
 
 	/**
 	 * Create the composite
 	 * @param parent
 	 * @param style
 	 */
-	public OutputView(final Shell shell, Composite parent, int style) {
+	public OutputView(final Shell shell, Composite parent, int style, EditorModel model) {
 		super(parent, style);
 		this.shell = shell;
-
+		this.model = model;
 		this.setBackground(EditorUtil.getDefaultBackground());
 		this.setLayout(EditorUtil.newNoMarginGridLayout(1, false));
 
@@ -57,8 +67,7 @@ public class OutputView extends Composite {
 	}
 
 	private void initializeContent(Composite parent) {
-		outputLabel = EditorUtil.newLabel(parent, getOutputText());
-
+		outputLabel = EditorUtil.newLabel(parent, "");
 		initializeViewer(parent);
 
 	}
@@ -71,8 +80,10 @@ public class OutputView extends Composite {
 		treeComposite.setLayout(treeLayout);
 
 		viewer = new TreeViewer(treeComposite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-		viewer.setLabelProvider(new OutputLabelProvider());
-		viewer.setContentProvider(new OutputContentProvider());
+		labelProvider = new OutputLabelProvider();
+		viewer.setLabelProvider(labelProvider);
+		contentProvider = new OutputContentProvider();
+		viewer.setContentProvider(contentProvider);
 		viewer.setInput(model);
 
 		Tree tree = viewer.getTree();
@@ -98,7 +109,7 @@ public class OutputView extends Composite {
 					return;
 				}
 				Object data = item.getData();
-				if (data instanceof List<?>) {
+				if (data instanceof OutputType) {
 					viewer.setExpandedState(data, !viewer.getExpandedState(data));
 				} else {
 					OutputEntry entry = (OutputEntry) data;
@@ -110,30 +121,42 @@ public class OutputView extends Composite {
 		});
 	}
 
-	private String getOutputText() {
-		return getMessage(Output_Message, String.valueOf(model.getErrors().size()),
-				String.valueOf(model.getWarnings().size()));
-
-	}
-
 	/**
 	 * must be called explicitly
 	 */
 	public void refresh() {
 		viewer.refresh();
-		outputLabel.setText(getOutputText());
 	}
 
-	public void clear() {
-		model.clear();
+	/**
+	 * must be called explicitly
+	 */
+	public void refresh(OutputType type) {
+		viewer.refresh(type);
 	}
 
-	public void addWarning(String description, OutputType type, Listener listener) {
-		model.getWarnings().add(new OutputEntry(description, type, listener, MessageType.warning));
+	private void updateCount(OutputType type, int count) {
+		outputCounts.put(type, count);
 	}
 
-	public void addError(String description, OutputType type, Listener listener) {
-		model.getErrors().add(new OutputEntry(description, type, listener, MessageType.error));
+	private void updateLabel() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(getMessage(Output_Message));
+		for (int i = 0; i < OutputType.values().length; i++) {
+			OutputType type = OutputType.values()[i];
+			Integer count = outputCounts.get(type);
+			if (count == null) {
+				count = 0;
+			}
+			sb.append(' ');
+			sb.append(count);
+			sb.append(' ');
+			sb.append(getMessage(type.toString()));
+			if (i != OutputType.values().length - 1) {
+				sb.append(',');
+			}
+		}
+		outputLabel.setText(sb.toString());
 	}
 
 	private class OutputLabelProvider extends LabelProvider implements ITableLabelProvider {
@@ -141,11 +164,10 @@ public class OutputView extends Composite {
 		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
 			if (columnIndex == 0) {
-				if (element instanceof List<?>) {
-					List<?> list = (List<?>) element;
-					return getColumnImage((OutputEntry) list.get(0));
+				if (element instanceof OutputType) {
+					return getColumnImage((OutputType) element);
 				} else {
-					return getColumnImage((OutputEntry) element);
+					return getColumnImage(((OutputEntry) element).outputType);
 				}
 			}
 			return null;
@@ -153,16 +175,9 @@ public class OutputView extends Composite {
 
 		@Override
 		public String getColumnText(Object element, int columnIndex) {
-			if (element instanceof List<?>) {
+			if (element instanceof OutputType) {
 				if (columnIndex == 0) {
-					List<?> list = (List<?>) element;
-					OutputEntry entry = (OutputEntry) list.get(0);
-					switch (entry.messageType) {
-					case error:
-						return getMessage(Error);
-					case warning:
-						return getMessage(Warning);
-					}
+					return getMessage(element.toString());
 				}
 			} else {
 				OutputEntry entry = (OutputEntry) element;
@@ -171,8 +186,8 @@ public class OutputView extends Composite {
 					return entry.description;
 				case 1:
 					//TODO
-					if (entry.outputType != null) {
-						return entry.outputType.toString();
+					if (entry.messageType != null) {
+						return entry.messageType.toString();
 					}
 				}
 			}
@@ -180,8 +195,8 @@ public class OutputView extends Composite {
 			return "";
 		}
 
-		private Image getColumnImage(OutputEntry entry) {
-			switch (entry.messageType) {
+		private Image getColumnImage(OutputType type) {
+			switch (type) {
 			case error:
 				return SWTResourceManager.getImage(EditorUtil.Image_Error);
 			case warning:
@@ -206,11 +221,15 @@ public class OutputView extends Composite {
 
 		@Override
 		public Object[] getChildren(Object parentElement) {
-			if (parentElement instanceof List<?>) {
-				List<?> list = (List<?>) parentElement;
-				return list.toArray();
+			if (!(parentElement instanceof OutputType)) {
+				return new Object[0];
 			}
-			return new Object[0];
+
+			OutputType type = (OutputType) parentElement;
+			List<OutputEntry> list = model.getOutput(type);
+			updateCount(type, list.size());
+			updateLabel();
+			return list.toArray();
 		}
 
 		@Override
@@ -220,21 +239,26 @@ public class OutputView extends Composite {
 
 		@Override
 		public boolean hasChildren(Object element) {
-			return element instanceof List<?>;
+			return element instanceof OutputType;
 		}
 
 		@Override
 		public Object[] getElements(Object inputElement) {
-			OutputModel model = (OutputModel) inputElement;
-			List<List<OutputEntry>> list = new ArrayList<>();
-			if (!model.getErrors().isEmpty()) {
-				list.add(model.getErrors());
-			}
-			if (!model.getWarnings().isEmpty()) {
-				list.add(model.getWarnings());
-			}
-			return list.toArray();
-		}
+			EditorModel model = (EditorModel) inputElement;
+			List<OutputType> types = new ArrayList<>(OutputType.values().length);
 
+			for (OutputType type : OutputType.values()) {
+				int count = model.countOutput(type);
+				if (count > 0) {
+					types.add(type);
+					updateCount(type, count);
+				}
+			}
+			updateLabel();
+
+			return types.toArray();
+
+		}
 	}
+
 }

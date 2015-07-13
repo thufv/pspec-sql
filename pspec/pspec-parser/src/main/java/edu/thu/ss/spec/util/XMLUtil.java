@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import edu.thu.ss.spec.lang.parser.InvalidDocumentException;
+import edu.thu.ss.spec.lang.parser.InvalidPolicyException;
 
 /**
  * a utility class for xml related functionalities
@@ -64,7 +64,7 @@ public class XMLUtil {
 		transformer.transform(source, result);
 	}
 
-	public static Document parseDocument(URI uri, String xsdPath) throws InvalidDocumentException {
+	public static Document parseDocument(URI uri, String xsdPath) throws Exception {
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			factory.setNamespaceAware(true);
@@ -91,10 +91,8 @@ public class XMLUtil {
 				validator.validate(new DOMSource(doc));
 			}
 			return doc;
-		} catch (RuntimeException e) {
-			throw e;
 		} catch (Exception e) {
-			throw new InvalidDocumentException(uri, e);
+			throw e;
 		}
 
 	}
