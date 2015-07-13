@@ -13,8 +13,8 @@ import org.w3c.dom.NodeList;
 import edu.thu.ss.spec.lang.analyzer.VocabularyAnalyzer;
 import edu.thu.ss.spec.lang.parser.PSpec.PSpecEventType;
 import edu.thu.ss.spec.lang.parser.event.EventTable;
-import edu.thu.ss.spec.lang.parser.event.ParseListener;
-import edu.thu.ss.spec.lang.parser.event.VocabularyEvent;
+import edu.thu.ss.spec.lang.parser.event.PSpecListener;
+import edu.thu.ss.spec.lang.parser.event.PSpecListener.VocabularyErrorType;
 import edu.thu.ss.spec.lang.pojo.DataContainer;
 import edu.thu.ss.spec.lang.pojo.Info;
 import edu.thu.ss.spec.lang.pojo.UserContainer;
@@ -43,7 +43,7 @@ public class VocabularyParser implements ParserConstant {
 
 	protected boolean error = false;
 
-	protected EventTable<VocabularyEvent> table = new EventTable<>();
+	protected EventTable table = new EventTable();
 
 	protected VocabularyAnalyzer analyzer = new VocabularyAnalyzer(table);
 
@@ -73,8 +73,8 @@ public class VocabularyParser implements ParserConstant {
 		return vocabulary;
 	}
 
-	public void addListener(PSpecEventType type, ParseListener<VocabularyEvent> listener) {
-		table.hook(type, listener);
+	public void addListener(PSpecEventType type, PSpecListener listener) {
+		table.add(listener);
 	}
 
 	private void registerVocabularies() {
@@ -123,9 +123,7 @@ public class VocabularyParser implements ParserConstant {
 					//fix problem
 					vocabulary.setBase(null);
 					logger.error("Cycle reference of vocabularies detected: " + currentUri);
-					VocabularyEvent event = new VocabularyEvent(
-							PSpecEventType.Vocabulary_Category_Cycle_Reference, currentUri, vocabulary);
-					table.sendEvent(event);
+					table.onVocabularyError(VocabularyErrorType.Cycle_Reference, null, null);
 					error = true;
 					break;
 				}

@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.thu.ss.spec.lang.parser.event.EventTable;
-import edu.thu.ss.spec.lang.parser.event.PolicyEvent;
 import edu.thu.ss.spec.lang.pojo.DataContainer;
 import edu.thu.ss.spec.lang.pojo.DataRef;
 import edu.thu.ss.spec.lang.pojo.Restriction;
@@ -41,7 +40,7 @@ public class RuleSimplifier extends BaseRuleAnalyzer {
 
 	private Map<Rule, SimplificationLog> logs = new HashMap<>();
 
-	public RuleSimplifier(EventTable<PolicyEvent> table, boolean remove) {
+	public RuleSimplifier(EventTable table, boolean remove) {
 		super(table);
 		this.remove = remove;
 	}

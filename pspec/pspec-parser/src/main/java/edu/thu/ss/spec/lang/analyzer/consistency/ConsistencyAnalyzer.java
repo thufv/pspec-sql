@@ -5,7 +5,6 @@ import edu.thu.ss.spec.lang.analyzer.LocalExpander;
 import edu.thu.ss.spec.lang.analyzer.stat.AnalyzerStat;
 import edu.thu.ss.spec.lang.analyzer.stat.ConsistencyStat;
 import edu.thu.ss.spec.lang.parser.event.EventTable;
-import edu.thu.ss.spec.lang.parser.event.PolicyEvent;
 import edu.thu.ss.spec.lang.pojo.Policy;
 
 /**
@@ -16,7 +15,7 @@ import edu.thu.ss.spec.lang.pojo.Policy;
  */
 public class ConsistencyAnalyzer extends BasePolicyAnalyzer {
 
-	public ConsistencyAnalyzer(EventTable<PolicyEvent> table) {
+	public ConsistencyAnalyzer(EventTable table) {
 		super(table);
 	}
 

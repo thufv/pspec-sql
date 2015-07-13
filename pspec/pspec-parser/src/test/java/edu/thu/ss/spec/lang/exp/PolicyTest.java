@@ -12,11 +12,10 @@ import edu.thu.ss.spec.lang.analyzer.stat.RedundancyStat;
 import edu.thu.ss.spec.lang.parser.PolicyParser;
 import edu.thu.ss.spec.lang.parser.VocabularyParser;
 import edu.thu.ss.spec.lang.parser.event.EventTable;
-import edu.thu.ss.spec.lang.parser.event.PolicyEvent;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Vocabulary;
-import edu.thu.ss.spec.manager.VocabularyManager;
 import edu.thu.ss.spec.manager.PolicyManager;
+import edu.thu.ss.spec.manager.VocabularyManager;
 
 public class PolicyTest {
 
@@ -44,7 +43,7 @@ public class PolicyTest {
 
 		for (int rule : rules) {
 			AnalyzerStat stat = new RedundancyStat(times);
-			IPolicyAnalyzer analyzer = new LocalRedundancyAnalyzer(new EventTable<PolicyEvent>());
+			IPolicyAnalyzer analyzer = new LocalRedundancyAnalyzer(new EventTable());
 			expr("Redundancy-" + rule, vocabPath, userContainerId, dataContainerId, ruleGenerator, stat,
 					analyzer, rule);
 		}
@@ -57,7 +56,7 @@ public class PolicyTest {
 
 		for (int rule : rules) {
 			AnalyzerStat stat = new ConsistencyStat(times);
-			IPolicyAnalyzer analyzer = new ConsistencyAnalyzer(new EventTable<PolicyEvent>());
+			IPolicyAnalyzer analyzer = new ConsistencyAnalyzer(new EventTable());
 
 			expr("Consistency-" + rule, vocabPath, userContainerId, dataContainerId, ruleGenerator, stat,
 					analyzer, rule);
@@ -72,7 +71,7 @@ public class PolicyTest {
 		for (String userId : userIds) {
 			RedundancyStat stat = new RedundancyStat(times);
 			expr("Redundancy-" + userId, vocabPath, userId, dataContainerId, ruleGenerator, stat,
-					new LocalRedundancyAnalyzer(new EventTable<PolicyEvent>()), defaultRule);
+					new LocalRedundancyAnalyzer(new EventTable()), defaultRule);
 		}
 	}
 
@@ -83,7 +82,7 @@ public class PolicyTest {
 		for (String userId : userIds) {
 			ConsistencyStat stat = new ConsistencyStat(times);
 			expr("Consistency-" + userId, vocabPath, userId, dataContainerId, ruleGenerator, stat,
-					new ConsistencyAnalyzer(new EventTable<PolicyEvent>()), defaultRule);
+					new ConsistencyAnalyzer(new EventTable()), defaultRule);
 		}
 	}
 
@@ -97,7 +96,7 @@ public class PolicyTest {
 		for (String dataId : dataIds) {
 			RedundancyStat stat = new RedundancyStat(times);
 			expr("Redundancy-" + dataId, vocabPath, userContainerId, dataId, ruleGenerator, stat,
-					new LocalRedundancyAnalyzer(new EventTable<PolicyEvent>()), defaultRule);
+					new LocalRedundancyAnalyzer(new EventTable()), defaultRule);
 
 		}
 
@@ -112,7 +111,7 @@ public class PolicyTest {
 		for (String dataId : dataIds) {
 			ConsistencyStat stat = new ConsistencyStat(times);
 			expr("Consistency-" + dataId, vocabPath, userContainerId, dataId, ruleGenerator, stat,
-					new ConsistencyAnalyzer(new EventTable<PolicyEvent>()), defaultRule);
+					new ConsistencyAnalyzer(new EventTable()), defaultRule);
 
 		}
 	}
@@ -127,7 +126,7 @@ public class PolicyTest {
 		for (String dataId : dataIds) {
 			RedundancyStat stat = new RedundancyStat(times);
 			expr("Redundancy-" + dataId, vocabPath, userContainerId, dataId, ruleGenerator, stat,
-					new LocalRedundancyAnalyzer(new EventTable<PolicyEvent>()), defaultRule);
+					new LocalRedundancyAnalyzer(new EventTable()), defaultRule);
 
 		}
 
@@ -143,7 +142,7 @@ public class PolicyTest {
 		for (String dataId : dataIds) {
 			ConsistencyStat stat = new ConsistencyStat(times);
 			expr("Consistency-" + dataId, vocabPath, userContainerId, dataId, ruleGenerator, stat,
-					new ConsistencyAnalyzer(new EventTable<PolicyEvent>()), defaultRule);
+					new ConsistencyAnalyzer(new EventTable()), defaultRule);
 
 		}
 	}
@@ -155,8 +154,7 @@ public class PolicyTest {
 			RedundancyStat stat = new RedundancyStat(times);
 			ruleGenerator.maxDim = dim;
 			expr("Redundancy-" + String.valueOf(dim), vocabPath, userContainerId, dataContainerId,
-					ruleGenerator, stat, new LocalRedundancyAnalyzer(new EventTable<PolicyEvent>()),
-					defaultRule);
+					ruleGenerator, stat, new LocalRedundancyAnalyzer(new EventTable()), defaultRule);
 		}
 	}
 
@@ -168,7 +166,7 @@ public class PolicyTest {
 			ConsistencyStat stat = new ConsistencyStat(times);
 			ruleGenerator.maxDim = dim;
 			expr("Consistency-" + String.valueOf(dim), vocabPath, userContainerId, dataContainerId,
-					ruleGenerator, stat, new ConsistencyAnalyzer(new EventTable<PolicyEvent>()), defaultRule);
+					ruleGenerator, stat, new ConsistencyAnalyzer(new EventTable()), defaultRule);
 		}
 	}
 
@@ -179,8 +177,7 @@ public class PolicyTest {
 			RedundancyStat stat = new RedundancyStat(times);
 			ruleGenerator.maxRes = res;
 			expr("Redundancy-" + String.valueOf(res), vocabPath, userContainerId, dataContainerId,
-					ruleGenerator, stat, new LocalRedundancyAnalyzer(new EventTable<PolicyEvent>()),
-					defaultRule);
+					ruleGenerator, stat, new LocalRedundancyAnalyzer(new EventTable()), defaultRule);
 		}
 	}
 
@@ -192,7 +189,7 @@ public class PolicyTest {
 			ConsistencyStat stat = new ConsistencyStat(times);
 			ruleGenerator.maxRes = res;
 			expr("Consistency-" + String.valueOf(res), vocabPath, userContainerId, dataContainerId,
-					ruleGenerator, stat, new ConsistencyAnalyzer(new EventTable<PolicyEvent>()), defaultRule);
+					ruleGenerator, stat, new ConsistencyAnalyzer(new EventTable()), defaultRule);
 		}
 	}
 
@@ -204,8 +201,7 @@ public class PolicyTest {
 			RedundancyStat stat = new RedundancyStat(times);
 			ruleGenerator.forbidRatio = f;
 			expr("Redundancy-" + String.valueOf(f), vocabPath, userContainerId, dataContainerId,
-					ruleGenerator, stat, new LocalRedundancyAnalyzer(new EventTable<PolicyEvent>()),
-					defaultRule);
+					ruleGenerator, stat, new LocalRedundancyAnalyzer(new EventTable()), defaultRule);
 		}
 	}
 

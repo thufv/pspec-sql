@@ -2,7 +2,6 @@ package edu.thu.ss.spec.lang.analyzer.rule;
 
 import edu.thu.ss.spec.lang.analyzer.BasePolicyAnalyzer;
 import edu.thu.ss.spec.lang.parser.event.EventTable;
-import edu.thu.ss.spec.lang.parser.event.PolicyEvent;
 import edu.thu.ss.spec.lang.pojo.DataContainer;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Rule;
@@ -18,7 +17,7 @@ public abstract class BaseRuleAnalyzer extends BasePolicyAnalyzer {
 
 	protected Policy policy;
 
-	public BaseRuleAnalyzer(EventTable<PolicyEvent> table) {
+	public BaseRuleAnalyzer(EventTable table) {
 		super(table);
 	}
 

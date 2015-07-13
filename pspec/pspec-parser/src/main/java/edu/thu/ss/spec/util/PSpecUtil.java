@@ -11,13 +11,14 @@ import org.slf4j.LoggerFactory;
 
 import edu.thu.ss.spec.lang.parser.PSpec.PSpecEventType;
 import edu.thu.ss.spec.lang.parser.event.EventTable;
-import edu.thu.ss.spec.lang.parser.event.PolicyEvent;
+import edu.thu.ss.spec.lang.parser.event.PSpecListener.RefErrorType;
 import edu.thu.ss.spec.lang.pojo.Category;
 import edu.thu.ss.spec.lang.pojo.CategoryContainer;
 import edu.thu.ss.spec.lang.pojo.CategoryRef;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.HierarchicalObject;
 import edu.thu.ss.spec.lang.pojo.ObjectRef;
+import edu.thu.ss.spec.lang.pojo.Rule;
 
 /**
  * Utility class for set operations
@@ -207,7 +208,7 @@ public class PSpecUtil {
 	}
 
 	public static <T extends Category<T>> boolean resolveCategoryRef(CategoryRef<T> ref,
-			CategoryContainer<T> container, boolean refresh, EventTable<PolicyEvent> table) {
+			CategoryContainer<T> container, Rule rule, boolean refresh, EventTable table) {
 		boolean error = false;
 		if (ref.isResolved() && !refresh) {
 			return error;
@@ -216,9 +217,7 @@ public class PSpecUtil {
 		if (category != null) {
 			ref.setCategory(category);
 		} else {
-			PolicyEvent event = new PolicyEvent(PSpecEventType.Policy_Category_Ref_Not_Exist, null, null, ref,
-					ref.getRefid());
-			table.sendEvent(event);
+			table.onRuleRefError(RefErrorType.Category_Ref_Not_Exist, rule, ref, ref.getRefid());
 			error = true;
 		}
 		for (ObjectRef excludeRef : ref.getExcludeRefs()) {
@@ -230,15 +229,13 @@ public class PSpecUtil {
 					//handle error
 					logger.error("Excluded category: {} must be a sub-category of referenced category: {}",
 							exclude.getId(), category.getId());
-					PolicyEvent event = new PolicyEvent(PSpecEventType.Policy_Category_Exclude_Invalid, null, null,
-							ref, excludeRef.getRefid());
-					table.sendEvent(event);
+					table.onRuleRefError(RefErrorType.Category_Exclude_Invalid, rule, ref,
+							excludeRef.getRefid());
 					error = true;
 				}
 			} else {
-				PolicyEvent event = new PolicyEvent(PSpecEventType.Policy_Category_Ref_Not_Exist, null, null, ref,
+				table.onRuleRefError(RefErrorType.Category_Exclude_Not_Exist, rule, ref,
 						excludeRef.getRefid());
-				table.sendEvent(event);
 				error = true;
 			}
 		}

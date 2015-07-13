@@ -11,7 +11,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import edu.thu.ss.spec.lang.parser.event.EventTable;
-import edu.thu.ss.spec.lang.parser.event.PolicyEvent;
 import edu.thu.ss.spec.lang.pojo.Action;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DataRef;
@@ -28,7 +27,7 @@ import edu.thu.ss.spec.lang.pojo.Rule;
 public class GlobalExpander extends BasePolicyAnalyzer {
 	private Map<Action, Set<DataCategory>> actionMap = new HashMap<>();
 
-	public GlobalExpander(EventTable<PolicyEvent> table) {
+	public GlobalExpander(EventTable table) {
 		super(table);
 	}
 

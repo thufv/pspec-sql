@@ -14,7 +14,6 @@ import edu.thu.ss.spec.lang.analyzer.BasePolicyAnalyzer;
 import edu.thu.ss.spec.lang.analyzer.stat.AnalyzerStat;
 import edu.thu.ss.spec.lang.analyzer.stat.RedundancyStat;
 import edu.thu.ss.spec.lang.parser.event.EventTable;
-import edu.thu.ss.spec.lang.parser.event.PolicyEvent;
 import edu.thu.ss.spec.lang.pojo.Action;
 import edu.thu.ss.spec.lang.pojo.DataAssociation;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
@@ -26,8 +25,8 @@ import edu.thu.ss.spec.lang.pojo.UserCategory;
 import edu.thu.ss.spec.lang.pojo.UserRef;
 import edu.thu.ss.spec.util.InclusionUtil;
 import edu.thu.ss.spec.util.PSpecUtil;
-import edu.thu.ss.spec.util.Z3Util;
 import edu.thu.ss.spec.util.PSpecUtil.SetRelation;
+import edu.thu.ss.spec.util.Z3Util;
 
 /**
  * performs policy redundancy analysis, for all rule r1 and r2, if r1 covers r2,
@@ -64,7 +63,7 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 
 	protected boolean simplify = false;
 
-	public BaseRedundancyAnalyzer(EventTable<PolicyEvent> table) {
+	public BaseRedundancyAnalyzer(EventTable table) {
 		super(table);
 	}
 

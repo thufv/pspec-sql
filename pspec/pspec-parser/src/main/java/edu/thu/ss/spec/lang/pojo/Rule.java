@@ -125,4 +125,8 @@ public class Rule extends DescribedObject {
 		return sb.toString();
 	}
 
+	public Integer getRestrictionIndex(Restriction res) {
+		return restrictions.indexOf(res);
+	}
+
 }

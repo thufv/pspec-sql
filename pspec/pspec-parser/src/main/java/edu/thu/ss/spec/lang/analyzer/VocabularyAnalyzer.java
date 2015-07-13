@@ -1,8 +1,6 @@
 package edu.thu.ss.spec.lang.analyzer;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -10,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.thu.ss.spec.lang.parser.PSpec.PSpecEventType;
 import edu.thu.ss.spec.lang.parser.event.EventTable;
-import edu.thu.ss.spec.lang.parser.event.VocabularyEvent;
+import edu.thu.ss.spec.lang.parser.event.PSpecListener.VocabularyErrorType;
 import edu.thu.ss.spec.lang.pojo.Category;
 import edu.thu.ss.spec.lang.pojo.CategoryContainer;
 import edu.thu.ss.spec.util.PSpecUtil;
@@ -24,9 +22,9 @@ public class VocabularyAnalyzer {
 
 	private static Logger logger = LoggerFactory.getLogger(VocabularyAnalyzer.class);
 
-	private EventTable<VocabularyEvent> table;
+	private EventTable table;
 
-	public VocabularyAnalyzer(EventTable<VocabularyEvent> table) {
+	public VocabularyAnalyzer(EventTable table) {
 		this.table = table;
 	}
 
@@ -59,9 +57,8 @@ public class VocabularyAnalyzer {
 				} else {
 					logger.error("Fail to locate parent category: {} for category: {}.", parentId,
 							category.getId());
-					VocabularyEvent event = new VocabularyEvent(
-							PSpecEventType.Vocabulary_Category_Parent_Not_Exist, null, null, category, parentId);
-					table.sendEvent(event);
+					table
+							.onVocabularyError(VocabularyErrorType.Category_Parent_Not_Exist, category, parentId);
 					error = true;
 				}
 			}
@@ -72,19 +69,18 @@ public class VocabularyAnalyzer {
 
 	public <T extends Category<T>> boolean checkDuplicateCategory(CategoryContainer<T> container) {
 		boolean error = false;
-		Map<String, T> categories = new HashMap<>();
+		Set<String> categories = new HashSet<>();
+		//check parent first
 
 		CategoryContainer<T> current = container;
 		while (current != null) {
 			for (T category : current.getCategories()) {
-				if (categories.containsKey(category.getId())) {
+				if (categories.contains(category.getId())) {
 					logger.error("Duplicate category: {} is detected, please fix.", category.getId());
-					VocabularyEvent event = new VocabularyEvent(PSpecEventType.Vocabulary_Category_Duplicate,
-							null, null, category);
-					table.sendEvent(event);
+					table.onVocabularyError(VocabularyErrorType.Category_Duplicate, category, null);
 					error = true;
 				}
-				categories.put(category.getId(), category);
+				categories.add(category.getId());
 			}
 			current = current.getBaseContainer();
 		}
@@ -103,9 +99,7 @@ public class VocabularyAnalyzer {
 						logger.error("Cycle reference is detected in category: {}, please fix.",
 								category.getId());
 						error = true;
-						VocabularyEvent event = new VocabularyEvent(
-								PSpecEventType.Vocabulary_Category_Cycle_Reference, null, null, category, container);
-						table.sendEvent(event);
+						table.onVocabularyError(VocabularyErrorType.Category_Cycle_Reference, category, null);
 						//fix
 						current.setParent(category, null);
 					}

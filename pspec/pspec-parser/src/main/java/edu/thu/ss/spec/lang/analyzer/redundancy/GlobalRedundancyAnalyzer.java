@@ -2,7 +2,6 @@ package edu.thu.ss.spec.lang.analyzer.redundancy;
 
 import edu.thu.ss.spec.lang.analyzer.GlobalExpander;
 import edu.thu.ss.spec.lang.parser.event.EventTable;
-import edu.thu.ss.spec.lang.parser.event.PolicyEvent;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.UserRef;
 import edu.thu.ss.spec.util.GlobalInclusionUtil;
@@ -18,7 +17,7 @@ public class GlobalRedundancyAnalyzer extends BaseRedundancyAnalyzer {
 	/**
 	 * {@link BaseRedundancyAnalyzer#instance} is set as {@link GlobalInclusionUtil#instance} 
 	 */
-	public GlobalRedundancyAnalyzer(EventTable<PolicyEvent> table) {
+	public GlobalRedundancyAnalyzer(EventTable table) {
 		super(table);
 		this.instance = GlobalInclusionUtil.instance;
 

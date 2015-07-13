@@ -2,7 +2,6 @@ package edu.thu.ss.spec.lang.analyzer;
 
 import edu.thu.ss.spec.lang.analyzer.stat.AnalyzerStat;
 import edu.thu.ss.spec.lang.parser.event.EventTable;
-import edu.thu.ss.spec.lang.parser.event.PolicyEvent;
 import edu.thu.ss.spec.lang.pojo.Policy;
 
 /**
@@ -13,9 +12,9 @@ import edu.thu.ss.spec.lang.pojo.Policy;
  */
 public abstract class BasePolicyAnalyzer implements IPolicyAnalyzer {
 
-	protected EventTable<PolicyEvent> table;
+	protected EventTable table;
 
-	public BasePolicyAnalyzer(EventTable<PolicyEvent> table) {
+	public BasePolicyAnalyzer(EventTable table) {
 		this.table = table;
 	}
 

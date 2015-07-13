@@ -18,7 +18,6 @@ import edu.thu.ss.spec.lang.analyzer.budget.FineBudgetAllocator;
 import edu.thu.ss.spec.lang.analyzer.budget.GlobalBudgetAllocator;
 import edu.thu.ss.spec.lang.analyzer.rule.RuleResolver;
 import edu.thu.ss.spec.lang.parser.event.EventTable;
-import edu.thu.ss.spec.lang.parser.event.PolicyEvent;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.PrivacyParams;
 import edu.thu.ss.spec.lang.pojo.Rule;
@@ -40,7 +39,7 @@ public class PolicyParser implements ParserConstant {
 	 */
 	private List<IPolicyAnalyzer> analyzers;
 
-	private EventTable<PolicyEvent> table = new EventTable<>();
+	private EventTable table = new EventTable();
 
 	protected void init(boolean global, boolean analyze) {
 		analyzers = new ArrayList<>();

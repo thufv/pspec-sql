@@ -3,32 +3,42 @@ package edu.thu.ss.spec.lang.parser.event;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.thu.ss.spec.lang.parser.PSpec.PSpecEventType;
+import edu.thu.ss.spec.lang.parser.event.PSpecListener.RefErrorType;
+import edu.thu.ss.spec.lang.parser.event.PSpecListener.RestrictionErrorType;
+import edu.thu.ss.spec.lang.parser.event.PSpecListener.VocabularyErrorType;
+import edu.thu.ss.spec.lang.pojo.Category;
+import edu.thu.ss.spec.lang.pojo.CategoryRef;
+import edu.thu.ss.spec.lang.pojo.Restriction;
+import edu.thu.ss.spec.lang.pojo.Rule;
 
-public class EventTable<E extends ParseEvent> {
-	private List<PSpecEventType> types = new ArrayList<>();
-	private List<ParseListener<E>> listeners = new ArrayList<>();
+public class EventTable {
+	private List<PSpecListener> listeners = new ArrayList<>();
 
-	public void hook(PSpecEventType type, ParseListener<E> listener) {
-		types.add(type);
+	public void add(PSpecListener listener) {
 		listeners.add(listener);
 	}
 
-	public void sendEvent(E event) {
-		for (int i = 0; i < types.size(); i++) {
-			if (types.get(i).equals(event.type)) {
-				listeners.get(i).handleEvent(event);
-			}
+	public void remove(PSpecListener listener) {
+		listeners.remove(listener);
+	}
+
+	public void onVocabularyError(VocabularyErrorType type, Category<?> category, String refid) {
+		for (PSpecListener listener : listeners) {
+			listener.onVocabularyError(type, category, refid);
 		}
 	}
 
-	public void unhook(PSpecEventType type, ParseListener<E> listener) {
-		for (int i = 0; i < types.size(); i++) {
-			if (types.get(i).equals(type) && listeners.get(i).equals(listener)) {
-				types.remove(i);
-				listeners.remove(i);
-				return;
-			}
+	public void onRuleRefError(RefErrorType type, Rule rule, CategoryRef<?> ref, String refid) {
+		for (PSpecListener listener : listeners) {
+			listener.onRuleRefError(type, rule, ref, refid);
 		}
 	}
+
+	public void onRestrictionError(RestrictionErrorType type, Rule rule, Restriction res) {
+		for (PSpecListener listener : listeners) {
+			listener.onRestrictionError(type, rule, res);
+		}
+
+	}
+
 }
