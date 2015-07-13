@@ -11,6 +11,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.spec.lang.analyzer.VocabularyAnalyzer;
+import edu.thu.ss.spec.lang.parser.PSpec.PSpecEventType;
 import edu.thu.ss.spec.lang.parser.event.EventTable;
 import edu.thu.ss.spec.lang.parser.event.ParseListener;
 import edu.thu.ss.spec.lang.parser.event.VocabularyEvent;
@@ -72,7 +73,7 @@ public class VocabularyParser implements ParserConstant {
 		return vocabulary;
 	}
 
-	public void addListener(int type, ParseListener<VocabularyEvent> listener) {
+	public void addListener(PSpecEventType type, ParseListener<VocabularyEvent> listener) {
 		table.hook(type, listener);
 	}
 
@@ -122,8 +123,8 @@ public class VocabularyParser implements ParserConstant {
 					//fix problem
 					vocabulary.setBase(null);
 					logger.error("Cycle reference of vocabularies detected: " + currentUri);
-					VocabularyEvent event = new VocabularyEvent(PSpec.Vocabulary_Category_Cycle_Reference,
-							currentUri, vocabulary);
+					VocabularyEvent event = new VocabularyEvent(
+							PSpecEventType.Vocabulary_Category_Cycle_Reference, currentUri, vocabulary);
 					table.sendEvent(event);
 					error = true;
 					break;

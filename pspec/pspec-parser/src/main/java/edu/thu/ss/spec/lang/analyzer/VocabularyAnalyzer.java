@@ -8,7 +8,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.thu.ss.spec.lang.parser.PSpec;
+import edu.thu.ss.spec.lang.parser.PSpec.PSpecEventType;
 import edu.thu.ss.spec.lang.parser.event.EventTable;
 import edu.thu.ss.spec.lang.parser.event.VocabularyEvent;
 import edu.thu.ss.spec.lang.pojo.Category;
@@ -59,8 +59,8 @@ public class VocabularyAnalyzer {
 				} else {
 					logger.error("Fail to locate parent category: {} for category: {}.", parentId,
 							category.getId());
-					VocabularyEvent event = new VocabularyEvent(PSpec.Vocabulary_Category_Parent_Not_Exist,
-							null, null, category, parentId);
+					VocabularyEvent event = new VocabularyEvent(
+							PSpecEventType.Vocabulary_Category_Parent_Not_Exist, null, null, category, parentId);
 					table.sendEvent(event);
 					error = true;
 				}
@@ -79,8 +79,8 @@ public class VocabularyAnalyzer {
 			for (T category : current.getCategories()) {
 				if (categories.containsKey(category.getId())) {
 					logger.error("Duplicate category: {} is detected, please fix.", category.getId());
-					VocabularyEvent event = new VocabularyEvent(PSpec.Vocabulary_Category_Duplicate, null,
-							null, category);
+					VocabularyEvent event = new VocabularyEvent(PSpecEventType.Vocabulary_Category_Duplicate,
+							null, null, category);
 					table.sendEvent(event);
 					error = true;
 				}
@@ -103,8 +103,8 @@ public class VocabularyAnalyzer {
 						logger.error("Cycle reference is detected in category: {}, please fix.",
 								category.getId());
 						error = true;
-						VocabularyEvent event = new VocabularyEvent(PSpec.Vocabulary_Category_Cycle_Reference,
-								null, null, category, container);
+						VocabularyEvent event = new VocabularyEvent(
+								PSpecEventType.Vocabulary_Category_Cycle_Reference, null, null, category, container);
 						table.sendEvent(event);
 						//fix
 						current.setParent(category, null);

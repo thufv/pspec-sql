@@ -8,7 +8,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.thu.ss.spec.lang.parser.PSpec;
+import edu.thu.ss.spec.lang.parser.PSpec.PSpecEventType;
 import edu.thu.ss.spec.lang.parser.event.EventTable;
 import edu.thu.ss.spec.lang.parser.event.ParseListener;
 import edu.thu.ss.spec.lang.parser.event.PolicyEvent;
@@ -44,7 +44,7 @@ public class RuleResolver extends BaseRuleAnalyzer {
 	}
 
 	@Override
-	protected boolean analyzeRule(final Rule rule, UserContainer userContainer,
+	public boolean analyzeRule(final Rule rule, UserContainer userContainer,
 			DataContainer dataContainer) {
 
 		ParseListener<PolicyEvent> listener = new ParseListener<PolicyEvent>() {
@@ -61,7 +61,7 @@ public class RuleResolver extends BaseRuleAnalyzer {
 				}
 			}
 		};
-		table.hook(PSpec.Policy_Category_Ref_Not_Exist, listener);
+		table.hook(PSpecEventType.Policy_Category_Ref_Not_Exist, listener);
 
 		boolean error = false;
 		for (UserRef ref : rule.getUserRefs()) {
@@ -75,7 +75,7 @@ public class RuleResolver extends BaseRuleAnalyzer {
 		}
 		error = resolveRestrictions(rule);
 
-		table.unhook(PSpec.Policy_Category_Ref_Not_Exist, listener);
+		table.unhook(PSpecEventType.Policy_Category_Ref_Not_Exist, listener);
 		return error;
 	}
 
@@ -97,7 +97,8 @@ public class RuleResolver extends BaseRuleAnalyzer {
 			}
 		}
 		if (error) {
-			PolicyEvent event = new PolicyEvent(PSpec.Policy_Data_Association_Overlap, null, policy, rule);
+			PolicyEvent event = new PolicyEvent(PSpecEventType.Policy_Data_Association_Overlap, null,
+					policy, rule);
 			table.sendEvent(event);
 		}
 		return error;
@@ -110,7 +111,8 @@ public class RuleResolver extends BaseRuleAnalyzer {
 			logger.error("Only one restriction element is allowed in rule:{} when rule is single",
 					rule.getId());
 
-			PolicyEvent event = new PolicyEvent(PSpec.Policy_Single_One_Restriction, null, policy, rule);
+			PolicyEvent event = new PolicyEvent(PSpecEventType.Policy_Single_One_Restriction, null,
+					policy, rule);
 			table.sendEvent(event);
 			//fix
 			Restriction res = rule.getRestriction();
@@ -124,7 +126,8 @@ public class RuleResolver extends BaseRuleAnalyzer {
 				error = true;
 				logger.error("Only one restriction element is allowed in rule:{} when forbidden",
 						rule.getId());
-				PolicyEvent event = new PolicyEvent(PSpec.Policy_Restriction_One_Forbid, null, policy, rule);
+				PolicyEvent event = new PolicyEvent(PSpecEventType.Policy_Restriction_One_Forbid, null,
+						policy, rule);
 				table.sendEvent(event);
 				//fix
 				rule.getRestrictions().clear();
@@ -150,8 +153,8 @@ public class RuleResolver extends BaseRuleAnalyzer {
 		boolean error = false;
 		if (res.getDesensitizations().size() > 1) {
 			logger.error("Only 1 desensitization is allowed for non-associate rule: {}", rule.getId());
-			PolicyEvent event = new PolicyEvent(PSpec.Policy_Single_Restriction_One_Desensitize, null,
-					null, rule);
+			PolicyEvent event = new PolicyEvent(PSpecEventType.Policy_Single_Restriction_One_Desensitize,
+					null, null, rule);
 			table.sendEvent(event);
 			//fix
 			Desensitization de = res.getDesensitization(0);
@@ -163,8 +166,8 @@ public class RuleResolver extends BaseRuleAnalyzer {
 			logger
 					.error("No data-category-ref element should appear in desensitize element when only data category is referenced in rule: "
 							+ rule.getId());
-			PolicyEvent event = new PolicyEvent(PSpec.Policy_Single_Restriction_No_DataRef, null, null,
-					rule, res);
+			PolicyEvent event = new PolicyEvent(PSpecEventType.Policy_Single_Restriction_No_DataRef,
+					null, null, rule, res);
 			table.sendEvent(event);
 			//fix
 			de.setDataRefId("");
@@ -178,8 +181,8 @@ public class RuleResolver extends BaseRuleAnalyzer {
 			}
 		}
 		if (inclusionError) {
-			PolicyEvent event = new PolicyEvent(PSpec.Policy_Restriction_Unsupported_Operation, null,
-					null, rule, res);
+			PolicyEvent event = new PolicyEvent(PSpecEventType.Policy_Restriction_Unsupported_Operation,
+					null, null, rule, res);
 			table.sendEvent(event);
 		}
 		return error;
@@ -194,8 +197,8 @@ public class RuleResolver extends BaseRuleAnalyzer {
 				logger
 						.error("Restricted data category must be specified explicitly when data association is referenced by rule: "
 								+ rule.getId());
-				PolicyEvent event = new PolicyEvent(PSpec.Policy_Associate_Restriction_Explicit_DataRef,
-						null, policy, rule, res);
+				PolicyEvent event = new PolicyEvent(
+						PSpecEventType.Policy_Associate_Restriction_Explicit_DataRef, null, policy, rule, res);
 				table.sendEvent(event);
 				error = true;
 				continue;
@@ -207,8 +210,8 @@ public class RuleResolver extends BaseRuleAnalyzer {
 						.error(
 								"Restricted data category: {} must be contained in referenced data association in rule: {}",
 								refid, rule.getId());
-				PolicyEvent event = new PolicyEvent(PSpec.Policy_Associate_Restriction_DataRef_Not_Exist,
-						null, policy, rule, res);
+				PolicyEvent event = new PolicyEvent(
+						PSpecEventType.Policy_Associate_Restriction_DataRef_Not_Exist, null, policy, rule, res);
 				table.sendEvent(event);
 				error = true;
 				continue;
@@ -220,8 +223,8 @@ public class RuleResolver extends BaseRuleAnalyzer {
 			}
 		}
 		if (inclusionError) {
-			PolicyEvent event = new PolicyEvent(PSpec.Policy_Restriction_Unsupported_Operation, null,
-					null, rule, res);
+			PolicyEvent event = new PolicyEvent(PSpecEventType.Policy_Restriction_Unsupported_Operation,
+					null, null, rule, res);
 			table.sendEvent(event);
 		}
 

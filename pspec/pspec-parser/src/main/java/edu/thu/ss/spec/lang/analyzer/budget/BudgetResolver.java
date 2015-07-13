@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.thu.ss.spec.lang.analyzer.BasePolicyAnalyzer;
-import edu.thu.ss.spec.lang.parser.PSpec;
+import edu.thu.ss.spec.lang.parser.PSpec.PSpecEventType;
 import edu.thu.ss.spec.lang.parser.event.EventTable;
 import edu.thu.ss.spec.lang.parser.event.ParseListener;
 import edu.thu.ss.spec.lang.parser.event.PolicyEvent;
@@ -40,7 +40,7 @@ public class BudgetResolver extends BasePolicyAnalyzer {
 				}
 			}
 		};
-		table.hook(PSpec.Policy_Category_Ref_Not_Exist, listener);
+		table.hook(PSpecEventType.Policy_Category_Ref_Not_Exist, listener);
 
 		boolean error = false;
 		PrivacyParams params = policy.getPrivacyParams();
@@ -58,7 +58,7 @@ public class BudgetResolver extends BasePolicyAnalyzer {
 							policy.getDataContainer());
 		}
 
-		table.unhook(PSpec.Policy_Category_Ref_Not_Exist, listener);
+		table.unhook(PSpecEventType.Policy_Category_Ref_Not_Exist, listener);
 		return error;
 	}
 
