@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import edu.thu.ss.spec.lang.analyzer.IPolicyAnalyzer;
 import edu.thu.ss.spec.lang.analyzer.TiminingAnalyzer;
-import edu.thu.ss.spec.lang.analyzer.consistency.ConsistencyAnalyzer;
+import edu.thu.ss.spec.lang.analyzer.consistency.ApproximateConsistencyAnalyzer;
 import edu.thu.ss.spec.lang.analyzer.redundancy.LocalRedundancyAnalyzer;
 import edu.thu.ss.spec.lang.analyzer.stat.AnalyzerStat;
 import edu.thu.ss.spec.lang.analyzer.stat.ConsistencyStat;
@@ -56,7 +56,7 @@ public class PolicyTest {
 
 		for (int rule : rules) {
 			AnalyzerStat stat = new ConsistencyStat(times);
-			IPolicyAnalyzer analyzer = new ConsistencyAnalyzer(new EventTable());
+			IPolicyAnalyzer analyzer = new ApproximateConsistencyAnalyzer(new EventTable());
 
 			expr("Consistency-" + rule, vocabPath, userContainerId, dataContainerId, ruleGenerator, stat,
 					analyzer, rule);
@@ -82,7 +82,7 @@ public class PolicyTest {
 		for (String userId : userIds) {
 			ConsistencyStat stat = new ConsistencyStat(times);
 			expr("Consistency-" + userId, vocabPath, userId, dataContainerId, ruleGenerator, stat,
-					new ConsistencyAnalyzer(new EventTable()), defaultRule);
+					new ApproximateConsistencyAnalyzer(new EventTable()), defaultRule);
 		}
 	}
 
@@ -111,7 +111,7 @@ public class PolicyTest {
 		for (String dataId : dataIds) {
 			ConsistencyStat stat = new ConsistencyStat(times);
 			expr("Consistency-" + dataId, vocabPath, userContainerId, dataId, ruleGenerator, stat,
-					new ConsistencyAnalyzer(new EventTable()), defaultRule);
+					new ApproximateConsistencyAnalyzer(new EventTable()), defaultRule);
 
 		}
 	}
@@ -142,7 +142,7 @@ public class PolicyTest {
 		for (String dataId : dataIds) {
 			ConsistencyStat stat = new ConsistencyStat(times);
 			expr("Consistency-" + dataId, vocabPath, userContainerId, dataId, ruleGenerator, stat,
-					new ConsistencyAnalyzer(new EventTable()), defaultRule);
+					new ApproximateConsistencyAnalyzer(new EventTable()), defaultRule);
 
 		}
 	}
@@ -166,7 +166,7 @@ public class PolicyTest {
 			ConsistencyStat stat = new ConsistencyStat(times);
 			ruleGenerator.maxDim = dim;
 			expr("Consistency-" + String.valueOf(dim), vocabPath, userContainerId, dataContainerId,
-					ruleGenerator, stat, new ConsistencyAnalyzer(new EventTable()), defaultRule);
+					ruleGenerator, stat, new ApproximateConsistencyAnalyzer(new EventTable()), defaultRule);
 		}
 	}
 
@@ -189,7 +189,7 @@ public class PolicyTest {
 			ConsistencyStat stat = new ConsistencyStat(times);
 			ruleGenerator.maxRes = res;
 			expr("Consistency-" + String.valueOf(res), vocabPath, userContainerId, dataContainerId,
-					ruleGenerator, stat, new ConsistencyAnalyzer(new EventTable()), defaultRule);
+					ruleGenerator, stat, new ApproximateConsistencyAnalyzer(new EventTable()), defaultRule);
 		}
 	}
 

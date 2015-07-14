@@ -1,0 +1,7 @@
+pom.xml
+line 107
+<root.basedir>/Users/luochen/Documents/Research/privacy/spark</root.basedir>
+
+line 302, 309, 306
+dependencies.dependency.systemPath for xxx.jar must specifiy an absolute path
+${root.basedir}/lib/choco-solver-3.2.2.jar

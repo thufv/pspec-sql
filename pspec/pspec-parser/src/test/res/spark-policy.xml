@@ -99,6 +99,51 @@
 			</restriction>
 		</rule>
 
-
+		<rule id="filter_gender_age">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-category-ref refid="gender"></data-category-ref>
+			<data-category-ref refid="customer_zip"></data-category-ref>
+			<filter>
+				<and>
+					<or>
+						<comparison>
+							<operator>eq</operator>
+							<term>
+								<data-category id="gender"></data-category>
+							</term>
+							<term>
+								<value>female</value>
+							</term>
+						</comparison>
+						<comparison>
+							<operator>eq</operator>
+							<term>
+								<data-category id="gender"></data-category>
+							</term>
+							<term>
+								<value>male</value>
+							</term>
+						</comparison>
+					</or>	
+					<not>
+						<comparison>
+							<operator>eq</operator>
+							<function name="+">
+								<term>
+									<value>male</value>
+								</term>
+								<term>
+									<data-category id="customer_zip"></data-category>
+								</term>
+							</function>
+							<term>
+								<data-category id="customer_zip"></data-category>
+							</term>
+						</comparison>
+					</not>
+				</and>
+			</filter>
+		</rule>
+		
 	</rules>
 </privacy-policy>

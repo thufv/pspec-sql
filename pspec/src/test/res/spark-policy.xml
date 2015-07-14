@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<privacy-policy xmlns="http://www.example.org/privacy"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.example.org/privacy ../res/privacy.xsd">
+	<policy-information id="store-policy">
+		<issuer>
+			<name>luochen</name>
+			<organization>Tsinghua</organization>
+			<e-mail>luochen01@vip.qq.com</e-mail>
+			<address>Tsinghua</address>
+			<country>China</country>
+		</issuer>
+	</policy-information>
+	<vocabulary-ref location="src/test/res/spark-vocab.xml">
+		<user-category-container refid="default-user" />
+		<data-category-container refid="store-data" />
+	</vocabulary-ref>
+
+	<privacy-parameters>
+		<!-- <fine-budget> <budget-allocation> <user-category-ref refid="app"></user-category-ref> 
+			<data-category-ref refid="all" budget="0.5"> <exclude> <data-category-ref 
+			refid="birth"></data-category-ref> </exclude> </data-category-ref> <data-category-ref 
+			refid="birth" budget="1"></data-category-ref> <data-category-ref refid="financial" 
+			budget="1"></data-category-ref> </budget-allocation> </fine-budget> -->
+		<!-- with probability (greater than) 0.9, the noise ratio should within 
+			0.1 w.r.t. the real answer -->
+
+		<global-budget>
+			<user-category-ref refid="app" budget="10"></user-category-ref>
+
+		</global-budget>
+		<accuracy>
+			<probability>0.9</probability>
+			<noise-ratio>0.1</noise-ratio>
+		</accuracy>
+	</privacy-parameters>
+	<rules>
+		<rule id="forbid_project">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-category-ref refid="ka" action="projection"
+				global="true"></data-category-ref>
+			<data-category-ref refid="name" action="projection"></data-category-ref>
+			<data-category-ref refid="customer_suite" action="projection"></data-category-ref>
+			<data-category-ref refid="customer_sa" action="projection"></data-category-ref>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+
+		<rule id="forbid_name_customer_sa">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="name"></data-category-ref>
+				<data-category-ref refid="customer_sa"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+
+		<rule id="forbid_ka_customer_sa">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="ka" global="true"></data-category-ref>
+				<data-category-ref refid="customer_sa"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+
+		<rule id="forbid_ka_qi_project">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="ka"></data-category-ref>
+				<data-category-ref refid="qi" action="projection"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+
+
+		<rule id="truncate_zip">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-category-ref refid="customer_zip"></data-category-ref>
+			<restriction>
+				<desensitize>
+					<operation>truncate</operation>
+				</desensitize>
+			</restriction>
+		</rule>
+
+		<rule id="agg_financial">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-category-ref refid="financial"></data-category-ref>
+			<restriction>
+				<desensitize>
+					<operation>sum</operation>
+					<operation>avg</operation>
+				</desensitize>
+			</restriction>
+		</rule>
+		
+		<rule id="filter_gender_age">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-category-ref refid="gender"></data-category-ref>
+			<data-category-ref refid="customer_zip"></data-category-ref>
+			<restriction>
+				<filter>
+					<and>
+						<or value="false">
+							<predicate>
+								<operator>eq</operator>
+								<function name="ret" type="dataref">
+									<data-category-ref refid="gender"></data-category-ref>
+								</function>
+								<function name="ret" type="value">female</function>
+							</predicate>
+							<predicate value = "false">
+								<operator>eq</operator>
+								<function name="ret" type="dataref">
+									<data-category-ref refid="gender"></data-category-ref>
+								</function>
+								<function name="ret" type="value">male</function>
+							</predicate>
+						</or>	
+						<predicate>
+							<operator>eq</operator>
+							<function name="ret" type="dataref">
+								<data-category-ref refid="customer_zip"></data-category-ref>
+							</function>
+							<function name="+" type="func">
+								<function name="ret" type="value">60</function>
+								<function name = "ret" type="dataref">
+									<data-category-ref refid="customer_zip"></data-category-ref>
+								</function>	
+							</function>
+						</predicate>
+
+					</and>
+				</filter>
+			</restriction>
+		</rule>
+
+	</rules>
+</privacy-policy>
