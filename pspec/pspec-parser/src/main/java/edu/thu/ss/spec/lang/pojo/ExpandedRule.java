@@ -218,10 +218,6 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 		return dataRef.isGlobal();
 	}
 	
-	public boolean isFilter() {
-		return condition != null;
-	}
-
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -261,5 +257,9 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 		
 		
 		return sb.toString();
+	}
+
+	public boolean isFilter() {
+		return condition != null;
 	}
 }

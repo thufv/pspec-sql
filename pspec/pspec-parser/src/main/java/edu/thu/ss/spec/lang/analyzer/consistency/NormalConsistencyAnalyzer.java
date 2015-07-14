@@ -1,18 +1,21 @@
 package edu.thu.ss.spec.lang.analyzer.consistency;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import edu.thu.ss.spec.lang.analyzer.BasePolicyAnalyzer;
+import edu.thu.ss.spec.lang.parser.event.EventTable;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
-import edu.thu.ss.spec.lang.pojo.Policy;
 
 public class NormalConsistencyAnalyzer extends ConsistencyAnalyzer {
 
+	public NormalConsistencyAnalyzer(EventTable table) {
+		super(table);
+	}
+
 	@Override
-	public void analyze(List<ExpandedRule> rules) {
+	public boolean analyze(List<ExpandedRule> rules) {
 		NormalConsistencySearcher searcher = new NormalConsistencySearcher(rules);
 		searcher.search();
+		return false;
 	}
 
 }

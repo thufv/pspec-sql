@@ -5,20 +5,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import edu.thu.ss.spec.lang.parser.event.EventTable;
 import edu.thu.ss.spec.lang.pojo.DataAssociation;
 import edu.thu.ss.spec.lang.pojo.DataRef;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
 import edu.thu.ss.spec.util.InclusionUtil;
-import edu.thu.ss.spec.util.SetUtil;
-import edu.thu.ss.spec.util.SetUtil.SetRelation;
+import edu.thu.ss.spec.util.PSpecUtil;
+import edu.thu.ss.spec.util.PSpecUtil.SetRelation;
 
 public class EnhancedStrongConsistencyAnalyzer extends ConsistencyAnalyzer {
 
 	private InclusionUtil instance;
 	private EnhancedStrongConsistencySearcher searcher;
 	
-	public EnhancedStrongConsistencyAnalyzer() {
+	public EnhancedStrongConsistencyAnalyzer(EventTable table) {
+		super(table);
 		instance = InclusionUtil.instance;
 		searcher = new EnhancedStrongConsistencySearcher();
 	}
@@ -53,7 +55,7 @@ public class EnhancedStrongConsistencyAnalyzer extends ConsistencyAnalyzer {
 	private boolean checkCandidate(ExpandedRule rule, ExpandedRule seed) {
 		Set<UserCategory> user1 = seed.getUsers();
 		Set<UserCategory> user2 = rule.getUsers();
-		if (SetUtil.relation(user1, user2).equals(SetRelation.disjoint)) {
+		if (PSpecUtil.relation(user1, user2).equals(SetRelation.disjoint)) {
 			return false;
 		}
 		

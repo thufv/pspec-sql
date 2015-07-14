@@ -14,13 +14,12 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.thu.ss.spec.lang.analyzer.LevelwiseSearcher;
 import edu.thu.ss.spec.lang.pojo.Action;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DataRef;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
-import edu.thu.ss.spec.util.Z3StrongConsistency;
+import edu.thu.ss.spec.z3.Z3StrongConsistency;
 
 public class StrongConsistencySearcher extends LevelwiseSearcher {
 

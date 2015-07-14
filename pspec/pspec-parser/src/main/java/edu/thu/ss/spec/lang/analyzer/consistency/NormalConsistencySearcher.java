@@ -10,10 +10,9 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.thu.ss.spec.lang.analyzer.LevelwiseSearcher;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
-import edu.thu.ss.spec.util.Z3NormalConsistency;
+import edu.thu.ss.spec.z3.Z3NormalConsistency;
 
 public class NormalConsistencySearcher extends LevelwiseSearcher {
 
@@ -25,7 +24,6 @@ public class NormalConsistencySearcher extends LevelwiseSearcher {
 	private static Logger logger = LoggerFactory.getLogger(NormalConsistencySearcher.class);
 	
 	public NormalConsistencySearcher(List<ExpandedRule> rules) {
-		//TODO the dimension of Z3Util
 		z3Util = new Z3NormalConsistency(100);
 		this.rules = rules;
 	}

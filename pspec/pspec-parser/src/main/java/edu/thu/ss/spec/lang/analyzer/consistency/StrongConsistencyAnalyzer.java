@@ -4,27 +4,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import edu.thu.ss.spec.lang.parser.event.EventTable;
 import edu.thu.ss.spec.lang.pojo.Action;
-import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DataRef;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
-import edu.thu.ss.spec.util.SetUtil;
-import edu.thu.ss.spec.util.SetUtil.SetRelation;
+import edu.thu.ss.spec.util.PSpecUtil;
+import edu.thu.ss.spec.util.PSpecUtil.SetRelation;
 
 public class StrongConsistencyAnalyzer extends ConsistencyAnalyzer {
 	
 	private StrongConsistencySearcher searcher;
 	
-	public StrongConsistencyAnalyzer() {
+	public StrongConsistencyAnalyzer(EventTable table) {
+		super(table);
 		searcher = new StrongConsistencySearcher();
 	}
 	
 	@Override
-	public void analyze(List<ExpandedRule> rules) {
+	public boolean analyze(List<ExpandedRule> rules) {
 		for (ExpandedRule rule : rules) {
 			analyzeWithSeed(rule, rules);
 		}
+		return false;
 	}
 	
 	private void analyzeWithSeed(ExpandedRule seed, List<ExpandedRule> rules) {
@@ -49,7 +51,7 @@ public class StrongConsistencyAnalyzer extends ConsistencyAnalyzer {
 	private boolean checkCandidate(ExpandedRule rule, ExpandedRule seed) {
 		Set<UserCategory> user1 = rule.getUsers();
 		Set<UserCategory> user2 = seed.getUsers();
-		if (SetUtil.relation(user1, user2).equals(SetRelation.disjoint)) {
+		if (PSpecUtil.relation(user1, user2).equals(SetRelation.disjoint)) {
 			return false;
 		}
 		
@@ -88,7 +90,7 @@ public class StrongConsistencyAnalyzer extends ConsistencyAnalyzer {
 		DataRef dataRef2 = seed.getDataRef();
 		
 		
-		SetRelation DataRelation = SetUtil.relation(dataRef1.getMaterialized(), dataRef2.getMaterialized());
+		SetRelation DataRelation = PSpecUtil.relation(dataRef1.getMaterialized(), dataRef2.getMaterialized());
 		if (DataRelation.equals(SetRelation.disjoint)) {
 			return false;
 		}
@@ -107,7 +109,7 @@ public class StrongConsistencyAnalyzer extends ConsistencyAnalyzer {
 				if (!checkActionDisjoint(dataRef1.getAction(), dataRef2.getAction())) {
 					return false;
 				}
-				SetRelation relation = SetUtil.relation(dataRef1.getMaterialized(), dataRef2.getMaterialized());
+				SetRelation relation = PSpecUtil.relation(dataRef1.getMaterialized(), dataRef2.getMaterialized());
 				if (!relation.equals(SetRelation.disjoint)) {
 					return true;
 				}
@@ -142,7 +144,7 @@ public class StrongConsistencyAnalyzer extends ConsistencyAnalyzer {
 				if (!checkActionDisjoint(dataRef1.getAction(), dataRef2.getAction())) {
 					return false;
 				}
-				SetRelation relation = SetUtil.relation(dataRef1.getMaterialized(), dataRef2.getMaterialized());
+				SetRelation relation = PSpecUtil.relation(dataRef1.getMaterialized(), dataRef2.getMaterialized());
 				if (!relation.equals(SetRelation.disjoint)) {
 					matches[i] = true;
 					if (checkBothAssociationCandidate(index + 1, dim, ruleDataRefs, seedDataRefs, matches)) {
