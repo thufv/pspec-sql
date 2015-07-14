@@ -65,15 +65,15 @@ public class RuleResolver extends BaseRuleAnalyzer {
 
 		boolean error = false;
 		for (UserRef ref : rule.getUserRefs()) {
-			error = error || PSpecUtil.resolveCategoryRef(ref, userContainer, rule, false, table);
+			error = PSpecUtil.resolveCategoryRef(ref, userContainer, rule, false, table) || error;
 		}
 		for (DataRef ref : rule.getDataRefs()) {
-			error = error || PSpecUtil.resolveCategoryRef(ref, dataContainer, rule, false, table);
+			error = PSpecUtil.resolveCategoryRef(ref, dataContainer, rule, false, table) || error;
 		}
 		if (!rule.isSingle()) {
-			error = error || checkAssociation(rule);
+			error = checkAssociation(rule) || error;
 		}
-		error = error || resolveRestrictions(rule);
+		error = resolveRestrictions(rule) || error;
 		table.remove(listener);
 		return error;
 	}
@@ -135,9 +135,9 @@ public class RuleResolver extends BaseRuleAnalyzer {
 				continue;
 			}
 			if (rule.isSingle()) {
-				error = error || resolveSingleRestriction(restriction, rule);
+				error = resolveSingleRestriction(restriction, rule) || error;
 			} else {
-				error = error || resolveAssociateRestriction(restriction, rule);
+				error = resolveAssociateRestriction(restriction, rule) || error;
 			}
 		}
 		return error;
@@ -191,7 +191,6 @@ public class RuleResolver extends BaseRuleAnalyzer {
 								+ rule.getId());
 				table.onRestrictionError(RestrictionErrorType.Associate_Restriction_Explicit_DataRef, rule,
 						res, null);
-
 				error = true;
 				continue;
 			}

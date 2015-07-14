@@ -143,6 +143,7 @@ public class PolicyParser extends BaseParser implements ParserConstant {
 				Rule rule = new Rule();
 				rule.parse(node);
 				rules.add(rule);
+				table.onParseRule(rule);
 			}
 		}
 	}

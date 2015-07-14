@@ -47,4 +47,11 @@ public class EventTable {
 
 	}
 
+	public void onParseRule(Rule rule) {
+		for (PSpecListener listener : listeners) {
+			listener.onParseRule(rule);
+		}
+
+	}
+
 }

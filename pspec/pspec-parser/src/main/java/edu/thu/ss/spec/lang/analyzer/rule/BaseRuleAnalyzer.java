@@ -26,7 +26,7 @@ public abstract class BaseRuleAnalyzer extends BasePolicyAnalyzer {
 		boolean error = false;
 		this.policy = policy;
 		for (Rule rule : policy.getRules()) {
-			error = error || this.analyzeRule(rule, policy.getUserContainer(), policy.getDataContainer());
+			error = this.analyzeRule(rule, policy.getUserContainer(), policy.getDataContainer()) || error;
 		}
 		return error;
 	}

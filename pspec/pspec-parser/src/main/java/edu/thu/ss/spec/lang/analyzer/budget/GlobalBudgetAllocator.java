@@ -29,7 +29,7 @@ public class GlobalBudgetAllocator extends BaseBudgetAnalyzer<GlobalBudget> {
 		boolean error = false;
 		for (PrivacyBudget.BudgetAllocation alloc : budget.getAllocations()) {
 			BudgetAllocation galloc = (BudgetAllocation) alloc;
-			error = error || allocateBudget(galloc);
+			error = allocateBudget(galloc) || error;
 		}
 
 		budget.materialize(transform(allocations));

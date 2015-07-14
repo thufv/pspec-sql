@@ -49,13 +49,13 @@ public class BudgetResolver extends BasePolicyAnalyzer {
 		}
 		PrivacyBudget<?> budget = params.getPrivacyBudget();
 		if (budget.isGlobal()) {
-			error = error
-					|| resolveGlobalBudget((GlobalBudget) budget, policy.getUserContainer(),
-							policy.getDataContainer());
+			error = resolveGlobalBudget((GlobalBudget) budget, policy.getUserContainer(),
+					policy.getDataContainer())
+					|| error;
 		} else {
-			error = error
-					|| resolveFineBudget((FineBudget) budget, policy.getUserContainer(),
-							policy.getDataContainer());
+			error = resolveFineBudget((FineBudget) budget, policy.getUserContainer(),
+					policy.getDataContainer())
+					|| error;
 		}
 		table.remove(listener);
 		return error;
@@ -65,7 +65,7 @@ public class BudgetResolver extends BasePolicyAnalyzer {
 		boolean error = false;
 		for (PrivacyBudget.BudgetAllocation alloc : budget.getAllocations()) {
 			GlobalBudget.BudgetAllocation galloc = (GlobalBudget.BudgetAllocation) alloc;
-			error = error || PSpecUtil.resolveCategoryRef(galloc.userRef, users, null, false, table);
+			error = PSpecUtil.resolveCategoryRef(galloc.userRef, users, null, false, table) || error;
 		}
 		return error;
 	}
@@ -74,8 +74,8 @@ public class BudgetResolver extends BasePolicyAnalyzer {
 		boolean error = false;
 		for (PrivacyBudget.BudgetAllocation alloc : budget.getAllocations()) {
 			FineBudget.BudgetAllocation falloc = (FineBudget.BudgetAllocation) alloc;
-			error = error || PSpecUtil.resolveCategoryRef(falloc.userRef, users, null, false, table);
-			error = error || PSpecUtil.resolveCategoryRef(falloc.dataRef, datas, null, false, table);
+			error = PSpecUtil.resolveCategoryRef(falloc.userRef, users, null, false, table) || error;
+			error = PSpecUtil.resolveCategoryRef(falloc.dataRef, datas, null, false, table) || error;
 		}
 		return error;
 	}

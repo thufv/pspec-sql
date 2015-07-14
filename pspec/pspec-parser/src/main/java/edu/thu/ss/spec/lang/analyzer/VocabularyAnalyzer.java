@@ -30,9 +30,9 @@ public class VocabularyAnalyzer {
 
 	public <T extends Category<T>> boolean analyze(CategoryContainer<T> container, boolean refresh) {
 		boolean error = false;
-		error = error || resolveReference(container, refresh);
-		error = error || checkDuplicateCategory(container);
-		error = error || checkCategoryCycleReference(container);
+		error = resolveReference(container, refresh) || error;
+		error = checkDuplicateCategory(container) || error;
+		error = checkCategoryCycleReference(container) || error;
 		return error;
 	}
 
@@ -45,7 +45,7 @@ public class VocabularyAnalyzer {
 
 		CategoryContainer<T> baseContainer = container.getBaseContainer();
 		if (baseContainer != null) {
-			error = error || resolveReference(baseContainer, refresh);
+			error = resolveReference(baseContainer, refresh) || error;
 		}
 		// resolve parent reference of all categories
 		for (T category : container.getCategories()) {

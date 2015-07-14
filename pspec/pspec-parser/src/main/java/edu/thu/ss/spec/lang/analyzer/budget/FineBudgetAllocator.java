@@ -30,7 +30,7 @@ public class FineBudgetAllocator extends BaseBudgetAnalyzer<FineBudget> {
 		boolean error = false;
 		for (PrivacyBudget.BudgetAllocation alloc : budget.getAllocations()) {
 			BudgetAllocation falloc = (BudgetAllocation) alloc;
-			error = error || allocateBudget(falloc);
+			error = allocateBudget(falloc) || error;
 		}
 
 		budget.materialize(transform(allocations));

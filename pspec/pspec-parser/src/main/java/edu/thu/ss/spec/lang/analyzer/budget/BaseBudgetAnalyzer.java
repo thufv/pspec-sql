@@ -30,7 +30,7 @@ public abstract class BaseBudgetAnalyzer<T extends PrivacyBudget<?>> extends Bas
 		PrivacyBudget<?> budget = params.getPrivacyBudget();
 
 		if (target.isInstance(budget)) {
-			error = error || analyze(target.cast(budget), policy);
+			error = analyze(target.cast(budget), policy) || error;
 		}
 
 		return error;

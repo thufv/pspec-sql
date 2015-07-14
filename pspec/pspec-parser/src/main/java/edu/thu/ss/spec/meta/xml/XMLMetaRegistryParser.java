@@ -154,7 +154,7 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 			}
 		}
 
-		error = error || table.overlap();
+		error = table.overlap() || error;
 		return table;
 	}
 
@@ -176,7 +176,7 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 
 		for (Column column : columns) {
 			for (JoinCondition join : joins) {
-				error = error || table.addConditionalColumn(join, column);
+				error = table.addConditionalColumn(join, column) || error;
 			}
 		}
 
