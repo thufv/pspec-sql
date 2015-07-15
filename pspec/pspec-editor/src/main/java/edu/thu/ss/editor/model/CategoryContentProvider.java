@@ -27,18 +27,16 @@ public class CategoryContentProvider<T extends Category<T>> implements IStructur
 
 	public Object[] getChildren(Object parentElement) {
 		T node = (T) parentElement;
-		List<T> list = container.getChildren(node);
+		List<T> list = node.getChildren();
 		if (list == null) {
 			return empty;
 		}
 		return list.toArray();
 	}
 
-	@SuppressWarnings("rawtypes")
 	public boolean hasChildren(Object element) {
-		HierarchicalObject node = (HierarchicalObject) element;
-		@SuppressWarnings("unchecked")
-		List<HierarchicalObject> list = node.getChildren();
+		T node = (T) element;
+		List<T> list = node.getChildren();
 		return !(list == null || list.isEmpty());
 	}
 

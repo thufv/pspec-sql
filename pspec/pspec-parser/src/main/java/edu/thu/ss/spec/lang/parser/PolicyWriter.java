@@ -3,9 +3,9 @@ package edu.thu.ss.spec.lang.parser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.Info;
 import edu.thu.ss.spec.lang.pojo.Policy;
+import edu.thu.ss.spec.lang.pojo.Rule;
 import edu.thu.ss.spec.util.XMLUtil;
 
 /**
@@ -39,7 +39,7 @@ public class PolicyWriter implements ParserConstant {
 		Element rulesEle = document.createElement(Ele_Policy_Rules);
 		root.appendChild(rulesEle);
 
-		for (ExpandedRule rule : policy.getExpandedRules()) {
+		for (Rule rule : policy.getRules()) {
 			Element ruleEle = rule.outputElement(document);
 			rulesEle.appendChild(ruleEle);
 		}

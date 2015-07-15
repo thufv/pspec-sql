@@ -33,12 +33,18 @@ public abstract class BaseModel {
 	}
 
 	public void getOutput(OutputType type, List<OutputEntry> list) {
-		if (!hasOutput()) {
+		if (outputs == null) {
 			return;
 		}
 		List<OutputEntry> entries = outputs.get(type);
 		if (entries != null) {
 			list.addAll(entries);
+		}
+	}
+
+	public void getOutput(List<OutputEntry> list) {
+		for (OutputType type : OutputType.values()) {
+			getOutput(type, list);
 		}
 	}
 
@@ -55,7 +61,7 @@ public abstract class BaseModel {
 	}
 
 	public void clearOutput() {
-		if (!hasOutput()) {
+		if (outputs == null) {
 			return;
 		}
 		for (List<OutputEntry> list : outputs.values()) {
@@ -65,7 +71,7 @@ public abstract class BaseModel {
 	}
 
 	public void clearOutput(OutputType type) {
-		if (!hasOutput()) {
+		if (outputs == null) {
 			return;
 		}
 		List<OutputEntry> list = outputs.remove(type);
@@ -76,14 +82,14 @@ public abstract class BaseModel {
 	}
 
 	public boolean hasOutput(OutputType type) {
-		if (!hasOutput()) {
+		if (outputs == null) {
 			return false;
 		}
 		return outputs.containsKey(type);
 	}
 
 	public int countOutput(OutputType type) {
-		if (!hasOutput()) {
+		if (outputs == null) {
 			return 0;
 		}
 		List<OutputEntry> list = outputs.get(type);

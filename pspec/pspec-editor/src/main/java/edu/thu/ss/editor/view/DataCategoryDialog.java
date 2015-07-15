@@ -60,7 +60,7 @@ public class DataCategoryDialog extends EditorDialog {
 				//check empty
 				String text = dataId.getText().trim();
 				if (text.isEmpty()) {
-					EditorUtil.showMessageBox(dialog, "", getMessage(Data_Category_ID_Empty_Message));
+					EditorUtil.showMessageBox(dialog, "", getMessage(Data_Category_ID_Not_Empty_Message));
 					return;
 				}
 				//check duplicate

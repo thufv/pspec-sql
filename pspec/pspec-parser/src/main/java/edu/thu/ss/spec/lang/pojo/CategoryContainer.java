@@ -46,7 +46,9 @@ public abstract class CategoryContainer<T extends Category<T>> extends Described
 		remove(t);
 		if (t.children != null) {
 			for (T c : t.children) {
-				cascadeRemove(c);
+				if (contains(c)) {
+					cascadeRemove(c);
+				}
 			}
 		}
 	}
@@ -55,8 +57,30 @@ public abstract class CategoryContainer<T extends Category<T>> extends Described
 		return get(id) != null;
 	}
 
-	public boolean directContains(String id) {
-		return categories.containsKey(id);
+	public boolean directContains(T category) {
+		return this.equals(category.container) && categories.containsKey(category.id);
+	}
+
+	public boolean contains(T category) {
+		if (directContains(category)) {
+			return true;
+		}
+		if (baseContainer != null) {
+			return baseContainer.contains(category);
+		}
+		return false;
+	}
+
+	public boolean duplicate(String id) {
+		if (baseContainer == null) {
+			return false;
+		}
+		if (categories.containsKey(id)) {
+			return baseContainer.contains(id);
+		} else {
+			return baseContainer.duplicate(id);
+		}
+
 	}
 
 	/**
@@ -78,6 +102,20 @@ public abstract class CategoryContainer<T extends Category<T>> extends Described
 		}
 	}
 
+	public void updateRoot() {
+		if (baseContainer != null) {
+			baseContainer.updateRoot();
+		}
+
+		root.clear();
+		for (T category : categories.values()) {
+			if (category.parent == null) {
+				root.add(category);
+			}
+		}
+
+	}
+
 	public CategoryContainer<T> getBaseContainer() {
 		return baseContainer;
 	}
@@ -92,7 +130,7 @@ public abstract class CategoryContainer<T extends Category<T>> extends Described
 		}
 		List<T> result = new ArrayList<>(t.getChildren().size());
 		for (T child : t.getChildren()) {
-			if (this.contains(child.id)) {
+			if (this.contains(child)) {
 				result.add(child);
 			}
 		}
@@ -144,12 +182,14 @@ public abstract class CategoryContainer<T extends Category<T>> extends Described
 		if (t.parentId.isEmpty()) {
 			root.remove(t);
 		}
-		t.containerId = "";
+		t.setContainer(null);
 	}
 
 	public void setBaseContainer(CategoryContainer<T> baseContainer) {
 		this.baseContainer = baseContainer;
-		baseContainer.leaf = false;
+		if (baseContainer != null) {
+			baseContainer.leaf = false;
+		}
 	}
 
 	@Override

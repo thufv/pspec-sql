@@ -15,8 +15,15 @@ public class MessagesUtil {
 	public static final String Add = "add";
 	public static final String Add_Child = "add.child";
 	public static final String Delete = "delete";
+
+	public static final String Confirm_Close = "confirm.close";
+	public static final String Confirm_Close_Message = "confirm.close.message";
+
 	public static final String Confirm_Exit = "confirm.exit";
 	public static final String Confirm_Exit_Message = "confirm.exit.message";
+	public static final String Close = "close";
+
+	public static final String Clear = "clear";
 
 	public static final String Open = "open";
 	public static final String Open_Vocabulary = "open.vocabulary";
@@ -36,15 +43,20 @@ public class MessagesUtil {
 	public static final String Cancel = "cancel";
 	public static final String Error = "error";
 	public static final String Warning = "warning";
+	public static final String Location = "location";
 	public static final String Description = "description";
 	public static final String Type = "type";
 
+	public static final String Base_Vocabulary = "base.vocabulary";
+	public static final String Base_Vocabulary_Contains_Error_Message = "base.vocabulary.contains.error.message";
 	public static final String Vocabulary = "vocabulary";
+	public static final String Vocabulary_Output = "vocabulary.output";
 	public static final String Vocabulary_Ref = "vocabulary.ref";
 	public static final String Vocabulary_Info = "vocabulary.info";
 	public static final String Vocabulary_ID = "vocabulary.id";
 	public static final String Vocabulary_Location = "vocabulary.location";
 	public static final String Vocabulary_Issuer = "issuer";
+	public static final String Vocabulary_Save_Error_Message = "vocabulary.save.error.message";
 	public static final String Vocabulary_ID_Empty_Message = "vocabulary.id.empty.message";
 	public static final String Vocabulary_Opened_Message = "vocabulary.opened.message";
 	public static final String Vocabulary_Save_Success_Message = "vocabulary.save.success.message";
@@ -68,7 +80,6 @@ public class MessagesUtil {
 	public static final String Long_Description = "long.description";
 
 	public static final String Base_ID = "base.id";
-	public static final String Base_Vocabualry = "base.vocabulary";
 	public static final String Basic_Info = "basic.info";
 
 	public static final String User_Container = "user.container";
@@ -77,8 +88,9 @@ public class MessagesUtil {
 	public static final String User_Category = "user.category";
 	public static final String User_Category_ID = "user.category.id";
 	public static final String User_Category_Parent_ID = "user.category.parent.id";
-	public static final String User_Container_ID_Empty_Message = "user.container.id.empty.message";
-	public static final String User_Category_ID_Empty_Message = "user.category.id.empty.message";
+	public static final String User_Category_Duplicate_Message = "user.category.duplicate.message";
+	public static final String User_Container_ID_Not_Empty_Message = "user.container.id.not.empty.message";
+	public static final String User_Category_ID_Not_Empty_Message = "user.category.id.not.empty.message";
 	public static final String User_Category_ID_Unique_Message = "user.category.id.unique.message";
 	public static final String User_Category_Parent_Same_Message = "user.category.parent.same.message";
 	public static final String User_Category_Parent_Cycle_Message = "user.category.parent.cycle.message";
@@ -96,8 +108,9 @@ public class MessagesUtil {
 	public static final String Data_Category = "data.category";
 	public static final String Data_Category_ID = "data.category.id";
 	public static final String Data_Category_Parent_ID = "data.category.parent.id";
-	public static final String Data_Container_ID_Empty_Message = "data.container.id.empty.message";
-	public static final String Data_Category_ID_Empty_Message = "data.category.id.empty.message";
+	public static final String Data_Category_Duplicate_Message = "data.category.duplicate.message";
+	public static final String Data_Container_ID_Not_Empty_Message = "data.container.id.not.empty.message";
+	public static final String Data_Category_ID_Not_Empty_Message = "data.category.id.not.empty.message";
 	public static final String Data_Category_ID_Unique_Message = "data.category.id.unique.message";
 	public static final String Data_Category_Parent_Same_Message = "data.category.parent.same.message";
 	public static final String Data_Category_Parent_Cycle_Message = "data.category.parent.cycle.message";
@@ -109,9 +122,13 @@ public class MessagesUtil {
 	public static final String Data_Category_Parent_Not_Exist_Message = "data.category.parent.not.exist.message";
 
 	public static final String Policy = "policy";
+	public static final String Policy_Output = "policy.output";
+	public static final String Policy_Save_Error_Message = "policy.save.error.message";
+	public static final String Policy_Vocabulary_Contains_Error_Message = "policy.vocabulary.contains.error.message";
 	public static final String Policy_ID = "policy.id";
 	public static final String Policy_Info = "policy.info";
 	public static final String Policy_Rules = "policy.rules";
+	public static final String Policy_No_Vocabulary_Message = "policy.no.vocabulary.message";
 	public static final String Policy_Opened_Message = "policy.opened.message";
 	public static final String Policy_Save_Success_Message = "policy.save.success.message";
 	public static final String Policy_Invalid_Document_Message = "policy.invalid.document.message";
@@ -122,15 +139,16 @@ public class MessagesUtil {
 	public static final String Rule_Type = "rule.type";
 	public static final String Rule_ID = "rule.id";
 	public static final String Rule_Error_Message = "rule.error.message";
-	public static final String Rule_ID_Non_Empty_Message = "rule.id.none.empty.message";
-	public static final String Rule_User_Ref_Non_Empty_Message = "rule.user.ref.non.empty.message";
+	public static final String Rule_ID_Unique_Message = "rule.id.unique.message";
+	public static final String Rule_ID_Not_Empty_Message = "rule.id.not.empty.message";
+	public static final String Rule_User_Ref_Not_Empty_Message = "rule.user.ref.not.empty.message";
 	public static final String Rule_User_Ref_Unique_Message = "rule.user.ref.unique.message";
-	public static final String Rule_Data_Ref_Non_Empty_Message = "rule.data.ref.non.empty.message";
+	public static final String Rule_Data_Ref_Not_Empty_Message = "rule.data.ref.not.empty.message";
 	public static final String Rule_Data_Ref_Unique_Message = "rule.user.ref.unique.message";
 	public static final String Rule_Desensitize_Operation_Unique_Message = "rule.desensitize.operation.unique.message";
 	public static final String Rule_Desensitize_Operation_Not_Exist_Message = "rule.desensitize.operation.not.exist.message";
 	public static final String Rule_Restriction_Not_Empty_Message = "rule.restriction.not.empty.message";
-	public static final String Rule_Data_Association_Non_Overlap_Message = "rule.data.association.non.overlap.message";
+	public static final String Rule_Data_Association_Not_Overlap_Message = "rule.data.association.not.overlap.message";
 	public static final String Rule_Restriction_Effective_Message = "rule.restriction.effective.message";
 	@ParseOnly
 	public static final String Rule_Restriction_DataRef_Not_Exist_Message = "rule.restriction.dataref.not.exist.message";

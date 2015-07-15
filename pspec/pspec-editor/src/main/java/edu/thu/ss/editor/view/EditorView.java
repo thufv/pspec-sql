@@ -6,7 +6,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import edu.thu.ss.editor.model.BaseModel;
 
-public abstract class EditorView<T extends BaseModel> extends Composite {
+public abstract class EditorView<T extends BaseModel, E> extends Composite {
 	protected Shell shell;
 	protected T model;
 	protected OutputView outputView;
@@ -20,6 +20,10 @@ public abstract class EditorView<T extends BaseModel> extends Composite {
 
 	public void refresh() {
 		//TODO
+	}
+
+	public void select(E object) {
+
 	}
 
 }

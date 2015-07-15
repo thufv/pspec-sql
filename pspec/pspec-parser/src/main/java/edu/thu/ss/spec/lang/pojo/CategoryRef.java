@@ -85,6 +85,10 @@ public abstract class CategoryRef<T extends Category<T>> extends ObjectRef {
 		return materialized;
 	}
 
+	public boolean isError() {
+		return error;
+	}
+
 	/**
 	 * performs materialization based on specified container
 	 * 

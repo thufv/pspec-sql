@@ -18,13 +18,16 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
 
+import edu.thu.ss.editor.PSpecEditor;
 import edu.thu.ss.editor.model.VocabularyModel;
 import edu.thu.ss.editor.util.EditorUtil;
+import edu.thu.ss.editor.util.EditorUtil.ParseResult;
+import edu.thu.ss.spec.lang.analyzer.VocabularyAnalyzer;
 import edu.thu.ss.spec.lang.parser.event.EventTable;
 import edu.thu.ss.spec.lang.pojo.ContactInfo;
 import edu.thu.ss.spec.lang.pojo.Vocabulary;
 
-public class VocabularyView extends EditorView<VocabularyModel> {
+public class VocabularyView extends EditorView<VocabularyModel, Vocabulary> {
 
 	private Text name;
 	private Text email;
@@ -36,7 +39,8 @@ public class VocabularyView extends EditorView<VocabularyModel> {
 	private Text address;
 	private Text longDescription;
 	private Text shortDescription;
-	private TreeItem item;
+	private TreeItem editorItem;
+	private EventTable table;
 
 	/**
 	 * Create the composite
@@ -46,7 +50,10 @@ public class VocabularyView extends EditorView<VocabularyModel> {
 	public VocabularyView(final Shell shell, Composite parent, VocabularyModel model,
 			OutputView outputView, TreeItem item) {
 		super(shell, parent, model, outputView);
-		this.item = item;
+		table = new EventTable();
+		EditorUtil
+				.addOutputListener(table, model, PSpecEditor.getInstance().getDefaultOutputListener());
+		this.editorItem = item;
 		this.setBackground(EditorUtil.getDefaultBackground());
 		this.setBackgroundMode(SWT.INHERIT_FORCE);
 
@@ -86,16 +93,27 @@ public class VocabularyView extends EditorView<VocabularyModel> {
 					vocabularyID.selectAll();
 					return;
 				}
-				vocabulary.getInfo().setId(text);
-				item.setText(text);
-
+				if (!vocabulary.getInfo().getId().equals(text)) {
+					vocabulary.getInfo().setId(text);
+					editorItem.setText(text);
+					if (model.hasOutput()) {
+						outputView.refresh(model);
+					}
+				}
 			}
 		});
 
-		EditorUtil.newLabel(parent, getMessage(Base_Vocabualry), EditorUtil.labelData());
+		EditorUtil.newLabel(parent, getMessage(Vocabulary_Location), EditorUtil.labelData());
+		location = EditorUtil.newText(parent, EditorUtil.textData());
+		location.setText(model.getPath());
+		location.setEnabled(false);
+
+		GridData baseLabelData = EditorUtil.labelData();
+		baseLabelData.verticalAlignment = SWT.CENTER;
+		EditorUtil.newLabel(parent, getMessage(Base_Vocabulary), baseLabelData);
 
 		Composite baseComposite = EditorUtil.newComposite(parent);
-		baseComposite.setLayout(EditorUtil.newNoMarginGridLayout(2, false));
+		baseComposite.setLayout(EditorUtil.newNoMarginGridLayout(3, false));
 		baseComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		baseVocabulary = EditorUtil.newText(baseComposite, EditorUtil.textData());
 		if (vocabulary.getBase() != null) {
@@ -114,13 +132,16 @@ public class VocabularyView extends EditorView<VocabularyModel> {
 				FileDialog dlg = EditorUtil.newOpenFileDialog(shell);
 				String file = dlg.open();
 				if (file != null) {
-					//TODO event table
-					Vocabulary base = EditorUtil.openVocabulary(file, shell, EventTable.getDummy());
-					if (base != null) {
-						vocabulary.setBaseVocabulary(base);
-						baseVocabulary.setText(file);
-					}
+					setBaseVocabulary(file);
 				}
+			}
+		});
+
+		Button clear = EditorUtil.newButton(baseComposite, getMessage(Clear));
+		clear.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				setBaseVocabulary(null);
 			}
 		});
 
@@ -147,6 +168,44 @@ public class VocabularyView extends EditorView<VocabularyModel> {
 
 			}
 		});
+	}
+
+	private void setBaseVocabulary(String file) {
+		Vocabulary vocabulary = model.getVocabulary();
+		if (file == null) {
+			baseVocabulary.setText("...");
+			vocabulary.setBaseVocabulary(null);
+		} else {
+			VocabularyModel baseModel = new VocabularyModel(file);
+			ParseResult result = EditorUtil.openVocabulary(baseModel, shell, null);
+			if (result.equals(ParseResult.Invalid_Vocabulary)) {
+				EditorUtil.showMessageBox(shell, "", getMessage(Vocabulary_Invalid_Document_Message, file));
+				return;
+			}
+			if (result.equals(ParseResult.Error)) {
+				EditorUtil.showMessageBox(shell, "",
+						getMessage(Base_Vocabulary_Contains_Error_Message, file));
+				return;
+			}
+			vocabulary.setBaseVocabulary(baseModel.getVocabulary());
+			baseVocabulary.setText(file);
+		}
+		//analyze errors
+		model.clearOutput();
+		boolean hasOutput = model.hasOutput();
+		VocabularyAnalyzer analyzer = new VocabularyAnalyzer(table);
+		boolean error = false;
+		error = analyzer.analyze(vocabulary.getUserContainer(), true) || error;
+		error = analyzer.analyze(vocabulary.getDataContainer(), true) || error;
+		if (hasOutput || model.hasOutput()) {
+			outputView.refresh();
+		}
+		PSpecEditor.getInstance().getUserContainerView(model).refresh();
+		PSpecEditor.getInstance().getDataContainerView(model).refresh();
+		if (error) {
+			EditorUtil.showMessageBox(shell, "",
+					getMessage(Vocabulary_Parse_Error_Message, vocabulary.getInfo().getId()));
+		}
 	}
 
 	private void initializeIssuer(Composite parent) {
@@ -206,6 +265,10 @@ public class VocabularyView extends EditorView<VocabularyModel> {
 
 			}
 		});
+	}
+
+	public void refreshLocation() {
+		location.setText(model.getPath());
 	}
 
 }

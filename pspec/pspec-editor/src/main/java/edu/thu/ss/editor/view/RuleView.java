@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.ExpandBar;
 import org.eclipse.swt.widgets.ExpandItem;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
@@ -25,6 +26,7 @@ import edu.thu.ss.editor.model.PolicyModel;
 import edu.thu.ss.editor.model.RuleModel;
 import edu.thu.ss.editor.util.EditorUtil;
 import edu.thu.ss.editor.util.MessagesUtil;
+import edu.thu.ss.spec.lang.pojo.CategoryRef;
 import edu.thu.ss.spec.lang.pojo.DataRef;
 import edu.thu.ss.spec.lang.pojo.Desensitization;
 import edu.thu.ss.spec.lang.pojo.Restriction;
@@ -32,7 +34,7 @@ import edu.thu.ss.spec.lang.pojo.Rule;
 import edu.thu.ss.spec.lang.pojo.UserRef;
 import edu.thu.ss.spec.util.PSpecUtil;
 
-public class RuleView extends EditorView<PolicyModel> {
+public class RuleView extends EditorView<PolicyModel, Rule> {
 
 	private ToolItem add;
 	private ToolItem delete;
@@ -56,6 +58,28 @@ public class RuleView extends EditorView<PolicyModel> {
 		Group content = EditorUtil.newGroup(this, getMessage(Policy_Rules));
 		content.setLayout(new GridLayout(1, false));
 		initializeContent(content);
+	}
+
+	@Override
+	public void select(Rule object) {
+		ExpandItem[] items = ruleBar.getItems();
+		for (ExpandItem item : items) {
+			RuleModel model = (RuleModel) item.getData();
+			if (model.getRule().equals(object)) {
+				item.setExpanded(true);
+				selectItem(item);
+			}
+		}
+
+	}
+
+	private void selectItem(ExpandItem item) {
+		if (selectedItem != null) {
+			selectedItem.getControl().setBackground(EditorUtil.getDefaultBackground());
+		}
+		selectedItem = item;
+		selectedItem.getControl().setBackground(EditorUtil.getSelectedBackground());
+		delete.setEnabled(true);
 	}
 
 	private void initializeContent(Composite parent) {
@@ -82,7 +106,13 @@ public class RuleView extends EditorView<PolicyModel> {
 		add.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				if (model.getPolicy().getVocabulary() == null) {
+					EditorUtil.showMessageBox(shell, "", getMessage(Policy_No_Vocabulary_Message));
+					return;
+				}
+
 				RuleModel ruleModel = new RuleModel(new Rule());
+				ruleModel.init();
 				int ret = new RuleDialog(shell, ruleModel, model).open();
 				if (ret == SWT.OK) {
 					initializeRuleItem(ruleModel);
@@ -99,8 +129,12 @@ public class RuleView extends EditorView<PolicyModel> {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				assert (selectedItem != null);
-				Rule rule = (Rule) selectedItem.getData();
-				model.getPolicy().getRules().remove(rule);
+				RuleModel ruleModel = (RuleModel) selectedItem.getData();
+				model.removeRuleModel(ruleModel);
+				if (ruleModel.hasOutput()) {
+					//refresh
+					outputView.refresh();
+				}
 
 				selectedItem.getControl().dispose();
 				selectedItem.dispose();
@@ -155,12 +189,7 @@ public class RuleView extends EditorView<PolicyModel> {
 		ruleComposite.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				if (selectedItem != null) {
-					selectedItem.getControl().setBackground(EditorUtil.getDefaultBackground());
-				}
-				selectedItem = item;
-				selectedItem.getControl().setBackground(EditorUtil.getSelectedBackground());
-				delete.setEnabled(true);
+				selectItem(item);
 			}
 
 			@Override
@@ -169,8 +198,12 @@ public class RuleView extends EditorView<PolicyModel> {
 				int ret = new RuleDialog(shell, ruleModel, model).open();
 				if (ret == SWT.OK) {
 					updateRuleItem(item);
+					if (ruleModel.hasOutput()) {
+						ruleModel.clearOutput();
+						outputView.refresh();
+					}
 				} else {
-					ruleModel.reset();
+					ruleModel.init();
 				}
 			}
 		});
@@ -193,7 +226,7 @@ public class RuleView extends EditorView<PolicyModel> {
 				sb.append("exclude(");
 				sb.append(PSpecUtil.format(ref.getExcludeRefs(), ", "));
 			}
-			newInfoLabel(userComposite, sb.toString());
+			newInfoLabel(userComposite, sb.toString(), ref);
 		}
 	}
 
@@ -217,9 +250,9 @@ public class RuleView extends EditorView<PolicyModel> {
 				sb.append("exclude(");
 				sb.append(PSpecUtil.format(ref.getExcludeRefs(), ", "));
 			}
-			newInfoLabel(dataComposite, sb.toString());
+			newInfoLabel(dataComposite, sb.toString(), ref);
 			newBarLabel(dataComposite);
-			newInfoLabel(dataComposite, ref.getAction().getId());
+			newInfoLabel(dataComposite, ref.getAction().getId(), null);
 		}
 
 	}
@@ -251,11 +284,11 @@ public class RuleView extends EditorView<PolicyModel> {
 				sb.append(de.getDataRefId());
 				sb.append(")");
 			}
-			newInfoLabel(restrictionComposite, sb.toString());
+			newInfoLabel(restrictionComposite, sb.toString(), de.getDataRef());
 
 			newBarLabel(restrictionComposite);
 
-			newInfoLabel(restrictionComposite, PSpecUtil.format(de.getOperations(), ", "));
+			newInfoLabel(restrictionComposite, PSpecUtil.format(de.getOperations(), ", "), null);
 
 		}
 
@@ -275,11 +308,15 @@ public class RuleView extends EditorView<PolicyModel> {
 		return label;
 	}
 
-	private Label newInfoLabel(Composite parent, String text) {
+	private Label newInfoLabel(Composite parent, String text, CategoryRef<?> ref) {
 		Label label = new Label(parent, SWT.NONE);
 		label.setText(text);
 		label.setFont(EditorUtil.getDefaultFont());
-		label.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_GRAY));
+		if (ref != null && ref.isError()) {
+			label.setForeground(EditorUtil.getErrorForeground());
+		} else {
+			label.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_GRAY));
+		}
 		GridData data = new GridData();
 		data.verticalAlignment = SWT.TOP;
 
@@ -304,5 +341,15 @@ public class RuleView extends EditorView<PolicyModel> {
 		layout.marginHeight = 0;
 		composite.setLayout(layout);
 		return composite;
+	}
+
+	@Override
+	public void refresh() {
+		selectedItem = null;
+		for (ExpandItem item : ruleBar.getItems()) {
+			item.getControl().dispose();
+			item.dispose();
+		}
+		initializeRules();
 	}
 }

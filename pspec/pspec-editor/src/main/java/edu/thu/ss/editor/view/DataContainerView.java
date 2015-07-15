@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.TreeItem;
 
 import edu.thu.ss.editor.model.CategoryContentProvider;
 import edu.thu.ss.editor.model.CategoryLabelProvider;
+import edu.thu.ss.editor.model.OutputEntry.MessageType;
 import edu.thu.ss.editor.model.VocabularyModel;
 import edu.thu.ss.editor.util.EditorUtil;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
@@ -38,7 +39,7 @@ import edu.thu.ss.spec.lang.pojo.DataContainer;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.util.PSpecUtil;
 
-public class DataContainerView extends EditorView<VocabularyModel> {
+public class DataContainerView extends EditorView<VocabularyModel, DataCategory> {
 
 	private TreeViewer dataViewer;
 
@@ -110,7 +111,8 @@ public class DataContainerView extends EditorView<VocabularyModel> {
 			public void focusLost(FocusEvent e) {
 				String text = containerId.getText().trim();
 				if (text.isEmpty()) {
-					EditorUtil.showMessage(shell, getMessage(Data_Container_ID_Empty_Message), containerId);
+					EditorUtil.showMessage(shell, getMessage(Data_Container_ID_Not_Empty_Message),
+							containerId);
 					containerId.setText(dataContainer.getId());
 					containerId.selectAll();
 					return;
@@ -148,9 +150,10 @@ public class DataContainerView extends EditorView<VocabularyModel> {
 		dataViewer = new TreeViewer(parent, SWT.BORDER | SWT.H_SCROLL);
 
 		final Tree dataTree = dataViewer.getTree();
-		EditorUtil.processTree(dataTree);
+		EditorUtil.processTreeViewer(dataViewer);
 
-		dataViewer.setLabelProvider(new CategoryLabelProvider(dataContainer));
+		dataViewer.setLabelProvider(new CategoryLabelProvider<DataCategory>(dataContainer, model
+				.getErrors()));
 		dataViewer.setContentProvider(new CategoryContentProvider<DataCategory>(dataContainer));
 		dataViewer.setInput(dataContainer);
 
@@ -176,10 +179,19 @@ public class DataContainerView extends EditorView<VocabularyModel> {
 					dataOperations.add(op.getName());
 				}
 
-				if (dataContainer.directContains(selectedData.getId())) {
+				if (dataContainer.directContains(selectedData)) {
 					enableDataInfo();
 				} else {
 					disableDataInfo(false);
+				}
+
+				//clear message
+				if (model.clearOutputByCategory(selectedData.getId(), MessageType.Data_Category)) {
+					if (!dataContainer.duplicate(selectedData.getId())) {
+						model.getErrors().remove(selectedData.getId());
+						refresh(selectedData.getId());
+					}
+					outputView.refresh();
 				}
 			}
 		});
@@ -214,20 +226,34 @@ public class DataContainerView extends EditorView<VocabularyModel> {
 				//check empty
 				String text = dataId.getText().trim();
 				if (text.isEmpty()) {
-					EditorUtil.showMessage(shell, getMessage(Data_Category_ID_Empty_Message), dataId);
+					EditorUtil.showMessage(shell, getMessage(Data_Category_ID_Not_Empty_Message), dataId);
 					dataId.setText(selectedData.getId());
 					dataId.selectAll();
 					return;
 				}
 				//check duplicate
-				if (!text.equals(selectedData.getId()) && dataContainer.get(text) != null) {
+				boolean duplicate = false;
+				if (!text.equals(selectedData.getId())) {
+					duplicate = dataContainer.contains(text);
+				} else {
+					duplicate = dataContainer.duplicate(selectedData.getId());
+				}
+				if (duplicate) {
 					EditorUtil.showMessage(shell, getMessage(Data_Category_ID_Unique_Message, text), dataId);
 					dataId.setText(selectedData.getId());
 					dataId.selectAll();
 					return;
 				}
+				String oldId = selectedData.getId();
 				EditorUtil.updateItem(dataParentId, selectedData.getId(), text);
 				dataContainer.update(text, selectedData);
+				if (model.getErrors().contains(oldId) && !dataContainer.duplicate(oldId)) {
+					//problem fixed
+					model.clearOutputByCategory(oldId, MessageType.Data_Category_Duplicate);
+					model.getErrors().remove(oldId);
+					refresh(oldId);
+					outputView.refresh();
+				}
 
 				dataViewer.refresh(selectedData);
 			}
@@ -405,7 +431,8 @@ public class DataContainerView extends EditorView<VocabularyModel> {
 			}
 		});
 
-		boolean editable = (selected != null && dataContainer.directContains(selected.getText()));
+		boolean editable = (selected != null && dataContainer.directContains((DataCategory) selected
+				.getData()));
 		MenuItem deleteItem = new MenuItem(popMenu, SWT.PUSH);
 		deleteItem.setEnabled(editable);
 		deleteItem.setText(getMessage(Delete));
@@ -454,6 +481,18 @@ public class DataContainerView extends EditorView<VocabularyModel> {
 		});
 
 		return popMenu;
+	}
+
+	private void refresh(String dataId) {
+		DataCategory data = dataContainer.get(dataId);
+		if (data != null) {
+			dataViewer.refresh(data);
+		}
+	}
+
+	@Override
+	public void refresh() {
+		dataViewer.refresh();
 	}
 
 	private void refreshViewer(DataCategory data) {

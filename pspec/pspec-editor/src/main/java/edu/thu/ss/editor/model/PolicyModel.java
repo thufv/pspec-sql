@@ -15,14 +15,64 @@ public class PolicyModel extends BaseModel {
 	public PolicyModel(Policy policy, String path) {
 		super(path);
 		this.policy = policy;
+	}
 
-		for (Rule rule : policy.getRules()) {
-			ruleModels.add(new RuleModel(rule));
-		}
+	public PolicyModel(String path) {
+		super(path);
 	}
 
 	public Policy getPolicy() {
 		return policy;
+	}
+
+	public void init(Policy policy) {
+		this.policy = policy;
+		for (RuleModel ruleModel : ruleModels) {
+			ruleModel.init();
+		}
+	}
+
+	public List<RuleModel> getRuleModels() {
+		return ruleModels;
+	}
+
+	public void addRuleModel(RuleModel ruleModel) {
+		this.ruleModels.add(ruleModel);
+		this.policy.getRules().add(ruleModel.getRule());
+	}
+
+	public void removeRuleModel(RuleModel ruleModel) {
+		this.ruleModels.remove(ruleModel);
+		this.policy.getRules().remove(ruleModel.getRule());
+
+	}
+
+	public RuleModel getRuleModel(Rule rule) {
+		if (rule == null) {
+			return null;
+		}
+		for (RuleModel ruleModel : ruleModels) {
+			if (ruleModel.getRule().equals(rule)) {
+				return ruleModel;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public void clearOutput() {
+		super.clearOutput();
+		for (RuleModel ruleModel : ruleModels) {
+			ruleModel.clearOutput();
+		}
+	}
+
+	@Override
+	public void clearOutput(OutputType type) {
+		super.clearOutput(type);
+		for (RuleModel ruleModel : ruleModels) {
+			ruleModel.clearOutput(type);
+		}
 	}
 
 	@Override
@@ -40,16 +90,37 @@ public class PolicyModel extends BaseModel {
 			count += rule.countOutput(type);
 		}
 		return count;
-
 	}
 
-	public List<RuleModel> getRuleModels() {
-		return ruleModels;
+	@Override
+	public boolean hasOutput() {
+		if (super.hasOutput()) {
+			return true;
+		}
+		for (RuleModel ruleModel : ruleModels) {
+			if (ruleModel.hasOutput()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
-	public void addRuleModel(RuleModel ruleModel) {
-		this.ruleModels.add(ruleModel);
-		this.policy.getRules().add(ruleModel.getRule());
+	@Override
+	public boolean hasOutput(OutputType type) {
+		if (super.hasOutput(type)) {
+			return true;
+		}
+		for (RuleModel ruleModel : ruleModels) {
+			if (ruleModel.hasOutput(type)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
+	public void initRuleModels() {
+		for (RuleModel ruleModel : ruleModels) {
+			ruleModel.init();
+		}
+	}
 }

@@ -74,9 +74,10 @@ public class UserRef extends CategoryRef<UserCategory> {
 		UserRef ref = new UserRef();
 		ref.refid = refid;
 		ref.resolved = resolved;
+		ref.error = error;
 		ref.category = category;
 		for (ObjectRef exclude : excludeRefs) {
-			ref.excludeRefs.add(exclude);
+			ref.excludeRefs.add(exclude.clone());
 		}
 		return ref;
 	}

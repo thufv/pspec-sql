@@ -8,10 +8,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Dialog;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
@@ -65,7 +62,7 @@ public class UserCategoryDialog extends EditorDialog {
 				//check empty
 				String text = userId.getText().trim();
 				if (text.isEmpty()) {
-					EditorUtil.showMessageBox(dialog, "", getMessage(User_Category_ID_Empty_Message));
+					EditorUtil.showMessageBox(dialog, "", getMessage(User_Category_ID_Not_Empty_Message));
 					return;
 				}
 				//check duplicate

@@ -90,6 +90,10 @@ public class Policy {
 		this.rules = rules;
 	}
 
+	public Vocabulary getVocabulary() {
+		return vocabulary;
+	}
+
 	public UserContainer getUserContainer() {
 		return userContainer;
 	}
@@ -174,5 +178,14 @@ public class Policy {
 		this.vocabulary = vocabulary;
 		this.userContainer = vocabulary.getUserContainer();
 		this.dataContainer = vocabulary.getDataContainer();
+	}
+
+	public Rule getRule(String id) {
+		for (Rule rule : rules) {
+			if (rule.getId().equals(id)) {
+				return rule;
+			}
+		}
+		return null;
 	}
 }

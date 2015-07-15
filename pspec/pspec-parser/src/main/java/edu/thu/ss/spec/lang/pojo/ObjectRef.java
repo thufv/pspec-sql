@@ -17,6 +17,8 @@ public class ObjectRef implements Parsable, Writable {
 
 	protected boolean resolved = false;
 
+	protected boolean error = false;
+
 	public ObjectRef() {
 
 	}
@@ -33,6 +35,14 @@ public class ObjectRef implements Parsable, Writable {
 		this.resolved = resolved;
 	}
 
+	public boolean isError() {
+		return error;
+	}
+
+	public void setError(boolean error) {
+		this.error = error;
+	}
+
 	@Override
 	public void parse(Node node) {
 		this.refid = XMLUtil.getAttrValue(node, ParserConstant.Ele_Policy_Refid);
@@ -44,6 +54,14 @@ public class ObjectRef implements Parsable, Writable {
 
 	public void setRefid(String refid) {
 		this.refid = refid;
+	}
+
+	public ObjectRef clone() {
+		ObjectRef ref = new ObjectRef();
+		ref.refid = this.refid;
+		ref.resolved = this.resolved;
+		ref.error = this.error;
+		return ref;
 	}
 
 	@Override

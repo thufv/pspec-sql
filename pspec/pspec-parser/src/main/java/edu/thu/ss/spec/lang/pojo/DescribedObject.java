@@ -13,8 +13,8 @@ import edu.thu.ss.spec.lang.parser.ParserConstant;
  *
  */
 public abstract class DescribedObject extends IdentifiedObject {
-	protected String shortDescription="";
-	protected String longDescription="";
+	protected String shortDescription = "";
+	protected String longDescription = "";
 
 	public String getShortDescription() {
 		return shortDescription;
@@ -34,12 +34,12 @@ public abstract class DescribedObject extends IdentifiedObject {
 
 	public Element outputType(Document document, String name) {
 		Element element = super.outputType(document, name);
-		if (this.shortDescription != null) {
+		if (!this.shortDescription.isEmpty()) {
 			Element shortEle = document.createElement(ParserConstant.Ele_Short_Description);
 			shortEle.appendChild(document.createTextNode(shortDescription));
 			element.appendChild(shortEle);
 		}
-		if (this.longDescription != null) {
+		if (!this.longDescription.isEmpty()) {
 			Element longEle = document.createElement(ParserConstant.Ele_Long_Description);
 			longEle.appendChild(document.createTextNode(longDescription));
 			element.appendChild(longEle);

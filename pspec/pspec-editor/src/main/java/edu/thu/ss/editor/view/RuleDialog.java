@@ -10,8 +10,6 @@ import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.TableEditor;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
@@ -37,7 +35,6 @@ import edu.thu.ss.editor.model.PolicyModel;
 import edu.thu.ss.editor.model.RuleModel;
 import edu.thu.ss.editor.util.EditorUtil;
 import edu.thu.ss.spec.lang.analyzer.rule.RuleResolver;
-import edu.thu.ss.spec.lang.parser.event.EventTable;
 import edu.thu.ss.spec.lang.pojo.Action;
 import edu.thu.ss.spec.lang.pojo.DataAssociation;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
@@ -95,7 +92,7 @@ public class RuleDialog extends EditorDialog {
 		this.policyModel = model;
 		this.ruleModel = ruleModel;
 
-		dialog = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.RESIZE);
+		dialog = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | SWT.RESIZE);
 		dialog.setBackground(EditorUtil.getDefaultBackground());
 		Point size = EditorUtil.getScreenSize();
 		dialog.setSize(size.x / 2, size.y * 2 / 3);
@@ -155,30 +152,38 @@ public class RuleDialog extends EditorDialog {
 
 		ok.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				//check user reference
-				if (ruleId.getText().trim().isEmpty()) {
-					EditorUtil.showMessageBox(dialog, "", getMessage(Rule_ID_Non_Empty_Message));
+				//unique id
+				String id = ruleId.getText().trim();
+				if (id.isEmpty()) {
+					EditorUtil.showMessageBox(dialog, "", getMessage(Rule_ID_Not_Empty_Message));
 					return;
 				}
+				if (!id.equals(ruleModel.getRule().getId())) {
+					Rule rule = policyModel.getPolicy().getRule(id);
+					if (rule != null) {
+						EditorUtil.showMessageBox(dialog, "", getMessage(Rule_ID_Unique_Message, id));
+						return;
+					}
+				}
 
+				//check user reference
 				for (UserRef ref : ruleModel.getUserRefs()) {
 					if (ref.getRefid().isEmpty()) {
-						EditorUtil.showMessageBox(dialog, "", getMessage(Rule_User_Ref_Non_Empty_Message));
+						EditorUtil.showMessageBox(dialog, "", getMessage(Rule_User_Ref_Not_Empty_Message));
 						return;
 					}
 				}
 				//check data reference
 				for (DataRef ref : ruleModel.getDataRefs()) {
 					if (ref.getRefid().isEmpty()) {
-						EditorUtil.showMessageBox(dialog, "", getMessage(Rule_Data_Ref_Non_Empty_Message));
+						EditorUtil.showMessageBox(dialog, "", getMessage(Rule_Data_Ref_Not_Empty_Message));
 						return;
 					}
 				}
 				Rule tmpRule = new Rule();
 				fillRule(tmpRule);
 				List<String> messages = new ArrayList<>();
-				RuleResolver resolver = new RuleResolver(EditorUtil.addPolicyLogListeners(new EventTable(),
-						messages));
+				RuleResolver resolver = new RuleResolver(EditorUtil.newLogTable(messages));
 				if (resolver.analyzeRule(tmpRule, policyModel.getPolicy().getUserContainer(), policyModel
 						.getPolicy().getDataContainer())) {
 					EditorUtil.showMessageBox(dialog, "", messages);
@@ -255,7 +260,7 @@ public class RuleDialog extends EditorDialog {
 					return;
 				}
 				if (userTable.getItemCount() - userTable.getSelectionCount() == 0) {
-					EditorUtil.showMessageBox(dialog, "", getMessage(Rule_User_Ref_Non_Empty_Message));
+					EditorUtil.showMessageBox(dialog, "", getMessage(Rule_User_Ref_Not_Empty_Message));
 					return;
 				}
 
@@ -269,9 +274,9 @@ public class RuleDialog extends EditorDialog {
 
 		});
 
-		userTable.addMouseListener(new MouseAdapter() {
+		userTable.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void mouseDown(MouseEvent e) {
+			public void widgetSelected(SelectionEvent e) {
 				if (userTable.getSelectionCount() > 0) {
 					deleteUser.setEnabled(true);
 				} else {
@@ -395,7 +400,7 @@ public class RuleDialog extends EditorDialog {
 					return;
 				}
 				if (dataTable.getItemCount() - dataTable.getSelectionCount() == 0) {
-					EditorUtil.showMessageBox(dialog, "", getMessage(Rule_Data_Ref_Non_Empty_Message));
+					EditorUtil.showMessageBox(dialog, "", getMessage(Rule_Data_Ref_Not_Empty_Message));
 					return;
 				}
 				boolean associate = dataAssociationType.getSelection();
@@ -430,15 +435,16 @@ public class RuleDialog extends EditorDialog {
 			}
 		});
 
-		dataTable.addMouseListener(new MouseAdapter() {
+		dataTable.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void mouseDown(MouseEvent e) {
+			public void widgetSelected(SelectionEvent e) {
 				if (dataTable.getSelectionCount() > 0) {
 					deleteData.setEnabled(true);
 				} else {
 					deleteData.setEnabled(false);
 				}
 			}
+
 		});
 
 		resize(dataComposite);
@@ -1004,24 +1010,26 @@ public class RuleDialog extends EditorDialog {
 		rule.setShortDescription(shortDescription.getText().trim());
 		rule.setLongDescription(longDescription.getText().trim());
 
-		rule.setUserRefs(ruleModel.getUserRefs());
+		rule.getUserRefs().clear();
+		rule.getUserRefs().addAll(ruleModel.getUserRefs());
 
+		rule.getRawDataRefs().clear();
+		rule.setAssociation(null);
 		if (dataSingleType.getSelection()) {
-			rule.setDataRefs(ruleModel.getDataRefs());
+			rule.getRawDataRefs().addAll(ruleModel.getDataRefs());
 		} else {
-			rule.getRawDataRefs().clear();
 			DataAssociation association = new DataAssociation();
-			association.setDataRefs(ruleModel.getDataRefs());
+			association.getDataRefs().addAll(ruleModel.getDataRefs());
 			rule.setAssociation(association);
 		}
 
+		rule.getRestrictions().clear();
 		if (forbidType.getSelection()) {
-			rule.getRestrictions().clear();
 			Restriction res = new Restriction();
 			res.setForbid(true);
 			rule.getRestrictions().add(res);
 		} else {
-			rule.setRestrictions(ruleModel.getRestrictions());
+			rule.getRestrictions().addAll(ruleModel.getRestrictions());
 		}
 	}
 

@@ -42,6 +42,14 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
+import edu.thu.ss.editor.model.BaseModel;
+import edu.thu.ss.editor.model.OutputEntry;
+import edu.thu.ss.editor.model.OutputEntry.MessageType;
+import edu.thu.ss.editor.model.OutputEntry.OutputType;
+import edu.thu.ss.editor.model.OutputListener;
+import edu.thu.ss.editor.model.PolicyModel;
+import edu.thu.ss.editor.model.RuleModel;
+import edu.thu.ss.editor.model.VocabularyModel;
 import edu.thu.ss.spec.lang.parser.InvalidPolicyException;
 import edu.thu.ss.spec.lang.parser.InvalidVocabularyException;
 import edu.thu.ss.spec.lang.parser.PolicyParser;
@@ -118,11 +126,11 @@ public class EditorUtil {
 	}
 
 	public static Font getDefaultFont() {
-		return SWTResourceManager.getFont("Arial", 12, SWT.NORMAL);
+		return SWTResourceManager.getFont("Helvetica", 12, SWT.NORMAL);
 	}
 
 	public static Font getDefaultBoldFont() {
-		return SWTResourceManager.getFont("Arial", 12, SWT.BOLD);
+		return SWTResourceManager.getFont("Helvetica", 12, SWT.BOLD);
 	}
 
 	public static Color getDefaultBackground() {
@@ -133,43 +141,62 @@ public class EditorUtil {
 		return SWTResourceManager.getColor(168, 208, 231);
 	}
 
+	public static Color getErrorForeground() {
+		return SWTResourceManager.getColor(SWT.COLOR_RED);
+	}
+
 	private static void setStyle(Control control) {
 		control.setFont(getDefaultFont());
 		control.setBackground(getDefaultBackground());
 	}
 
-	public static Vocabulary openVocabulary(String path, Shell shell, EventTable table) {
+	public static enum ParseResult {
+		Success,
+		Invalid_Vocabulary,
+		Invalid_Policy,
+		Error
+	}
+
+	public static ParseResult openVocabulary(VocabularyModel model, Shell shell,
+			OutputListener listener) {
 		Vocabulary vocabulary = null;
 		try {
 			VocabularyParser parser = new VocabularyParser();
-			parser.setEventTable(table);
+			if (listener != null) {
+				EventTable table = newOutputTable(model, listener);
+				parser.setEventTable(table);
+			}
 			parser.setForceRegister(true);
-			vocabulary = parser.parse(path);
+			vocabulary = parser.parse(model.getPath());
+			model.init(vocabulary);
 			if (parser.isError()) {
-				showMessageBox(shell, "", getMessage(Vocabulary_Parse_Error_Message, path));
+				return ParseResult.Error;
 			}
 		} catch (InvalidVocabularyException e) {
-			showMessageBox(shell, "", getMessage(Vocabulary_Invalid_Document_Message, path));
+			return ParseResult.Invalid_Vocabulary;
 		}
-		return vocabulary;
+		return ParseResult.Success;
 	}
 
-	public static Policy openPolicy(String path, Shell shell, EventTable table) {
+	public static ParseResult openPolicy(PolicyModel model, Shell shell, OutputListener listener) {
 		Policy policy = null;
 		try {
 			PolicyParser parser = new PolicyParser();
-			parser.setEventTable(table);
+			if (listener != null) {
+				parser.setEventTable(EditorUtil.newOutputTable(model, listener));
+			}
 			parser.setForceRegister(true);
-			policy = parser.parse(path);
+			policy = parser.parse(model.getPath());
+			model.init(policy);
 			if (parser.isError()) {
-				showMessageBox(shell, "", getMessage(Policy_Parse_Error_Message, path));
+				return ParseResult.Error;
 			}
 		} catch (InvalidPolicyException e) {
-			showMessageBox(shell, "", getMessage(Policy_Invalid_Document_Message, path));
+			return ParseResult.Invalid_Policy;
 		} catch (InvalidVocabularyException e) {
-			showMessageBox(shell, "", getMessage(Policy_Invalid_Vocabulary_Document_Message, path, e.uri));
+			return ParseResult.Invalid_Vocabulary;
 		}
-		return policy;
+		return ParseResult.Success;
 	}
 
 	public static Label newLabel(Composite parent, String text, GridData data, boolean prompt) {
@@ -301,9 +328,7 @@ public class EditorUtil {
 	}
 
 	public static void showMessage(Shell parent, String text, Point point) {
-		if (previousTip != null && !previousTip.isDisposed()) {
-			previousTip.dispose();
-		}
+		hideMessage();
 		ToolTip tip = new ToolTip(parent, SWT.BALLOON | SWT.ERROR);
 		tip.setMessage(text);
 		tip.setLocation(point);
@@ -311,6 +336,12 @@ public class EditorUtil {
 		tip.setAutoHide(true);
 
 		previousTip = tip;
+	}
+
+	public static void hideMessage() {
+		if (previousTip != null && !previousTip.isDisposed()) {
+			previousTip.dispose();
+		}
 	}
 
 	public static void showMessageBox(Shell parent, String title, String message) {
@@ -527,7 +558,8 @@ public class EditorUtil {
 		data.exclude = false;
 	}
 
-	public static EventTable addPolicyLogListeners(EventTable table, final List<String> messages) {
+	public static EventTable newLogTable(final List<String> messages) {
+		EventTable table = new EventTable();
 		table.add(new PSpecListener() {
 			@Override
 			public void onRuleRefError(RefErrorType type, Rule rule, CategoryRef<?> ref, String refid) {
@@ -536,7 +568,7 @@ public class EditorUtil {
 				}
 				switch (type) {
 				case Data_Association_Overlap:
-					messages.add(getMessage(Rule_Data_Association_Non_Overlap_Message, rule.getId()));
+					messages.add(getMessage(Rule_Data_Association_Not_Overlap_Message, rule.getId()));
 					break;
 				case Category_Ref_Not_Exist:
 					if (ref instanceof UserRef) {
@@ -636,4 +668,176 @@ public class EditorUtil {
 
 	}
 
+	public static EventTable newOutputTable(final BaseModel model, final OutputListener listener) {
+		EventTable table = new EventTable();
+		addOutputListener(table, model, listener);
+		return table;
+
+	}
+
+	public static EventTable addOutputListener(EventTable table, final BaseModel model,
+			final OutputListener listener) {
+		table.add(new PSpecListener() {
+			private String message;
+
+			@Override
+			public void onParseRule(Rule rule) {
+				PolicyModel policyModel = (PolicyModel) model;
+				policyModel.getRuleModels().add(new RuleModel(rule));
+			}
+
+			@Override
+			public void onRuleRefError(RefErrorType type, Rule rule, CategoryRef<?> ref, String refid) {
+				PolicyModel policyModel = (PolicyModel) model;
+				RuleModel ruleModel = policyModel.getRuleModel(rule);
+				if (ruleModel == null) {
+					return;
+				}
+				switch (type) {
+				case Data_Association_Overlap:
+					message = getMessage(Rule_Data_Association_Not_Overlap_Message, rule.getId());
+					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.error, model, ruleModel,
+							listener, MessageType.Rule_Ref));
+					break;
+				case Category_Ref_Not_Exist:
+					if (ref instanceof UserRef) {
+						message = getMessage(User_Category_Not_Exist_Message, ref.getRefid(), rule.getId());
+						ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.error, model,
+								ruleModel, listener, MessageType.Rule_Ref));
+					} else {
+						message = getMessage(Data_Category_Not_Exist_Message, ref.getRefid(), rule.getId());
+						ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.error, model,
+								ruleModel, listener, MessageType.Rule_Ref));
+					}
+					break;
+				case Category_Exclude_Invalid:
+					if (ref instanceof UserRef) {
+						message = getMessage(User_Category_Exclude_Invalid_Message, ref.getRefid(), refid,
+								rule.getId());
+						ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.error, model,
+								ruleModel, listener, MessageType.Rule_Ref));
+					} else {
+						message = getMessage(Data_Category_Exclude_Invalid_Message, ref.getRefid(), refid,
+								rule.getId());
+						ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.error, model,
+								ruleModel, listener, MessageType.Rule_Ref));
+					}
+					break;
+				case Category_Exclude_Not_Exist:
+					if (ref instanceof UserRef) {
+						message = getMessage(User_Category_Exclude_Not_Exist_Message, ref.getRefid(), refid,
+								rule.getId());
+						ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.error, model,
+								ruleModel, listener, MessageType.Rule_Ref));
+					} else {
+						message = getMessage(Data_Category_Exclude_Not_Exist_Message, ref.getRefid(), refid,
+								rule.getId());
+						ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.error, model,
+								ruleModel, listener, MessageType.Rule_Ref));
+					}
+					break;
+				default:
+					break;
+				}
+			}
+
+			@Override
+			public void onRestrictionError(RestrictionErrorType type, Rule rule, Restriction res,
+					String refId) {
+				PolicyModel policyModel = (PolicyModel) model;
+				RuleModel ruleModel = policyModel.getRuleModel(rule);
+				switch (type) {
+				case Associate_Restriction_DataRef_Not_Exist:
+					message = getMessage(Rule_Restriction_DataRef_Not_Exist_Message, refId,
+							rule.getRestrictionIndex(res), rule.getId());
+					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model,
+							ruleModel, listener, MessageType.Rule_Restriction));
+					break;
+				case Associate_Restriction_Explicit_DataRef:
+					message = getMessage(Rule_Restriction_Explicit_DataRef_Message, rule.getId());
+					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model,
+							ruleModel, listener, MessageType.Rule_Restriction));
+					break;
+				case One_Forbid:
+					message = getMessage(Rule_Restriction_One_Forbid_Message, rule.getId());
+					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model,
+							ruleModel, listener, MessageType.Rule_Restriction));
+					break;
+				case Single_One_Restriction:
+					message = getMessage(Rule_Restriction_Single_One_Message, rule.getId());
+					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model,
+							ruleModel, listener, MessageType.Rule_Restriction));
+					break;
+				case Single_Restriction_No_DataRef:
+					message = getMessage(Rule_Restriction_Single_No_DataRef_Message, rule.getId());
+					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model,
+							ruleModel, listener, MessageType.Rule_Restriction));
+					break;
+				case Single_Restriction_One_Desensitize:
+					message = getMessage(Rule_Restriction_Single_One_Desensitize_Message, rule.getId());
+					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model,
+							ruleModel, listener, MessageType.Rule_Restriction));
+					break;
+				case Unsupported_Operation:
+					message = getMessage(Rule_Restriction_Unsupported_Operation_Message, rule.getId(),
+							rule.getRestrictionIndex(res));
+					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model,
+							ruleModel, listener, MessageType.Rule_Restriction));
+					break;
+				default:
+					break;
+				}
+			}
+
+			@Override
+			public void onVocabularyError(VocabularyErrorType type, Category<?> category, String refid) {
+				VocabularyModel vocabularyModel = (VocabularyModel) model;
+				vocabularyModel.getErrors().add(category.getId());
+				switch (type) {
+				case Category_Cycle_Reference:
+					if (category instanceof UserCategory) {
+						message = getMessage(User_Category_Parent_Cycle_Message, category.getId());
+						model.addOutput(OutputEntry.newInstance(message, OutputType.warning, model, listener,
+								MessageType.User_Category));
+					} else {
+						message = getMessage(Data_Category_Parent_Cycle_Message, category.getId());
+						model.addOutput(OutputEntry.newInstance(message, OutputType.warning, model, listener,
+								MessageType.Data_Category));
+					}
+					break;
+				case Category_Duplicate:
+					if (category instanceof UserCategory) {
+						message = getMessage(User_Category_Duplicate_Message, category.getId());
+						model.addOutput(OutputEntry.newInstance(message, OutputType.error, model, listener,
+								MessageType.User_Category_Duplicate, category.getId()));
+					} else {
+						message = getMessage(Data_Category_Duplicate_Message, category.getId());
+						model.addOutput(OutputEntry.newInstance(message, OutputType.error, model, listener,
+								MessageType.Data_Category_Duplicate, category.getId()));
+					}
+					break;
+				case Category_Parent_Not_Exist:
+					if (category instanceof UserCategory) {
+						message = getMessage(User_Category_Parent_Not_Exist_Message, category.getId(), refid);
+						model.addOutput(OutputEntry.newInstance(message, OutputType.warning, model, listener,
+								MessageType.User_Category, category.getId()));
+					} else {
+						message = getMessage(Data_Category_Parent_Not_Exist_Message, category.getId(), refid);
+						model.addOutput(OutputEntry.newInstance(message, OutputType.warning, model, listener,
+								MessageType.Data_Category, category.getId()));
+					}
+
+					break;
+				case Cycle_Reference:
+					message = getMessage(Vocabulary_Cycle_Reference_Message, category.getId(), refid);
+					model.addOutput(OutputEntry.newInstance(message, OutputType.warning, model, listener,
+							MessageType.Vocabulary));
+					break;
+				default:
+					break;
+				}
+			}
+		});
+		return table;
+	}
 }

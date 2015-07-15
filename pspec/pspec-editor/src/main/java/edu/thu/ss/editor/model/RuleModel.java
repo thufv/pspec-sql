@@ -20,10 +20,10 @@ public class RuleModel extends BaseModel {
 	public RuleModel(Rule rule) {
 		super("");
 		this.rule = rule;
-		reset();
 	}
 
-	public void reset() {
+	//must be called explicitly
+	public void init() {
 		userRefs.clear();
 		for (UserRef ref : rule.getUserRefs()) {
 			userRefs.add(ref.clone());

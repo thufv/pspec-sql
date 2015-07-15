@@ -8,7 +8,7 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		try {
-			PSpecEditor editor = new PSpecEditor();
+			PSpecEditor editor = PSpecEditor.getInstance();
 			editor.show();
 		} catch (Exception e) {
 			e.printStackTrace();

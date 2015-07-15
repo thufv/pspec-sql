@@ -153,7 +153,7 @@ public class HierarchicalObject<T extends HierarchicalObject<T>> extends Describ
 	@Override
 	public Element outputType(Document document, String name) {
 		Element element = super.outputType(document, name);
-		if (parentId != null) {
+		if (!parentId.isEmpty()) {
 			element.setAttribute(ParserConstant.Attr_Parent, parentId);
 		}
 		return element;

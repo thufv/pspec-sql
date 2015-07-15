@@ -84,10 +84,17 @@ public class Vocabulary {
 	}
 
 	public void setBaseVocabulary(Vocabulary baseVocabulary) {
-		this.basePath = baseVocabulary.path;
 		this.baseVocabulary = baseVocabulary;
-		this.userContainer.setBaseContainer(baseVocabulary.getUserContainer());
-		this.dataContainer.setBaseContainer(baseVocabulary.getDataContainer());
+		if (baseVocabulary != null) {
+			this.basePath = baseVocabulary.path;
+			this.userContainer.setBaseContainer(baseVocabulary.getUserContainer());
+			this.dataContainer.setBaseContainer(baseVocabulary.getDataContainer());
+		} else {
+			this.basePath = null;
+			this.userContainer.setBaseContainer(null);
+			this.dataContainer.setBaseContainer(null);
+		}
+
 	}
 
 	public UserContainer getUserContainer() {

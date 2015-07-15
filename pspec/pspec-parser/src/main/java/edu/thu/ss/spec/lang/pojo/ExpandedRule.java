@@ -44,7 +44,7 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 	protected DataAssociation association;
 
 	protected Condition condition = null;
-	
+
 	public ExpandedRule() {
 	}
 
@@ -73,7 +73,7 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 	public ExpandedRule(Rule rule, DataRef ref, int num) {
 		this(rule, num);
 		this.dataRef = ref;
-		
+
 		if (rule.isFilter()) {
 			this.condition = rule.condition;
 		} else {
@@ -157,7 +157,7 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 	public Condition getCondition() {
 		return condition;
 	}
-	
+
 	public List<UserRef> getUserRefs() {
 		return userRefs;
 	}
@@ -217,7 +217,7 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 		}
 		return dataRef.isGlobal();
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -243,7 +243,7 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 			sb.append(association);
 		}
 		sb.append("\n\t");
-		
+
 		if (condition != null) {
 			sb.append(condition);
 			sb.append("\n\t");
@@ -253,9 +253,7 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 				sb.append("\n\t");
 			}
 		}
-		
-		
-		
+
 		return sb.toString();
 	}
 

@@ -21,8 +21,12 @@ public abstract class Category<T extends Category<T>> extends HierarchicalObject
 	}
 
 	public void setContainer(CategoryContainer<T> container) {
-		this.containerId = container.id;
 		this.container = container;
+		if (container != null) {
+			this.containerId = container.id;
+		} else {
+			this.containerId = "";
+		}
 	}
 
 	/**
@@ -45,6 +49,13 @@ public abstract class Category<T extends Category<T>> extends HierarchicalObject
 			if (container.contains(child.id)) {
 				collectDescendants(set, child, container);
 			}
+		}
+	}
+
+	public void clearReference() {
+		this.parent = null;
+		if (this.children != null) {
+			this.children.clear();
 		}
 	}
 

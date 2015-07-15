@@ -14,18 +14,22 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
 
+import edu.thu.ss.editor.PSpecEditor;
 import edu.thu.ss.editor.model.PolicyModel;
+import edu.thu.ss.editor.model.VocabularyModel;
 import edu.thu.ss.editor.util.EditorUtil;
+import edu.thu.ss.editor.util.EditorUtil.ParseResult;
+import edu.thu.ss.spec.lang.analyzer.rule.RuleResolver;
 import edu.thu.ss.spec.lang.parser.event.EventTable;
 import edu.thu.ss.spec.lang.pojo.ContactInfo;
 import edu.thu.ss.spec.lang.pojo.Policy;
-import edu.thu.ss.spec.lang.pojo.Vocabulary;
 
-public class PolicyView extends EditorView<PolicyModel> {
+public class PolicyView extends EditorView<PolicyModel, Policy> {
 
 	private Text name;
 	private Text email;
@@ -36,9 +40,12 @@ public class PolicyView extends EditorView<PolicyModel> {
 	private Text longDescription;
 	private Text shortDescription;
 
+	private Text location;
 	private Text vocabularyLocation;
 
 	private TreeItem editorItem;
+
+	private EventTable table;
 
 	/**
 	 * Create the composite
@@ -51,6 +58,9 @@ public class PolicyView extends EditorView<PolicyModel> {
 		this.shell = shell;
 		this.model = model;
 		this.editorItem = editorItem;
+		this.table = EditorUtil.newOutputTable(model, PSpecEditor.getInstance()
+				.getDefaultOutputListener());
+
 		this.setBackground(EditorUtil.getDefaultBackground());
 
 		this.setLayout(new FillLayout());
@@ -86,11 +96,21 @@ public class PolicyView extends EditorView<PolicyModel> {
 					policyID.selectAll();
 					return;
 				}
-				policy.getInfo().setId(text);
 
-				editorItem.setText(text);
+				if (!policy.getInfo().getId().equals(text)) {
+					policy.getInfo().setId(text);
+					editorItem.setText(text);
+					if (model.hasOutput()) {
+						outputView.refresh(model);
+					}
+				}
 			}
 		});
+
+		EditorUtil.newLabel(parent, getMessage(Location), EditorUtil.labelData());
+		location = EditorUtil.newText(parent, EditorUtil.textData());
+		location.setText(model.getPath());
+		location.setEnabled(false);
 
 		EditorUtil.newLabel(parent, getMessage(Vocabulary_Location), EditorUtil.labelData());
 		Composite vocabularyComposite = EditorUtil.newComposite(parent);
@@ -113,13 +133,40 @@ public class PolicyView extends EditorView<PolicyModel> {
 				FileDialog dlg = EditorUtil.newOpenFileDialog(shell);
 				String file = dlg.open();
 				if (file != null) {
-					//TODO event table
-					Vocabulary vocabulary = EditorUtil.openVocabulary(file, shell, EventTable.getDummy());
-					if (vocabulary != null) {
-						policy.setVocabulary(vocabulary);
-
-						vocabularyLocation.setText(file);
+					VocabularyModel vocabularyModel = new VocabularyModel(file);
+					ParseResult result = EditorUtil.openVocabulary(vocabularyModel, shell, null);
+					if (result.equals(ParseResult.Invalid_Vocabulary)) {
+						EditorUtil.showMessageBox(shell, "",
+								getMessage(Vocabulary_Invalid_Document_Message, file));
+						return;
 					}
+					if (result.equals(ParseResult.Error)) {
+						EditorUtil.showMessageBox(shell, "",
+								getMessage(Policy_Vocabulary_Contains_Error_Message, file));
+						return;
+					}
+					policy.setVocabulary(vocabularyModel.getVocabulary());
+					vocabularyLocation.setText(file);
+
+					//analyze
+					boolean hasOutput = model.hasOutput();
+					model.clearOutput();
+
+					RuleResolver resolver = new RuleResolver(table);
+					boolean error = resolver.analyze(model.getPolicy());
+
+					model.initRuleModels();
+					RuleView ruleView = PSpecEditor.getInstance().getRuleView(model);
+					ruleView.refresh();
+
+					if (hasOutput || model.hasOutput()) {
+						outputView.refresh();
+					}
+					if (error) {
+						EditorUtil.showMessageBox(shell, "",
+								getMessage(Policy_Parse_Error_Message, model.getPolicy().getInfo().getId()));
+					}
+
 				}
 			}
 		});
@@ -205,4 +252,9 @@ public class PolicyView extends EditorView<PolicyModel> {
 			}
 		});
 	}
+
+	public void refreshLocation() {
+		location.setText(model.getPath());
+	}
+
 }

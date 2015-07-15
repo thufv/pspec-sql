@@ -29,7 +29,9 @@ public class PSpecUtil {
 	private static final Logger logger = LoggerFactory.getLogger(PSpecUtil.class);
 
 	public enum SetRelation {
-		contain, intersect, disjoint
+		contain,
+		intersect,
+		disjoint
 	}
 
 	public static <T> boolean intersects(Set<T> set1, Set<T> set2) {
@@ -224,6 +226,7 @@ public class PSpecUtil {
 			if (exclude != null) {
 				if (!checkExclusion(ref.getCategory(), exclude)) {
 					ref.getExcludes().add(exclude);
+					excludeRef.setError(false);
 				} else {
 					//handle error
 					logger.error("Excluded category: {} must be a sub-category of referenced category: {}",
@@ -231,16 +234,19 @@ public class PSpecUtil {
 					table.onRuleRefError(RefErrorType.Category_Exclude_Invalid, rule, ref,
 							excludeRef.getRefid());
 					error = true;
+					excludeRef.setError(true);
 				}
 			} else {
 				table.onRuleRefError(RefErrorType.Category_Exclude_Not_Exist, rule, ref,
 						excludeRef.getRefid());
 				error = true;
+				excludeRef.setError(true);
 			}
 		}
 		if (!error) {
 			ref.materialize(container);
 		}
+		ref.setError(error);
 		return error;
 	}
 

@@ -1,5 +1,6 @@
 package edu.thu.ss.spec.lang.parser;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,9 +121,13 @@ public class PolicyParser extends BaseParser implements ParserConstant {
 	private void parseVocabularyRef(Node refNode, Policy policy, boolean forceRegister)
 			throws InvalidVocabularyException {
 		String location = XMLUtil.getAttrValue(refNode, Attr_Policy_Vocabulary_location);
+		URI uri = XMLUtil.toUri(location);
 		policy.setVocabularyLocation(XMLUtil.toUri(location));
 		VocabularyParser vocabParser = new VocabularyParser();
 		Vocabulary vocabulary = vocabParser.parse(location);
+		if (vocabParser.isError()) {
+			throw new InvalidVocabularyException(uri, null);
+		}
 		policy.setVocabulary(vocabulary);
 
 	}

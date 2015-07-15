@@ -29,6 +29,9 @@ public class VocabularyAnalyzer {
 
 	public <T extends Category<T>> boolean analyze(CategoryContainer<T> container, boolean refresh) {
 		boolean error = false;
+		if (refresh) {
+			clearReference(container);
+		}
 		error = resolveReference(container, refresh) || error;
 		error = checkDuplicateCategory(container) || error;
 		error = checkCategoryCycleReference(container) || error;
@@ -59,11 +62,24 @@ public class VocabularyAnalyzer {
 					table
 							.onVocabularyError(VocabularyErrorType.Category_Parent_Not_Exist, category, parentId);
 					error = true;
+					//fix
+					category.setParentId("");
+					container.getRoot().add(category);
 				}
 			}
 		}
 		container.setResolved(true);
 		return error;
+	}
+
+	public <T extends Category<T>> void clearReference(CategoryContainer<T> container) {
+		CategoryContainer<T> current = container;
+		while (current != null) {
+			for (T category : current.getCategories()) {
+				category.clearReference();
+			}
+			current = current.getBaseContainer();
+		}
 	}
 
 	public <T extends Category<T>> boolean checkDuplicateCategory(CategoryContainer<T> container) {

@@ -1,9 +1,6 @@
 package edu.thu.ss.editor.view;
 
-import static edu.thu.ss.editor.util.MessagesUtil.Description;
-import static edu.thu.ss.editor.util.MessagesUtil.Output_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Type;
-import static edu.thu.ss.editor.util.MessagesUtil.getMessage;
+import static edu.thu.ss.editor.util.MessagesUtil.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,9 +29,12 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
+import edu.thu.ss.editor.model.BaseModel;
 import edu.thu.ss.editor.model.EditorModel;
 import edu.thu.ss.editor.model.OutputEntry;
 import edu.thu.ss.editor.model.OutputEntry.OutputType;
+import edu.thu.ss.editor.model.PolicyModel;
+import edu.thu.ss.editor.model.VocabularyModel;
 import edu.thu.ss.editor.util.EditorUtil;
 
 public class OutputView extends Composite {
@@ -91,15 +91,17 @@ public class OutputView extends Composite {
 		tree.setHeaderVisible(true);
 		tree.setLinesVisible(true);
 
-		TreeColumn[] columns = new TreeColumn[2];
-		String[] titles = new String[] { getMessage(Description), getMessage(Type), };
+		TreeColumn[] columns = new TreeColumn[3];
+		String[] titles = new String[] { getMessage(Description), getMessage(Location),
+				getMessage(Type) };
 		for (int i = 0; i < columns.length; i++) {
 			columns[i] = new TreeColumn(tree, SWT.NONE);
 			columns[i].setText(titles[i]);
 			//			columns[i].setResizable(false);
 		}
 		treeLayout.setColumnData(columns[0], new ColumnWeightData(5, columns[0].getWidth()));
-		treeLayout.setColumnData(columns[1], new ColumnWeightData(1, columns[1].getWidth()));
+		treeLayout.setColumnData(columns[1], new ColumnWeightData(1, columns[0].getWidth()));
+		treeLayout.setColumnData(columns[2], new ColumnWeightData(1, columns[1].getWidth()));
 
 		tree.addListener(SWT.MouseDoubleClick, new Listener() {
 			@Override
@@ -114,7 +116,7 @@ public class OutputView extends Composite {
 				} else {
 					OutputEntry entry = (OutputEntry) data;
 					if (entry.listener != null) {
-						entry.listener.handleEvent(e);
+						entry.listener.handleEvent(entry, e);
 					}
 				}
 			}
@@ -185,6 +187,15 @@ public class OutputView extends Composite {
 				case 0:
 					return entry.description;
 				case 1:
+					BaseModel model = entry.location;
+					if (model instanceof VocabularyModel) {
+						VocabularyModel vocabularyModel = (VocabularyModel) model;
+						return getMessage(Vocabulary_Output, vocabularyModel.getVocabulary().getInfo().getId());
+					} else {
+						PolicyModel policyModel = (PolicyModel) model;
+						return getMessage(Policy_Output, policyModel.getPolicy().getInfo().getId());
+					}
+				case 2:
 					//TODO
 					if (entry.messageType != null) {
 						return entry.messageType.toString();
@@ -251,13 +262,21 @@ public class OutputView extends Composite {
 				int count = model.countOutput(type);
 				if (count > 0) {
 					types.add(type);
-					updateCount(type, count);
 				}
+				updateCount(type, count);
 			}
 			updateLabel();
 
 			return types.toArray();
 
+		}
+	}
+
+	public void refresh(BaseModel model) {
+		List<OutputEntry> list = new ArrayList<>();
+		model.getOutput(list);
+		for (OutputEntry entry : list) {
+			viewer.refresh(entry);
 		}
 	}
 

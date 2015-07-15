@@ -2,6 +2,8 @@ package edu.thu.ss.editor.view;
 
 import static edu.thu.ss.editor.util.MessagesUtil.*;
 
+import java.util.List;
+
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -29,13 +31,14 @@ import org.eclipse.swt.widgets.TreeItem;
 
 import edu.thu.ss.editor.model.CategoryContentProvider;
 import edu.thu.ss.editor.model.CategoryLabelProvider;
+import edu.thu.ss.editor.model.OutputEntry.MessageType;
 import edu.thu.ss.editor.model.VocabularyModel;
 import edu.thu.ss.editor.util.EditorUtil;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
 import edu.thu.ss.spec.lang.pojo.UserContainer;
 import edu.thu.ss.spec.util.PSpecUtil;
 
-public class UserContainerView extends EditorView<VocabularyModel> {
+public class UserContainerView extends EditorView<VocabularyModel, UserCategory> {
 
 	private TreeViewer userViewer;
 
@@ -62,7 +65,6 @@ public class UserContainerView extends EditorView<VocabularyModel> {
 			OutputView outputView) {
 		super(shell, parent, model, outputView);
 		this.userContainer = model.getVocabulary().getUserContainer();
-
 		setBackground(EditorUtil.getDefaultBackground());
 		setLayout(new GridLayout(1, false));
 
@@ -89,6 +91,35 @@ public class UserContainerView extends EditorView<VocabularyModel> {
 
 	}
 
+	private void refresh(String userId) {
+		UserCategory user = userContainer.get(userId);
+		if (user != null) {
+			userViewer.refresh(user);
+		}
+	}
+
+	@Override
+	public void refresh() {
+		userViewer.refresh();
+		/*
+		boolean hasOutput = model.hasOutput();
+		errors.clear();
+		model.clearOutput();
+		VocabularyAnalyzer analyzer = new VocabularyAnalyzer(table);
+		try {
+			analyzer.analyze(userContainer, true);
+			userContainer.updateRoot();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (hasOutput || model.hasOutput()) {
+			outputView.refresh();
+		}
+
+		userViewer.refresh();
+		*/
+	}
+
 	private void initializeInfo(Composite parent) {
 		parent.setLayout(new GridLayout(2, false));
 		EditorUtil.newLabel(parent, getMessage(User_Container_ID), EditorUtil.labelData());
@@ -99,13 +130,13 @@ public class UserContainerView extends EditorView<VocabularyModel> {
 			public void focusLost(FocusEvent e) {
 				String text = containerId.getText().trim();
 				if (text.isEmpty()) {
-					EditorUtil.showMessage(shell, getMessage(User_Container_ID_Empty_Message), containerId);
+					EditorUtil.showMessage(shell, getMessage(User_Container_ID_Not_Empty_Message),
+							containerId);
 					containerId.setText(userContainer.getId());
 					containerId.selectAll();
 					return;
 				}
 				userContainer.setId(containerId.getText().trim());
-
 			}
 		});
 
@@ -139,7 +170,8 @@ public class UserContainerView extends EditorView<VocabularyModel> {
 		final Tree userTree = userViewer.getTree();
 		EditorUtil.processTreeViewer(userViewer);
 
-		userViewer.setLabelProvider(new CategoryLabelProvider(userContainer));
+		userViewer.setLabelProvider(new CategoryLabelProvider<UserCategory>(userContainer, model
+				.getErrors()));
 		userViewer.setContentProvider(new CategoryContentProvider<UserCategory>(userContainer));
 		userViewer.setInput(userContainer);
 
@@ -160,10 +192,19 @@ public class UserContainerView extends EditorView<VocabularyModel> {
 				userShortDescription.setText(selectedUser.getShortDescription());
 				userLongDescription.setText(selectedUser.getLongDescription());
 
-				if (userContainer.directContains(selectedUser.getId())) {
+				if (userContainer.directContains(selectedUser)) {
 					enableUserInfo();
 				} else {
 					disableUserInfo(false);
+				}
+
+				//clear message
+				if (model.clearOutputByCategory(selectedUser.getId(), MessageType.User_Category)) {
+					if (!userContainer.duplicate(selectedUser.getId())) {
+						model.getErrors().remove(selectedUser.getId());
+						refresh(selectedUser.getId());
+					}
+					outputView.refresh();
 				}
 			}
 		});
@@ -199,23 +240,34 @@ public class UserContainerView extends EditorView<VocabularyModel> {
 				//check empty
 				String text = userId.getText().trim();
 				if (text.isEmpty()) {
-					EditorUtil.showMessage(shell, getMessage(User_Category_ID_Empty_Message), userId);
+					EditorUtil.showMessage(shell, getMessage(User_Category_ID_Not_Empty_Message), userId);
 					userId.setText(selectedUser.getId());
 					userId.selectAll();
 					return;
 				}
 				//check duplicate
-				if (!text.equals(selectedUser.getId()) && userContainer.get(text) != null) {
+				boolean duplicate = false;
+				if (!text.equals(selectedUser.getId())) {
+					duplicate = userContainer.contains(text);
+				} else {
+					duplicate = userContainer.duplicate(selectedUser.getId());
+				}
+				if (duplicate) {
 					EditorUtil.showMessage(shell, getMessage(User_Category_ID_Unique_Message, text), userId);
 					userId.setText(selectedUser.getId());
 					userId.selectAll();
 					return;
 				}
-
+				String oldId = selectedUser.getId();
 				EditorUtil.updateItem(userParentId, selectedUser.getId(), text);
-
 				userContainer.update(text, selectedUser);
-
+				if (model.getErrors().contains(oldId) && !userContainer.duplicate(oldId)) {
+					//problem fixed
+					model.clearOutputByCategory(oldId, MessageType.User_Category_Duplicate);
+					model.getErrors().remove(oldId);
+					refresh(oldId);
+					outputView.refresh();
+				}
 				userViewer.refresh(selectedUser);
 			}
 		});
@@ -342,7 +394,8 @@ public class UserContainerView extends EditorView<VocabularyModel> {
 			}
 		});
 
-		boolean editable = (selected != null && userContainer.directContains(selected.getText()));
+		boolean editable = (selected != null && userContainer.directContains((UserCategory) selected
+				.getData()));
 		MenuItem deleteItem = new MenuItem(popMenu, SWT.PUSH);
 		deleteItem.setEnabled(editable);
 		deleteItem.setText(getMessage(Delete));
@@ -370,13 +423,14 @@ public class UserContainerView extends EditorView<VocabularyModel> {
 
 				} else if (ret == SWT.NO) {
 					userContainer.remove(user);
+					List<UserCategory> children = user.getChildren();
 					if (parent != null) {
 						int index = parent.removeRelation(user);
-						if (user.getChildren() != null) {
-							parent.buildRelation(index, user.getChildren());
+						if (children != null) {
+							parent.buildRelation(index, children);
 						}
-					} else if (user.getChildren() != null) {
-						userContainer.getRoot().addAll(user.getChildren());
+					} else if (children != null) {
+						userContainer.getRoot().addAll(children);
 					}
 					refreshViewer(parent);
 					disableUserInfo(true);

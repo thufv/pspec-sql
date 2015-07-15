@@ -20,14 +20,14 @@ public class NormalConsistencySearcher extends LevelwiseSearcher {
 	protected List<ExpandedRule> sortedRules;
 	protected Z3NormalConsistency z3Util;
 	protected int[] index;
-	
+
 	private static Logger logger = LoggerFactory.getLogger(NormalConsistencySearcher.class);
-	
+
 	public NormalConsistencySearcher(List<ExpandedRule> rules) {
 		z3Util = new Z3NormalConsistency(100);
 		this.rules = rules;
 	}
-	
+
 	@Override
 	protected boolean process(SearchKey key) {
 		Set<UserCategory> users = null;
@@ -44,10 +44,10 @@ public class NormalConsistencySearcher extends LevelwiseSearcher {
 				}
 			}
 		}
-		
+
 		boolean result = z3Util.isSatisfiable(rules);
 		if (!result) {
-			logger.error("Possible conflicts:"+key.toString());
+			logger.error("Possible conflicts:" + key.toString());
 		}
 		return result;
 	}
@@ -72,5 +72,5 @@ public class NormalConsistencySearcher extends LevelwiseSearcher {
 			currentLevel.add(new SearchKey(i));
 		}
 	}
-	
+
 }

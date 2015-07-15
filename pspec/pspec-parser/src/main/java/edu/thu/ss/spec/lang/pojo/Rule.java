@@ -3,6 +3,8 @@ package edu.thu.ss.spec.lang.pojo;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -21,7 +23,7 @@ public class Rule extends DescribedObject {
 
 	protected List<Restriction> restrictions = new ArrayList<>();
 	protected Condition condition = null;
-	
+
 	public List<UserRef> getUserRefs() {
 		return userRefs;
 	}
@@ -57,7 +59,7 @@ public class Rule extends DescribedObject {
 	public boolean isFilter() {
 		return condition != null;
 	}
-	
+
 	public void setRestrictions(List<Restriction> restrictions) {
 		this.restrictions = restrictions;
 	}
@@ -135,7 +137,7 @@ public class Rule extends DescribedObject {
 			sb.append('\t');
 			sb.append(res);
 		}
-		
+
 		if (isFilter()) {
 			sb.append(condition);
 		}
@@ -146,4 +148,31 @@ public class Rule extends DescribedObject {
 		return restrictions.indexOf(res);
 	}
 
+	@Override
+	public Element outputElement(Document document) {
+		Element element = super.outputType(document, ParserConstant.Ele_Policy_Rule);
+		element.setAttribute(ParserConstant.Attr_Id, id);
+
+		for (UserRef ref : userRefs) {
+			Element refEle = ref.outputElement(document);
+			element.appendChild(refEle);
+		}
+
+		if (this.isSingle()) {
+			for (DataRef ref : dataRefs) {
+				Element refEle = ref.outputElement(document);
+				element.appendChild(refEle);
+			}
+		} else {
+			Element assocEle = association.outputElement(document);
+			element.appendChild(assocEle);
+		}
+
+		for (Restriction res : restrictions) {
+			Element resEle = res.outputElement(document);
+			element.appendChild(resEle);
+		}
+		return element;
+
+	}
 }

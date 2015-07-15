@@ -40,21 +40,23 @@ public class VocabularyParser extends BaseParser implements ParserConstant {
 
 	protected Map<String, DataContainer> dataContainers = new HashMap<>();
 
-	protected VocabularyAnalyzer analyzer = new VocabularyAnalyzer(table);
+	protected VocabularyAnalyzer analyzer;
 
 	public Vocabulary parse(String path) throws InvalidVocabularyException {
+
 		uri = XMLUtil.toUri(path);
 		if (VocabularyManager.containsVocab(uri)) {
 			return VocabularyManager.getVocab(uri);
 		}
 
 		loadVocabularies(uri);
-		
+
 		parseContainers();
 
 		// semantic analysis
-		analyzer.analyze(vocabulary.getUserContainer(), false);
-		analyzer.analyze(vocabulary.getDataContainer(), false);
+		analyzer = new VocabularyAnalyzer(table);
+		error = analyzer.analyze(vocabulary.getUserContainer(), false) || error;
+		error = analyzer.analyze(vocabulary.getDataContainer(), false) || error;
 
 		if (forceRegister || !error) {
 			registerVocabularies();
@@ -81,8 +83,8 @@ public class VocabularyParser extends BaseParser implements ParserConstant {
 	private void loadVocabularies(URI uri) throws InvalidVocabularyException {
 		Vocabulary previous = null;
 		URI currentUri = uri;
-
-		while (currentUri != null) {
+		boolean stop = false;
+		while (currentUri != null && !stop) {
 			Vocabulary vocabulary = VocabularyManager.getVocab(currentUri);
 			if (vocabulary == null) {
 				vocabulary = new Vocabulary();
@@ -100,23 +102,21 @@ public class VocabularyParser extends BaseParser implements ParserConstant {
 				vocabulary.setPath(currentUri);
 
 				parseInfo(vocabulary);
-				vocabularies.put(currentUri, vocabulary);
-				if (previous != null) {
-					previous.setBaseVocabulary(vocabulary);
-				}
+			}
+			vocabularies.put(currentUri, vocabulary);
+			if (previous != null) {
+				previous.setBaseVocabulary(vocabulary);
+			}
 
-				previous = vocabulary;
-				currentUri = vocabulary.getBase();
-				//check cycle reference
-				if (currentUri != null && vocabularies.get(currentUri) != null) {
-					//fix problem
-					vocabulary.setBase(null);
-					logger.error("Cycle reference of vocabularies detected: " + currentUri);
-					table.onVocabularyError(VocabularyErrorType.Cycle_Reference, null, null);
-					error = true;
-					break;
-				}
-			} else {
+			previous = vocabulary;
+			currentUri = vocabulary.getBase();
+			//check cycle reference
+			if (currentUri != null && vocabularies.get(currentUri) != null) {
+				//fix problem
+				vocabulary.setBase(null);
+				logger.error("Cycle reference of vocabularies detected: " + currentUri);
+				table.onVocabularyError(VocabularyErrorType.Cycle_Reference, null, null);
+				error = true;
 				break;
 			}
 

@@ -153,9 +153,10 @@ public class DataRef extends CategoryRef<DataCategory> {
 		ref.refid = refid;
 		ref.resolved = resolved;
 		ref.category = category;
+		ref.error = error;
 		ref.action = action;
 		for (ObjectRef exclude : excludeRefs) {
-			ref.excludeRefs.add(exclude);
+			ref.excludeRefs.add(exclude.clone());
 		}
 		return ref;
 	}
