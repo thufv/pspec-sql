@@ -22,7 +22,7 @@ import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.Restriction;
 
-public class Z3NormalConsistency extends Z3Consistency {
+public class Z3NormalConsistencySolver extends Z3ConsistencySolver {
 	
 	private IntExpr[] vars;
 	private Sort[] types;
@@ -31,11 +31,13 @@ public class Z3NormalConsistency extends Z3Consistency {
 	public Map<DataCategory, Integer> indexMap = new HashMap<>();
 	public Map<ExpandedRule, BoolExpr> exprMap = new HashMap<>();
 	
-	public Z3NormalConsistency(int dim) {
-		super.init(dim);
-		vars = new IntExpr[dim];
-		types = new Sort[dim];
-		symbols = new Symbol[dim];
+	private static final int Max_Dimension = 100;
+	
+	public Z3NormalConsistencySolver() {
+		super.init(Max_Dimension);
+		vars = new IntExpr[Max_Dimension];
+		types = new Sort[Max_Dimension];
+		symbols = new Symbol[Max_Dimension];
 		try {
 			for (int i = 0; i < vars.length; i++) {
 				symbols[i] = allSymbols[i];

@@ -7,7 +7,7 @@ import com.microsoft.z3.Symbol;
 import com.microsoft.z3.Z3Exception;
 
 
-public abstract class Z3Consistency {
+public abstract class Z3ConsistencySolver {
 	protected Logger logger;
 
 	protected Context context = null;
