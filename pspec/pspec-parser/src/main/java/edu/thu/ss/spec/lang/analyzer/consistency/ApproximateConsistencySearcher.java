@@ -20,13 +20,12 @@ import edu.thu.ss.spec.lang.pojo.DataRef;
 import edu.thu.ss.spec.lang.pojo.Desensitization;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
-import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Restriction;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
 import edu.thu.ss.spec.util.PSpecUtil;
 import edu.thu.ss.spec.util.PSpecUtil.SetRelation;
 
-public class ApproximateConsistencySearcher extends LevelwiseSearcher{
+public class ApproximateConsistencySearcher extends LevelwiseSearcher {
 	private static Logger logger = LoggerFactory.getLogger(ApproximateConsistencySearcher.class);
 
 	/**
@@ -136,7 +135,7 @@ public class ApproximateConsistencySearcher extends LevelwiseSearcher{
 			RuleRelation relation = checkRestrictions(key, joinAction, joinDatas);
 			if (relation.equals(RuleRelation.conflict)) {
 				logger
-						.error(
+						.warn(
 								"Desensitize operation conflicts detected between expanded sortedRules: #{} for data categories: {}.",
 								PSpecUtil.toString(key.index, sortedRules), PSpecUtil.format(joinDatas, ","));
 			}
@@ -211,7 +210,7 @@ public class ApproximateConsistencySearcher extends LevelwiseSearcher{
 			List<Set<DesensitizeOperation>> list = rule.getList(datas);
 			if (list == null) {
 				logger
-						.error(
+						.warn(
 								"Possible conflicts between expanded sortedRules: #{}, since rule :#{} forbids the data access.",
 								PSpecUtil.toString(key.index, sortedRules), sortedRules.get(key.index[i])
 										.getRuleId());

@@ -19,7 +19,7 @@ import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DataRef;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
-import edu.thu.ss.spec.z3.Z3StrongConsistency;
+import edu.thu.ss.spec.z3.Z3StrongConsistencySolver;
 
 public class StrongConsistencySearcher extends LevelwiseSearcher {
 
@@ -27,7 +27,7 @@ public class StrongConsistencySearcher extends LevelwiseSearcher {
 	private List<ExpandedRule> candidates;
 	private List<ExpandedRule> sortedRules;
 	private Map<SearchKey, Set<LeafAssociation>> cache = new HashMap<>();
-	public Z3StrongConsistency z3Util;
+	private static Z3StrongConsistencySolver z3Util = null;
 	
 	private static Logger logger = LoggerFactory.getLogger(StrongConsistencySearcher.class);
 	
@@ -182,7 +182,9 @@ public class StrongConsistencySearcher extends LevelwiseSearcher {
 	}
 	
 	public StrongConsistencySearcher() {
-		z3Util = new Z3StrongConsistency(100);
+		if (z3Util == null) {
+			z3Util = new Z3StrongConsistencySolver();
+		}
 	}
 	
 	public void init(ExpandedRule seed, List<ExpandedRule> candidates) {
@@ -190,6 +192,7 @@ public class StrongConsistencySearcher extends LevelwiseSearcher {
 		this.candidates = candidates;
 		cache.clear();
 		z3Util.setSeedRule(seed);
+		conflicts = 0;
 	}
 
 	@Override
@@ -226,7 +229,8 @@ public class StrongConsistencySearcher extends LevelwiseSearcher {
 		
 		boolean result = z3Util.isSatisfiable(z3Util.buildExpression(list, rules));
 		if (!result) {
-			logger.error("Possible conflicts when adding:"+sortedRules.get(key.getLast()).getId());
+			logger.warn("Possible conflicts when adding:"+sortedRules.get(key.getLast()).getId());
+			conflicts++;
 		}
 		else {
 			cache.put(key, list);
@@ -256,7 +260,8 @@ public class StrongConsistencySearcher extends LevelwiseSearcher {
 				currentLevel.add(key);
 			}
 			else {
-				logger.error("conflict between {} and {}", rule.getId(), seed.getId());
+				logger.warn("conflict between {} and {}", rule.getId(), seed.getId());
+				conflicts++;
 			}
 			
 		}

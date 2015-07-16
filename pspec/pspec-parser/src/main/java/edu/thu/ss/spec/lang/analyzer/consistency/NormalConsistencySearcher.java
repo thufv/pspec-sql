@@ -12,22 +12,25 @@ import org.slf4j.LoggerFactory;
 
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
-import edu.thu.ss.spec.z3.Z3NormalConsistency;
+import edu.thu.ss.spec.z3.Z3NormalConsistencySolver;
 
 public class NormalConsistencySearcher extends LevelwiseSearcher {
 
 	protected List<ExpandedRule> rules;
 	protected List<ExpandedRule> sortedRules;
-	protected Z3NormalConsistency z3Util;
+	protected static Z3NormalConsistencySolver z3Util = null;
 	protected int[] index;
-
+	
 	private static Logger logger = LoggerFactory.getLogger(NormalConsistencySearcher.class);
-
+	
 	public NormalConsistencySearcher(List<ExpandedRule> rules) {
-		z3Util = new Z3NormalConsistency(100);
+		if (z3Util == null) {
+			z3Util = new Z3NormalConsistencySolver();
+		}
 		this.rules = rules;
+		conflicts = 0;
 	}
-
+	
 	@Override
 	protected boolean process(SearchKey key) {
 		Set<UserCategory> users = null;
@@ -44,10 +47,17 @@ public class NormalConsistencySearcher extends LevelwiseSearcher {
 				}
 			}
 		}
-
+		
 		boolean result = z3Util.isSatisfiable(rules);
 		if (!result) {
-			logger.error("Possible conflicts:" + key.toString());
+			conflicts++;
+			StringBuilder sb = new StringBuilder();
+			sb.append("Possible conflicts:");
+			for (int item : key.index) {
+				sb.append(sortedRules.get(item).getId());
+				sb.append(' ');
+			}
+			logger.warn(sb.toString());
 		}
 		return result;
 	}
@@ -72,5 +82,5 @@ public class NormalConsistencySearcher extends LevelwiseSearcher {
 			currentLevel.add(new SearchKey(i));
 		}
 	}
-
+	
 }
