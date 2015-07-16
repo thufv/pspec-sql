@@ -27,7 +27,7 @@ import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.Restriction;
 import edu.thu.ss.spec.util.InclusionUtil;
 
-public class Z3EnhancedStrongConsistency extends Z3Consistency {
+public class Z3EnhancedStrongConsistencySolver extends Z3ConsistencySolver {
 	private IntExpr[] vars;
 	private Sort[] types;
 	private Symbol[] symbols;
@@ -35,13 +35,15 @@ public class Z3EnhancedStrongConsistency extends Z3Consistency {
 	private Map<ExpandedRule, BoolExpr> cache = new HashMap<>();
 	private ExpandedRule seed;
 	
-	public Z3EnhancedStrongConsistency(int dim) {
-		super.init(dim);
-		logger = LoggerFactory.getLogger(Z3EnhancedStrongConsistency.class);
+	private static final int Max_Dimension = 20;
+	
+	public Z3EnhancedStrongConsistencySolver() {
+		super.init(Max_Dimension);
+		logger = LoggerFactory.getLogger(Z3EnhancedStrongConsistencySolver.class);
 		
-		vars = new IntExpr[dim];
-		types = new Sort[dim];
-		symbols = new Symbol[dim];
+		vars = new IntExpr[Max_Dimension];
+		types = new Sort[Max_Dimension];
+		symbols = new Symbol[Max_Dimension];
 		try {
 			for (int i = 0; i < vars.length; i++) {
 				symbols[i] = allSymbols[i];

@@ -84,7 +84,11 @@ public class Desensitization implements Writable {
 
 	public void setDataRef(DataRef dataRef) {
 		this.dataRef = dataRef;
-		this.dataRefId = dataRef.refid;
+		if (dataRef != null) {
+			this.dataRefId = dataRef.refid;
+		} else {
+			this.dataRefId = "";
+		}
 	}
 
 	public DataRef getDataRef() {

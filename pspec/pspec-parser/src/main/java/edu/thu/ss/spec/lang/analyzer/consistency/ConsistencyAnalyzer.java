@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.thu.ss.spec.lang.analyzer.BasePolicyAnalyzer;
+import edu.thu.ss.spec.lang.analyzer.stat.AnalyzerStat;
 import edu.thu.ss.spec.lang.parser.event.EventTable;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.Policy;
@@ -33,5 +34,12 @@ public abstract class ConsistencyAnalyzer extends BasePolicyAnalyzer {
 		analyze(restrictionRules);
 		//analyze(filterRules);
 		return false;
+	}
+	
+
+	
+	@Override
+	public boolean analyze(Policy policy, AnalyzerStat stat, int n) {
+		return analyze(policy);
 	}
 }

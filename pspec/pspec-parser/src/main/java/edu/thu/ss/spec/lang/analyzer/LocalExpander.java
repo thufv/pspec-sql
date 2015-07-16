@@ -34,7 +34,7 @@ public class LocalExpander extends BasePolicyAnalyzer {
 		List<Rule> rules = policy.getRules();
 		for (Rule rule : rules) {
 			int index = 1;
-			Map<Action, List<DataRef>> datas = expandData(rule.getDataRefs());
+			Map<Action, List<DataRef>> datas = expandData(rule.getRawDataRefs());
 			for (Entry<Action, List<DataRef>> e : datas.entrySet()) {
 				List<DataRef> list = e.getValue();
 

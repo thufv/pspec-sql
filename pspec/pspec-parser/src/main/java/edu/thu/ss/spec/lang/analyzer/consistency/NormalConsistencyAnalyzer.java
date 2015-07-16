@@ -15,6 +15,7 @@ public class NormalConsistencyAnalyzer extends ConsistencyAnalyzer {
 	public boolean analyze(List<ExpandedRule> rules) {
 		NormalConsistencySearcher searcher = new NormalConsistencySearcher(rules);
 		searcher.search();
+		System.out.println("Find conflicts: " + searcher.conflicts);
 		return false;
 	}
 

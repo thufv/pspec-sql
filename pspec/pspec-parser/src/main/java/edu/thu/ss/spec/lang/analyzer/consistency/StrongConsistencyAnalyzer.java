@@ -16,6 +16,8 @@ public class StrongConsistencyAnalyzer extends ConsistencyAnalyzer {
 	
 	private StrongConsistencySearcher searcher;
 	
+	private int conflicts = 0;
+	
 	public StrongConsistencyAnalyzer(EventTable table) {
 		super(table);
 		searcher = new StrongConsistencySearcher();
@@ -26,6 +28,7 @@ public class StrongConsistencyAnalyzer extends ConsistencyAnalyzer {
 		for (ExpandedRule rule : rules) {
 			analyzeWithSeed(rule, rules);
 		}
+		System.out.println("Find conflicts: " + conflicts);
 		return false;
 	}
 	
@@ -33,6 +36,7 @@ public class StrongConsistencyAnalyzer extends ConsistencyAnalyzer {
 		List<ExpandedRule> candidates =  getCandidateRules(seed, rules);
 		searcher.init(seed, candidates);
 		searcher.search();
+		conflicts += searcher.conflicts;
 	}
 
 	private List<ExpandedRule> getCandidateRules(ExpandedRule seed,	List<ExpandedRule> rules) {

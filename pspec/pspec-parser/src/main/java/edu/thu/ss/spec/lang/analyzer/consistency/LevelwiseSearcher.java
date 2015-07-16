@@ -148,11 +148,13 @@ public abstract class LevelwiseSearcher {
 	 */
 	protected abstract void initLevel(Set<SearchKey> currentLevel);
 
+	public int conflicts = 0;
+	
 	public void search() {
 		int level = 1;
 		Set<SearchKey> currentLevel = new LinkedHashSet<>();
 		initLevel(currentLevel);
-		logger.error("Finish generating level 1 with {} elements.", currentLevel.size());
+		logger.warn("Finish generating level 1 with {} elements.", currentLevel.size());
 
 		while (currentLevel.size() > 0 && level < maxLevel) {
 			beginLevel(level + 1);
@@ -162,7 +164,7 @@ public abstract class LevelwiseSearcher {
 			currentLevel = nextLevel;
 			endLevel(level);
 
-			logger.error("Finish generating level {} with {} elements.", level, currentLevel.size());
+			logger.warn("Finish generating level {} with {} elements.", level, currentLevel.size());
 		}
 	}
 
