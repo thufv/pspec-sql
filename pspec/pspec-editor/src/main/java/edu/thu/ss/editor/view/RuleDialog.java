@@ -543,6 +543,7 @@ public class RuleDialog extends EditorDialog {
 				selectedRestrictTable = null;
 
 				deleteRestriction.setEnabled(false);
+				adjustEffectLayout();
 			}
 
 		});
@@ -800,6 +801,7 @@ public class RuleDialog extends EditorDialog {
 	private void addRestrictTable(Composite parent, Restriction res) {
 
 		Composite tableComposite = newTableComposite(parent);
+
 		restrictTableComposites.add(tableComposite);
 		TableColumnLayout tableLayout = new TableColumnLayout();
 		tableComposite.setLayout(tableLayout);
@@ -839,13 +841,13 @@ public class RuleDialog extends EditorDialog {
 			@Override
 			public void handleEvent(Event event) {
 				if (selectedRestrictTable != null) {
-					selectedRestrictTable.deselectAll();
+					selectedRestrictTable.setBackground(null);
 				}
-				restrictTable.selectAll();
+				selectedRestrictTable = restrictTable;
+				selectedRestrictTable.setBackground(EditorUtil.getSelectedBackground());
 				if (dataAssociationType.getSelection()) {
 					deleteRestriction.setEnabled(true);
 				}
-				selectedRestrictTable = restrictTable;
 			}
 		};
 		restrictTable.addListener(SWT.Selection, listener);

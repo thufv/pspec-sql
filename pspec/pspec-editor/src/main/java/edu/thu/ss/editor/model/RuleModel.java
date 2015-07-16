@@ -68,4 +68,46 @@ public class RuleModel extends BaseModel {
 		this.forbid = forbid;
 	}
 
+	public void simplify(List<UserRef> userRefs, List<DataRef> dataRefs,
+			List<Restriction> restrictions) {
+		for (UserRef user : userRefs) {
+			simplifyUserRef(user);
+		}
+		for (DataRef data : dataRefs) {
+			simplifyDataRef(data);
+		}
+		for (Restriction res : restrictions) {
+			simplifyRestriction(res);
+		}
+	}
+
+	public void simplifyUserRef(UserRef ref) {
+		for (int i = 0; i < rule.getUserRefs().size(); i++) {
+			if (rule.getUserRefs().get(i).equals(ref)) {
+				rule.getUserRefs().remove(i);
+				userRefs.remove(i);
+				return;
+			}
+		}
+	}
+
+	public void simplifyDataRef(DataRef ref) {
+		for (int i = 0; i < rule.getRawDataRefs().size(); i++) {
+			if (rule.getRawDataRefs().get(i).equals(ref)) {
+				rule.getRawDataRefs().remove(i);
+				dataRefs.remove(i);
+				return;
+			}
+		}
+	}
+
+	public void simplifyRestriction(Restriction res) {
+		for (int i = 0; i < rule.getRestrictions().size(); i++) {
+			if (rule.getRestrictions().get(i).equals(res)) {
+				rule.getRestrictions().remove(i);
+				restrictions.remove(i);
+			}
+		}
+	}
+
 }

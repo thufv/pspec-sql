@@ -12,23 +12,29 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ExpandBar;
 import org.eclipse.swt.widgets.ExpandItem;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
+import edu.thu.ss.editor.model.OutputEntry.OutputType;
 import edu.thu.ss.editor.model.PolicyModel;
 import edu.thu.ss.editor.model.RuleModel;
 import edu.thu.ss.editor.util.EditorUtil;
 import edu.thu.ss.editor.util.MessagesUtil;
+import edu.thu.ss.spec.lang.analyzer.rule.RuleSimplifier;
+import edu.thu.ss.spec.lang.analyzer.rule.RuleSimplifier.SimplificationLog;
 import edu.thu.ss.spec.lang.pojo.CategoryRef;
 import edu.thu.ss.spec.lang.pojo.DataRef;
 import edu.thu.ss.spec.lang.pojo.Desensitization;
+import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Restriction;
 import edu.thu.ss.spec.lang.pojo.Rule;
 import edu.thu.ss.spec.lang.pojo.UserRef;
@@ -161,6 +167,16 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 
 	}
 
+	public void refresh(RuleModel ruleModel) {
+		for (ExpandItem item : ruleBar.getItems()) {
+			if (item.getData() == ruleModel) {
+				updateRuleItem(item);
+				return;
+			}
+		}
+
+	}
+
 	private void updateRuleItem(ExpandItem item) {
 		RuleModel ruleModel = (RuleModel) item.getData();
 		int index = EditorUtil.indexOf(ruleBar.getItems(), item);
@@ -178,7 +194,7 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 	}
 
 	private void initializeRuleItemContent(final ExpandItem item, RuleModel ruleModel) {
-		Composite ruleComposite = newItemComposite(ruleBar, 2);
+		final Composite ruleComposite = newItemComposite(ruleBar, 2);
 		item.setControl(ruleComposite);
 		ruleComposite.setLayout(new GridLayout());
 
@@ -190,26 +206,60 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 			@Override
 			public void mouseDown(MouseEvent e) {
 				selectItem(item);
+				if (e.button == 3) {
+					Menu menu = createRulePopup(ruleComposite, item);
+					EditorUtil.showPopupMenu(menu, shell, e);
+				}
 			}
 
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
-				RuleModel ruleModel = (RuleModel) item.getData();
-				int ret = new RuleDialog(shell, ruleModel, model).open();
-				if (ret == SWT.OK) {
-					updateRuleItem(item);
-					if (ruleModel.hasOutput()) {
-						ruleModel.clearOutput();
-						outputView.refresh();
-					}
-				} else {
-					ruleModel.init();
-				}
+				editRule(item);
 			}
+
 		});
 
 		Point size = ruleComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT);
 		item.setHeight(size.y);
+	}
+
+	private void editRule(ExpandItem item) {
+		RuleModel ruleModel = (RuleModel) item.getData();
+		int ret = new RuleDialog(shell, ruleModel, model).open();
+		if (ret == SWT.OK) {
+			updateRuleItem(item);
+			if (ruleModel.hasOutput()) {
+				ruleModel.clearOutput();
+				outputView.refresh();
+			}
+		} else {
+			ruleModel.init();
+		}
+	}
+
+	private Menu createRulePopup(Control control, final ExpandItem item) {
+		Menu popMenu = new Menu(control);
+		MenuItem editItem = new MenuItem(popMenu, SWT.PUSH);
+		editItem.setText(getMessage(Edit));
+
+		MenuItem simplifyItem = new MenuItem(popMenu, SWT.PUSH);
+		simplifyItem.setText(getMessage(Simplify));
+
+		editItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				editRule(item);
+			}
+		});
+
+		simplifyItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				simplify(item);
+			}
+		});
+
+		return popMenu;
 	}
 
 	private void initializeRuleUser(RuleModel ruleModel, Composite parent) {
@@ -352,4 +402,30 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 		}
 		initializeRules();
 	}
+
+	private void simplify(ExpandItem item) {
+		Policy policy = model.getPolicy();
+		RuleModel ruleModel = (RuleModel) item.getData();
+		Rule rule = ruleModel.getRule();
+		RuleSimplifier simplifier = new RuleSimplifier(null, false);
+		SimplificationLog log = simplifier.analyze(rule, policy.getUserContainer(),
+				policy.getDataContainer());
+		if (log == null || log.isEmpty()) {
+			EditorUtil.showMessageBox(shell, "", getMessage(Rule_No_Simplify_Message, rule.getId()));
+			return;
+		}
+
+		int ret = EditorUtil.showQuestionMessageBox(shell, "",
+				getMessage(Rule_Simplify_Prompt_Message, rule.getId()));
+		if (ret == SWT.YES) {
+			ruleModel.simplify(log.redundantUsers, log.redundantDatas, log.redundantRestrictions);
+			updateRuleItem(item);
+		} else if (ret == SWT.NO) {
+			EditorUtil.addSimplifyOutput(model, ruleModel, log,
+					EditorUtil.newSimplifyListener(this, outputView));
+
+			outputView.refresh(OutputType.analysis);
+		}
+	}
+
 }

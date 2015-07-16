@@ -3,6 +3,7 @@ package edu.thu.ss.editor.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.thu.ss.editor.model.OutputEntry.MessageType;
 import edu.thu.ss.editor.model.OutputEntry.OutputType;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Rule;
@@ -72,6 +73,14 @@ public class PolicyModel extends BaseModel {
 		super.clearOutput(type);
 		for (RuleModel ruleModel : ruleModels) {
 			ruleModel.clearOutput(type);
+		}
+	}
+
+	@Override
+	public void clearOutput(OutputType outputType, MessageType messageType) {
+		super.clearOutput(outputType, messageType);
+		for (RuleModel ruleModel : ruleModels) {
+			ruleModel.clearOutput(outputType, messageType);
 		}
 	}
 

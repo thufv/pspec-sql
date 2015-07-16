@@ -46,6 +46,12 @@ public class MessagesUtil {
 	public static final String Location = "location";
 	public static final String Description = "description";
 	public static final String Type = "type";
+	public static final String Goto = "goto";
+	public static final String Fix = "fix";
+	public static final String Analysis = "analysis";
+	public static final String Redundancy = "redundancy";
+	public static final String Simplify = "simplify";
+	public static final String Consistency = "consistency";
 
 	public static final String Base_Vocabulary = "base.vocabulary";
 	public static final String Base_Vocabulary_Contains_Error_Message = "base.vocabulary.contains.error.message";
@@ -134,6 +140,8 @@ public class MessagesUtil {
 	public static final String Policy_Invalid_Document_Message = "policy.invalid.document.message";
 	public static final String Policy_Parse_Error_Message = "policy.parse.error.message";
 	public static final String Policy_Invalid_Vocabulary_Document_Message = "policy.invalid.vocabulary.document.message";
+	public static final String Policy_No_Simplify_Message = "policy.no.simplify.message";
+	public static final String Policy_Simplify_Prompt_Message = "policy.simplify.prompt.message";
 
 	public static final String Rule = "rule";
 	public static final String Rule_Type = "rule.type";
@@ -163,6 +171,12 @@ public class MessagesUtil {
 	public static final String Rule_Restriction_Single_No_DataRef_Message = "rule.restriction.single.no.dataref.message";
 	@ParseOnly
 	public static final String Rule_Restriction_Single_One_Desensitize_Message = "rule.restriction.single.one.desensitize.message";
+
+	public static final String Rule_No_Simplify_Message = "rule.no.simplify.message";
+	public static final String Rule_Simplify_Prompt_Message = "rule.simplify.prompt.message";
+	public static final String Rule_User_Ref_Simplify_Message = "rule.user.ref.simplify.message";
+	public static final String Rule_Data_Ref_Simplify_Message = "rule.data.ref.simplify.message";
+	public static final String Rule_Restriction_Simplify_Message = "rule.restriction.simplify.message";
 
 	public static final String Forbid = "forbid";
 	public static final String Restriction = "restriction";

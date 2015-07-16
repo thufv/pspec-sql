@@ -3,6 +3,7 @@ package edu.thu.ss.editor;
 import static edu.thu.ss.editor.util.MessagesUtil.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
@@ -32,8 +33,8 @@ import org.eclipse.wb.swt.SWTResourceManager;
 import edu.thu.ss.editor.model.BaseModel;
 import edu.thu.ss.editor.model.EditorModel;
 import edu.thu.ss.editor.model.OutputEntry;
+import edu.thu.ss.editor.model.OutputEntry.MessageType;
 import edu.thu.ss.editor.model.OutputEntry.OutputType;
-import edu.thu.ss.editor.model.OutputListener;
 import edu.thu.ss.editor.model.PolicyModel;
 import edu.thu.ss.editor.model.RuleModel;
 import edu.thu.ss.editor.model.VocabularyModel;
@@ -47,6 +48,8 @@ import edu.thu.ss.editor.view.PolicyView;
 import edu.thu.ss.editor.view.RuleView;
 import edu.thu.ss.editor.view.UserContainerView;
 import edu.thu.ss.editor.view.VocabularyView;
+import edu.thu.ss.spec.lang.analyzer.rule.RuleSimplifier;
+import edu.thu.ss.spec.lang.analyzer.rule.RuleSimplifier.SimplificationLog;
 import edu.thu.ss.spec.lang.parser.PolicyWriter;
 import edu.thu.ss.spec.lang.parser.VocabularyWriter;
 import edu.thu.ss.spec.lang.parser.WritingException;
@@ -91,8 +94,6 @@ public class PSpecEditor {
 
 	private EditorView<?, ?> currentView;
 
-	private OutputListener defaultOutputListener;
-
 	/**
 	 * Open the window.
 	 */
@@ -102,7 +103,7 @@ public class PSpecEditor {
 		initializeMenu();
 		initializeToolbar();
 
-		enableMenus(false);
+		enableMenus();
 
 		initializeContent();
 
@@ -217,11 +218,25 @@ public class PSpecEditor {
 		saveAs.setImage(SWTResourceManager.getImage(EditorUtil.Image_Save_As));
 		menus.put(Save_As, saveAs);
 
-		MenuItem edit = new MenuItem(menu, SWT.CASCADE);
-		edit.setText(getMessage(Edit));
+		MenuItem analysis = new MenuItem(menu, SWT.CASCADE);
+		analysis.setText(getMessage(Analysis));
 
-		Menu editMenu = new Menu(edit);
-		edit.setMenu(editMenu);
+		Menu analysisMenu = new Menu(analysis);
+		analysis.setMenu(analysisMenu);
+
+		MenuItem simplify = new MenuItem(analysisMenu, SWT.NONE);
+		simplify.setText(getMessage(Simplify));
+		menus.put(Simplify, simplify);
+
+		MenuItem redundancy = new MenuItem(analysisMenu, SWT.NONE);
+		redundancy.setText(getMessage(Redundancy));
+		menus.put(Redundancy, redundancy);
+
+		MenuItem consistency = new MenuItem(analysisMenu, SWT.CASCADE);
+		consistency.setText(getMessage(Consistency));
+
+		Menu consistencyMenu = new Menu(consistency);
+		consistency.setMenu(consistencyMenu);
 
 		MenuItem help = new MenuItem(menu, SWT.CASCADE);
 		help.setText(getMessage(Help));
@@ -290,6 +305,41 @@ public class PSpecEditor {
 			public void widgetSelected(SelectionEvent e) {
 				save(editingModel, true);
 			};
+		});
+
+		simplify.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				assert (editingModel instanceof PolicyModel);
+				PolicyModel model = (PolicyModel) editingModel;
+				Policy policy = model.getPolicy();
+				RuleSimplifier simplifier = new RuleSimplifier(null, false);
+				simplifier.analyze(policy);
+				if (simplifier.isEmpty()) {
+					EditorUtil.showMessageBox(shell, "",
+							getMessage(Policy_No_Simplify_Message, policy.getInfo().getId()));
+					return;
+				}
+
+				List<SimplificationLog> logs = simplifier.getLogs();
+				int ret = EditorUtil.showQuestionMessageBox(shell, "",
+						getMessage(Policy_Simplify_Prompt_Message, policy.getInfo().getId()));
+				model.clearOutput(OutputType.analysis, MessageType.Simplify);
+				if (ret == SWT.YES) {
+					for (SimplificationLog log : logs) {
+						RuleModel ruleModel = model.getRuleModel(log.rule);
+						ruleModel.simplify(log.redundantUsers, log.redundantDatas, log.redundantRestrictions);
+					}
+				} else {
+					RuleView ruleView = getRuleView(model);
+					for (SimplificationLog log : logs) {
+						RuleModel ruleModel = model.getRuleModel(log.rule);
+						EditorUtil.addSimplifyOutput(model, ruleModel, log,
+								EditorUtil.newSimplifyListener(ruleView, outputView));
+					}
+					outputView.refresh(OutputType.analysis);
+				}
+			}
 		});
 	}
 
@@ -391,32 +441,6 @@ public class PSpecEditor {
 		mainForm.setWeights(new int[] { 1, 5 });
 		rightForm.setWeights(new int[] { 5, 1 });
 
-		Vocabulary vocabulary = new Vocabulary(editorModel.getNewVocabularyId());
-		addVocabulary(new VocabularyModel(vocabulary, ""));
-
-		Policy policy = new Policy(editorModel.getNewPolicyId());
-		addPolicy(new PolicyModel(policy, ""));
-
-		defaultOutputListener = new OutputListener() {
-			@Override
-			public void handleEvent(OutputEntry entry, Event event) {
-				switch (entry.messageType) {
-				case User_Category:
-				case User_Category_Duplicate:
-					switchView(entry.location, getUserContainerView((VocabularyModel) entry.location), null);
-					break;
-				case Data_Category_Duplicate:
-				case Data_Category:
-					switchView(entry.location, getDataContainerView((VocabularyModel) entry.location), null);
-					break;
-				default:
-					RuleModel model = (RuleModel) entry.model;
-					switchView(entry.location, getRuleView((PolicyModel) entry.location), model.getRule());
-					break;
-				}
-			}
-		};
-
 	}
 
 	protected void switchView(BaseModel model, EditorView<?, ?> view, Object obj) {
@@ -428,10 +452,7 @@ public class PSpecEditor {
 				currentView = null;
 				contentComposite.layout();
 			}
-			enableMenus(false);
-			return;
 		}
-
 		if (currentView != view) {
 			if (currentView != null) {
 				EditorUtil.exclude(currentView);
@@ -440,8 +461,8 @@ public class PSpecEditor {
 			currentView = view;
 			currentView.refresh();
 			contentComposite.layout();
-			enableMenus(true);
 		}
+		enableMenus();
 
 		if (obj == null) {
 			return;
@@ -449,6 +470,23 @@ public class PSpecEditor {
 		if (obj instanceof Rule) {
 			RuleView ruleView = (RuleView) currentView;
 			ruleView.select((Rule) obj);
+		}
+	}
+
+	public void switchView(OutputEntry entry) {
+		switch (entry.messageType) {
+		case User_Category:
+		case User_Category_Duplicate:
+			switchView(entry.location, getUserContainerView((VocabularyModel) entry.location), null);
+			break;
+		case Data_Category_Duplicate:
+		case Data_Category:
+			switchView(entry.location, getDataContainerView((VocabularyModel) entry.location), null);
+			break;
+		default:
+			RuleModel model = (RuleModel) entry.model;
+			switchView(entry.location, getRuleView((PolicyModel) entry.location), model.getRule());
+			break;
 		}
 	}
 
@@ -515,10 +553,6 @@ public class PSpecEditor {
 		return null;
 	}
 
-	public OutputListener getDefaultOutputListener() {
-		return defaultOutputListener;
-	}
-
 	private void addVocabulary(VocabularyModel model) {
 		Vocabulary vocabulary = model.getVocabulary();
 		editorModel.getVocabularies().add(model);
@@ -575,7 +609,7 @@ public class PSpecEditor {
 				return;
 			}
 			VocabularyModel vocabularyModel = new VocabularyModel(file);
-			ParseResult result = EditorUtil.openVocabulary(vocabularyModel, shell, defaultOutputListener);
+			ParseResult result = EditorUtil.openVocabulary(vocabularyModel, shell, true);
 			if (result.equals(ParseResult.Invalid_Vocabulary)) {
 				EditorUtil.showMessageBox(shell, "", getMessage(Vocabulary_Invalid_Document_Message, file));
 				return;
@@ -599,7 +633,7 @@ public class PSpecEditor {
 				return;
 			}
 			PolicyModel policyModel = new PolicyModel(file);
-			ParseResult result = EditorUtil.openPolicy(policyModel, shell, defaultOutputListener);
+			ParseResult result = EditorUtil.openPolicy(policyModel, shell, true);
 			if (result.equals(ParseResult.Invalid_Policy)) {
 				EditorUtil.showMessageBox(shell, "", getMessage(Policy_Invalid_Document_Message, file));
 				return;
@@ -621,12 +655,26 @@ public class PSpecEditor {
 		}
 	}
 
-	private void enableMenus(boolean enable) {
+	private void enableMenus() {
+		boolean enable = editingModel != null;
+
 		menus.get(Close).setEnabled(enable);
 		menus.get(Save).setEnabled(enable);
 		menus.get(Save_As).setEnabled(enable);
 		toolItems.get(Save).setEnabled(enable);
 		toolItems.get(Save_As).setEnabled(enable);
+
+		//analysis
+		boolean enableAnalysis = false;
+		if (editingModel instanceof PolicyModel && currentView instanceof RuleView) {
+			PolicyModel model = (PolicyModel) editingModel;
+			if (model.getRuleModels().size() > 0) {
+				enableAnalysis = true;
+			}
+		}
+
+		menus.get(Simplify).setEnabled(enableAnalysis);
+		menus.get(Redundancy).setEnabled(enableAnalysis);
 	}
 
 	private boolean save(BaseModel model, boolean rename) {

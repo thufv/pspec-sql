@@ -161,4 +161,31 @@ public class DataRef extends CategoryRef<DataCategory> {
 		return ref;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((action == null) ? 0 : action.hashCode());
+		result = prime * result + (global ? 1231 : 1237);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DataRef other = (DataRef) obj;
+		if (action == null) {
+			if (other.action != null)
+				return false;
+		} else if (!action.equals(other.action))
+			return false;
+		if (global != other.global)
+			return false;
+		return true;
+	}
 }

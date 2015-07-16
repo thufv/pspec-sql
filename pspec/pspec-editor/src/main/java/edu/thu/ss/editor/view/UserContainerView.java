@@ -13,13 +13,11 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -32,6 +30,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import edu.thu.ss.editor.model.CategoryContentProvider;
 import edu.thu.ss.editor.model.CategoryLabelProvider;
 import edu.thu.ss.editor.model.OutputEntry.MessageType;
+import edu.thu.ss.editor.model.OutputEntry.OutputType;
 import edu.thu.ss.editor.model.VocabularyModel;
 import edu.thu.ss.editor.util.EditorUtil;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
@@ -204,7 +203,7 @@ public class UserContainerView extends EditorView<VocabularyModel, UserCategory>
 						model.getErrors().remove(selectedUser.getId());
 						refresh(selectedUser.getId());
 					}
-					outputView.refresh();
+					outputView.refresh(OutputType.warning);
 				}
 			}
 		});
@@ -213,16 +212,8 @@ public class UserContainerView extends EditorView<VocabularyModel, UserCategory>
 			@Override
 			public void mouseDown(MouseEvent e) {
 				if (e.button == 3) {
-					Point p = ((Control) e.widget).toDisplay(e.x, e.y);
 					Menu menu = createTreePopup(userViewer.getTree());
-					menu.setLocation(p);
-					menu.setVisible(true);
-					Display display = Display.getCurrent();
-					while (!menu.isDisposed() && menu.isVisible()) {
-						if (!display.readAndDispatch())
-							display.sleep();
-					}
-					menu.dispose();
+					EditorUtil.showPopupMenu(menu, shell, e);
 				}
 			}
 		});
@@ -266,7 +257,7 @@ public class UserContainerView extends EditorView<VocabularyModel, UserCategory>
 					model.clearOutputByCategory(oldId, MessageType.User_Category_Duplicate);
 					model.getErrors().remove(oldId);
 					refresh(oldId);
-					outputView.refresh();
+					outputView.refresh(OutputType.error);
 				}
 				userViewer.refresh(selectedUser);
 			}

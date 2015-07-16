@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.ExpandItem;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
@@ -44,12 +45,15 @@ import org.eclipse.wb.swt.SWTResourceManager;
 
 import edu.thu.ss.editor.model.BaseModel;
 import edu.thu.ss.editor.model.OutputEntry;
+import edu.thu.ss.editor.model.OutputEntry.FixListener;
 import edu.thu.ss.editor.model.OutputEntry.MessageType;
 import edu.thu.ss.editor.model.OutputEntry.OutputType;
-import edu.thu.ss.editor.model.OutputListener;
 import edu.thu.ss.editor.model.PolicyModel;
 import edu.thu.ss.editor.model.RuleModel;
 import edu.thu.ss.editor.model.VocabularyModel;
+import edu.thu.ss.editor.view.OutputView;
+import edu.thu.ss.editor.view.RuleView;
+import edu.thu.ss.spec.lang.analyzer.rule.RuleSimplifier.SimplificationLog;
 import edu.thu.ss.spec.lang.parser.InvalidPolicyException;
 import edu.thu.ss.spec.lang.parser.InvalidVocabularyException;
 import edu.thu.ss.spec.lang.parser.PolicyParser;
@@ -157,14 +161,12 @@ public class EditorUtil {
 		Error
 	}
 
-	public static ParseResult openVocabulary(VocabularyModel model, Shell shell,
-			OutputListener listener) {
+	public static ParseResult openVocabulary(VocabularyModel model, Shell shell, boolean output) {
 		Vocabulary vocabulary = null;
 		try {
 			VocabularyParser parser = new VocabularyParser();
-			if (listener != null) {
-				EventTable table = newOutputTable(model, listener);
-				parser.setEventTable(table);
+			if (output) {
+				parser.setEventTable(newOutputTable(model));
 			}
 			parser.setForceRegister(true);
 			vocabulary = parser.parse(model.getPath());
@@ -178,12 +180,12 @@ public class EditorUtil {
 		return ParseResult.Success;
 	}
 
-	public static ParseResult openPolicy(PolicyModel model, Shell shell, OutputListener listener) {
+	public static ParseResult openPolicy(PolicyModel model, Shell shell, boolean output) {
 		Policy policy = null;
 		try {
 			PolicyParser parser = new PolicyParser();
-			if (listener != null) {
-				parser.setEventTable(EditorUtil.newOutputTable(model, listener));
+			if (output) {
+				parser.setEventTable(EditorUtil.newOutputTable(model));
 			}
 			parser.setForceRegister(true);
 			policy = parser.parse(model.getPath());
@@ -358,6 +360,13 @@ public class EditorUtil {
 		box.open();
 	}
 
+	public static int showQuestionMessageBox(Shell parent, String title, String message) {
+		MessageBox box = new MessageBox(parent, SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+		box.setText(title);
+		box.setMessage(message);
+		return box.open();
+	}
+
 	public static void processTree(Tree tree) {
 		tree.addMouseListener(new MouseAdapter() {
 			@Override
@@ -504,7 +513,7 @@ public class EditorUtil {
 		}
 		Set<DesensitizeOperation> operations = data.getAllOperations();
 
-		return toArrayString(operations);
+		return toArrayString(operations, true);
 	}
 
 	public static String[] getOperationItems(List<DataRef> list, DataContainer container) {
@@ -523,14 +532,21 @@ public class EditorUtil {
 		if (operations == null) {
 			return new String[0];
 		} else {
-			return toArrayString(operations);
+			return toArrayString(operations, true);
 		}
 
 	}
 
-	public static String[] toArrayString(Collection<?> col) {
-		String[] result = new String[col.size()];
+	public static String[] toArrayString(Collection<?> col, boolean spacing) {
+		int size = col.size();
+		if (spacing) {
+			size++;
+		}
+		String[] result = new String[size];
 		int i = 0;
+		if (spacing) {
+			result[i++] = "";
+		}
 		Iterator<?> it = col.iterator();
 		while (it.hasNext()) {
 			result[i++] = it.next().toString();
@@ -668,15 +684,14 @@ public class EditorUtil {
 
 	}
 
-	public static EventTable newOutputTable(final BaseModel model, final OutputListener listener) {
+	public static EventTable newOutputTable(final BaseModel model) {
 		EventTable table = new EventTable();
-		addOutputListener(table, model, listener);
+		addOutputListener(table, model);
 		return table;
 
 	}
 
-	public static EventTable addOutputListener(EventTable table, final BaseModel model,
-			final OutputListener listener) {
+	public static EventTable addOutputListener(EventTable table, final BaseModel model) {
 		table.add(new PSpecListener() {
 			private String message;
 
@@ -697,17 +712,17 @@ public class EditorUtil {
 				case Data_Association_Overlap:
 					message = getMessage(Rule_Data_Association_Not_Overlap_Message, rule.getId());
 					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.error, model, ruleModel,
-							listener, MessageType.Rule_Ref));
+							MessageType.Rule_Ref));
 					break;
 				case Category_Ref_Not_Exist:
 					if (ref instanceof UserRef) {
 						message = getMessage(User_Category_Not_Exist_Message, ref.getRefid(), rule.getId());
 						ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.error, model,
-								ruleModel, listener, MessageType.Rule_Ref));
+								ruleModel, MessageType.Rule_Ref));
 					} else {
 						message = getMessage(Data_Category_Not_Exist_Message, ref.getRefid(), rule.getId());
 						ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.error, model,
-								ruleModel, listener, MessageType.Rule_Ref));
+								ruleModel, MessageType.Rule_Ref));
 					}
 					break;
 				case Category_Exclude_Invalid:
@@ -715,12 +730,12 @@ public class EditorUtil {
 						message = getMessage(User_Category_Exclude_Invalid_Message, ref.getRefid(), refid,
 								rule.getId());
 						ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.error, model,
-								ruleModel, listener, MessageType.Rule_Ref));
+								ruleModel, MessageType.Rule_Ref));
 					} else {
 						message = getMessage(Data_Category_Exclude_Invalid_Message, ref.getRefid(), refid,
 								rule.getId());
 						ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.error, model,
-								ruleModel, listener, MessageType.Rule_Ref));
+								ruleModel, MessageType.Rule_Ref));
 					}
 					break;
 				case Category_Exclude_Not_Exist:
@@ -728,12 +743,12 @@ public class EditorUtil {
 						message = getMessage(User_Category_Exclude_Not_Exist_Message, ref.getRefid(), refid,
 								rule.getId());
 						ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.error, model,
-								ruleModel, listener, MessageType.Rule_Ref));
+								ruleModel, MessageType.Rule_Ref));
 					} else {
 						message = getMessage(Data_Category_Exclude_Not_Exist_Message, ref.getRefid(), refid,
 								rule.getId());
 						ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.error, model,
-								ruleModel, listener, MessageType.Rule_Ref));
+								ruleModel, MessageType.Rule_Ref));
 					}
 					break;
 				default:
@@ -751,38 +766,38 @@ public class EditorUtil {
 					message = getMessage(Rule_Restriction_DataRef_Not_Exist_Message, refId,
 							rule.getRestrictionIndex(res), rule.getId());
 					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model,
-							ruleModel, listener, MessageType.Rule_Restriction));
+							ruleModel, MessageType.Rule_Restriction));
 					break;
 				case Associate_Restriction_Explicit_DataRef:
 					message = getMessage(Rule_Restriction_Explicit_DataRef_Message, rule.getId());
 					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model,
-							ruleModel, listener, MessageType.Rule_Restriction));
+							ruleModel, MessageType.Rule_Restriction));
 					break;
 				case One_Forbid:
 					message = getMessage(Rule_Restriction_One_Forbid_Message, rule.getId());
 					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model,
-							ruleModel, listener, MessageType.Rule_Restriction));
+							ruleModel, MessageType.Rule_Restriction));
 					break;
 				case Single_One_Restriction:
 					message = getMessage(Rule_Restriction_Single_One_Message, rule.getId());
 					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model,
-							ruleModel, listener, MessageType.Rule_Restriction));
+							ruleModel, MessageType.Rule_Restriction));
 					break;
 				case Single_Restriction_No_DataRef:
 					message = getMessage(Rule_Restriction_Single_No_DataRef_Message, rule.getId());
 					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model,
-							ruleModel, listener, MessageType.Rule_Restriction));
+							ruleModel, MessageType.Rule_Restriction));
 					break;
 				case Single_Restriction_One_Desensitize:
 					message = getMessage(Rule_Restriction_Single_One_Desensitize_Message, rule.getId());
 					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model,
-							ruleModel, listener, MessageType.Rule_Restriction));
+							ruleModel, MessageType.Rule_Restriction));
 					break;
 				case Unsupported_Operation:
 					message = getMessage(Rule_Restriction_Unsupported_Operation_Message, rule.getId(),
 							rule.getRestrictionIndex(res));
 					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model,
-							ruleModel, listener, MessageType.Rule_Restriction));
+							ruleModel, MessageType.Rule_Restriction));
 					break;
 				default:
 					break;
@@ -797,40 +812,40 @@ public class EditorUtil {
 				case Category_Cycle_Reference:
 					if (category instanceof UserCategory) {
 						message = getMessage(User_Category_Parent_Cycle_Message, category.getId());
-						model.addOutput(OutputEntry.newInstance(message, OutputType.warning, model, listener,
+						model.addOutput(OutputEntry.newInstance(message, OutputType.warning, model,
 								MessageType.User_Category));
 					} else {
 						message = getMessage(Data_Category_Parent_Cycle_Message, category.getId());
-						model.addOutput(OutputEntry.newInstance(message, OutputType.warning, model, listener,
+						model.addOutput(OutputEntry.newInstance(message, OutputType.warning, model,
 								MessageType.Data_Category));
 					}
 					break;
 				case Category_Duplicate:
 					if (category instanceof UserCategory) {
 						message = getMessage(User_Category_Duplicate_Message, category.getId());
-						model.addOutput(OutputEntry.newInstance(message, OutputType.error, model, listener,
+						model.addOutput(OutputEntry.newInstance(message, OutputType.error, model,
 								MessageType.User_Category_Duplicate, category.getId()));
 					} else {
 						message = getMessage(Data_Category_Duplicate_Message, category.getId());
-						model.addOutput(OutputEntry.newInstance(message, OutputType.error, model, listener,
+						model.addOutput(OutputEntry.newInstance(message, OutputType.error, model,
 								MessageType.Data_Category_Duplicate, category.getId()));
 					}
 					break;
 				case Category_Parent_Not_Exist:
 					if (category instanceof UserCategory) {
 						message = getMessage(User_Category_Parent_Not_Exist_Message, category.getId(), refid);
-						model.addOutput(OutputEntry.newInstance(message, OutputType.warning, model, listener,
+						model.addOutput(OutputEntry.newInstance(message, OutputType.warning, model,
 								MessageType.User_Category, category.getId()));
 					} else {
 						message = getMessage(Data_Category_Parent_Not_Exist_Message, category.getId(), refid);
-						model.addOutput(OutputEntry.newInstance(message, OutputType.warning, model, listener,
+						model.addOutput(OutputEntry.newInstance(message, OutputType.warning, model,
 								MessageType.Data_Category, category.getId()));
 					}
 
 					break;
 				case Cycle_Reference:
 					message = getMessage(Vocabulary_Cycle_Reference_Message, category.getId(), refid);
-					model.addOutput(OutputEntry.newInstance(message, OutputType.warning, model, listener,
+					model.addOutput(OutputEntry.newInstance(message, OutputType.warning, model,
 							MessageType.Vocabulary));
 					break;
 				default:
@@ -839,5 +854,62 @@ public class EditorUtil {
 			}
 		});
 		return table;
+	}
+
+	public static void addSimplifyOutput(PolicyModel policyModel, RuleModel ruleModel,
+			SimplificationLog log, FixListener listener) {
+		String message = "";
+		String ruleId = ruleModel.getRule().getId();
+		ruleModel.clearOutput(OutputType.analysis);
+		for (UserRef userRef : log.redundantUsers) {
+			message = getMessage(Rule_User_Ref_Simplify_Message, userRef.getRefid(), ruleId);
+			ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.analysis, policyModel,
+					ruleModel, listener, MessageType.Simplify, userRef));
+		}
+		for (DataRef dataRef : log.redundantDatas) {
+			message = getMessage(Rule_Data_Ref_Simplify_Message, dataRef.getRefid(), ruleId);
+			ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.analysis, policyModel,
+					ruleModel, listener, MessageType.Simplify, dataRef));
+		}
+		for (Restriction res : log.redundantRestrictions) {
+			message = getMessage(Rule_Restriction_Simplify_Message, ruleModel.getRule()
+					.getRestrictionIndex(res), ruleId);
+			ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.analysis, policyModel,
+					ruleModel, listener, MessageType.Simplify, res));
+		}
+	}
+
+	public static void showPopupMenu(Menu menu, Shell shell, MouseEvent e) {
+		Point p = ((Control) e.widget).toDisplay(e.x, e.y);
+		menu.setLocation(p);
+		menu.setVisible(true);
+		Display display = Display.getCurrent();
+		while (!menu.isDisposed() && menu.isVisible()) {
+			if (!display.readAndDispatch())
+				display.sleep();
+		}
+		menu.dispose();
+
+	}
+
+	public static FixListener newSimplifyListener(final RuleView ruleView, final OutputView outputView) {
+		return new FixListener() {
+			@Override
+			public void handleEvent(OutputEntry entry) {
+				assert (entry.data.length == 1);
+				RuleModel model = (RuleModel) entry.model;
+				Object data = entry.data[0];
+				if (data instanceof UserRef) {
+					model.simplifyUserRef((UserRef) data);
+				} else if (data instanceof DataRef) {
+					model.simplifyDataRef((DataRef) data);
+				} else if (data instanceof Restriction) {
+					model.simplifyRestriction((Restriction) data);
+				}
+				ruleView.refresh(model);
+				model.removeOutput(entry);
+				outputView.remove(entry);
+			}
+		};
 	}
 }

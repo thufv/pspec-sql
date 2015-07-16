@@ -16,19 +16,28 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
+import edu.thu.ss.editor.PSpecEditor;
 import edu.thu.ss.editor.model.BaseModel;
 import edu.thu.ss.editor.model.EditorModel;
 import edu.thu.ss.editor.model.OutputEntry;
@@ -86,7 +95,7 @@ public class OutputView extends Composite {
 		viewer.setContentProvider(contentProvider);
 		viewer.setInput(model);
 
-		Tree tree = viewer.getTree();
+		final Tree tree = viewer.getTree();
 		tree.setFont(EditorUtil.getDefaultFont());
 		tree.setHeaderVisible(true);
 		tree.setLinesVisible(true);
@@ -115,12 +124,66 @@ public class OutputView extends Composite {
 					viewer.setExpandedState(data, !viewer.getExpandedState(data));
 				} else {
 					OutputEntry entry = (OutputEntry) data;
-					if (entry.listener != null) {
-						entry.listener.handleEvent(entry, e);
+					PSpecEditor.getInstance().switchView(entry);
+				}
+			}
+		});
+
+		tree.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent e) {
+				if (e.button == 3) {
+					TreeItem item = tree.getItem(new Point(e.x, e.y));
+					if (item == null) {
+						return;
+					}
+					Object data = item.getData();
+					if (!(data instanceof OutputEntry)) {
+						return;
+					}
+					OutputEntry entry = (OutputEntry) data;
+					if (entry.outputType.equals(OutputType.analysis)) {
+						Menu menu = createOutputPopup(tree, entry);
+						EditorUtil.showPopupMenu(menu, shell, e);
 					}
 				}
 			}
 		});
+	}
+
+	public Menu createOutputPopup(Control control, final OutputEntry entry) {
+		Menu popMenu = new Menu(control);
+		MenuItem gotoItem = new MenuItem(popMenu, SWT.PUSH);
+		gotoItem.setText(getMessage(Goto));
+
+		gotoItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				PSpecEditor.getInstance().switchView(entry);
+			}
+		});
+		if (entry.fixListener != null) {
+			MenuItem fixItem = new MenuItem(popMenu, SWT.PUSH);
+			fixItem.setText(getMessage(Fix));
+			fixItem.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					entry.fixListener.handleEvent(entry);
+				}
+			});
+
+			MenuItem deleteItem = new MenuItem(popMenu, SWT.PUSH);
+			deleteItem.setText(getMessage(Delete));
+			deleteItem.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					entry.model.removeOutput(entry);
+					remove(entry);
+				}
+			});
+		}
+
+		return popMenu;
 	}
 
 	/**
@@ -134,7 +197,18 @@ public class OutputView extends Composite {
 	 * must be called explicitly
 	 */
 	public void refresh(OutputType type) {
-		viewer.refresh(type);
+
+		TreeItem[] items = viewer.getTree().getItems();
+		for (Item item : items) {
+			if (type.equals(item.getData())) {
+				viewer.refresh(type);
+				if (outputCounts.get(type) == 0) {
+					item.dispose();
+				}
+				return;
+			}
+		}
+		viewer.refresh();
 	}
 
 	private void updateCount(OutputType type, int count) {
@@ -280,4 +354,21 @@ public class OutputView extends Composite {
 		}
 	}
 
+	public void remove(OutputEntry entry) {
+		Tree tree = viewer.getTree();
+		for (TreeItem item : tree.getItems()) {
+			if (item.getData().equals(entry.outputType)) {
+				for (TreeItem entryItem : item.getItems()) {
+					if (entryItem.getData().equals(entry)) {
+						entryItem.dispose();
+						if (item.getItemCount() == 0) {
+							item.dispose();
+						}
+						return;
+					}
+				}
+			}
+		}
+
+	}
 }

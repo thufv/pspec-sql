@@ -2,9 +2,11 @@ package edu.thu.ss.editor.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import edu.thu.ss.editor.model.OutputEntry.MessageType;
 import edu.thu.ss.editor.model.OutputEntry.OutputType;
 
 public abstract class BaseModel {
@@ -29,7 +31,16 @@ public abstract class BaseModel {
 	}
 
 	public boolean hasOutput() {
-		return outputs != null && !outputs.isEmpty();
+		if (outputs == null) {
+			return false;
+		}
+		for (List<OutputEntry> list : outputs.values()) {
+			if (!list.isEmpty()) {
+				return true;
+			}
+		}
+		return false;
+
 	}
 
 	public void getOutput(OutputType type, List<OutputEntry> list) {
@@ -67,25 +78,43 @@ public abstract class BaseModel {
 		for (List<OutputEntry> list : outputs.values()) {
 			list.clear();
 		}
-		outputs.clear();
+		//outputs.clear();
 	}
 
 	public void clearOutput(OutputType type) {
 		if (outputs == null) {
 			return;
 		}
-		List<OutputEntry> list = outputs.remove(type);
+		List<OutputEntry> list = outputs.get(type);
 		if (list != null) {
 			list.clear();
 		}
 
 	}
 
+	public void clearOutput(OutputType outputType, MessageType messageType) {
+		if (outputs == null) {
+			return;
+		}
+		List<OutputEntry> list = outputs.get(outputType);
+		if (list == null) {
+			return;
+		}
+		Iterator<OutputEntry> it = list.iterator();
+		while (it.hasNext()) {
+			OutputEntry entry = it.next();
+			if (entry.messageType.equals(messageType)) {
+				it.remove();
+			}
+		}
+	}
+
 	public boolean hasOutput(OutputType type) {
 		if (outputs == null) {
 			return false;
 		}
-		return outputs.containsKey(type);
+		List<OutputEntry> list = outputs.get(type);
+		return list != null && !list.isEmpty();
 	}
 
 	public int countOutput(OutputType type) {
@@ -100,4 +129,14 @@ public abstract class BaseModel {
 		}
 	}
 
+	public void removeOutput(OutputEntry entry) {
+		if (outputs == null) {
+			return;
+		}
+		List<OutputEntry> list = outputs.get(entry.outputType);
+		if (list == null) {
+			return;
+		}
+		list.remove(entry);
+	}
 }

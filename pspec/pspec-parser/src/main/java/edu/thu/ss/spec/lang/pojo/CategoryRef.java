@@ -3,7 +3,6 @@ package edu.thu.ss.spec.lang.pojo;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.w3c.dom.Document;
@@ -128,5 +127,36 @@ public abstract class CategoryRef<T extends Category<T>> extends ObjectRef {
 	}
 
 	abstract protected void parseExclude(Node node);
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((category == null) ? 0 : category.hashCode());
+		result = prime * result + ((excludeRefs == null) ? 0 : excludeRefs.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CategoryRef other = (CategoryRef) obj;
+		if (category == null) {
+			if (other.category != null)
+				return false;
+		} else if (!category.equals(other.category))
+			return false;
+		if (excludeRefs == null) {
+			if (other.excludeRefs != null)
+				return false;
+		} else if (!excludeRefs.equals(other.excludeRefs))
+			return false;
+		return true;
+	}
 
 }

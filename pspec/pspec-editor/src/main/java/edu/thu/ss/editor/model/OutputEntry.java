@@ -1,9 +1,11 @@
 package edu.thu.ss.editor.model;
 
+
 public class OutputEntry {
 	public static enum OutputType {
 		warning,
-		error
+		error,
+		analysis
 	};
 
 	public static enum MessageType {
@@ -13,14 +15,15 @@ public class OutputEntry {
 		Data_Category,
 		Data_Category_Duplicate,
 		Rule_Ref,
-		Rule_Restriction
+		Rule_Restriction,
+		Simplify
 	}
 
 	private OutputEntry(String description, OutputType type, BaseModel location, BaseModel model,
-			OutputListener listener, MessageType messageType, Object[] data) {
+			FixListener fixListener, MessageType messageType, Object[] data) {
 		this.description = description;
 		this.outputType = type;
-		this.listener = listener;
+		this.fixListener = fixListener;
 		this.location = location;
 		this.model = model;
 		this.messageType = messageType;
@@ -28,22 +31,33 @@ public class OutputEntry {
 	}
 
 	public static OutputEntry newInstance(String description, OutputType outputType, BaseModel model,
-			OutputListener listener, MessageType messageType, Object... data) {
-		return new OutputEntry(description, outputType, model, model, listener, messageType, data);
+			MessageType messageType, Object... data) {
+		return new OutputEntry(description, outputType, model, model, null, messageType, data);
 	}
 
 	public static OutputEntry newInstance(String description, OutputType outputType,
-			BaseModel location, BaseModel model, OutputListener listener, MessageType messageType,
+			BaseModel location, BaseModel model, MessageType messageType, Object... data) {
+		return new OutputEntry(description, outputType, location, model, null, messageType, data);
+	}
+
+	public static OutputEntry newInstance(String description, OutputType outputType,
+			BaseModel location, BaseModel model, FixListener fixListener, MessageType messageType,
 			Object... data) {
-		return new OutputEntry(description, outputType, location, model, listener, messageType, data);
+		return new OutputEntry(description, outputType, location, model, fixListener, messageType, data);
 	}
 
 	public String description;
 	public OutputType outputType;
-	public OutputListener listener;
+	public FixListener fixListener;
 	public BaseModel location;
 	public BaseModel model;
 	public Object[] data;
 
 	public final MessageType messageType;
+
+	public static interface FixListener {
+
+		public void handleEvent(OutputEntry entry);
+	}
+
 }

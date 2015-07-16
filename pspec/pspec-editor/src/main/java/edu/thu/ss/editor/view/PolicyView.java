@@ -14,7 +14,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
@@ -58,8 +57,7 @@ public class PolicyView extends EditorView<PolicyModel, Policy> {
 		this.shell = shell;
 		this.model = model;
 		this.editorItem = editorItem;
-		this.table = EditorUtil.newOutputTable(model, PSpecEditor.getInstance()
-				.getDefaultOutputListener());
+		this.table = EditorUtil.newOutputTable(model);
 
 		this.setBackground(EditorUtil.getDefaultBackground());
 
@@ -134,7 +132,7 @@ public class PolicyView extends EditorView<PolicyModel, Policy> {
 				String file = dlg.open();
 				if (file != null) {
 					VocabularyModel vocabularyModel = new VocabularyModel(file);
-					ParseResult result = EditorUtil.openVocabulary(vocabularyModel, shell, null);
+					ParseResult result = EditorUtil.openVocabulary(vocabularyModel, shell, false);
 					if (result.equals(ParseResult.Invalid_Vocabulary)) {
 						EditorUtil.showMessageBox(shell, "",
 								getMessage(Vocabulary_Invalid_Document_Message, file));

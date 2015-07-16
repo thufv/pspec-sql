@@ -81,4 +81,5 @@ public class UserRef extends CategoryRef<UserCategory> {
 		}
 		return ref;
 	}
+
 }

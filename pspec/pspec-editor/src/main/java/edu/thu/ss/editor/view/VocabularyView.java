@@ -51,8 +51,7 @@ public class VocabularyView extends EditorView<VocabularyModel, Vocabulary> {
 			OutputView outputView, TreeItem item) {
 		super(shell, parent, model, outputView);
 		table = new EventTable();
-		EditorUtil
-				.addOutputListener(table, model, PSpecEditor.getInstance().getDefaultOutputListener());
+		EditorUtil.addOutputListener(table, model);
 		this.editorItem = item;
 		this.setBackground(EditorUtil.getDefaultBackground());
 		this.setBackgroundMode(SWT.INHERIT_FORCE);
@@ -177,7 +176,7 @@ public class VocabularyView extends EditorView<VocabularyModel, Vocabulary> {
 			vocabulary.setBaseVocabulary(null);
 		} else {
 			VocabularyModel baseModel = new VocabularyModel(file);
-			ParseResult result = EditorUtil.openVocabulary(baseModel, shell, null);
+			ParseResult result = EditorUtil.openVocabulary(baseModel, shell, false);
 			if (result.equals(ParseResult.Invalid_Vocabulary)) {
 				EditorUtil.showMessageBox(shell, "", getMessage(Vocabulary_Invalid_Document_Message, file));
 				return;

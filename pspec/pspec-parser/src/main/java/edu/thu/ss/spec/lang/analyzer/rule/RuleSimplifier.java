@@ -1,11 +1,8 @@
 package edu.thu.ss.spec.lang.analyzer.rule;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,57 +23,92 @@ import edu.thu.ss.spec.util.InclusionUtil;
  */
 public class RuleSimplifier extends BaseRuleAnalyzer {
 
-	private static class SimplificationLog {
-		List<UserRef> redundantUsers = new ArrayList<>();
+	public static class SimplificationLog {
+		public Rule rule;
 
-		List<DataRef> redundantDatas = new ArrayList<>();
+		public List<UserRef> redundantUsers = new ArrayList<>();
 
-		List<Restriction> redundantRestrictions = new ArrayList<>();
+		public List<DataRef> redundantDatas = new ArrayList<>();
+
+		public List<Restriction> redundantRestrictions = new ArrayList<>();
+
+		public SimplificationLog(Rule rule) {
+			this.rule = rule;
+		}
+
+		public void clear() {
+			redundantUsers.clear();
+			redundantDatas.clear();
+			redundantRestrictions.clear();
+		}
+
+		public boolean isEmpty() {
+			if (!redundantUsers.isEmpty()) {
+				return false;
+			}
+			if (!redundantDatas.isEmpty()) {
+				return false;
+			}
+			if (!redundantRestrictions.isEmpty()) {
+				return false;
+			}
+			return true;
+		}
 	}
 
 	private static Logger logger = LoggerFactory.getLogger(RuleSimplifier.class);
 
 	private boolean remove;
 
-	private Map<Rule, SimplificationLog> logs = new HashMap<>();
+	private List<SimplificationLog> logs = new ArrayList<>();
 
 	public RuleSimplifier(EventTable table, boolean remove) {
 		super(table);
 		this.remove = remove;
 	}
 
-	@Override
-	public boolean analyzeRule(Rule rule, UserContainer users, DataContainer datas) {
-		SimplificationLog log = new SimplificationLog();
+	public SimplificationLog analyze(Rule rule, UserContainer users, DataContainer datas) {
+		SimplificationLog log = new SimplificationLog(rule);
 		simplifyUsers(rule.getUserRefs(), rule.getId(), log);
-		simplifyDatas(rule.getDataRefs(), rule.getId(), log);
+		if (rule.isSingle()) {
+			simplifyDatas(rule.getDataRefs(), rule.getId(), log);
+		}
 		simplifyRestrictions(rule.getRestrictions(), rule.getId(), log);
 		if (remove) {
-			commit(rule, log);
-		} else {
-			logs.put(rule, log);
+			commit(log);
+			return null;
 		}
+		return log;
+	}
+
+	@Override
+	public boolean analyzeRule(Rule rule, UserContainer users, DataContainer datas) {
+		SimplificationLog log = analyze(rule, users, datas);
+		if (log != null && !log.isEmpty()) {
+			if (logs == null) {
+				logs = new ArrayList<>();
+			}
+			logs.add(log);
+		}
+
 		return false;
 	}
 
-	public SimplificationLog getSimplificationL(Rule rule) {
-		return logs.get(rule);
+	public List<SimplificationLog> getLogs() {
+		return logs;
 	}
 
 	public void commit() {
-		for (Entry<Rule, SimplificationLog> e : logs.entrySet()) {
-			commit(e.getKey(), e.getValue());
+		if (logs == null) {
+			return;
+		}
+		for (SimplificationLog log : logs) {
+			commit(log);
 		}
 	}
 
-	public void commit(Rule rule) {
-		SimplificationLog log = logs.remove(rule);
-		if (log != null) {
-			commit(rule, log);
-		}
-	}
-
-	private void commit(Rule rule, SimplificationLog log) {
+	private void commit(SimplificationLog log) {
+		Rule rule = log.rule;
 		rule.getUserRefs().removeAll(log.redundantUsers);
 		rule.getDataRefs().removeAll(log.redundantDatas);
 		rule.getRestrictions().removeAll(log.redundantRestrictions);
@@ -151,6 +183,18 @@ public class RuleSimplifier extends BaseRuleAnalyzer {
 			}
 			i++;
 		}
+	}
+
+	public boolean isEmpty() {
+		if (logs == null || logs.isEmpty()) {
+			return true;
+		}
+		for (SimplificationLog log : logs) {
+			if (!log.isEmpty()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

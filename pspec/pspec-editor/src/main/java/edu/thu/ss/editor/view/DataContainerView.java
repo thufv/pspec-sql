@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import edu.thu.ss.editor.model.CategoryContentProvider;
 import edu.thu.ss.editor.model.CategoryLabelProvider;
 import edu.thu.ss.editor.model.OutputEntry.MessageType;
+import edu.thu.ss.editor.model.OutputEntry.OutputType;
 import edu.thu.ss.editor.model.VocabularyModel;
 import edu.thu.ss.editor.util.EditorUtil;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
@@ -191,7 +192,7 @@ public class DataContainerView extends EditorView<VocabularyModel, DataCategory>
 						model.getErrors().remove(selectedData.getId());
 						refresh(selectedData.getId());
 					}
-					outputView.refresh();
+					outputView.refresh(OutputType.warning);
 				}
 			}
 		});
@@ -200,16 +201,8 @@ public class DataContainerView extends EditorView<VocabularyModel, DataCategory>
 			@Override
 			public void mouseDown(MouseEvent e) {
 				if (e.button == 3) {
-					Point p = ((Control) e.widget).toDisplay(e.x, e.y);
 					Menu menu = createTreePopup(dataViewer.getTree());
-					menu.setLocation(p);
-					menu.setVisible(true);
-					Display display = Display.getCurrent();
-					while (!menu.isDisposed() && menu.isVisible()) {
-						if (!display.readAndDispatch())
-							display.sleep();
-					}
-					menu.dispose();
+					EditorUtil.showPopupMenu(menu, shell, e);
 				}
 			}
 		});
@@ -252,7 +245,7 @@ public class DataContainerView extends EditorView<VocabularyModel, DataCategory>
 					model.clearOutputByCategory(oldId, MessageType.Data_Category_Duplicate);
 					model.getErrors().remove(oldId);
 					refresh(oldId);
-					outputView.refresh();
+					outputView.refresh(OutputType.error);
 				}
 
 				dataViewer.refresh(selectedData);
