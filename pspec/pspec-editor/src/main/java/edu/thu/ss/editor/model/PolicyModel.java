@@ -169,4 +169,11 @@ public class PolicyModel extends BaseModel {
 		}
 		return removed;
 	}
+
+	public void retainOutput(OutputType outputType, MessageType messageType) {
+		super.retainOutput(outputType, messageType);
+		for (RuleModel ruleModel : ruleModels) {
+			ruleModel.retainOutput(outputType, messageType);
+		}
+	}
 }

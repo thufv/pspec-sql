@@ -16,7 +16,11 @@ public class OutputEntry {
 		Rule_Ref,
 		Rule_Restriction,
 		Simplify,
-		Redundancy
+		Redundancy,
+		Normal_Consistency,
+		Approxiamte_Consistency,
+		Strong_Consistency,
+		Enhanced_Strong_Consistency
 	}
 
 	private OutputEntry(String description, OutputType type, BaseModel location, BaseModel model,

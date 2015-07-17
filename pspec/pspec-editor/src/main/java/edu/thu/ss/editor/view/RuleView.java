@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
+import edu.thu.ss.editor.model.OutputEntry.MessageType;
 import edu.thu.ss.editor.model.OutputEntry.OutputType;
 import edu.thu.ss.editor.model.PolicyModel;
 import edu.thu.ss.editor.model.RuleModel;
@@ -182,24 +183,23 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 		initializeRules();
 	}
 
-	public void removeRuleItem(RuleModel ruleModel, boolean clearOutput) {
+	public void removeRuleItem(RuleModel ruleModel, boolean clearAnalysis) {
 		for (ExpandItem item : ruleBar.getItems()) {
 			if (item.getData() == ruleModel) {
-				removeRuleItem(item, clearOutput);
+				removeRuleItem(item, clearAnalysis);
 				return;
 			}
 		}
-
 	}
 
-	private void removeRuleItem(ExpandItem item, boolean clearOutput) {
+	private void removeRuleItem(ExpandItem item, boolean clearAnalysis) {
 		RuleModel ruleModel = (RuleModel) item.getData();
 
 		item.getControl().dispose();
 		item.dispose();
 		delete.setEnabled(false);
 
-		if (clearOutput) {
+		if (clearAnalysis) {
 			boolean hasOutput = model.hasOutput(OutputType.analysis) || ruleModel.hasOutput();
 			model.clearOutput(OutputType.analysis);
 			if (hasOutput) {
@@ -210,7 +210,7 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 
 	}
 
-	private void refreshRuleItem(ExpandItem item, boolean clearOutput) {
+	private void refreshRuleItem(ExpandItem item, boolean clearAnalysis) {
 		RuleModel ruleModel = (RuleModel) item.getData();
 		int index = EditorUtil.indexOf(ruleBar.getItems(), item);
 		item.getControl().dispose();
@@ -225,10 +225,10 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 		item.setExpanded(true);
 		selectedItem = item;
 
-		if (clearOutput) {
+		if (clearAnalysis) {
 			if (ruleModel.hasOutput() || model.hasOutput(OutputType.analysis)) {
 				ruleModel.clearOutput();
-				model.clearOutput(OutputType.analysis);
+				model.retainOutput(OutputType.analysis, MessageType.Simplify);
 				outputView.refresh();
 			}
 		}
@@ -269,7 +269,6 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 		int ret = new RuleDialog(shell, ruleModel, model).open();
 		if (ret == SWT.OK) {
 			refreshRuleItem(item, true);
-
 		} else {
 			ruleModel.init();
 		}

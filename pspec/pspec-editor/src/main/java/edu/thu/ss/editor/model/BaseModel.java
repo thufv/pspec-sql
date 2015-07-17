@@ -155,4 +155,21 @@ public abstract class BaseModel {
 		}
 		list.remove(entry);
 	}
+
+	public void retainOutput(OutputType outputType, MessageType messageType) {
+		if (outputs == null) {
+			return;
+		}
+		List<OutputEntry> list = outputs.get(outputType);
+		if (list == null) {
+			return;
+		}
+		Iterator<OutputEntry> it = list.iterator();
+		while (it.hasNext()) {
+			OutputEntry entry = it.next();
+			if (!entry.messageType.equals(messageType)) {
+				it.remove();
+			}
+		}
+	}
 }
