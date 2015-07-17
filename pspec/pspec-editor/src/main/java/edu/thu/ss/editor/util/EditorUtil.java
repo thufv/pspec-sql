@@ -1,37 +1,6 @@
 package edu.thu.ss.editor.util;
 
-import static edu.thu.ss.editor.util.MessagesUtil.Data_Category_Duplicate_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Data_Category_Exclude_Invalid_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Data_Category_Exclude_Not_Exist_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Data_Category_ID_Unique_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Data_Category_Not_Exist_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Data_Category_Parent_Cycle_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Data_Category_Parent_Not_Exist_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_Approximate_Inconsistency_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_Data_Association_Not_Overlap_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_Data_Ref_Simplify_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_Enhanced_Strong_Inconsistency_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_Normal_Inconsistency_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_Redundancy_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_Restriction_DataRef_Not_Exist_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_Restriction_Explicit_DataRef_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_Restriction_One_Forbid_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_Restriction_Simplify_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_Restriction_Single_No_DataRef_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_Restriction_Single_One_Desensitize_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_Restriction_Single_One_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_Restriction_Unsupported_Operation_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_Strong_Inconsistency_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_User_Ref_Simplify_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.User_Category_Duplicate_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.User_Category_Exclude_Invalid_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.User_Category_Exclude_Not_Exist_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.User_Category_ID_Unique_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.User_Category_Not_Exist_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.User_Category_Parent_Cycle_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.User_Category_Parent_Not_Exist_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Vocabulary_Cycle_Reference_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.getMessage;
+import static edu.thu.ss.editor.util.MessagesUtil.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -187,7 +156,10 @@ public class EditorUtil {
 	}
 
 	public static enum ParseResult {
-		Success, Invalid_Vocabulary, Invalid_Policy, Error
+		Success,
+		Invalid_Vocabulary,
+		Invalid_Policy,
+		Error
 	}
 
 	public static ParseResult openVocabulary(VocabularyModel model, Shell shell, boolean output) {
@@ -886,17 +858,17 @@ public class EditorUtil {
 			@Override
 			public void onAnalysis(AnalysisType type, ExpandedRule... rules) {
 				PolicyModel policyModel = (PolicyModel) model;
-				RuleModel ruleModel = policyModel.getRuleModel(rules[0].getRule());
 
 				StringBuilder sb = new StringBuilder();
 				for (int i = 0; i < rules.length - 1; i++) {
 					ExpandedRule rule = rules[i];
 					sb.append(rule.getRuleId());
-					sb.append(" ");
+					sb.append(",");
 				}
-
+				RuleModel ruleModel = null;
 				switch (type) {
 				case Redundancy:
+					ruleModel = policyModel.getRuleModel(rules[0].getRule());
 					message = getMessage(Rule_Redundancy_Message, rules[0].getRuleId(), rules[1].getRuleId());
 					model.addOutput(OutputEntry.newInstance(message, OutputType.analysis, model, ruleModel,
 							MessageType.Redundancy, listener, rules[0]));
@@ -904,28 +876,30 @@ public class EditorUtil {
 				case Normal_Consistency:
 					sb.append(rules[rules.length - 1].getRuleId());
 					message = getMessage(Rule_Normal_Inconsistency_Message, sb.toString());
-					model.addOutput(OutputEntry.newInstance(message, OutputType.analysis, model, ruleModel,
+					model.addOutput(OutputEntry.newInstance(message, OutputType.analysis, model,
 							MessageType.Normal_Consistency));
 					break;
 				case Approximate_Consistency:
 					sb.append(rules[rules.length - 1].getRuleId());
 					message = getMessage(Rule_Approximate_Inconsistency_Message, sb.toString());
-					model.addOutput(OutputEntry.newInstance(message, OutputType.analysis, model, ruleModel,
+					model.addOutput(OutputEntry.newInstance(message, OutputType.analysis, model,
 							MessageType.Approximate_Consistency));
 					break;
 				case Strong_Consistency:
 					sb.deleteCharAt(sb.length() - 1);
+					ruleModel = policyModel.getRuleModel(rules[rules.length - 1].getRule());
 					message = getMessage(Rule_Strong_Inconsistency_Message, sb.toString(),
 							rules[rules.length - 1].getRuleId());
-					model.addOutput(OutputEntry.newInstance(message, OutputType.analysis, model, ruleModel,
-							MessageType.Strong_Consistency));
+					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.analysis, model,
+							ruleModel, MessageType.Strong_Consistency));
 					break;
 				case Enhanced_Strong_Consistency:
 					sb.deleteCharAt(sb.length() - 1);
+					ruleModel = policyModel.getRuleModel(rules[rules.length - 1].getRule());
 					message = getMessage(Rule_Enhanced_Strong_Inconsistency_Message, sb.toString(),
 							rules[rules.length - 1].getRuleId());
-					model.addOutput(OutputEntry.newInstance(message, OutputType.analysis, model, ruleModel,
-							MessageType.Enhanced_Strong_Consistency));
+					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.analysis, model,
+							ruleModel, MessageType.Enhanced_Strong_Consistency));
 					break;
 				default:
 					break;

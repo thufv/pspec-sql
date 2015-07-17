@@ -171,7 +171,8 @@ public class OutputView extends Composite {
 					entry.fixListener.handleEvent(entry);
 				}
 			});
-
+		}
+		if (entry.outputType.equals(Analysis)) {
 			MenuItem deleteItem = new MenuItem(popMenu, SWT.PUSH);
 			deleteItem.setText(getMessage(Delete));
 			deleteItem.addSelectionListener(new SelectionAdapter() {
@@ -197,18 +198,23 @@ public class OutputView extends Composite {
 	 * must be called explicitly
 	 */
 	public void refresh(OutputType type) {
-
+		boolean refreshed = false;
 		TreeItem[] items = viewer.getTree().getItems();
 		for (Item item : items) {
 			if (type.equals(item.getData())) {
 				viewer.refresh(type);
+				viewer.setExpandedState(type, true);
 				if (outputCounts.get(type) == 0) {
 					item.dispose();
 				}
-				return;
+				refreshed = true;
+				break;
 			}
 		}
-		viewer.refresh();
+		if (!refreshed) {
+			viewer.refresh();
+		}
+		viewer.setExpandedState(type, true);
 	}
 
 	private void updateCount(OutputType type, int count) {

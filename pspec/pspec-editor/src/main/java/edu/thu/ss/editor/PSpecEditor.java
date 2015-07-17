@@ -1,59 +1,6 @@
 package edu.thu.ss.editor;
 
-import static edu.thu.ss.editor.util.MessagesUtil.About;
-import static edu.thu.ss.editor.util.MessagesUtil.Analysis;
-import static edu.thu.ss.editor.util.MessagesUtil.ApproximateConsistency;
-import static edu.thu.ss.editor.util.MessagesUtil.Close;
-import static edu.thu.ss.editor.util.MessagesUtil.Confirm_Close;
-import static edu.thu.ss.editor.util.MessagesUtil.Confirm_Close_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Confirm_Exit;
-import static edu.thu.ss.editor.util.MessagesUtil.Confirm_Exit_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Consistency;
-import static edu.thu.ss.editor.util.MessagesUtil.Data_Container;
-import static edu.thu.ss.editor.util.MessagesUtil.EnhancedStrongConsistency;
-import static edu.thu.ss.editor.util.MessagesUtil.File;
-import static edu.thu.ss.editor.util.MessagesUtil.Help;
-import static edu.thu.ss.editor.util.MessagesUtil.New;
-import static edu.thu.ss.editor.util.MessagesUtil.New_Policy;
-import static edu.thu.ss.editor.util.MessagesUtil.New_Vocabulary;
-import static edu.thu.ss.editor.util.MessagesUtil.NormalConsistency;
-import static edu.thu.ss.editor.util.MessagesUtil.Open;
-import static edu.thu.ss.editor.util.MessagesUtil.Open_Policy;
-import static edu.thu.ss.editor.util.MessagesUtil.Open_Vocabulary;
-import static edu.thu.ss.editor.util.MessagesUtil.Policy;
-import static edu.thu.ss.editor.util.MessagesUtil.Policy_Approximate_Inconsistency_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Policy_Enhanced_Strong_Inconsistency_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Policy_Invalid_Document_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Policy_Invalid_Vocabulary_Document_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Policy_No_Approximate_Inconsistency_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Policy_No_Enhanced_Strong_Inconsistency_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Policy_No_Normal_Inconsistency_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Policy_No_Redundancy_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Policy_No_Simplify_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Policy_No_Strong_Inconsistency_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Policy_Normal_Inconsistency_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Policy_Opened_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Policy_Parse_Error_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Policy_Redundancy_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Policy_Save_Success_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Policy_Simplify_Prompt_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Policy_Strong_Inconsistency_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Redundancy;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule;
-import static edu.thu.ss.editor.util.MessagesUtil.Save;
-import static edu.thu.ss.editor.util.MessagesUtil.Save_As;
-import static edu.thu.ss.editor.util.MessagesUtil.Save_Policy;
-import static edu.thu.ss.editor.util.MessagesUtil.Save_Vocabulary;
-import static edu.thu.ss.editor.util.MessagesUtil.Simplify;
-import static edu.thu.ss.editor.util.MessagesUtil.StrongConsistency;
-import static edu.thu.ss.editor.util.MessagesUtil.User_Container;
-import static edu.thu.ss.editor.util.MessagesUtil.Vocabulary;
-import static edu.thu.ss.editor.util.MessagesUtil.Vocabulary_Invalid_Document_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Vocabulary_Opened_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Vocabulary_Parse_Error_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Vocabulary_Save_Error_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Vocabulary_Save_Success_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.getMessage;
+import static edu.thu.ss.editor.util.MessagesUtil.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -97,6 +44,7 @@ import edu.thu.ss.editor.util.EditorUtil.ParseResult;
 import edu.thu.ss.editor.util.MessagesUtil;
 import edu.thu.ss.editor.view.DataContainerView;
 import edu.thu.ss.editor.view.EditorView;
+import edu.thu.ss.editor.view.GraphView;
 import edu.thu.ss.editor.view.OutputView;
 import edu.thu.ss.editor.view.PolicyView;
 import edu.thu.ss.editor.view.RuleView;
@@ -217,8 +165,10 @@ public class PSpecEditor {
 					for (PolicyModel model : editorModel.getPolicies()) {
 						save(model, false);
 					}
+					System.exit(0);
 				} else if (ret == SWT.NO) {
 					//do nothing
+					System.exit(0);
 				} else {
 					event.doit = false;
 				}
@@ -309,12 +259,12 @@ public class PSpecEditor {
 		menus.put(ApproximateConsistency, approximateConsistency);
 
 		MenuItem strongConsistency = new MenuItem(consistencyMenu, SWT.NONE);
-		strongConsistency.setText(getMessage(StrongConsistency));
-		menus.put(StrongConsistency, strongConsistency);
+		strongConsistency.setText(getMessage(Strong_Consistency));
+		menus.put(Strong_Consistency, strongConsistency);
 
 		MenuItem enhancedStrongConsistency = new MenuItem(consistencyMenu, SWT.NONE);
-		enhancedStrongConsistency.setText(getMessage(EnhancedStrongConsistency));
-		menus.put(EnhancedStrongConsistency, enhancedStrongConsistency);
+		enhancedStrongConsistency.setText(getMessage(Enhanced_Strong_Consistency));
+		menus.put(Enhanced_Strong_Consistency, enhancedStrongConsistency);
 
 		MenuItem help = new MenuItem(menu, SWT.CASCADE);
 		help.setText(getMessage(Help));
@@ -689,6 +639,12 @@ public class PSpecEditor {
 		ruleView.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		EditorUtil.exclude(ruleView);
 		ruleItem.setData(EditorUtil.View, ruleView);
+
+		TreeItem visualizeItem = EditorUtil.newTreeItem(item, getMessage(Visualize));
+		GraphView graphView = new GraphView(shell, contentComposite, model, outputView);
+		graphView.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		EditorUtil.exclude(graphView);
+		visualizeItem.setData(EditorUtil.View, graphView);
 	}
 
 	private void openVocabulary() {
@@ -955,11 +911,7 @@ public class PSpecEditor {
 		expander.analyze(policy);
 
 		NormalConsistencyAnalyzer analyzer = new NormalConsistencyAnalyzer(EditorUtil.newOutputTable(
-				model, new FixListener() {
-					@Override
-					public void handleEvent(OutputEntry entry) {
-					}
-				}));
+				model, null));
 
 		analyzer.analyze(policy);
 		boolean hasOutput = model.hasOutput(OutputType.analysis, MessageType.Normal_Consistency);
@@ -984,11 +936,7 @@ public class PSpecEditor {
 		expander.analyze(policy);
 
 		ApproximateConsistencyAnalyzer analyzer = new ApproximateConsistencyAnalyzer(
-				EditorUtil.newOutputTable(model, new FixListener() {
-					@Override
-					public void handleEvent(OutputEntry entry) {
-					}
-				}));
+				EditorUtil.newOutputTable(model, null));
 
 		analyzer.analyze(policy);
 		boolean hasOutput = model.hasOutput(OutputType.analysis, MessageType.Approximate_Consistency);
@@ -1013,11 +961,7 @@ public class PSpecEditor {
 		expander.analyze(policy);
 
 		StrongConsistencyAnalyzer analyzer = new StrongConsistencyAnalyzer(EditorUtil.newOutputTable(
-				model, new FixListener() {
-					@Override
-					public void handleEvent(OutputEntry entry) {
-					}
-				}));
+				model, null));
 
 		analyzer.analyze(policy);
 		boolean hasOutput = model.hasOutput(OutputType.analysis, MessageType.Strong_Consistency);
@@ -1043,11 +987,7 @@ public class PSpecEditor {
 		expander.analyze(policy);
 
 		EnhancedStrongConsistencyAnalyzer analyzer = new EnhancedStrongConsistencyAnalyzer(
-				EditorUtil.newOutputTable(model, new FixListener() {
-					@Override
-					public void handleEvent(OutputEntry entry) {
-					}
-				}));
+				EditorUtil.newOutputTable(model, null));
 
 		analyzer.analyze(policy);
 		boolean hasOutput = model.hasOutput(OutputType.analysis,

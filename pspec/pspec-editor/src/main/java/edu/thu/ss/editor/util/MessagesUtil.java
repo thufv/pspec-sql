@@ -24,6 +24,7 @@ public class MessagesUtil {
 	public static final String Close = "close";
 
 	public static final String Clear = "clear";
+	public static final String Visualize = "visualize";
 
 	public static final String Open = "open";
 	public static final String Open_Vocabulary = "open.vocabulary";
@@ -54,10 +55,10 @@ public class MessagesUtil {
 	public static final String Consistency = "consistency";
 	public static final String NormalConsistency = "normal.consistency";
 	public static final String ApproximateConsistency = "approximate.consistency";
-	public static final String StrongConsistency = "strong.consistency";
-	public static final String EnhancedStrongConsistency = "enhanced.strong.consistency";
-	public static final String SelectAsSeed = "select.as.seed";
-	
+	public static final String Strong_Consistency = "strong.consistency";
+	public static final String Enhanced_Strong_Consistency = "enhanced.strong.consistency";
+	public static final String Select_As_Seed = "select.as.seed";
+
 	public static final String Base_Vocabulary = "base.vocabulary";
 	public static final String Base_Vocabulary_Contains_Error_Message = "base.vocabulary.contains.error.message";
 	public static final String Vocabulary = "vocabulary";
@@ -149,15 +150,19 @@ public class MessagesUtil {
 	public static final String Policy_Simplify_Prompt_Message = "policy.simplify.prompt.message";
 	public static final String Policy_No_Redundancy_Message = "policy.no.redundancy.message";
 	public static final String Policy_Redundancy_Message = "policy.redundancy.message";
-  public static final String Policy_No_Normal_Inconsistency_Message = "policy.no.normal.inconsistency.message";
-  public static final String Policy_Normal_Inconsistency_Message = "policy.normal.inconsistency.message";
-  public static final String Policy_No_Approximate_Inconsistency_Message = "policy.no.approximate.inconsistency.message";
-  public static final String Policy_Approximate_Inconsistency_Message = "policy.approximate.inconsistency.message";
-  public static final String Policy_No_Strong_Inconsistency_Message = "policy.no.strong.inconsistency.message";
-  public static final String Policy_Strong_Inconsistency_Message = "policy.strong.inconsistency.message";
-  public static final String Policy_No_Enhanced_Strong_Inconsistency_Message = "policy.no.enhanced.strong.inconsistency.message";
-  public static final String Policy_Enhanced_Strong_Inconsistency_Message = "policy.enhanced.strong.inconsistency.message";
-  
+	public static final String Policy_No_Normal_Inconsistency_Message = "policy.no.normal.inconsistency.message";
+	public static final String Policy_Normal_Inconsistency_Message = "policy.normal.inconsistency.message";
+	public static final String Policy_No_Approximate_Inconsistency_Message = "policy.no.approximate.inconsistency.message";
+	public static final String Policy_Approximate_Inconsistency_Message = "policy.approximate.inconsistency.message";
+	public static final String Policy_No_Strong_Inconsistency_Message = "policy.no.strong.inconsistency.message";
+	public static final String Policy_Strong_Inconsistency_Message = "policy.strong.inconsistency.message";
+	public static final String Policy_No_Enhanced_Strong_Inconsistency_Message = "policy.no.enhanced.strong.inconsistency.message";
+	public static final String Policy_Enhanced_Strong_Inconsistency_Message = "policy.enhanced.strong.inconsistency.message";
+	public static final String Policy_Seed_No_Strong_Inconsistency_Message = "policy.seed.no.strong.inconsistency.message";
+	public static final String Policy_Seed_Strong_Inconsistency_Message = "policy.seed.strong.inconsistency.message";
+	public static final String Policy_Seed_No_Enhanced_Strong_Inconsistency_Message = "policy.seed.no.enhanced.strong.inconsistency.message";
+	public static final String Policy_Seed_Enhanced_Strong_Inconsistency_Message = "policy.seed.enhanced.strong.inconsistency.message";
+
 	public static final String Rule = "rule";
 	public static final String Rule_Type = "rule.type";
 	public static final String Rule_ID = "rule.id";
@@ -197,7 +202,10 @@ public class MessagesUtil {
 	public static final String Rule_Approximate_Inconsistency_Message = "rule.approximate.inconsistency.message";
 	public static final String Rule_Strong_Inconsistency_Message = "rule.strong.inconsistency.message";
 	public static final String Rule_Enhanced_Strong_Inconsistency_Message = "rule.enhanced.strong.inconsistency.message";
-	
+
+	public static final String Rule_No_Strong_Inconsistency_Message = "rule.enhanced.strong.inconsistency.message";
+	public static final String Rule_No_Enhanced_Strong_Inconsistency_Message = "rule.enhanced.strong.inconsistency.message";
+
 	public static final String Forbid = "forbid";
 	public static final String Restriction = "restriction";
 	public static final String Restrict = "restrict";

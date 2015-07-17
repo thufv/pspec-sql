@@ -9,85 +9,141 @@ package edu.thu.ss.editor;
  * 
  *****************************************************************************/
 
+import java.awt.Container;
+import java.awt.Frame;
+import java.awt.Panel;
+
+import javax.swing.JFrame;
+import javax.swing.plaf.PanelUI;
+import javax.swing.text.LabelView;
+
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.awt.SWT_AWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
-import org.eclipse.swt.widgets.Text;
+
+import prefuse.Constants;
+import prefuse.Display;
+import prefuse.Visualization;
+import prefuse.action.ActionList;
+import prefuse.action.RepaintAction;
+import prefuse.action.assignment.ColorAction;
+import prefuse.action.assignment.DataColorAction;
+import prefuse.action.layout.graph.ForceDirectedLayout;
+import prefuse.activity.Activity;
+import prefuse.controls.DragControl;
+import prefuse.controls.PanControl;
+import prefuse.controls.ZoomControl;
+import prefuse.data.Graph;
+import prefuse.data.io.DataIOException;
+import prefuse.data.io.GraphMLReader;
+import prefuse.render.DefaultRendererFactory;
+import prefuse.render.LabelRenderer;
+import prefuse.util.ColorLib;
+import prefuse.visual.VisualItem;
 
 public class Test {
-	Display display = new Display();
-	Shell shell = new Shell(display);
-
-	public Test() {
-		shell.setLayout(new FillLayout());
-
-		final TabFolder tabFolder = new TabFolder(shell, SWT.BOTTOM);
-		tabFolder.pack();
-		Button button = new Button(tabFolder, SWT.NULL);
-		button.setText("This is a button.");
-
-		TabItem tabItem1 = new TabItem(tabFolder, SWT.NULL);
-		tabItem1.setText("item #1");
-		tabItem1.setControl(button);
-
-		Text text = new Text(tabFolder, SWT.MULTI);
-		text.setText("This is a text control.");
-
-		TabItem tabItem2 = new TabItem(tabFolder, SWT.NULL);
-		tabItem2.setText("item #2");
-		tabItem2.setControl(text);
-
-		Label label = new Label(tabFolder, SWT.NULL);
-		label.setText("This is a text lable.");
-
-		TabItem tabItem3 = new TabItem(tabFolder, SWT.NULL);
-		tabItem3.setText("item #3");
-		tabItem3.setControl(label);
-
-		tabFolder.addSelectionListener(new SelectionListener() {
-			public void widgetSelected(SelectionEvent e) {
-				System.out.println("Selected item index = " + tabFolder.getSelectionIndex());
-				System.out.println("Selected item = "
-						+ (tabFolder.getSelection() == null ? "null" : tabFolder.getSelection()[0].toString()));
-			}
-
-			public void widgetDefaultSelected(SelectionEvent e) {
-				widgetSelected(e);
-			}
-		});
-
-		//tabFolder.setSelection(new TabItem[]{tabItem2, tabItem3});
-		//tabFolder.setSelection(2);
-
-		shell.setSize(400, 120);
-		shell.open();
-		//textUser.forceFocus();
-
-		System.out.println(tabFolder.getSelectionIndex());
-
-		// Set up the event loop.
-		while (!shell.isDisposed()) {
-			if (!display.readAndDispatch()) {
-				// If no more entries in event queue
-				display.sleep();
-			}
-		}
-
-		display.dispose();
-	}
-
-	private void init() {
-
-	}
 
 	public static void main(String[] args) {
-		new Test();
+
+		// load the socialnet.xml file. it is assumed that the file can be
+		// found at the root of the java classpath
+		org.eclipse.swt.widgets.Display display1 = org.eclipse.swt.widgets.Display.getDefault();
+		Shell shell = new Shell(display1);
+
+		Graph graph = null;
+		try {
+			graph = new GraphMLReader().readGraph("/socialnet.xml");
+		} catch (DataIOException e) {
+			e.printStackTrace();
+			System.err.println("Error loading graph. Exiting...");
+			System.exit(1);
+		}
+
+		// -- 2. the visualization --------------------------------------------
+
+		// add the graph to the visualization as the data group "graph"
+		// nodes and edges are accessible as "graph.nodes" and "graph.edges"
+		Visualization vis = new Visualization();
+		vis.add("graph", graph);
+		vis.setInteractive("graph.edges", null, false);
+
+		// -- 3. the renderers and renderer factory ---------------------------
+
+		// draw the "name" label for NodeItems
+		LabelRenderer r = new LabelRenderer("name");
+		r.setRoundedCorner(8, 8); // round the corners
+
+		// create a new default renderer factory
+		// return our name label renderer as the default for all non-EdgeItems
+		// includes straight line edges for EdgeItems by default
+		vis.setRendererFactory(new DefaultRendererFactory(r));
+
+		// -- 4. the processing actions ---------------------------------------
+
+		// create our nominal color palette
+		// pink for females, baby blue for males
+		int[] palette = new int[] { ColorLib.rgb(255, 180, 180), ColorLib.rgb(190, 190, 255) };
+		// map nominal data values to colors using our provided palette
+		DataColorAction fill = new DataColorAction("graph.nodes", "gender", Constants.NOMINAL,
+				VisualItem.FILLCOLOR, palette);
+		// use black for node text
+		ColorAction text = new ColorAction("graph.nodes", VisualItem.TEXTCOLOR, ColorLib.gray(0));
+		// use light grey for edges
+		ColorAction edges = new ColorAction("graph.edges", VisualItem.STROKECOLOR, ColorLib.gray(200));
+
+		// create an action list containing all color assignments
+		ActionList color = new ActionList();
+		color.add(fill);
+		color.add(text);
+		color.add(edges);
+
+		// create an action list with an animated layout
+		ActionList layout = new ActionList(Activity.INFINITY);
+		layout.add(new ForceDirectedLayout("graph"));
+		layout.add(new RepaintAction());
+
+		// add the actions to the visualization
+		vis.putAction("color", color);
+		vis.putAction("layout", layout);
+
+		// -- 5. the display and interactive controls -------------------------
+
+		Display display = new Display(vis);
+		display.setSize(800, 600); // set display size
+		// drag individual items around
+		display.addControlListener(new DragControl());
+		// pan with left-click drag on background
+		display.addControlListener(new PanControl());
+		// zoom with right-click drag
+		display.addControlListener(new ZoomControl());
+
+		// -- 6. launch the visualization -------------------------------------
+
+		display.setVisible(true);
+		//获得容器  
+		vis.run("color");
+		vis.run("layout");
+		shell.setSize(new Point(800, 600));
+		shell.setLayout(new FillLayout());
+		shell.setText("Prefuse in SWT");
+		// 新建swt组件  
+		Composite composite = new Composite(shell, SWT.NO_BACKGROUND | SWT.EMBEDDED);
+		// 注入组件，并返回为frame  
+		Frame frame = SWT_AWT.new_Frame(composite);
+		// 加载容器  
+		Panel panel = new Panel();
+		frame.add(panel);
+		panel.add(display);
+		// 打开shell  
+		shell.open();
+
+		while (!shell.isDisposed()) {
+			if (!display1.readAndDispatch())
+				display1.sleep();
+		}
 	}
+
 }

@@ -235,10 +235,10 @@ public class StrongConsistencySearcher extends LevelwiseSearcher {
 		if (!result) {
 			logger.warn("Possible conflicts when adding:" + sortedRules.get(key.getLast()).getId());
 			conflicts++;
-			
+
 			ExpandedRule[] newRules = Arrays.copyOf(rules, rules.length + 1);
 			newRules[newRules.length - 1] = seed;
-			table.onAnalysis(AnalysisType.Enhanced_Strong_Consistency, newRules);
+			table.onAnalysis(AnalysisType.Strong_Consistency, newRules);
 		} else {
 			cache.put(key, list);
 		}

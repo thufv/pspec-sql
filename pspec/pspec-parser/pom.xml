@@ -14,10 +14,12 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<root.basedir>D:/privacy/pspec/pspec-parser</root.basedir>
+		<root.basedir>/Users/luochen/Documents/Research/privacy/pspec/pspec-parser</root.basedir>
 	</properties>
 
 	<dependencies>
+		
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
