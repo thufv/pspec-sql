@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.thu.ss.spec.lang.analyzer.consistency.ApproximateConsistencyAnalyzer.RuleRelation;
+import edu.thu.ss.spec.lang.parser.event.EventTable;
+import edu.thu.ss.spec.lang.parser.event.PSpecListener.AnalysisType;
 import edu.thu.ss.spec.lang.pojo.Action;
 import edu.thu.ss.spec.lang.pojo.DataAssociation;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
@@ -27,6 +29,8 @@ import edu.thu.ss.spec.util.PSpecUtil.SetRelation;
 
 public class ApproximateConsistencySearcher extends LevelwiseSearcher {
 	private static Logger logger = LoggerFactory.getLogger(ApproximateConsistencySearcher.class);
+
+	private EventTable table;
 
 	/**
 	 * intermediate representation of restriction
@@ -80,7 +84,11 @@ public class ApproximateConsistencySearcher extends LevelwiseSearcher {
 	protected List<ExpandedRule> sortedRules;
 	protected int[] index;
 
-	public ApproximateConsistencySearcher(List<ExpandedRule> rules) {
+	public ApproximateConsistencySearcher(EventTable table) {
+		this.table = table;
+	}
+
+	public void setRules(List<ExpandedRule> rules) {
 		this.rules = rules;
 	}
 
@@ -138,6 +146,12 @@ public class ApproximateConsistencySearcher extends LevelwiseSearcher {
 						.warn(
 								"Desensitize operation conflicts detected between expanded sortedRules: #{} for data categories: {}.",
 								PSpecUtil.toString(key.index, sortedRules), PSpecUtil.format(joinDatas, ","));
+				
+				ExpandedRule[] rules = new ExpandedRule[key.index.length];
+				for (int j = 0; j < key.index.length; j++) {
+					rules[j] = sortedRules.get(key.index[j]);
+				}
+				table.onAnalysis(AnalysisType.Approximate_Consistency, rules);
 			}
 			return relation;
 		}
@@ -214,6 +228,13 @@ public class ApproximateConsistencySearcher extends LevelwiseSearcher {
 								"Possible conflicts between expanded sortedRules: #{}, since rule :#{} forbids the data access.",
 								PSpecUtil.toString(key.index, sortedRules), sortedRules.get(key.index[i])
 										.getRuleId());
+				
+				ExpandedRule[] rules = new ExpandedRule[key.index.length];
+				for (int j = 0; j < key.index.length; j++) {
+					rules[j] = sortedRules.get(key.index[j]);
+				}
+				table.onAnalysis(AnalysisType.Approximate_Consistency, rules);
+				
 				return RuleRelation.forbid;
 			}
 			if (joins == null) {

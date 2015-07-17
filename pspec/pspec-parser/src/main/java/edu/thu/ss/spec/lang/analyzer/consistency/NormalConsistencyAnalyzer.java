@@ -13,7 +13,8 @@ public class NormalConsistencyAnalyzer extends ConsistencyAnalyzer {
 
 	@Override
 	public boolean analyze(List<ExpandedRule> rules) {
-		NormalConsistencySearcher searcher = new NormalConsistencySearcher(rules);
+		NormalConsistencySearcher searcher = new NormalConsistencySearcher(table);
+		searcher.SetRules(rules);
 		searcher.search();
 		System.out.println("Find conflicts: " + searcher.conflicts);
 		return false;

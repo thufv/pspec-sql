@@ -18,7 +18,7 @@ public class OutputEntry {
 		Simplify,
 		Redundancy,
 		Normal_Consistency,
-		Approxiamte_Consistency,
+		Approximate_Consistency,
 		Strong_Consistency,
 		Enhanced_Strong_Consistency
 	}

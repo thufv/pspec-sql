@@ -1,6 +1,27 @@
 package edu.thu.ss.editor.view;
 
-import static edu.thu.ss.editor.util.MessagesUtil.*;
+import static edu.thu.ss.editor.util.MessagesUtil.Data_Association;
+import static edu.thu.ss.editor.util.MessagesUtil.Data_Ref;
+import static edu.thu.ss.editor.util.MessagesUtil.Desensitize;
+import static edu.thu.ss.editor.util.MessagesUtil.Edit;
+import static edu.thu.ss.editor.util.MessagesUtil.EnhancedStrongConsistency;
+import static edu.thu.ss.editor.util.MessagesUtil.Forbid;
+import static edu.thu.ss.editor.util.MessagesUtil.Policy_No_Strong_Inconsistency_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Policy_No_Vocabulary_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Policy_Rules;
+import static edu.thu.ss.editor.util.MessagesUtil.Policy_Strong_Inconsistency_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Policy_Enhanced_Strong_Inconsistency_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Policy_No_Enhanced_Strong_Inconsistency_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Restriction;
+import static edu.thu.ss.editor.util.MessagesUtil.Rule_No_Simplify_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Rule_Simplify_Prompt_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.SelectAsSeed;
+import static edu.thu.ss.editor.util.MessagesUtil.Simplify;
+import static edu.thu.ss.editor.util.MessagesUtil.StrongConsistency;
+import static edu.thu.ss.editor.util.MessagesUtil.User_Ref;
+import static edu.thu.ss.editor.util.MessagesUtil.getMessage;
+
+import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
@@ -24,17 +45,23 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
+import edu.thu.ss.editor.model.OutputEntry;
+import edu.thu.ss.editor.model.OutputEntry.FixListener;
 import edu.thu.ss.editor.model.OutputEntry.MessageType;
 import edu.thu.ss.editor.model.OutputEntry.OutputType;
 import edu.thu.ss.editor.model.PolicyModel;
 import edu.thu.ss.editor.model.RuleModel;
 import edu.thu.ss.editor.util.EditorUtil;
 import edu.thu.ss.editor.util.MessagesUtil;
+import edu.thu.ss.spec.lang.analyzer.RuleExpander;
+import edu.thu.ss.spec.lang.analyzer.consistency.EnhancedStrongConsistencyAnalyzer;
+import edu.thu.ss.spec.lang.analyzer.consistency.StrongConsistencyAnalyzer;
 import edu.thu.ss.spec.lang.analyzer.rule.RuleSimplifier;
 import edu.thu.ss.spec.lang.analyzer.rule.RuleSimplifier.SimplificationLog;
 import edu.thu.ss.spec.lang.pojo.CategoryRef;
 import edu.thu.ss.spec.lang.pojo.DataRef;
 import edu.thu.ss.spec.lang.pojo.Desensitization;
+import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Restriction;
 import edu.thu.ss.spec.lang.pojo.Rule;
@@ -282,6 +309,18 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 		MenuItem simplifyItem = new MenuItem(popMenu, SWT.PUSH);
 		simplifyItem.setText(getMessage(Simplify));
 
+		MenuItem consistencyItem = new MenuItem(popMenu, SWT.CASCADE);
+		consistencyItem.setText(getMessage(SelectAsSeed));
+
+		Menu consistencyMenu = new Menu(consistencyItem);
+		consistencyItem.setMenu(consistencyMenu);
+
+		MenuItem strongConsistency = new MenuItem(consistencyMenu, SWT.NONE);
+		strongConsistency.setText(getMessage(StrongConsistency));
+
+		MenuItem enhancedStrongConsistency = new MenuItem(consistencyMenu, SWT.NONE);
+		enhancedStrongConsistency.setText(getMessage(EnhancedStrongConsistency));
+
 		editItem.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -296,6 +335,19 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 			}
 		});
 
+		strongConsistency.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				analyzeStrongConsistency(item);
+			}
+		});
+
+		enhancedStrongConsistency.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				analyzeEnhancedStrongConsistency(item);
+			}
+		});
 		return popMenu;
 	}
 
@@ -455,4 +507,96 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 		}
 	}
 
+	protected void analyzeStrongConsistency(ExpandItem item) {
+		Policy policy = model.getPolicy();
+		RuleModel ruleModel = (RuleModel) item.getData();
+		Rule rule = ruleModel.getRule();
+
+		boolean preOutput = model.hasOutput(OutputType.analysis, MessageType.Strong_Consistency);
+		model.clearOutput(OutputType.analysis, MessageType.Strong_Consistency);
+		RuleExpander expander = new RuleExpander(null);
+		expander.analyze(policy);
+
+		StrongConsistencyAnalyzer analyzer = new StrongConsistencyAnalyzer(EditorUtil.newOutputTable(
+				model, new FixListener() {
+					@Override
+					public void handleEvent(OutputEntry entry) {
+					}
+				}));
+
+		ExpandedRule seed = null;
+		List<ExpandedRule> rules = policy.getExpandedRules();
+		for (ExpandedRule it : rules) {
+			if (it.getRule().equals(rule)) {
+				seed = it;
+				break;
+			}
+		}
+
+		if (seed == null) {
+			EditorUtil.showMessageBox(shell, "", "seed rule should not be null");
+			return;
+		}
+		analyzer.analyzeWithSeed(seed, rules);
+
+		boolean hasOutput = model.hasOutput(OutputType.analysis, MessageType.Strong_Consistency);
+		if (preOutput || hasOutput) {
+			outputView.refresh(OutputType.analysis);
+		}
+
+		if (hasOutput) {
+			EditorUtil.showMessageBox(shell, "",
+					getMessage(Policy_Strong_Inconsistency_Message, policy.getInfo().getId()));
+		} else {
+			EditorUtil.showMessageBox(shell, "",
+					getMessage(Policy_No_Strong_Inconsistency_Message, policy.getInfo().getId()));
+		}
+	}
+
+	protected void analyzeEnhancedStrongConsistency(ExpandItem item) {
+		Policy policy = model.getPolicy();
+		RuleModel ruleModel = (RuleModel) item.getData();
+		Rule rule = ruleModel.getRule();
+
+		boolean preOutput = model.hasOutput(OutputType.analysis, MessageType.Enhanced_Strong_Consistency);
+		model.clearOutput(OutputType.analysis, MessageType.Enhanced_Strong_Consistency);
+		RuleExpander expander = new RuleExpander(null);
+		expander.analyze(policy);
+
+		EnhancedStrongConsistencyAnalyzer analyzer = new EnhancedStrongConsistencyAnalyzer(
+				EditorUtil.newOutputTable(model, new FixListener() {
+					@Override
+					public void handleEvent(OutputEntry entry) {
+					}
+				}));
+
+		ExpandedRule seed = null;
+		List<ExpandedRule> rules = policy.getExpandedRules();
+		for (ExpandedRule it : rules) {
+			if (it.getRule().equals(rule)) {
+				seed = it;
+				break;
+			}
+		}
+
+		if (seed == null) {
+			EditorUtil.showMessageBox(shell, "", "seed rule should not be null");
+			return;
+		}
+		analyzer.analyzeWithSeed(seed, rules);
+
+		boolean hasOutput = model.hasOutput(OutputType.analysis,
+				MessageType.Enhanced_Strong_Consistency);
+		if (preOutput || hasOutput) {
+			outputView.refresh(OutputType.analysis);
+		}
+
+		if (hasOutput) {
+			EditorUtil.showMessageBox(shell, "",
+					getMessage(Policy_Enhanced_Strong_Inconsistency_Message, policy.getInfo().getId()));
+		} else {
+			EditorUtil.showMessageBox(shell, "",
+					getMessage(Policy_No_Enhanced_Strong_Inconsistency_Message, policy.getInfo().getId()));
+		}
+	}
 }

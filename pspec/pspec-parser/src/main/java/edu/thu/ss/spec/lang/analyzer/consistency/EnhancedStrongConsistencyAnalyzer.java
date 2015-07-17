@@ -23,7 +23,7 @@ public class EnhancedStrongConsistencyAnalyzer extends ConsistencyAnalyzer {
 	public EnhancedStrongConsistencyAnalyzer(EventTable table) {
 		super(table);
 		instance = InclusionUtil.instance;
-		searcher = new EnhancedStrongConsistencySearcher();
+		searcher = new EnhancedStrongConsistencySearcher(table);
 	}
 	
 	@Override
@@ -35,7 +35,7 @@ public class EnhancedStrongConsistencyAnalyzer extends ConsistencyAnalyzer {
 		return false;
 	}
 	
-	private void analyzeWithSeed(ExpandedRule seed, List<ExpandedRule> rules) {
+	public void analyzeWithSeed(ExpandedRule seed, List<ExpandedRule> rules) {
 		List<ExpandedRule> candidates =  getCandidateRules(seed, rules);
 		searcher.init(seed, candidates);
 		searcher.search();

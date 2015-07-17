@@ -150,10 +150,10 @@ public class Z3NormalConsistencySolver extends Z3ConsistencySolver {
 		return context.mkOr(exprs);
 	}
 
-	public boolean isSatisfiable(List<ExpandedRule> rules) {
-		BoolExpr[] exprs = new BoolExpr[rules.size()];
-		for (int i = 0; i < rules.size(); i++) {
-			ExpandedRule rule = rules.get(i);
+	public boolean isSatisfiable(ExpandedRule[] rules) {
+		BoolExpr[] exprs = new BoolExpr[rules.length];
+		for (int i = 0; i < rules.length; i++) {
+			ExpandedRule rule = rules[i];
 			BoolExpr expr = exprMap.get(rule);
 			if (expr == null) {
 				expr = buildExpression(rule);

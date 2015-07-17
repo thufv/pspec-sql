@@ -2,7 +2,6 @@ package edu.thu.ss.spec.lang.analyzer.consistency;
 
 import java.util.List;
 
-import edu.thu.ss.spec.lang.analyzer.IPolicyAnalyzer;
 import edu.thu.ss.spec.lang.parser.event.EventTable;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 
@@ -22,7 +21,8 @@ public class ApproximateConsistencyAnalyzer extends ConsistencyAnalyzer{
 			return false;
 		}
 		
-		ApproximateConsistencySearcher searcher = new ApproximateConsistencySearcher(rules);
+		ApproximateConsistencySearcher searcher = new ApproximateConsistencySearcher(table);
+		searcher.setRules(rules);
 		searcher.search();
 		return false;
 	}

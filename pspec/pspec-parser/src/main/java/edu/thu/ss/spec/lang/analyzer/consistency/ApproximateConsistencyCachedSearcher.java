@@ -11,10 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.thu.ss.spec.lang.analyzer.stat.ConsistencyStat;
+import edu.thu.ss.spec.lang.parser.event.EventTable;
 import edu.thu.ss.spec.lang.pojo.Action;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
-import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
 import edu.thu.ss.spec.util.PSpecUtil;
 
@@ -27,12 +27,12 @@ public class ApproximateConsistencyCachedSearcher extends ApproximateConsistency
 	private ConsistencyStat stat;
 	private int n;
 
-	public ApproximateConsistencyCachedSearcher(List<ExpandedRule> rules) {
-		super(rules);
+	public ApproximateConsistencyCachedSearcher(EventTable table) {
+		super(table);
 	}
 
-	public ApproximateConsistencyCachedSearcher(List<ExpandedRule> rules, ConsistencyStat stat, int n) {
-		super(rules);
+	public ApproximateConsistencyCachedSearcher(EventTable table, ConsistencyStat stat, int n) {
+		super(table);
 		this.stat = stat;
 		this.n = n;
 	}

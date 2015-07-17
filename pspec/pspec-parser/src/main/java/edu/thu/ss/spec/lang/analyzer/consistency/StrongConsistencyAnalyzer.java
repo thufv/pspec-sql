@@ -20,7 +20,7 @@ public class StrongConsistencyAnalyzer extends ConsistencyAnalyzer {
 	
 	public StrongConsistencyAnalyzer(EventTable table) {
 		super(table);
-		searcher = new StrongConsistencySearcher();
+		searcher = new StrongConsistencySearcher(table);
 	}
 	
 	@Override
@@ -32,7 +32,7 @@ public class StrongConsistencyAnalyzer extends ConsistencyAnalyzer {
 		return false;
 	}
 	
-	private void analyzeWithSeed(ExpandedRule seed, List<ExpandedRule> rules) {
+	public void analyzeWithSeed(ExpandedRule seed, List<ExpandedRule> rules) {
 		List<ExpandedRule> candidates =  getCandidateRules(seed, rules);
 		searcher.init(seed, candidates);
 		searcher.search();

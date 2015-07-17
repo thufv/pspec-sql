@@ -1,6 +1,7 @@
 package edu.thu.ss.spec.lang.analyzer.consistency;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -10,6 +11,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.thu.ss.spec.lang.parser.event.EventTable;
+import edu.thu.ss.spec.lang.parser.event.PSpecListener.AnalysisType;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
 import edu.thu.ss.spec.z3.Z3EnhancedStrongConsistencySolver;
@@ -23,7 +26,10 @@ public class EnhancedStrongConsistencySearcher extends LevelwiseSearcher {
 
 	private static Logger logger = LoggerFactory.getLogger(EnhancedStrongConsistencySearcher.class);
 
-	public EnhancedStrongConsistencySearcher() {
+	private EventTable table;
+
+	public EnhancedStrongConsistencySearcher(EventTable table) {
+		this.table = table;
 		if (z3Util == null) {
 			z3Util = new Z3EnhancedStrongConsistencySolver();
 		}
@@ -53,10 +59,14 @@ public class EnhancedStrongConsistencySearcher extends LevelwiseSearcher {
 			}
 		}
 		boolean result = z3Util.isSatisfiable(rules);
-
+		
 		if (!result) {
 			conflicts++;
 			logger.warn("Possible conflicts when adding: " + sortedRules.get(key.getLast()).getId());
+			
+			ExpandedRule[] newRules = Arrays.copyOf(rules, rules.length + 1);
+			newRules[newRules.length - 1] = seed;
+			table.onAnalysis(AnalysisType.Enhanced_Strong_Consistency, newRules);
 		}
 		return result;
 	}
@@ -82,6 +92,10 @@ public class EnhancedStrongConsistencySearcher extends LevelwiseSearcher {
 			} else {
 				conflicts++;
 				logger.warn("conflict between {} and {}", rule.getId(), seed.getId());
+				
+				ExpandedRule[] newRules = Arrays.copyOf(rules, rules.length + 1);
+				newRules[newRules.length - 1] = seed;
+				table.onAnalysis(AnalysisType.Enhanced_Strong_Consistency, newRules);
 			}
 
 		}

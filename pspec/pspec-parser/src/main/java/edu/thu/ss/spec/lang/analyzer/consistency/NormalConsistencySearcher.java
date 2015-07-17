@@ -10,34 +10,42 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.thu.ss.spec.lang.parser.event.EventTable;
+import edu.thu.ss.spec.lang.parser.event.PSpecListener.AnalysisType;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
 import edu.thu.ss.spec.z3.Z3NormalConsistencySolver;
 
 public class NormalConsistencySearcher extends LevelwiseSearcher {
 
-	protected List<ExpandedRule> rules;
-	protected List<ExpandedRule> sortedRules;
-	protected static Z3NormalConsistencySolver z3Util = null;
-	protected int[] index;
-	
+	private List<ExpandedRule> rules;
+	private List<ExpandedRule> sortedRules;
+	private static Z3NormalConsistencySolver z3Util = null;
+	private int[] index;
+
 	private static Logger logger = LoggerFactory.getLogger(NormalConsistencySearcher.class);
-	
-	public NormalConsistencySearcher(List<ExpandedRule> rules) {
+
+	private EventTable table;
+
+	public NormalConsistencySearcher(EventTable table) {
 		if (z3Util == null) {
 			z3Util = new Z3NormalConsistencySolver();
 		}
+		this.table = table;
+	}
+
+	public void SetRules(List<ExpandedRule> rules) {
 		this.rules = rules;
 		conflicts = 0;
 	}
-	
+
 	@Override
 	protected boolean process(SearchKey key) {
 		Set<UserCategory> users = null;
-		List<ExpandedRule> rules = new ArrayList<>();
+		ExpandedRule[] rules = new ExpandedRule[key.index.length];
 		for (int i = 0; i < key.index.length; i++) {
 			ExpandedRule rule = sortedRules.get(key.index[i]);
-			rules.add(rule);
+			rules[i] = rule;
 			if (users == null) {
 				users = new HashSet<>(rule.getUsers());
 			} else {
@@ -47,7 +55,7 @@ public class NormalConsistencySearcher extends LevelwiseSearcher {
 				}
 			}
 		}
-		
+
 		boolean result = z3Util.isSatisfiable(rules);
 		if (!result) {
 			conflicts++;
@@ -58,6 +66,7 @@ public class NormalConsistencySearcher extends LevelwiseSearcher {
 				sb.append(' ');
 			}
 			logger.warn(sb.toString());
+			table.onAnalysis(AnalysisType.Normal_Consistency, rules);
 		}
 		return result;
 	}
@@ -82,5 +91,5 @@ public class NormalConsistencySearcher extends LevelwiseSearcher {
 			currentLevel.add(new SearchKey(i));
 		}
 	}
-	
+
 }

@@ -14,6 +14,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.thu.ss.spec.lang.parser.event.EventTable;
+import edu.thu.ss.spec.lang.parser.event.PSpecListener.AnalysisType;
 import edu.thu.ss.spec.lang.pojo.Action;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DataRef;
@@ -28,23 +30,24 @@ public class StrongConsistencySearcher extends LevelwiseSearcher {
 	private List<ExpandedRule> sortedRules;
 	private Map<SearchKey, Set<LeafAssociation>> cache = new HashMap<>();
 	private static Z3StrongConsistencySolver z3Util = null;
-	
+
+	private EventTable table;
+
 	private static Logger logger = LoggerFactory.getLogger(StrongConsistencySearcher.class);
-	
+
 	public class Leaf {
 		public Action action;
 		public DataCategory category;
-		
+
 		public Leaf(DataCategory category, Action action) {
 			this.action = action;
 			this.category = category;
 		}
-		
+
 		public boolean belongTo(ExpandedRule rule) {
 			if (rule.isSingle()) {
 				return belongTo(rule.getDataRef());
-			}
-			else if (rule.isAssociation()) {
+			} else if (rule.isAssociation()) {
 				List<DataRef> dataRefs = rule.getAssociation().getDataRefs();
 				for (DataRef dataRef : dataRefs) {
 					if (belongTo(dataRef)) {
@@ -54,19 +57,19 @@ public class StrongConsistencySearcher extends LevelwiseSearcher {
 			}
 			return false;
 		}
-		
+
 		public boolean belongTo(DataRef dataRef) {
 			if (!action.ancestorOf(dataRef.getAction()) && !dataRef.getAction().ancestorOf(action)) {
 				return false;
 			}
-			
+
 			Set<DataCategory> categories = dataRef.getMaterialized();
 			if (categories.contains(category)) {
 				return true;
 			}
 			return false;
 		}
-		
+
 		@Override
 		public boolean equals(Object obj) {
 			if (this == obj)
@@ -76,36 +79,37 @@ public class StrongConsistencySearcher extends LevelwiseSearcher {
 			if (getClass() != obj.getClass())
 				return false;
 			Leaf other = (Leaf) obj;
-			
+
 			if (this.category != other.category) {
 				return false;
 			}
-			
+
 			if (this.action != other.action) {
 				return false;
 			}
 			return true;
 		}
-		
+
 		@Override
 		public String toString() {
 			return category.getId().toString();
 		}
 	}
-	
+
 	public class LeafAssociation {
-		
-		public int length = 0; 
-		
+
+		public int length = 0;
+
 		public Leaf[] leafAssociation;
-		
+
 		public LeafAssociation(int dim) {
-			leafAssociation = new Leaf[dim];		}
-		
+			leafAssociation = new Leaf[dim];
+		}
+
 		public void addLeaf(Leaf leaf) {
 			leafAssociation[length++] = leaf;
 		}
-		
+
 		public boolean belongTo(ExpandedRule rule) {
 			if (rule.isSingle()) {
 				DataRef dataRef = rule.getDataRef();
@@ -115,8 +119,7 @@ public class StrongConsistencySearcher extends LevelwiseSearcher {
 					}
 				}
 				return false;
-			}
-			else if (rule.isAssociation()) {
+			} else if (rule.isAssociation()) {
 				List<DataRef> dataRefs = rule.getAssociation().getDataRefs();
 				boolean[] matches = new boolean[leafAssociation.length];
 				for (int i = 0; i < matches.length; i++) {
@@ -140,7 +143,7 @@ public class StrongConsistencySearcher extends LevelwiseSearcher {
 			}
 			return false;
 		}
-		
+
 		@Override
 		public String toString() {
 			StringBuilder sb = new StringBuilder();
@@ -150,7 +153,7 @@ public class StrongConsistencySearcher extends LevelwiseSearcher {
 			}
 			return sb.toString();
 		}
-		
+
 		@Override
 		public boolean equals(Object obj) {
 			if (this == obj)
@@ -160,11 +163,11 @@ public class StrongConsistencySearcher extends LevelwiseSearcher {
 			if (getClass() != obj.getClass())
 				return false;
 			LeafAssociation other = (LeafAssociation) obj;
-			
+
 			if (this.leafAssociation.length != other.leafAssociation.length) {
 				return false;
 			}
-			
+
 			for (int i = 0; i < this.leafAssociation.length; i++) {
 				if (this.leafAssociation[i] != other.leafAssociation[i]) {
 					return false;
@@ -176,17 +179,18 @@ public class StrongConsistencySearcher extends LevelwiseSearcher {
 		public LeafAssociation clone() {
 			LeafAssociation copy = new LeafAssociation(this.leafAssociation.length);
 			copy.length = this.length;
-			copy.leafAssociation  = this.leafAssociation.clone();
+			copy.leafAssociation = this.leafAssociation.clone();
 			return copy;
 		}
 	}
-	
-	public StrongConsistencySearcher() {
+
+	public StrongConsistencySearcher(EventTable table) {
+		this.table = table;
 		if (z3Util == null) {
 			z3Util = new Z3StrongConsistencySolver();
 		}
 	}
-	
+
 	public void init(ExpandedRule seed, List<ExpandedRule> candidates) {
 		this.seed = seed;
 		this.candidates = candidates;
@@ -211,8 +215,8 @@ public class StrongConsistencySearcher extends LevelwiseSearcher {
 				}
 			}
 		}
-		
-		assert(key.index.length > 1);
+
+		assert (key.index.length > 1);
 		int temp = key.getLast();
 		key.setLast(-1);
 		Set<LeafAssociation> list = cache.get(key);
@@ -226,13 +230,16 @@ public class StrongConsistencySearcher extends LevelwiseSearcher {
 		if (list.size() == 0) {
 			return false;
 		}
-		
+
 		boolean result = z3Util.isSatisfiable(z3Util.buildExpression(list, rules));
 		if (!result) {
-			logger.warn("Possible conflicts when adding:"+sortedRules.get(key.getLast()).getId());
+			logger.warn("Possible conflicts when adding:" + sortedRules.get(key.getLast()).getId());
 			conflicts++;
-		}
-		else {
+			
+			ExpandedRule[] newRules = Arrays.copyOf(rules, rules.length + 1);
+			newRules[newRules.length - 1] = seed;
+			table.onAnalysis(AnalysisType.Enhanced_Strong_Consistency, newRules);
+		} else {
 			cache.put(key, list);
 		}
 		return result;
@@ -249,21 +256,24 @@ public class StrongConsistencySearcher extends LevelwiseSearcher {
 		});
 
 		int[] index = new int[sortedRules.size()];
-		for (int i = 0; i < index.length; i++) {			
+		for (int i = 0; i < index.length; i++) {
 			ExpandedRule rule = sortedRules.get(i);
-			ExpandedRule[] rules = {rule};		
+			ExpandedRule[] rules = { rule };
 			index[i] = sortedRules.indexOf(rule);
 			Set<LeafAssociation> set = filterLeafAssociation(getLeafAssociation(seed), rule);
 			if (z3Util.isSatisfiable(z3Util.buildExpression(set, rules))) {
 				SearchKey key = new SearchKey(i);
 				cache.put(key, set);
 				currentLevel.add(key);
-			}
-			else {
+			} else {
 				logger.warn("conflict between {} and {}", rule.getId(), seed.getId());
 				conflicts++;
+
+				ExpandedRule[] newRules = Arrays.copyOf(rules, rules.length + 1);
+				newRules[newRules.length - 1] = seed;
+				table.onAnalysis(AnalysisType.Strong_Consistency, newRules);
 			}
-			
+
 		}
 	}
 
@@ -279,30 +289,29 @@ public class StrongConsistencySearcher extends LevelwiseSearcher {
 					set.add(leafAssoc);
 				}
 			}
-		}
-		else if (seed.isAssociation()) {
+		} else if (seed.isAssociation()) {
 			LeafAssociation leafAssoc = new LeafAssociation(seed.getDimension());
 			if (rule.isSingle()) {
 				getLeafAssociation(rule.getDataRef(), leafAssoc, set, seed.getDimension(), 0, false);
-			}
-			else if (rule.isAssociation()) {
+			} else if (rule.isAssociation()) {
 				boolean[] covered = new boolean[rule.getDimension()];
 				Arrays.fill(covered, false);
-				getLeafAssociation(rule.getAssociation().getDataRefs(), leafAssoc, set, seed.getDimension(), 0, covered);
+				getLeafAssociation(rule.getAssociation().getDataRefs(), leafAssoc, set,
+						seed.getDimension(), 0, covered);
 			}
 		}
 		return set;
 	}
-	
-	private void getLeafAssociation(DataRef dataRef,
-			LeafAssociation leafAssoc, Set<LeafAssociation> set, int dim, int index, boolean cover) {
+
+	private void getLeafAssociation(DataRef dataRef, LeafAssociation leafAssoc,
+			Set<LeafAssociation> set, int dim, int index, boolean cover) {
 		if (index == dim) {
 			if (cover) {
 				set.add(leafAssoc);
 			}
 			return;
 		}
-		
+
 		if (!cover) {
 			DataRef dataRef1 = seed.getAssociation().getDataRefs().get(index);
 			Set<DataCategory> categories = dataRef.getMaterialized();
@@ -315,7 +324,7 @@ public class StrongConsistencySearcher extends LevelwiseSearcher {
 				}
 			}
 		}
-		
+
 		DataRef dataRef1 = seed.getAssociation().getDataRefs().get(index);
 		Set<DataCategory> categories = dataRef1.getMaterialized();
 		for (DataCategory category : categories) {
@@ -325,8 +334,8 @@ public class StrongConsistencySearcher extends LevelwiseSearcher {
 			getLeafAssociation(dataRef, temp, set, dim, index + 1, false);
 		}
 	}
-	
-	private void getLeafAssociation(List<DataRef> dataRefs, LeafAssociation leafAssoc, 
+
+	private void getLeafAssociation(List<DataRef> dataRefs, LeafAssociation leafAssoc,
 			Set<LeafAssociation> set, int dim, int index, boolean[] covered) {
 		if (index == dim) {
 			for (int i = 0; i < covered.length; i++) {
@@ -336,21 +345,20 @@ public class StrongConsistencySearcher extends LevelwiseSearcher {
 			}
 			set.add(leafAssoc);
 			return;
-		}
-		else {
+		} else {
 			DataRef dataRef1 = seed.getAssociation().getDataRefs().get(index);
 			boolean match = false;
 			for (int i = 0; i < dataRefs.size(); i++) {
 				if (covered[i]) {
 					continue;
 				}
-				
+
 				DataRef dataRef2 = dataRefs.get(i);
 				if (!dataRef1.getAction().ancestorOf(dataRef2.getAction())
 						&& !dataRef2.getAction().ancestorOf(dataRef1.getAction())) {
 					continue;
 				}
-				
+
 				Set<DataCategory> categories = dataRef2.getMaterialized();
 				for (DataCategory category : categories) {
 					if (dataRef1.getMaterialized().contains(category)) {
@@ -363,7 +371,7 @@ public class StrongConsistencySearcher extends LevelwiseSearcher {
 						covered[i] = false;
 					}
 				}
-				
+
 				if (match) {
 					break;
 				}
@@ -377,7 +385,7 @@ public class StrongConsistencySearcher extends LevelwiseSearcher {
 			}
 		}
 	}
-	
+
 	private Set<LeafAssociation> filterLeafAssociation(Set<LeafAssociation> set, ExpandedRule rule) {
 		Iterator<LeafAssociation> it = set.iterator();
 		while (it.hasNext()) {
@@ -388,5 +396,5 @@ public class StrongConsistencySearcher extends LevelwiseSearcher {
 		}
 		return set;
 	}
-	
+
 }
