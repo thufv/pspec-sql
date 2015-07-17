@@ -33,6 +33,7 @@ import org.eclipse.wb.swt.SWTResourceManager;
 import edu.thu.ss.editor.model.BaseModel;
 import edu.thu.ss.editor.model.EditorModel;
 import edu.thu.ss.editor.model.OutputEntry;
+import edu.thu.ss.editor.model.OutputEntry.FixListener;
 import edu.thu.ss.editor.model.OutputEntry.MessageType;
 import edu.thu.ss.editor.model.OutputEntry.OutputType;
 import edu.thu.ss.editor.model.PolicyModel;
@@ -48,11 +49,14 @@ import edu.thu.ss.editor.view.PolicyView;
 import edu.thu.ss.editor.view.RuleView;
 import edu.thu.ss.editor.view.UserContainerView;
 import edu.thu.ss.editor.view.VocabularyView;
+import edu.thu.ss.spec.lang.analyzer.RuleExpander;
+import edu.thu.ss.spec.lang.analyzer.redundancy.LocalRedundancyAnalyzer;
 import edu.thu.ss.spec.lang.analyzer.rule.RuleSimplifier;
 import edu.thu.ss.spec.lang.analyzer.rule.RuleSimplifier.SimplificationLog;
 import edu.thu.ss.spec.lang.parser.PolicyWriter;
 import edu.thu.ss.spec.lang.parser.VocabularyWriter;
 import edu.thu.ss.spec.lang.parser.WritingException;
+import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Rule;
 import edu.thu.ss.spec.lang.pojo.Vocabulary;
@@ -310,35 +314,16 @@ public class PSpecEditor {
 		simplify.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				assert (editingModel instanceof PolicyModel);
 				PolicyModel model = (PolicyModel) editingModel;
-				Policy policy = model.getPolicy();
-				RuleSimplifier simplifier = new RuleSimplifier(null, false);
-				simplifier.analyze(policy);
-				if (simplifier.isEmpty()) {
-					EditorUtil.showMessageBox(shell, "",
-							getMessage(Policy_No_Simplify_Message, policy.getInfo().getId()));
-					return;
-				}
+				simplify(model);
+			}
+		});
 
-				List<SimplificationLog> logs = simplifier.getLogs();
-				int ret = EditorUtil.showQuestionMessageBox(shell, "",
-						getMessage(Policy_Simplify_Prompt_Message, policy.getInfo().getId()));
-				model.clearOutput(OutputType.analysis, MessageType.Simplify);
-				if (ret == SWT.YES) {
-					for (SimplificationLog log : logs) {
-						RuleModel ruleModel = model.getRuleModel(log.rule);
-						ruleModel.simplify(log.redundantUsers, log.redundantDatas, log.redundantRestrictions);
-					}
-				} else {
-					RuleView ruleView = getRuleView(model);
-					for (SimplificationLog log : logs) {
-						RuleModel ruleModel = model.getRuleModel(log.rule);
-						EditorUtil.addSimplifyOutput(model, ruleModel, log,
-								EditorUtil.newSimplifyListener(ruleView, outputView));
-					}
-					outputView.refresh(OutputType.analysis);
-				}
+		redundancy.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				PolicyModel model = (PolicyModel) editingModel;
+				analyzeRedundancy(model);
 			}
 		});
 	}
@@ -785,6 +770,74 @@ public class PSpecEditor {
 			view.refreshLocation();
 		}
 		return false;
+	}
+
+	private void analyzeRedundancy(final PolicyModel model) {
+		Policy policy = model.getPolicy();
+		boolean preOutput = model.hasOutput(OutputType.analysis, MessageType.Redundancy);
+		model.clearOutput(OutputType.analysis, MessageType.Redundancy);
+		RuleExpander expander = new RuleExpander(null);
+		expander.analyze(policy);
+
+		LocalRedundancyAnalyzer analyzer = new LocalRedundancyAnalyzer(EditorUtil.newOutputTable(model,
+				new FixListener() {
+					@Override
+					public void handleEvent(OutputEntry entry) {
+						ExpandedRule rule = (ExpandedRule) entry.data[0];
+						RuleView ruleView = getRuleView(model);
+						RuleModel ruleModel = model.getRuleModel(rule.getRule());
+						if (model.removeExpandedRule(rule)) {
+							ruleView.removeRuleItem(ruleModel, false);
+						} else {
+							ruleView.refreshRuleItem(ruleModel, false);
+						}
+						outputView.remove(entry);
+					}
+				}));
+
+		analyzer.analyze(policy);
+		boolean hasOutput = model.hasOutput(OutputType.analysis, MessageType.Redundancy);
+		if (preOutput || hasOutput) {
+			outputView.refresh(OutputType.analysis);
+		}
+
+		if (hasOutput) {
+			EditorUtil.showMessageBox(shell, "",
+					getMessage(Policy_Redundancy_Message, policy.getInfo().getId()));
+		} else {
+			EditorUtil.showMessageBox(shell, "",
+					getMessage(Policy_No_Redundancy_Message, policy.getInfo().getId()));
+		}
+	}
+
+	private void simplify(final PolicyModel model) {
+		Policy policy = model.getPolicy();
+		RuleSimplifier simplifier = new RuleSimplifier(null, false);
+		simplifier.analyze(policy);
+		if (simplifier.isEmpty()) {
+			EditorUtil.showMessageBox(shell, "",
+					getMessage(Policy_No_Simplify_Message, policy.getInfo().getId()));
+			return;
+		}
+
+		List<SimplificationLog> logs = simplifier.getLogs();
+		int ret = EditorUtil.showQuestionMessageBox(shell, "",
+				getMessage(Policy_Simplify_Prompt_Message, policy.getInfo().getId()));
+		model.clearOutput(OutputType.analysis, MessageType.Simplify);
+		if (ret == SWT.YES) {
+			for (SimplificationLog log : logs) {
+				RuleModel ruleModel = model.getRuleModel(log.rule);
+				ruleModel.simplify(log.redundantUsers, log.redundantDatas, log.redundantRestrictions);
+			}
+		} else {
+			RuleView ruleView = getRuleView(model);
+			for (SimplificationLog log : logs) {
+				RuleModel ruleModel = model.getRuleModel(log.rule);
+				EditorUtil.addSimplifyOutput(model, ruleModel, log,
+						EditorUtil.newSimplifyListener(ruleView, outputView));
+			}
+			outputView.refresh(OutputType.analysis);
+		}
 	}
 
 }

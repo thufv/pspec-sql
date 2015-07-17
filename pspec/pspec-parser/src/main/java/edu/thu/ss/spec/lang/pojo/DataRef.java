@@ -1,5 +1,6 @@
 package edu.thu.ss.spec.lang.pojo;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.w3c.dom.Document;
@@ -158,6 +159,11 @@ public class DataRef extends CategoryRef<DataCategory> {
 		for (ObjectRef exclude : excludeRefs) {
 			ref.excludeRefs.add(exclude.clone());
 		}
+		ref.excludes.addAll(this.excludes);
+		if (this.materialized != null) {
+			ref.materialized = new HashSet<>(this.materialized);
+		}
+
 		return ref;
 	}
 

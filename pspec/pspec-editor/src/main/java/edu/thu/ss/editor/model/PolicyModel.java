@@ -5,6 +5,7 @@ import java.util.List;
 
 import edu.thu.ss.editor.model.OutputEntry.MessageType;
 import edu.thu.ss.editor.model.OutputEntry.OutputType;
+import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Rule;
 
@@ -127,9 +128,45 @@ public class PolicyModel extends BaseModel {
 		return false;
 	}
 
+	@Override
+	public boolean hasOutput(OutputType outputType, MessageType messageType) {
+		if (super.hasOutput(outputType, messageType)) {
+			return true;
+		}
+		for (RuleModel ruleModel : ruleModels) {
+			if (ruleModel.hasOutput(outputType, messageType)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public void initRuleModels() {
 		for (RuleModel ruleModel : ruleModels) {
 			ruleModel.init();
 		}
+	}
+
+	/**
+	 * 
+	 * @param expanded
+	 * @return rule is removed
+	 */
+	public boolean removeExpandedRule(ExpandedRule expanded) {
+		boolean removed = false;
+		RuleModel ruleModel = getRuleModel(expanded.getRule());
+		Rule rule = ruleModel.getRule();
+		if (expanded.isSingle()) {
+			if (rule.getDataRefs().size() == 1) {
+				removeRuleModel(ruleModel);
+				removed = true;
+			} else {
+				ruleModel.simplifyDataRef(expanded.getDataRef());
+			}
+		} else {
+			removeRuleModel(ruleModel);
+			removed = true;
+		}
+		return removed;
 	}
 }

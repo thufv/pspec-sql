@@ -51,7 +51,7 @@ public class VocabularyView extends EditorView<VocabularyModel, Vocabulary> {
 			OutputView outputView, TreeItem item) {
 		super(shell, parent, model, outputView);
 		table = new EventTable();
-		EditorUtil.addOutputListener(table, model);
+		EditorUtil.addOutputListener(table, model, null);
 		this.editorItem = item;
 		this.setBackground(EditorUtil.getDefaultBackground());
 		this.setBackgroundMode(SWT.INHERIT_FORCE);

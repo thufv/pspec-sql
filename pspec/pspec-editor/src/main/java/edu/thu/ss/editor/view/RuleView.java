@@ -137,15 +137,10 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 				assert (selectedItem != null);
 				RuleModel ruleModel = (RuleModel) selectedItem.getData();
 				model.removeRuleModel(ruleModel);
-				if (ruleModel.hasOutput()) {
-					//refresh
-					outputView.refresh();
-				}
+				removeRuleItem(selectedItem, true);
 
-				selectedItem.getControl().dispose();
-				selectedItem.dispose();
-				selectedItem = null;
-				delete.setEnabled(false);
+				//refresh output
+
 			}
 
 		});
@@ -167,17 +162,55 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 
 	}
 
-	public void refresh(RuleModel ruleModel) {
+	public void refreshRuleItem(RuleModel ruleModel, boolean clearOutput) {
 		for (ExpandItem item : ruleBar.getItems()) {
 			if (item.getData() == ruleModel) {
-				updateRuleItem(item);
+				refreshRuleItem(item, clearOutput);
 				return;
 			}
 		}
 
 	}
 
-	private void updateRuleItem(ExpandItem item) {
+	@Override
+	public void refresh() {
+		selectedItem = null;
+		for (ExpandItem item : ruleBar.getItems()) {
+			item.getControl().dispose();
+			item.dispose();
+		}
+		initializeRules();
+	}
+
+	public void removeRuleItem(RuleModel ruleModel, boolean clearOutput) {
+		for (ExpandItem item : ruleBar.getItems()) {
+			if (item.getData() == ruleModel) {
+				removeRuleItem(item, clearOutput);
+				return;
+			}
+		}
+
+	}
+
+	private void removeRuleItem(ExpandItem item, boolean clearOutput) {
+		RuleModel ruleModel = (RuleModel) item.getData();
+
+		item.getControl().dispose();
+		item.dispose();
+		delete.setEnabled(false);
+
+		if (clearOutput) {
+			boolean hasOutput = model.hasOutput(OutputType.analysis) || ruleModel.hasOutput();
+			model.clearOutput(OutputType.analysis);
+			if (hasOutput) {
+				//refresh
+				outputView.refresh();
+			}
+		}
+
+	}
+
+	private void refreshRuleItem(ExpandItem item, boolean clearOutput) {
 		RuleModel ruleModel = (RuleModel) item.getData();
 		int index = EditorUtil.indexOf(ruleBar.getItems(), item);
 		item.getControl().dispose();
@@ -191,6 +224,14 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 		item.getControl().setBackground(EditorUtil.getSelectedBackground());
 		item.setExpanded(true);
 		selectedItem = item;
+
+		if (clearOutput) {
+			if (ruleModel.hasOutput() || model.hasOutput(OutputType.analysis)) {
+				ruleModel.clearOutput();
+				model.clearOutput(OutputType.analysis);
+				outputView.refresh();
+			}
+		}
 	}
 
 	private void initializeRuleItemContent(final ExpandItem item, RuleModel ruleModel) {
@@ -227,11 +268,8 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 		RuleModel ruleModel = (RuleModel) item.getData();
 		int ret = new RuleDialog(shell, ruleModel, model).open();
 		if (ret == SWT.OK) {
-			updateRuleItem(item);
-			if (ruleModel.hasOutput()) {
-				ruleModel.clearOutput();
-				outputView.refresh();
-			}
+			refreshRuleItem(item, true);
+
 		} else {
 			ruleModel.init();
 		}
@@ -393,16 +431,6 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 		return composite;
 	}
 
-	@Override
-	public void refresh() {
-		selectedItem = null;
-		for (ExpandItem item : ruleBar.getItems()) {
-			item.getControl().dispose();
-			item.dispose();
-		}
-		initializeRules();
-	}
-
 	private void simplify(ExpandItem item) {
 		Policy policy = model.getPolicy();
 		RuleModel ruleModel = (RuleModel) item.getData();
@@ -419,7 +447,7 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 				getMessage(Rule_Simplify_Prompt_Message, rule.getId()));
 		if (ret == SWT.YES) {
 			ruleModel.simplify(log.redundantUsers, log.redundantDatas, log.redundantRestrictions);
-			updateRuleItem(item);
+			refreshRuleItem(item, false);
 		} else if (ret == SWT.NO) {
 			EditorUtil.addSimplifyOutput(model, ruleModel, log,
 					EditorUtil.newSimplifyListener(this, outputView));

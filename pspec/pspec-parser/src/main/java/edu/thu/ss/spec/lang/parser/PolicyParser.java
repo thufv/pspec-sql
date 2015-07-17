@@ -10,9 +10,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import edu.thu.ss.spec.lang.analyzer.GlobalExpander;
 import edu.thu.ss.spec.lang.analyzer.IPolicyAnalyzer;
-import edu.thu.ss.spec.lang.analyzer.LocalExpander;
 import edu.thu.ss.spec.lang.analyzer.budget.BudgetResolver;
 import edu.thu.ss.spec.lang.analyzer.budget.FineBudgetAllocator;
 import edu.thu.ss.spec.lang.analyzer.budget.GlobalBudgetAllocator;
@@ -46,11 +44,7 @@ public class PolicyParser extends BaseParser implements ParserConstant {
 		analyzers.add(new BudgetResolver(table));
 		analyzers.add(new GlobalBudgetAllocator());
 		analyzers.add(new FineBudgetAllocator());
-		if (global) {
-			analyzers.add(new GlobalExpander(table));
-		} else {
-			analyzers.add(new LocalExpander(table));
-		}
+		//analyzers.add(new RuleExpander(table));
 	}
 
 	/**

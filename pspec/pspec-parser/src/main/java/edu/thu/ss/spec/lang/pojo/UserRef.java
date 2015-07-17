@@ -1,5 +1,7 @@
 package edu.thu.ss.spec.lang.pojo;
 
+import java.util.HashSet;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -78,6 +80,10 @@ public class UserRef extends CategoryRef<UserCategory> {
 		ref.category = category;
 		for (ObjectRef exclude : excludeRefs) {
 			ref.excludeRefs.add(exclude.clone());
+		}
+		ref.excludes.addAll(this.excludes);
+		if (this.materialized != null) {
+			ref.materialized = new HashSet<>(this.materialized);
 		}
 		return ref;
 	}

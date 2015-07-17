@@ -3,11 +3,13 @@ package edu.thu.ss.spec.lang.parser.event;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.thu.ss.spec.lang.parser.event.PSpecListener.AnalysisType;
 import edu.thu.ss.spec.lang.parser.event.PSpecListener.RefErrorType;
 import edu.thu.ss.spec.lang.parser.event.PSpecListener.RestrictionErrorType;
 import edu.thu.ss.spec.lang.parser.event.PSpecListener.VocabularyErrorType;
 import edu.thu.ss.spec.lang.pojo.Category;
 import edu.thu.ss.spec.lang.pojo.CategoryRef;
+import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.Restriction;
 import edu.thu.ss.spec.lang.pojo.Rule;
 
@@ -43,6 +45,13 @@ public class EventTable {
 	public void onRestrictionError(RestrictionErrorType type, Rule rule, Restriction res, String refid) {
 		for (PSpecListener listener : listeners) {
 			listener.onRestrictionError(type, rule, res, refid);
+		}
+
+	}
+
+	public void onAnalysis(AnalysisType type, ExpandedRule... rules) {
+		for (PSpecListener listener : listeners) {
+			listener.onAnalysis(type, rules);
 		}
 
 	}

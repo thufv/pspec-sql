@@ -1,6 +1,5 @@
 package edu.thu.ss.editor.model;
 
-
 public class OutputEntry {
 	public static enum OutputType {
 		warning,
@@ -16,7 +15,8 @@ public class OutputEntry {
 		Data_Category_Duplicate,
 		Rule_Ref,
 		Rule_Restriction,
-		Simplify
+		Simplify,
+		Redundancy
 	}
 
 	private OutputEntry(String description, OutputType type, BaseModel location, BaseModel model,
@@ -41,7 +41,7 @@ public class OutputEntry {
 	}
 
 	public static OutputEntry newInstance(String description, OutputType outputType,
-			BaseModel location, BaseModel model, FixListener fixListener, MessageType messageType,
+			BaseModel location, BaseModel model, MessageType messageType, FixListener fixListener,
 			Object... data) {
 		return new OutputEntry(description, outputType, location, model, fixListener, messageType, data);
 	}

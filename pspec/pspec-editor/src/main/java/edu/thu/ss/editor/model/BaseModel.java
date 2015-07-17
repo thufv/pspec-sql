@@ -117,6 +117,22 @@ public abstract class BaseModel {
 		return list != null && !list.isEmpty();
 	}
 
+	public boolean hasOutput(OutputType outputType, MessageType messageType) {
+		if (outputs == null) {
+			return false;
+		}
+		List<OutputEntry> list = outputs.get(outputType);
+		if (list == null) {
+			return false;
+		}
+		for (OutputEntry entry : list) {
+			if (entry.messageType.equals(messageType)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public int countOutput(OutputType type) {
 		if (outputs == null) {
 			return 0;

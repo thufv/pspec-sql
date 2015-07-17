@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -15,6 +14,7 @@ import edu.thu.ss.spec.lang.analyzer.BasePolicyAnalyzer;
 import edu.thu.ss.spec.lang.analyzer.stat.AnalyzerStat;
 import edu.thu.ss.spec.lang.analyzer.stat.RedundancyStat;
 import edu.thu.ss.spec.lang.parser.event.EventTable;
+import edu.thu.ss.spec.lang.parser.event.PSpecListener.AnalysisType;
 import edu.thu.ss.spec.lang.pojo.Action;
 import edu.thu.ss.spec.lang.pojo.DataAssociation;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
@@ -23,36 +23,20 @@ import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Restriction;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
-import edu.thu.ss.spec.lang.pojo.UserRef;
 import edu.thu.ss.spec.util.InclusionUtil;
 import edu.thu.ss.spec.util.PSpecUtil;
 import edu.thu.ss.spec.util.PSpecUtil.SetRelation;
 import edu.thu.ss.spec.util.Z3Util;
 
 /**
- * performs policy redundancy analysis, for all rule r1 and r2, if r1 covers r2,
- * then r2 can be removed.
+ * performs policy redundancy analysis, find all pairs r1, r2 such that r2 covers r1 (r1 is redundant) and r2 is not redundant
  * 
  * @author luochen
  * 
  */
 public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 
-	protected static class SimplificationLog {
-		public ExpandedRule rule;
-		public List<UserRef> userRefs;
-		public DataRef dataRef;
-
-		public SimplificationLog(ExpandedRule rule, List<UserRef> userRefs, DataRef dataRef) {
-			this.rule = rule;
-			this.userRefs = userRefs;
-			this.dataRef = dataRef;
-		}
-	}
-
 	protected static Logger logger = LoggerFactory.getLogger(BaseRedundancyAnalyzer.class);
-
-	protected List<SimplificationLog> logs = new LinkedList<>();
 
 	public static final int Max_Dimension = 10;
 
@@ -62,10 +46,9 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 
 	protected final boolean[] covered = new boolean[Max_Dimension];
 
-	protected boolean simplify = false;
+	protected boolean remove = false;
 
-	public BaseRedundancyAnalyzer() {
-	}
+	protected Set<ExpandedRule> removable = new HashSet<>();
 
 	public BaseRedundancyAnalyzer(EventTable table) {
 		super(table);
@@ -87,51 +70,51 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 	}
 
 	public boolean analyze(Policy policy) {
+
 		int count = 0;
 		List<ExpandedRule> rules = policy.getExpandedRules();
 
-		boolean[] removable = new boolean[rules.size()];
 		for (int i = 0; i < rules.size(); i++) {
-			if (removable[i]) {
+			ExpandedRule prule = rules.get(i);
+			if (removable.contains(prule)) {
 				continue;
 			}
-			ExpandedRule prule = rules.get(i);
-			List<Integer> list = new ArrayList<>();
+			List<ExpandedRule> list = new ArrayList<>();
 			for (int j = i + 1; j < rules.size(); j++) {
-				if (removable[j]) {
+				ExpandedRule trule = rules.get(j);
+				if (removable.contains(trule)) {
 					continue;
 				}
-				ExpandedRule trule = rules.get(j);
 				if (prule == trule) {
 					continue;
 				}
 				if (checkRedundancy(prule, trule)) {
-					list.add(i);
+					list.add(prule);
 					prule = trule;
 				} else if (checkRedundancy(trule, prule)) {
-					list.add(j);
+					list.add(trule);
 				}
 			}
 			if (list.size() > 0) {
-				for (int index : list) {
-					removable[index] = true;
-					ExpandedRule rule = rules.get(index);
+				for (ExpandedRule rule : list) {
+					removable.add(rule);
 					logger
 							.warn(
 									"The rule: {} is redundant since it is covered by rule: {}, consider revise your policy.",
 									rule.getRuleId(), prule.getRuleId());
+					table.onAnalysis(AnalysisType.Redundancy, rule, prule);
 				}
 				count += list.size();
 			}
 		}
-		Iterator<ExpandedRule> it = rules.iterator();
-		int index = 0;
-		while (it.hasNext()) {
-			it.next();
-			if (removable[index]) {
-				it.remove();
+		if (remove) {
+			Iterator<ExpandedRule> it = rules.iterator();
+			while (it.hasNext()) {
+				ExpandedRule rule = it.next();
+				if (removable.contains(rule)) {
+					it.remove();
+				}
 			}
-			index++;
 		}
 
 		logger.error("{} redundant rules detected.", count);
@@ -140,7 +123,6 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 			rStat.rules[n] = count;
 		}
 
-		commit();
 		return false;
 	}
 
@@ -157,14 +139,14 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 		} else if (target.isFilter() || rule.isFilter()) {
 			return false;
 		}
-		
+
 		if (target.isSingle()) {
 			return checkSingle(rule, target);
 		} else {
 			return checkAssociation(rule, target);
 		}
 	}
-	
+
 	/**
 	 * both rule1 and rule2 are filter. Check rule1 implies rule2, i.e., whether
 	 * rule2 is redundant
@@ -178,33 +160,31 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 		if (!PSpecUtil.contains(user1, user2)) {
 			return false;
 		}
-		
+
 		Set<DataRef> set1 = new HashSet<>();
 		Set<DataRef> set2 = new HashSet<>();
 		if (rule1.isSingle()) {
 			set1.add(rule1.getDataRef());
-		}
-		else {
+		} else {
 			set1.addAll(rule1.getAssociation().getDataRefs());
 		}
 		if (rule1.isSingle()) {
 			set2.add(rule2.getDataRef());
-		}
-		else {
+		} else {
 			set2.addAll(rule2.getAssociation().getDataRefs());
-		}		
+		}
 		if (!PSpecUtil.contains(set1, set2)) {
 			return false;
 		}
-		
-		Set<DataCategory> categories1 =  rule1.getCondition().getDataCategories();
-		Set<DataCategory> categories2 =  rule2.getCondition().getDataCategories();
+
+		Set<DataCategory> categories1 = rule1.getCondition().getDataCategories();
+		Set<DataCategory> categories2 = rule2.getCondition().getDataCategories();
 		if (!PSpecUtil.contains(categories1, categories2)) {
 			return false;
 		}
-		
+
 		boolean res = false;
-		res =  Z3Util.implies(rule1.getCondition(), rule2.getCondition());
+		res = Z3Util.implies(rule1.getCondition(), rule2.getCondition());
 
 		return res;
 	}
@@ -258,15 +238,9 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 
 		if (userRelation.equals(SetRelation.contain) && dataRelation.equals(SetRelation.contain)) {
 			return true;
-		} else if (simplify) {
-			if (userRelation.equals(SetRelation.contain) && dataRelation.equals(SetRelation.intersect)) {
-				logs.add(new SimplificationLog(rule2, null, ref1));
-			} else if (userRelation.equals(SetRelation.intersect)
-					&& dataRelation.equals(SetRelation.contain)) {
-				logs.add(new SimplificationLog(rule2, rule1.getUserRefs(), null));
-			}
+		} else {
+			return false;
 		}
-		return false;
 	}
 
 	/**
@@ -372,7 +346,5 @@ public abstract class BaseRedundancyAnalyzer extends BasePolicyAnalyzer {
 		return Z3Util.implies(rule1, rule2, dataIncludes, dataLength, covered);
 
 	}
-
-	protected abstract void commit();
 
 }

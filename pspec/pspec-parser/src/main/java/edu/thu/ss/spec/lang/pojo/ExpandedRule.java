@@ -17,11 +17,6 @@ import edu.thu.ss.spec.util.PSpecUtil;
  */
 public class ExpandedRule extends DescribedObject implements Comparable<ExpandedRule> {
 
-	/**
-	 * the number of expanded rule from {@link #ruleId}
-	 */
-	protected int num = 1;
-
 	protected Restriction[] restrictions;
 
 	protected List<UserRef> userRefs;
@@ -36,8 +31,6 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 	 */
 	protected DataRef dataRef;
 
-	protected List<DataRef> rawDataRefs;
-
 	/**
 	 * only for data association
 	 */
@@ -45,14 +38,16 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 
 	protected Condition condition = null;
 
+	protected Rule rule;
+
 	public ExpandedRule() {
 	}
 
-	private ExpandedRule(Rule rule, int num) {
+	private ExpandedRule(Rule rule) {
+		this.rule = rule;
 		this.id = rule.getId();
 		this.shortDescription = rule.getShortDescription();
 		this.longDescription = rule.getLongDescription();
-		this.num = num;
 		this.userRefs = rule.getUserRefs();
 		this.users = new HashSet<>();
 		for (UserRef ref : userRefs) {
@@ -60,8 +55,8 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 		}
 	}
 
-	public ExpandedRule(Rule rule, DataAssociation association, int num) {
-		this(rule, num);
+	public ExpandedRule(Rule rule, DataAssociation association) {
+		this(rule);
 		this.association = association;
 		if (rule.isFilter()) {
 			this.condition = rule.condition;
@@ -70,8 +65,8 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 		}
 	}
 
-	public ExpandedRule(Rule rule, DataRef ref, int num) {
-		this(rule, num);
+	public ExpandedRule(Rule rule, DataRef ref) {
+		this(rule);
 		this.dataRef = ref;
 
 		if (rule.isFilter()) {
@@ -98,16 +93,8 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 		}
 
 		if (this.dataRef != null) {
-			if (this.rawDataRefs != null) {
-				for (DataRef ref : rawDataRefs) {
-					Element refEle = ref.outputElement(document);
-					element.appendChild(refEle);
-				}
-			} else {
-				Element refEle = dataRef.outputElement(document);
-				element.appendChild(refEle);
-			}
-
+			Element refEle = dataRef.outputElement(document);
+			element.appendChild(refEle);
 		} else {
 			Element assocEle = association.outputElement(document);
 			element.appendChild(assocEle);
@@ -126,20 +113,20 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 		return Integer.compare(this.getDimension(), o.getDimension());
 	}
 
-	public void setRawDataRefs(List<DataRef> rawDataRefs) {
-		this.rawDataRefs = rawDataRefs;
-	}
-
-	public List<DataRef> getRawDataRefs() {
-		return rawDataRefs;
-	}
-
 	public Set<UserCategory> getUsers() {
 		return users;
 	}
 
 	public String getRuleId() {
-		return id + "#" + num;
+		if (dataRef == null) {
+			return id;
+		} else {
+			return id + "#" + dataRef.refid;
+		}
+	}
+
+	public Rule getRule() {
+		return rule;
 	}
 
 	public String getRawRuleId() {

@@ -2,6 +2,7 @@ package edu.thu.ss.spec.lang.parser.event;
 
 import edu.thu.ss.spec.lang.pojo.Category;
 import edu.thu.ss.spec.lang.pojo.CategoryRef;
+import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.Restriction;
 import edu.thu.ss.spec.lang.pojo.Rule;
 
@@ -44,6 +45,14 @@ public abstract class PSpecListener {
 		Unsupported_Operation
 	}
 
+	public enum AnalysisType {
+		Redundancy,
+		Normal_Consistency,
+		Approximate_Consistency,
+		Strong_Consistency,
+		Enhanced_Strong_Consistency
+	}
+
 	public void onParseRule(Rule rule) {
 
 	}
@@ -57,6 +66,10 @@ public abstract class PSpecListener {
 	}
 
 	public void onRestrictionError(RestrictionErrorType type, Rule rule, Restriction res, String refid) {
+
+	}
+
+	public void onAnalysis(AnalysisType type, ExpandedRule... rules) {
 
 	}
 

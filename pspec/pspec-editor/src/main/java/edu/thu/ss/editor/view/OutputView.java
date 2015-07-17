@@ -364,6 +364,8 @@ public class OutputView extends Composite {
 						if (item.getItemCount() == 0) {
 							item.dispose();
 						}
+						updateCount(entry.outputType, outputCounts.get(entry.outputType) - 1);
+						updateLabel();
 						return;
 					}
 				}

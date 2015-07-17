@@ -57,7 +57,7 @@ public class PolicyView extends EditorView<PolicyModel, Policy> {
 		this.shell = shell;
 		this.model = model;
 		this.editorItem = editorItem;
-		this.table = EditorUtil.newOutputTable(model);
+		this.table = EditorUtil.newOutputTable(model, null);
 
 		this.setBackground(EditorUtil.getDefaultBackground());
 

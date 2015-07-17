@@ -142,6 +142,8 @@ public class MessagesUtil {
 	public static final String Policy_Invalid_Vocabulary_Document_Message = "policy.invalid.vocabulary.document.message";
 	public static final String Policy_No_Simplify_Message = "policy.no.simplify.message";
 	public static final String Policy_Simplify_Prompt_Message = "policy.simplify.prompt.message";
+	public static final String Policy_No_Redundancy_Message = "policy.no.redundancy.message";
+	public static final String Policy_Redundancy_Message = "policy.redundancy.message";
 
 	public static final String Rule = "rule";
 	public static final String Rule_Type = "rule.type";
@@ -177,6 +179,7 @@ public class MessagesUtil {
 	public static final String Rule_User_Ref_Simplify_Message = "rule.user.ref.simplify.message";
 	public static final String Rule_Data_Ref_Simplify_Message = "rule.data.ref.simplify.message";
 	public static final String Rule_Restriction_Simplify_Message = "rule.restriction.simplify.message";
+	public static final String Rule_Redundancy_Message = "rule.redundancy.message";
 
 	public static final String Forbid = "forbid";
 	public static final String Restriction = "restriction";
