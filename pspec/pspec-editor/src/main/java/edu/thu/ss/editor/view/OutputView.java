@@ -96,7 +96,7 @@ public class OutputView extends Composite {
 		viewer.setInput(model);
 
 		final Tree tree = viewer.getTree();
-		tree.setFont(EditorUtil.getDefaultFont());
+		EditorUtil.setDefaultFont(tree);
 		tree.setHeaderVisible(true);
 		tree.setLinesVisible(true);
 

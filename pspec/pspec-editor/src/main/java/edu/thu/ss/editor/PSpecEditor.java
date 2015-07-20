@@ -500,7 +500,7 @@ public class PSpecEditor {
 			}
 			EditorUtil.include(view);
 			currentView = view;
-			currentView.refresh();
+		//	currentView.refresh();
 			contentComposite.layout();
 		}
 		enableMenus();
@@ -640,11 +640,11 @@ public class PSpecEditor {
 		EditorUtil.exclude(ruleView);
 		ruleItem.setData(EditorUtil.View, ruleView);
 
-		TreeItem visualizeItem = EditorUtil.newTreeItem(item, getMessage(Visualize));
+		/*TreeItem visualizeItem = EditorUtil.newTreeItem(item, getMessage(Visualize));
 		GraphView graphView = new GraphView(shell, contentComposite, model, outputView);
 		graphView.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		EditorUtil.exclude(graphView);
-		visualizeItem.setData(EditorUtil.View, graphView);
+		visualizeItem.setData(EditorUtil.View, graphView);*/
 	}
 
 	private void openVocabulary() {

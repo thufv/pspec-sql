@@ -102,8 +102,8 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 		ruleBar = new ExpandBar(parent, SWT.V_SCROLL);
 		GridData barData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		ruleBar.setLayoutData(barData);
-		ruleBar.setFont(EditorUtil.getDefaultFont());
-		ruleBar.setBackground(EditorUtil.getDefaultBackground());
+		EditorUtil.setDefaultFont(ruleBar);
+		ruleBar.setBackground(EditorUtil.getWhiteBackground());
 		initializeRules();
 
 		if (model.getPolicy().getRules().size() == 0 && ruleBar.getVerticalBar() != null) {
@@ -379,7 +379,7 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 	private void initializeRuleRestrictions(RuleModel ruleModel, Composite parent) {
 		if (ruleModel.isForbid()) {
 			Label forbidLabel = EditorUtil.newLabel(parent, getMessage(Forbid), null, false);
-			forbidLabel.setFont(EditorUtil.getDefaultFont());
+			EditorUtil.setDefaultFont(forbidLabel);
 		} else {
 			for (Restriction res : ruleModel.getRestrictions()) {
 				initializeRestriction(res, ruleModel, parent);
@@ -391,10 +391,12 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 		EditorUtil.newLabel(parent, getMessage(Restriction));
 
 		Composite restrictionComposite = newRuleComposite(parent, 4);
+		boolean restricted = false;
 		for (Desensitization de : restriction.getDesensitizations()) {
 			if (!de.effective()) {
 				continue;
 			}
+			restricted = true;
 			newPointLabel(restrictionComposite);
 			StringBuilder sb = new StringBuilder();
 			sb.append(getMessage(Desensitize));
@@ -410,6 +412,11 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 			newInfoLabel(restrictionComposite, PSpecUtil.format(de.getOperations(), ", "), null);
 
 		}
+		if (!restricted) {
+			newPointLabel(restrictionComposite);
+			newInfoLabel(restrictionComposite, getMessage(Rule_Restriction_None), null);
+
+		}
 
 	}
 
@@ -422,7 +429,7 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 	private Label newBarLabel(Composite parent) {
 		Label label = new Label(parent, SWT.NONE);
 		label.setText(" ");
-		label.setFont(EditorUtil.getDefaultFont());
+		EditorUtil.setDefaultFont(label);
 		label.setBackground(SWTResourceManager.getColor(SWT.COLOR_TITLE_BACKGROUND));
 		return label;
 	}
@@ -430,7 +437,7 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 	private Label newInfoLabel(Composite parent, String text, CategoryRef<?> ref) {
 		Label label = new Label(parent, SWT.NONE);
 		label.setText(text);
-		label.setFont(EditorUtil.getDefaultFont());
+		EditorUtil.setDefaultFont(label);
 		if (ref != null && ref.isError()) {
 			label.setForeground(EditorUtil.getErrorForeground());
 		} else {

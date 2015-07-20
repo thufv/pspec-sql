@@ -192,6 +192,8 @@ public class MessagesUtil {
 	@ParseOnly
 	public static final String Rule_Restriction_Single_One_Desensitize_Message = "rule.restriction.single.one.desensitize.message";
 
+	public static final String Rule_Restriction_None = "rule.restriction.none";
+
 	public static final String Rule_No_Simplify_Message = "rule.no.simplify.message";
 	public static final String Rule_Simplify_Prompt_Message = "rule.simplify.prompt.message";
 	public static final String Rule_User_Ref_Simplify_Message = "rule.user.ref.simplify.message";

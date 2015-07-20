@@ -130,15 +130,23 @@ public class EditorUtil {
 		return new Point(rec.width, rec.height);
 	}
 
-	public static Font getDefaultFont() {
-		return SWTResourceManager.getFont("Helvetica", 12, SWT.NORMAL);
+	public static void setDefaultFont(Control control) {
+		//do nothing
+
 	}
 
-	public static Font getDefaultBoldFont() {
-		return SWTResourceManager.getFont("Helvetica", 12, SWT.BOLD);
+	public static void setDefaultBoldFont(Control control) {
+		Font font = control.getFont();
+
+		control.setFont(SWTResourceManager.getBoldFont(font));
+
 	}
 
 	public static Color getDefaultBackground() {
+		return SWTResourceManager.getColor(SWT.COLOR_WHITE);
+	}
+
+	public static Color getWhiteBackground() {
 		return SWTResourceManager.getColor(SWT.COLOR_WHITE);
 	}
 
@@ -151,7 +159,8 @@ public class EditorUtil {
 	}
 
 	private static void setStyle(Control control) {
-		control.setFont(getDefaultFont());
+		setDefaultFont(control);
+
 		control.setBackground(getDefaultBackground());
 	}
 
@@ -204,12 +213,13 @@ public class EditorUtil {
 
 	public static Label newLabel(Composite parent, String text, GridData data, boolean prompt) {
 		Label label = new Label(parent, SWT.NONE);
-		label.setFont(getDefaultFont());
+		setDefaultFont(label);
 		if (prompt) {
 			label.setText(text + ":");
 		} else {
 			label.setText(text);
 		}
+		label.setBackground(null);
 		label.setLayoutData(data);
 		return label;
 	}
@@ -240,7 +250,7 @@ public class EditorUtil {
 
 	public static TreeItem newTreeItem(Tree parent, String text) {
 		TreeItem item = new TreeItem(parent, SWT.NONE);
-		item.setFont(getDefaultFont());
+
 		item.setText(0, text);
 		item.setExpanded(true);
 		return item;
@@ -248,7 +258,7 @@ public class EditorUtil {
 
 	public static TreeItem newTreeItem(TreeItem parent, String text) {
 		TreeItem item = new TreeItem(parent, SWT.NONE);
-		item.setFont(getDefaultFont());
+
 		item.setText(text);
 		item.setExpanded(true);
 		return item;
@@ -261,9 +271,10 @@ public class EditorUtil {
 	}
 
 	public static Group newGroup(Composite parent, String text) {
-		Group group = new Group(parent, SWT.SHADOW_NONE);
+		Group group = new Group(parent, SWT.SHADOW_OUT);
 		setStyle(group);
-		group.setFont(getDefaultBoldFont());
+		setDefaultBoldFont(group);
+		group.setBackground(null);
 		if (text != null) {
 			group.setText(text);
 		}
@@ -276,7 +287,7 @@ public class EditorUtil {
 		group.setLayoutData(groupData);
 		GridLayout groupLayout = new GridLayout(2, false);
 		group.setLayout(groupLayout);
-		group.setFont(EditorUtil.getDefaultFont());
+		setDefaultBoldFont(group);
 		return group;
 	}
 
