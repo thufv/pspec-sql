@@ -69,6 +69,7 @@ public class PolicyParser extends BaseParser implements ParserConstant {
 			// load document
 			policyDoc = XMLUtil.parseDocument(uri, Privacy_Schema_Location);
 		} catch (Exception e) {
+			logger.error("Fail to parse policy at " + path, e);
 			throw new InvalidPolicyException(uri, e);
 		}
 		// parse document

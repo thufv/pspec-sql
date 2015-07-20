@@ -1,6 +1,26 @@
 package edu.thu.ss.editor.view;
 
-import static edu.thu.ss.editor.util.MessagesUtil.*;
+import static edu.thu.ss.editor.util.MessagesUtil.Data_Association;
+import static edu.thu.ss.editor.util.MessagesUtil.Data_Ref;
+import static edu.thu.ss.editor.util.MessagesUtil.Desensitize;
+import static edu.thu.ss.editor.util.MessagesUtil.Edit;
+import static edu.thu.ss.editor.util.MessagesUtil.Enhanced_Strong_Consistency;
+import static edu.thu.ss.editor.util.MessagesUtil.Forbid;
+import static edu.thu.ss.editor.util.MessagesUtil.Policy_No_Vocabulary_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Policy_Rules;
+import static edu.thu.ss.editor.util.MessagesUtil.Policy_Seed_Enhanced_Strong_Inconsistency_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Policy_Seed_No_Enhanced_Strong_Inconsistency_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Policy_Seed_No_Strong_Inconsistency_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Policy_Seed_Strong_Inconsistency_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Restriction;
+import static edu.thu.ss.editor.util.MessagesUtil.Rule_No_Simplify_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Rule_Restriction_None;
+import static edu.thu.ss.editor.util.MessagesUtil.Rule_Simplify_Prompt_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Select_As_Seed;
+import static edu.thu.ss.editor.util.MessagesUtil.Simplify;
+import static edu.thu.ss.editor.util.MessagesUtil.Strong_Consistency;
+import static edu.thu.ss.editor.util.MessagesUtil.User_Ref;
+import static edu.thu.ss.editor.util.MessagesUtil.getMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +30,7 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -89,11 +110,20 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 
 	private void selectItem(ExpandItem item) {
 		if (selectedItem != null) {
-			selectedItem.getControl().setBackground(EditorUtil.getDefaultBackground());
+			setBackground(selectedItem, EditorUtil.getDefaultBackground());
 		}
 		selectedItem = item;
-		selectedItem.getControl().setBackground(EditorUtil.getSelectedBackground());
+		setBackground(selectedItem, EditorUtil.getSelectedBackground());
 		delete.setEnabled(true);
+	}
+
+	private void setBackground(ExpandItem item, Color color) {
+		Composite composite = (Composite) item.getControl();
+		composite.setBackground(color);
+		for (Control child : composite.getChildren()) {
+			child.setBackground(color);
+		}
+
 	}
 
 	private void initializeContent(Composite parent) {
@@ -112,8 +142,7 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 	}
 
 	private void initializeToolbar(Composite parent) {
-		ToolBar toolBar = new ToolBar(parent, SWT.FLAT | SWT.RIGHT);
-
+		ToolBar toolBar = EditorUtil.newToolBar(parent);
 		add = new ToolItem(toolBar, SWT.NONE);
 		add.setToolTipText(MessagesUtil.Add);
 		add.setImage(SWTResourceManager.getImage(EditorUtil.Image_Add_Rule));
@@ -121,7 +150,7 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (model.getPolicy().getVocabulary() == null) {
-					EditorUtil.showMessageBox(shell, "", getMessage(Policy_No_Vocabulary_Message));
+					EditorUtil.showErrorMessageBox(shell, "", getMessage(Policy_No_Vocabulary_Message));
 					return;
 				}
 
@@ -443,9 +472,9 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 		} else {
 			label.setForeground(SWTResourceManager.getColor(SWT.COLOR_DARK_GRAY));
 		}
+
 		GridData data = new GridData();
 		data.verticalAlignment = SWT.TOP;
-
 		label.setLayoutData(data);
 		return label;
 
@@ -466,6 +495,7 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 		GridLayout layout = new GridLayout(column, false);
 		layout.marginHeight = 0;
 		composite.setLayout(layout);
+		composite.setBackgroundMode(SWT.INHERIT_FORCE);
 		return composite;
 	}
 
@@ -477,7 +507,7 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 		SimplificationLog log = simplifier.analyze(rule, policy.getUserContainer(),
 				policy.getDataContainer());
 		if (log == null || log.isEmpty()) {
-			EditorUtil.showMessageBox(shell, "", getMessage(Rule_No_Simplify_Message, rule.getId()));
+			EditorUtil.showInfoMessageBox(shell, "", getMessage(Rule_No_Simplify_Message, rule.getId()));
 			return;
 		}
 
@@ -519,13 +549,13 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 		}
 
 		if (hasOutput) {
-			EditorUtil.showMessageBox(
+			EditorUtil.showInfoMessageBox(
 					shell,
 					"",
 					getMessage(Policy_Seed_Strong_Inconsistency_Message, policy.getInfo().getId(),
 							rule.getId()));
 		} else {
-			EditorUtil.showMessageBox(
+			EditorUtil.showInfoMessageBox(
 					shell,
 					"",
 					getMessage(Policy_Seed_No_Strong_Inconsistency_Message, policy.getInfo().getId(),
@@ -562,13 +592,13 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 		}
 
 		if (hasOutput) {
-			EditorUtil.showMessageBox(
+			EditorUtil.showInfoMessageBox(
 					shell,
 					"",
 					getMessage(Policy_Seed_Enhanced_Strong_Inconsistency_Message, policy.getInfo().getId(),
 							rule.getId()));
 		} else {
-			EditorUtil.showMessageBox(
+			EditorUtil.showInfoMessageBox(
 					shell,
 					"",
 					getMessage(Policy_Seed_No_Enhanced_Strong_Inconsistency_Message,

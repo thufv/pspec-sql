@@ -178,11 +178,12 @@ public class VocabularyView extends EditorView<VocabularyModel, Vocabulary> {
 			VocabularyModel baseModel = new VocabularyModel(file);
 			ParseResult result = EditorUtil.openVocabulary(baseModel, shell, false);
 			if (result.equals(ParseResult.Invalid_Vocabulary)) {
-				EditorUtil.showMessageBox(shell, "", getMessage(Vocabulary_Invalid_Document_Message, file));
+				EditorUtil.showErrorMessageBox(shell, "",
+						getMessage(Vocabulary_Invalid_Document_Message, file));
 				return;
 			}
 			if (result.equals(ParseResult.Error)) {
-				EditorUtil.showMessageBox(shell, "",
+				EditorUtil.showErrorMessageBox(shell, "",
 						getMessage(Base_Vocabulary_Contains_Error_Message, file));
 				return;
 			}
@@ -202,7 +203,7 @@ public class VocabularyView extends EditorView<VocabularyModel, Vocabulary> {
 		PSpecEditor.getInstance().getUserContainerView(model).refresh();
 		PSpecEditor.getInstance().getDataContainerView(model).refresh();
 		if (error) {
-			EditorUtil.showMessageBox(shell, "",
+			EditorUtil.showErrorMessageBox(shell, "",
 					getMessage(Vocabulary_Parse_Error_Message, vocabulary.getInfo().getId()));
 		}
 	}

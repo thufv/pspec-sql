@@ -92,6 +92,7 @@ public class VocabularyParser extends BaseParser implements ParserConstant {
 				try {
 					document = XMLUtil.parseDocument(currentUri, Privacy_Schema_Location);
 				} catch (Exception e) {
+					logger.error("Fail to parse vocabulary at " + uri, e);
 					throw new InvalidVocabularyException(uri, e);
 				}
 				Node rootNode = document.getElementsByTagName(ParserConstant.Ele_Vocabulary).item(0);

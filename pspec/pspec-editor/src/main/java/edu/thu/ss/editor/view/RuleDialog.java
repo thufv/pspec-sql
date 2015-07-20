@@ -155,13 +155,13 @@ public class RuleDialog extends EditorDialog {
 				//unique id
 				String id = ruleId.getText().trim();
 				if (id.isEmpty()) {
-					EditorUtil.showMessageBox(dialog, "", getMessage(Rule_ID_Not_Empty_Message));
+					EditorUtil.showErrorMessageBox(dialog, "", getMessage(Rule_ID_Not_Empty_Message));
 					return;
 				}
 				if (!id.equals(ruleModel.getRule().getId())) {
 					Rule rule = policyModel.getPolicy().getRule(id);
 					if (rule != null) {
-						EditorUtil.showMessageBox(dialog, "", getMessage(Rule_ID_Unique_Message, id));
+						EditorUtil.showErrorMessageBox(dialog, "", getMessage(Rule_ID_Unique_Message, id));
 						return;
 					}
 				}
@@ -169,14 +169,14 @@ public class RuleDialog extends EditorDialog {
 				//check user reference
 				for (UserRef ref : ruleModel.getUserRefs()) {
 					if (ref.getRefid().isEmpty()) {
-						EditorUtil.showMessageBox(dialog, "", getMessage(Rule_User_Ref_Not_Empty_Message));
+						EditorUtil.showErrorMessageBox(dialog, "", getMessage(Rule_User_Ref_Not_Empty_Message));
 						return;
 					}
 				}
 				//check data reference
 				for (DataRef ref : ruleModel.getDataRefs()) {
 					if (ref.getRefid().isEmpty()) {
-						EditorUtil.showMessageBox(dialog, "", getMessage(Rule_Data_Ref_Not_Empty_Message));
+						EditorUtil.showErrorMessageBox(dialog, "", getMessage(Rule_Data_Ref_Not_Empty_Message));
 						return;
 					}
 				}
@@ -186,7 +186,7 @@ public class RuleDialog extends EditorDialog {
 				RuleResolver resolver = new RuleResolver(EditorUtil.newLogTable(messages));
 				if (resolver.analyzeRule(tmpRule, policyModel.getPolicy().getUserContainer(), policyModel
 						.getPolicy().getDataContainer())) {
-					EditorUtil.showMessageBox(dialog, "", messages);
+					EditorUtil.showErrorMessageBox(dialog, "", messages);
 					return;
 				}
 				Rule rule = ruleModel.getRule();
@@ -260,7 +260,7 @@ public class RuleDialog extends EditorDialog {
 					return;
 				}
 				if (userTable.getItemCount() - userTable.getSelectionCount() == 0) {
-					EditorUtil.showMessageBox(dialog, "", getMessage(Rule_User_Ref_Not_Empty_Message));
+					EditorUtil.showErrorMessageBox(dialog, "", getMessage(Rule_User_Ref_Not_Empty_Message));
 					return;
 				}
 
@@ -342,6 +342,8 @@ public class RuleDialog extends EditorDialog {
 				if (!dataSingleType.getSelection()) {
 					return;
 				}
+				selectedRestrictTable = null;
+
 				ruleModel.getRestrictions().clear();
 				disposeRestrictTables();
 				Restriction res = newRestriction();
@@ -361,6 +363,8 @@ public class RuleDialog extends EditorDialog {
 				if (!dataAssociationType.getSelection()) {
 					return;
 				}
+				selectedRestrictTable = null;
+
 				addRestriction.setEnabled(true);
 				deleteRestriction.setEnabled(true);
 
@@ -400,7 +404,7 @@ public class RuleDialog extends EditorDialog {
 					return;
 				}
 				if (dataTable.getItemCount() - dataTable.getSelectionCount() == 0) {
-					EditorUtil.showMessageBox(dialog, "", getMessage(Rule_Data_Ref_Not_Empty_Message));
+					EditorUtil.showErrorMessageBox(dialog, "", getMessage(Rule_Data_Ref_Not_Empty_Message));
 					return;
 				}
 				boolean associate = dataAssociationType.getSelection();
@@ -527,7 +531,8 @@ public class RuleDialog extends EditorDialog {
 					return;
 				}
 				if (restrictTables.size() == 1) {
-					EditorUtil.showMessageBox(dialog, "", getMessage(Rule_Restriction_Not_Empty_Message));
+					EditorUtil
+							.showErrorMessageBox(dialog, "", getMessage(Rule_Restriction_Not_Empty_Message));
 					return;
 				}
 

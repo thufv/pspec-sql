@@ -109,6 +109,33 @@ public class EditorUtil {
 
 	private static ToolTip previousTip;
 
+	public static enum OSType {
+		Mac,
+		Windows,
+		Other
+	}
+
+	public static OSType getOSType() {
+		String name = "os.name";
+		String os = System.getProperty(name).toLowerCase();
+		if (os.startsWith("windows")) {
+			return OSType.Windows;
+		} else if (os.startsWith("mac")) {
+			return OSType.Mac;
+		} else {
+			return OSType.Other;
+		}
+	}
+
+	public static boolean isWindows() {
+		return getOSType().equals(OSType.Windows);
+	}
+
+	public static boolean isMac() {
+		return getOSType().equals(OSType.Mac);
+
+	}
+
 	public static GridData labelData() {
 		GridData data = new GridData();
 		data.horizontalAlignment = SWT.BEGINNING;
@@ -131,7 +158,7 @@ public class EditorUtil {
 	}
 
 	public static void setDefaultFont(Control control) {
-		//do nothing
+		// do nothing
 
 	}
 
@@ -219,7 +246,6 @@ public class EditorUtil {
 		} else {
 			label.setText(text);
 		}
-		label.setBackground(null);
 		label.setLayoutData(data);
 		return label;
 	}
@@ -241,11 +267,19 @@ public class EditorUtil {
 
 	public static Combo newCombo(Composite parent, GridData data) {
 		Combo combo = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
-		//setStyle(combo);
+		// setStyle(combo);
 		if (data != null) {
 			combo.setLayoutData(data);
 		}
 		return combo;
+	}
+
+	public static ToolBar newToolBar(Composite parent) {
+		ToolBar toolBar = new ToolBar(parent, SWT.FLAT | SWT.RIGHT);
+		if (isWindows()) {
+			setStyle(toolBar);
+		}
+		return toolBar;
 	}
 
 	public static TreeItem newTreeItem(Tree parent, String text) {
@@ -265,16 +299,16 @@ public class EditorUtil {
 	}
 
 	public static Composite newComposite(Composite parent) {
-		Composite comp = new Composite(parent, SWT.NO_BACKGROUND);
+		Composite comp = new Composite(parent, SWT.NONE | SWT.DOUBLE_BUFFERED);
 		setStyle(comp);
+		comp.setBackgroundMode(SWT.INHERIT_FORCE);
 		return comp;
 	}
 
 	public static Group newGroup(Composite parent, String text) {
-		Group group = new Group(parent, SWT.SHADOW_OUT);
+		Group group = new Group(parent, SWT.SHADOW_NONE);
 		setStyle(group);
 		setDefaultBoldFont(group);
-		group.setBackground(null);
 		if (text != null) {
 			group.setText(text);
 		}
@@ -358,25 +392,28 @@ public class EditorUtil {
 		}
 	}
 
-	public static void showMessageBox(Shell parent, String title, String message) {
+	private static int showMessageBox(Shell parent, String title, String message, int style) {
 		MessageBox box = new MessageBox(parent, SWT.ICON_ERROR | SWT.OK);
-		box.setText(title);
-		box.setMessage(message);
-		box.open();
-	}
-
-	public static void showMessageBox(Shell parent, String title, List<String> messages) {
-		MessageBox box = new MessageBox(parent, SWT.ICON_ERROR | SWT.OK);
-		box.setText(title);
-		box.setMessage(PSpecUtil.format(messages, System.lineSeparator()));
-		box.open();
-	}
-
-	public static int showQuestionMessageBox(Shell parent, String title, String message) {
-		MessageBox box = new MessageBox(parent, SWT.ICON_QUESTION | SWT.YES | SWT.NO);
 		box.setText(title);
 		box.setMessage(message);
 		return box.open();
+	}
+
+	public static int showErrorMessageBox(Shell parent, String title, String message) {
+		return showMessageBox(parent, title, message, SWT.ICON_ERROR | SWT.OK);
+	}
+
+	public static int showInfoMessageBox(Shell parent, String title, String message) {
+		return showMessageBox(parent, title, message, SWT.ICON_INFORMATION | SWT.OK);
+	}
+
+	public static int showErrorMessageBox(Shell parent, String title, List<String> messages) {
+		return showMessageBox(parent, title, PSpecUtil.format(messages, System.lineSeparator()),
+				SWT.ICON_ERROR | SWT.OK);
+	}
+
+	public static int showQuestionMessageBox(Shell parent, String title, String message) {
+		return showMessageBox(parent, title, message, SWT.ICON_QUESTION | SWT.YES | SWT.NO);
 	}
 
 	public static void processTree(Tree tree) {

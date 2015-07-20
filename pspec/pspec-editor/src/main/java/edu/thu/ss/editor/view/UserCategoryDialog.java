@@ -62,12 +62,12 @@ public class UserCategoryDialog extends EditorDialog {
 				//check empty
 				String text = userId.getText().trim();
 				if (text.isEmpty()) {
-					EditorUtil.showMessageBox(dialog, "", getMessage(User_Category_ID_Not_Empty_Message));
+					EditorUtil.showErrorMessageBox(dialog, "", getMessage(User_Category_ID_Not_Empty_Message));
 					return;
 				}
 				//check duplicate
 				if (userContainer.get(text) != null) {
-					EditorUtil.showMessageBox(dialog, "", getMessage(User_Category_ID_Unique_Message, text));
+					EditorUtil.showErrorMessageBox(dialog, "", getMessage(User_Category_ID_Unique_Message, text));
 					return;
 				}
 				userCategory.setId(text);

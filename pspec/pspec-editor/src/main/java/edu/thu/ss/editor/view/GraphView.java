@@ -70,14 +70,14 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 		this.setBackground(EditorUtil.getDefaultBackground());
 		this.setLayout(new FillLayout());
 
-		//initializeGraph();
-		setScopeRelation();
-		
+		initializeGraph();
+		//setScopeRelation();
+
 		this.addListener(SWT.Resize, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
 				Rectangle rec = GraphView.this.getClientArea();
-				if (!initialize) {
+				if (EditorUtil.isWindows() || !initialize) {
 					display.setSize(rec.width, rec.height);
 					initialize = true;
 				}
@@ -89,7 +89,7 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 	public void refresh() {
 		setScopeRelation();
 	}
-	
+
 	private void initializeGraph() {
 		try {
 			graph = new GraphMLReader().readGraph("/socialnet.xml");
@@ -151,7 +151,7 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 		RuleExpander expander = new RuleExpander(null);
 		expander.analyze(policy);
 		List<ExpandedRule> rules = policy.getExpandedRules();
-		
+
 		visualization = new Visualization();
 		graph = new Graph(true);
 		graph.addColumn("id", int.class);
@@ -162,14 +162,14 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 			node.set("name", rules.get(i).getRuleId());
 			graph.addEdge(0, i);
 		}
-		
+
 		if (rules.size() != 0) {
 			AdjacencyList<Integer> list = new AdjacencyList<Integer>();
 			Node<Integer> root = new Node<Integer>(rules.size());
 			for (int i = 0; i < rules.size(); i++) {
 				ExpandedRule rule1 = rules.get(i);
 				Node<Integer> node1 = new Node<Integer>(i);
-				list.addEdge(root, node1, (double)1.0);
+				list.addEdge(root, node1, (double) 1.0);
 				for (int j = 0; j < rules.size(); j++) {
 					if (i == j) {
 						continue;
@@ -177,14 +177,14 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 					ExpandedRule rule2 = rules.get(j);
 					Node<Integer> node2 = new Node<Integer>(j);
 					if (checkRuleScope(rule1, rule2)) {
-						list.addEdge(node1, node2, (double)1.0);
+						list.addEdge(node1, node2, (double) 1.0);
 					}
 				}
 			}
-			
+
 			EdmondsChuLiu<Integer> minBranchGenerator = new EdmondsChuLiu<Integer>();
 			AdjacencyList<Integer> result = minBranchGenerator.getMinBranching(root, list);
-			
+
 			Collection<Edge<Integer>> allEdges = result.getAllEdges();
 			for (Edge<Integer> edge : allEdges) {
 				int source = edge.getFrom().getName();
@@ -194,10 +194,9 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 				}
 			}
 		}
-		
-		
+
 		visualization.add("graph", graph);
-		
+
 		//set renderer
 		LabelRenderer labelRenderer = new LabelRenderer("name");
 		labelRenderer.setRoundedCorner(8, 8);
@@ -208,7 +207,7 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 		int[] palette = new int[] { ColorLib.rgb(255, 180, 180), ColorLib.rgb(190, 190, 255) };
 		DataColorAction fill = new DataColorAction("graph.nodes", "id", Constants.NOMINAL,
 				VisualItem.FILLCOLOR, palette);
-				
+
 		ColorAction text = new ColorAction("graph.nodes", VisualItem.TEXTCOLOR, ColorLib.gray(0));
 
 		ColorAction edges = new ColorAction("graph.edges", VisualItem.STROKECOLOR, ColorLib.gray(200));
@@ -241,7 +240,7 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 		visualization.run("color");
 		visualization.run("layout");
 	}
-	
+
 	private boolean checkRuleScope(ExpandedRule target, ExpandedRule rule) {
 		if (target.isSingle()) {
 			return checkSingle(rule, target);
@@ -278,8 +277,7 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 
 		return true;
 	}
-	
-	
+
 	private boolean checkAssociation(ExpandedRule rule1, ExpandedRule rule2) {
 		if (rule1.isSingle()) {
 			return checkSingleAssociation(rule1, rule2);
@@ -287,7 +285,7 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 			return checkBothAssociation(rule1, rule2);
 		}
 	}
-	
+
 	private boolean checkSingleAssociation(ExpandedRule rule1, ExpandedRule rule2) {
 		Set<UserCategory> user1 = rule1.getUsers();
 		Set<UserCategory> user2 = rule2.getUsers();
@@ -313,7 +311,7 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 		}
 		return true;
 	}
-	
+
 	private boolean checkBothAssociation(ExpandedRule rule1, ExpandedRule rule2) {
 		DataAssociation assoc1 = rule1.getAssociation();
 		DataAssociation assoc2 = rule2.getAssociation();
@@ -345,7 +343,7 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
 

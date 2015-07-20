@@ -165,10 +165,14 @@ public class PSpecEditor {
 					for (PolicyModel model : editorModel.getPolicies()) {
 						save(model, false);
 					}
-					System.exit(0);
+					if (EditorUtil.isMac()) {
+						System.exit(0);
+					}
 				} else if (ret == SWT.NO) {
 					//do nothing
-					System.exit(0);
+					if (EditorUtil.isMac()) {
+						System.exit(0);
+					}
 				} else {
 					event.doit = false;
 				}
@@ -500,7 +504,7 @@ public class PSpecEditor {
 			}
 			EditorUtil.include(view);
 			currentView = view;
-		//	currentView.refresh();
+			//	currentView.refresh();
 			contentComposite.layout();
 		}
 		enableMenus();
@@ -640,11 +644,11 @@ public class PSpecEditor {
 		EditorUtil.exclude(ruleView);
 		ruleItem.setData(EditorUtil.View, ruleView);
 
-		/*TreeItem visualizeItem = EditorUtil.newTreeItem(item, getMessage(Visualize));
+		TreeItem visualizeItem = EditorUtil.newTreeItem(item, getMessage(Visualize));
 		GraphView graphView = new GraphView(shell, contentComposite, model, outputView);
 		graphView.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		EditorUtil.exclude(graphView);
-		visualizeItem.setData(EditorUtil.View, graphView);*/
+		visualizeItem.setData(EditorUtil.View, graphView);
 	}
 
 	private void openVocabulary() {
@@ -652,17 +656,18 @@ public class PSpecEditor {
 		String file = dlg.open();
 		if (file != null) {
 			if (editorModel.containVocabulary(file)) {
-				EditorUtil.showMessageBox(shell, "", getMessage(Vocabulary_Opened_Message, file));
+				EditorUtil.showErrorMessageBox(shell, "", getMessage(Vocabulary_Opened_Message, file));
 				return;
 			}
 			VocabularyModel vocabularyModel = new VocabularyModel(file);
 			ParseResult result = EditorUtil.openVocabulary(vocabularyModel, shell, true);
 			if (result.equals(ParseResult.Invalid_Vocabulary)) {
-				EditorUtil.showMessageBox(shell, "", getMessage(Vocabulary_Invalid_Document_Message, file));
+				EditorUtil.showErrorMessageBox(shell, "",
+						getMessage(Vocabulary_Invalid_Document_Message, file));
 				return;
 			}
 			if (result.equals(ParseResult.Error)) {
-				EditorUtil.showMessageBox(shell, "", getMessage(Vocabulary_Parse_Error_Message, file));
+				EditorUtil.showErrorMessageBox(shell, "", getMessage(Vocabulary_Parse_Error_Message, file));
 			}
 			addVocabulary(vocabularyModel);
 			if (vocabularyModel.hasOutput()) {
@@ -676,22 +681,23 @@ public class PSpecEditor {
 		String file = dlg.open();
 		if (file != null) {
 			if (editorModel.containPolicy(file)) {
-				EditorUtil.showMessageBox(shell, "", getMessage(Policy_Opened_Message, file));
+				EditorUtil.showErrorMessageBox(shell, "", getMessage(Policy_Opened_Message, file));
 				return;
 			}
 			PolicyModel policyModel = new PolicyModel(file);
 			ParseResult result = EditorUtil.openPolicy(policyModel, shell, true);
 			if (result.equals(ParseResult.Invalid_Policy)) {
-				EditorUtil.showMessageBox(shell, "", getMessage(Policy_Invalid_Document_Message, file));
+				EditorUtil
+						.showErrorMessageBox(shell, "", getMessage(Policy_Invalid_Document_Message, file));
 				return;
 			}
 			if (result.equals(ParseResult.Invalid_Vocabulary)) {
-				EditorUtil.showMessageBox(shell, "",
+				EditorUtil.showErrorMessageBox(shell, "",
 						getMessage(Policy_Invalid_Vocabulary_Document_Message, file));
 				return;
 			}
 			if (result.equals(ParseResult.Error)) {
-				EditorUtil.showMessageBox(shell, "", getMessage(Policy_Parse_Error_Message, file));
+				EditorUtil.showErrorMessageBox(shell, "", getMessage(Policy_Parse_Error_Message, file));
 			}
 
 			addPolicy(policyModel);
@@ -769,7 +775,7 @@ public class PSpecEditor {
 
 	private boolean saveVocabulary(VocabularyModel model, boolean rename) {
 		if (model.hasOutput(OutputType.error)) {
-			EditorUtil.showMessageBox(shell, "",
+			EditorUtil.showErrorMessageBox(shell, "",
 					getMessage(Vocabulary_Save_Error_Message, model.getVocabulary().getInfo().getId()));
 			return true;
 		}
@@ -792,7 +798,7 @@ public class PSpecEditor {
 		} catch (WritingException e) {
 			e.printStackTrace();
 		}
-		EditorUtil.showMessageBox(shell, "",
+		EditorUtil.showInfoMessageBox(shell, "",
 				getMessage(Vocabulary_Save_Success_Message, vocabularyId, path));
 		if (refresh) {
 			VocabularyView view = getVocabularyView(model);
@@ -803,7 +809,7 @@ public class PSpecEditor {
 
 	private boolean savePolicy(PolicyModel model, boolean rename) {
 		if (model.hasOutput(OutputType.error)) {
-			EditorUtil.showMessageBox(shell, "",
+			EditorUtil.showErrorMessageBox(shell, "",
 					getMessage(Vocabulary_Save_Error_Message, model.getPolicy().getInfo().getId()));
 			return true;
 		}
@@ -827,7 +833,8 @@ public class PSpecEditor {
 		} catch (WritingException e) {
 			e.printStackTrace();
 		}
-		EditorUtil.showMessageBox(shell, "", getMessage(Policy_Save_Success_Message, policyId, path));
+		EditorUtil.showInfoMessageBox(shell, "",
+				getMessage(Policy_Save_Success_Message, policyId, path));
 		if (refresh) {
 			PolicyView view = getPolicyView(model);
 			view.refreshLocation();
@@ -865,10 +872,10 @@ public class PSpecEditor {
 		}
 
 		if (hasOutput) {
-			EditorUtil.showMessageBox(shell, "",
+			EditorUtil.showInfoMessageBox(shell, "",
 					getMessage(Policy_Redundancy_Message, policy.getInfo().getId()));
 		} else {
-			EditorUtil.showMessageBox(shell, "",
+			EditorUtil.showInfoMessageBox(shell, "",
 					getMessage(Policy_No_Redundancy_Message, policy.getInfo().getId()));
 		}
 	}
@@ -878,7 +885,7 @@ public class PSpecEditor {
 		RuleSimplifier simplifier = new RuleSimplifier(null, false);
 		simplifier.analyze(policy);
 		if (simplifier.isEmpty()) {
-			EditorUtil.showMessageBox(shell, "",
+			EditorUtil.showInfoMessageBox(shell, "",
 					getMessage(Policy_No_Simplify_Message, policy.getInfo().getId()));
 			return;
 		}
@@ -920,10 +927,10 @@ public class PSpecEditor {
 		}
 
 		if (hasOutput) {
-			EditorUtil.showMessageBox(shell, "",
+			EditorUtil.showInfoMessageBox(shell, "",
 					getMessage(Policy_Normal_Inconsistency_Message, policy.getInfo().getId()));
 		} else {
-			EditorUtil.showMessageBox(shell, "",
+			EditorUtil.showInfoMessageBox(shell, "",
 					getMessage(Policy_No_Normal_Inconsistency_Message, policy.getInfo().getId()));
 		}
 	}
@@ -945,10 +952,10 @@ public class PSpecEditor {
 		}
 
 		if (hasOutput) {
-			EditorUtil.showMessageBox(shell, "",
+			EditorUtil.showInfoMessageBox(shell, "",
 					getMessage(Policy_Approximate_Inconsistency_Message, policy.getInfo().getId()));
 		} else {
-			EditorUtil.showMessageBox(shell, "",
+			EditorUtil.showInfoMessageBox(shell, "",
 					getMessage(Policy_No_Approximate_Inconsistency_Message, policy.getInfo().getId()));
 		}
 	}
@@ -970,10 +977,10 @@ public class PSpecEditor {
 		}
 
 		if (hasOutput) {
-			EditorUtil.showMessageBox(shell, "",
+			EditorUtil.showInfoMessageBox(shell, "",
 					getMessage(Policy_Strong_Inconsistency_Message, policy.getInfo().getId()));
 		} else {
-			EditorUtil.showMessageBox(shell, "",
+			EditorUtil.showInfoMessageBox(shell, "",
 					getMessage(Policy_No_Strong_Inconsistency_Message, policy.getInfo().getId()));
 		}
 	}
@@ -997,10 +1004,10 @@ public class PSpecEditor {
 		}
 
 		if (hasOutput) {
-			EditorUtil.showMessageBox(shell, "",
+			EditorUtil.showInfoMessageBox(shell, "",
 					getMessage(Policy_Enhanced_Strong_Inconsistency_Message, policy.getInfo().getId()));
 		} else {
-			EditorUtil.showMessageBox(shell, "",
+			EditorUtil.showInfoMessageBox(shell, "",
 					getMessage(Policy_No_Enhanced_Strong_Inconsistency_Message, policy.getInfo().getId()));
 		}
 	}

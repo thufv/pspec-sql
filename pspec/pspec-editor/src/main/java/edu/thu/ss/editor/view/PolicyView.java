@@ -134,12 +134,12 @@ public class PolicyView extends EditorView<PolicyModel, Policy> {
 					VocabularyModel vocabularyModel = new VocabularyModel(file);
 					ParseResult result = EditorUtil.openVocabulary(vocabularyModel, shell, false);
 					if (result.equals(ParseResult.Invalid_Vocabulary)) {
-						EditorUtil.showMessageBox(shell, "",
+						EditorUtil.showErrorMessageBox(shell, "",
 								getMessage(Vocabulary_Invalid_Document_Message, file));
 						return;
 					}
 					if (result.equals(ParseResult.Error)) {
-						EditorUtil.showMessageBox(shell, "",
+						EditorUtil.showErrorMessageBox(shell, "",
 								getMessage(Policy_Vocabulary_Contains_Error_Message, file));
 						return;
 					}
@@ -161,7 +161,7 @@ public class PolicyView extends EditorView<PolicyModel, Policy> {
 						outputView.refresh();
 					}
 					if (error) {
-						EditorUtil.showMessageBox(shell, "",
+						EditorUtil.showErrorMessageBox(shell, "",
 								getMessage(Policy_Parse_Error_Message, model.getPolicy().getInfo().getId()));
 					}
 
