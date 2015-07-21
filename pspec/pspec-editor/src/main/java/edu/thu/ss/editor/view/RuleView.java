@@ -4,7 +4,7 @@ import static edu.thu.ss.editor.util.MessagesUtil.Data_Association;
 import static edu.thu.ss.editor.util.MessagesUtil.Data_Ref;
 import static edu.thu.ss.editor.util.MessagesUtil.Desensitize;
 import static edu.thu.ss.editor.util.MessagesUtil.Edit;
-import static edu.thu.ss.editor.util.MessagesUtil.Enhanced_Strong_Consistency;
+import static edu.thu.ss.editor.util.MessagesUtil.EnhancedStrongConsistency;
 import static edu.thu.ss.editor.util.MessagesUtil.Forbid;
 import static edu.thu.ss.editor.util.MessagesUtil.Policy_No_Vocabulary_Message;
 import static edu.thu.ss.editor.util.MessagesUtil.Policy_Rules;
@@ -18,7 +18,7 @@ import static edu.thu.ss.editor.util.MessagesUtil.Rule_Restriction_None;
 import static edu.thu.ss.editor.util.MessagesUtil.Rule_Simplify_Prompt_Message;
 import static edu.thu.ss.editor.util.MessagesUtil.Select_As_Seed;
 import static edu.thu.ss.editor.util.MessagesUtil.Simplify;
-import static edu.thu.ss.editor.util.MessagesUtil.Strong_Consistency;
+import static edu.thu.ss.editor.util.MessagesUtil.StrongConsistency;
 import static edu.thu.ss.editor.util.MessagesUtil.User_Ref;
 import static edu.thu.ss.editor.util.MessagesUtil.getMessage;
 
@@ -325,10 +325,10 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 		consistencyItem.setMenu(consistencyMenu);
 
 		MenuItem strongConsistency = new MenuItem(consistencyMenu, SWT.NONE);
-		strongConsistency.setText(getMessage(Strong_Consistency));
+		strongConsistency.setText(getMessage(StrongConsistency));
 
 		MenuItem enhancedStrongConsistency = new MenuItem(consistencyMenu, SWT.NONE);
-		enhancedStrongConsistency.setText(getMessage(Enhanced_Strong_Consistency));
+		enhancedStrongConsistency.setText(getMessage(EnhancedStrongConsistency));
 
 		editItem.addSelectionListener(new SelectionAdapter() {
 			@Override

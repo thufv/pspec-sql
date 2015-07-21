@@ -55,8 +55,8 @@ public class MessagesUtil {
 	public static final String Consistency = "consistency";
 	public static final String NormalConsistency = "normal.consistency";
 	public static final String ApproximateConsistency = "approximate.consistency";
-	public static final String Strong_Consistency = "strong.consistency";
-	public static final String Enhanced_Strong_Consistency = "enhanced.strong.consistency";
+	public static final String StrongConsistency = "strong.consistency";
+	public static final String EnhancedStrongConsistency = "enhanced.strong.consistency";
 	public static final String Select_As_Seed = "select.as.seed";
 
 	public static final String Base_Vocabulary = "base.vocabulary";
@@ -208,6 +208,9 @@ public class MessagesUtil {
 	public static final String Rule_No_Strong_Inconsistency_Message = "rule.enhanced.strong.inconsistency.message";
 	public static final String Rule_No_Enhanced_Strong_Inconsistency_Message = "rule.enhanced.strong.inconsistency.message";
 
+	public static final String Visualization = "visualization";
+	public static final String ScopeRelation = "scope.relation";
+	
 	public static final String Forbid = "forbid";
 	public static final String Restriction = "restriction";
 	public static final String Restrict = "restrict";

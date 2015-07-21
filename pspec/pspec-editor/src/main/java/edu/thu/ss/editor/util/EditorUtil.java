@@ -110,9 +110,7 @@ public class EditorUtil {
 	private static ToolTip previousTip;
 
 	public static enum OSType {
-		Mac,
-		Windows,
-		Other
+		Mac, Windows, Other
 	}
 
 	public static OSType getOSType() {
@@ -192,10 +190,7 @@ public class EditorUtil {
 	}
 
 	public static enum ParseResult {
-		Success,
-		Invalid_Vocabulary,
-		Invalid_Policy,
-		Error
+		Success, Invalid_Vocabulary, Invalid_Policy, Error
 	}
 
 	public static ParseResult openVocabulary(VocabularyModel model, Shell shell, boolean output) {
@@ -339,6 +334,13 @@ public class EditorUtil {
 		return button;
 	}
 
+	public static Button newCheck(Composite parent, String text) {
+		Button button = new Button(parent, SWT.CHECK);
+		setStyle(button);
+		button.setText(text);
+		return button;
+	}
+
 	public static GridLayout newNoMarginGridLayout(int columns, boolean equals) {
 		GridLayout layout = new GridLayout(columns, equals);
 		layout.marginHeight = layout.marginWidth = 0;
@@ -366,8 +368,9 @@ public class EditorUtil {
 	}
 
 	public static void centerLocation(Shell shell) {
-		shell.setLocation(Display.getCurrent().getClientArea().width / 2 - shell.getShell().getSize().x
-				/ 2, Display.getCurrent().getClientArea().height / 2 - shell.getSize().y / 2);
+		shell.setLocation(
+				Display.getCurrent().getClientArea().width / 2 - shell.getShell().getSize().x / 2,
+				Display.getCurrent().getClientArea().height / 2 - shell.getSize().y / 2);
 
 	}
 
@@ -716,9 +719,11 @@ public class EditorUtil {
 					break;
 				case Category_Parent_Not_Exist:
 					if (category instanceof UserCategory) {
-						messages.add(getMessage(User_Category_Parent_Not_Exist_Message, category.getId(), refid));
+						messages
+								.add(getMessage(User_Category_Parent_Not_Exist_Message, category.getId(), refid));
 					} else {
-						messages.add(getMessage(Data_Category_Parent_Not_Exist_Message, category.getId(), refid));
+						messages
+								.add(getMessage(Data_Category_Parent_Not_Exist_Message, category.getId(), refid));
 					}
 					break;
 				case Cycle_Reference:
@@ -767,38 +772,38 @@ public class EditorUtil {
 				case Category_Ref_Not_Exist:
 					if (ref instanceof UserRef) {
 						message = getMessage(User_Category_Not_Exist_Message, ref.getRefid(), rule.getId());
-						ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.error, model,
-								ruleModel, MessageType.Rule_Ref, listener));
+						ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.error, model, ruleModel,
+								MessageType.Rule_Ref, listener));
 					} else {
 						message = getMessage(Data_Category_Not_Exist_Message, ref.getRefid(), rule.getId());
-						ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.error, model,
-								ruleModel, MessageType.Rule_Ref, listener));
+						ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.error, model, ruleModel,
+								MessageType.Rule_Ref, listener));
 					}
 					break;
 				case Category_Exclude_Invalid:
 					if (ref instanceof UserRef) {
 						message = getMessage(User_Category_Exclude_Invalid_Message, ref.getRefid(), refid,
 								rule.getId());
-						ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.error, model,
-								ruleModel, MessageType.Rule_Ref, listener));
+						ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.error, model, ruleModel,
+								MessageType.Rule_Ref, listener));
 					} else {
 						message = getMessage(Data_Category_Exclude_Invalid_Message, ref.getRefid(), refid,
 								rule.getId());
-						ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.error, model,
-								ruleModel, MessageType.Rule_Ref, listener));
+						ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.error, model, ruleModel,
+								MessageType.Rule_Ref, listener));
 					}
 					break;
 				case Category_Exclude_Not_Exist:
 					if (ref instanceof UserRef) {
 						message = getMessage(User_Category_Exclude_Not_Exist_Message, ref.getRefid(), refid,
 								rule.getId());
-						ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.error, model,
-								ruleModel, MessageType.Rule_Ref, listener));
+						ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.error, model, ruleModel,
+								MessageType.Rule_Ref, listener));
 					} else {
 						message = getMessage(Data_Category_Exclude_Not_Exist_Message, ref.getRefid(), refid,
 								rule.getId());
-						ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.error, model,
-								ruleModel, MessageType.Rule_Ref, listener));
+						ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.error, model, ruleModel,
+								MessageType.Rule_Ref, listener));
 					}
 					break;
 				default:
@@ -815,39 +820,39 @@ public class EditorUtil {
 				case Associate_Restriction_DataRef_Not_Exist:
 					message = getMessage(Rule_Restriction_DataRef_Not_Exist_Message, refId,
 							rule.getRestrictionIndex(res), rule.getId());
-					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model,
-							ruleModel, MessageType.Rule_Restriction, listener));
+					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model, ruleModel,
+							MessageType.Rule_Restriction, listener));
 					break;
 				case Associate_Restriction_Explicit_DataRef:
 					message = getMessage(Rule_Restriction_Explicit_DataRef_Message, rule.getId());
-					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model,
-							ruleModel, MessageType.Rule_Restriction, listener));
+					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model, ruleModel,
+							MessageType.Rule_Restriction, listener));
 					break;
 				case One_Forbid:
 					message = getMessage(Rule_Restriction_One_Forbid_Message, rule.getId());
-					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model,
-							ruleModel, MessageType.Rule_Restriction, listener));
+					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model, ruleModel,
+							MessageType.Rule_Restriction, listener));
 					break;
 				case Single_One_Restriction:
 					message = getMessage(Rule_Restriction_Single_One_Message, rule.getId());
-					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model,
-							ruleModel, MessageType.Rule_Restriction, listener));
+					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model, ruleModel,
+							MessageType.Rule_Restriction, listener));
 					break;
 				case Single_Restriction_No_DataRef:
 					message = getMessage(Rule_Restriction_Single_No_DataRef_Message, rule.getId());
-					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model,
-							ruleModel, MessageType.Rule_Restriction, listener));
+					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model, ruleModel,
+							MessageType.Rule_Restriction, listener));
 					break;
 				case Single_Restriction_One_Desensitize:
 					message = getMessage(Rule_Restriction_Single_One_Desensitize_Message, rule.getId());
-					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model,
-							ruleModel, MessageType.Rule_Restriction, listener));
+					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model, ruleModel,
+							MessageType.Rule_Restriction, listener));
 					break;
 				case Unsupported_Operation:
 					message = getMessage(Rule_Restriction_Unsupported_Operation_Message, rule.getId(),
 							rule.getRestrictionIndex(res));
-					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model,
-							ruleModel, MessageType.Rule_Restriction, listener));
+					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.warning, model, ruleModel,
+							MessageType.Rule_Restriction, listener));
 					break;
 				default:
 					break;
@@ -925,13 +930,13 @@ public class EditorUtil {
 					sb.append(rules[rules.length - 1].getRuleId());
 					message = getMessage(Rule_Normal_Inconsistency_Message, sb.toString());
 					model.addOutput(OutputEntry.newInstance(message, OutputType.analysis, model,
-							MessageType.Normal_Consistency));
+							MessageType.Normal_Consistency, (Object[]) rules));
 					break;
 				case Approximate_Consistency:
 					sb.append(rules[rules.length - 1].getRuleId());
 					message = getMessage(Rule_Approximate_Inconsistency_Message, sb.toString());
 					model.addOutput(OutputEntry.newInstance(message, OutputType.analysis, model,
-							MessageType.Approximate_Consistency));
+							MessageType.Approximate_Consistency, (Object[]) rules));
 					break;
 				case Strong_Consistency:
 					sb.deleteCharAt(sb.length() - 1);
@@ -939,7 +944,7 @@ public class EditorUtil {
 					message = getMessage(Rule_Strong_Inconsistency_Message, sb.toString(),
 							rules[rules.length - 1].getRuleId());
 					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.analysis, model,
-							ruleModel, MessageType.Strong_Consistency));
+							ruleModel, MessageType.Strong_Consistency, (Object[]) rules));
 					break;
 				case Enhanced_Strong_Consistency:
 					sb.deleteCharAt(sb.length() - 1);
@@ -947,7 +952,7 @@ public class EditorUtil {
 					message = getMessage(Rule_Enhanced_Strong_Inconsistency_Message, sb.toString(),
 							rules[rules.length - 1].getRuleId());
 					ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.analysis, model,
-							ruleModel, MessageType.Enhanced_Strong_Consistency));
+							ruleModel, MessageType.Enhanced_Strong_Consistency, (Object[]) rules));
 					break;
 				default:
 					break;
@@ -975,8 +980,8 @@ public class EditorUtil {
 					ruleModel, MessageType.Simplify, listener, dataRef));
 		}
 		for (Restriction res : log.redundantRestrictions) {
-			message = getMessage(Rule_Restriction_Simplify_Message, ruleModel.getRule()
-					.getRestrictionIndex(res), ruleId);
+			message = getMessage(Rule_Restriction_Simplify_Message,
+					ruleModel.getRule().getRestrictionIndex(res), ruleId);
 			ruleModel.addOutput(OutputEntry.newInstance(message, OutputType.analysis, policyModel,
 					ruleModel, MessageType.Simplify, listener, res));
 		}
@@ -995,11 +1000,12 @@ public class EditorUtil {
 
 	}
 
-	public static FixListener newSimplifyListener(final RuleView ruleView, final OutputView outputView) {
+	public static FixListener newSimplifyListener(final RuleView ruleView,
+			final OutputView outputView) {
 		return new FixListener() {
 			@Override
 			public void handleEvent(OutputEntry entry) {
-				assert (entry.data.length == 1);
+				assert(entry.data.length == 1);
 				RuleModel model = (RuleModel) entry.model;
 				Object data = entry.data[0];
 				if (data instanceof UserRef) {

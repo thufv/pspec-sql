@@ -17,10 +17,6 @@ public class ApproximateConsistencyAnalyzer extends ConsistencyAnalyzer{
 
 	@Override
 	public boolean analyze(List<ExpandedRule> rules) {
-		if (rules.get(0).isFilter()) {
-			return false;
-		}
-		
 		ApproximateConsistencySearcher searcher = new ApproximateConsistencySearcher(table);
 		searcher.setRules(rules);
 		searcher.search();

@@ -263,12 +263,12 @@ public class PSpecEditor {
 		menus.put(ApproximateConsistency, approximateConsistency);
 
 		MenuItem strongConsistency = new MenuItem(consistencyMenu, SWT.NONE);
-		strongConsistency.setText(getMessage(Strong_Consistency));
-		menus.put(Strong_Consistency, strongConsistency);
+		strongConsistency.setText(getMessage(StrongConsistency));
+		menus.put(StrongConsistency, strongConsistency);
 
 		MenuItem enhancedStrongConsistency = new MenuItem(consistencyMenu, SWT.NONE);
-		enhancedStrongConsistency.setText(getMessage(Enhanced_Strong_Consistency));
-		menus.put(Enhanced_Strong_Consistency, enhancedStrongConsistency);
+		enhancedStrongConsistency.setText(getMessage(EnhancedStrongConsistency));
+		menus.put(EnhancedStrongConsistency, enhancedStrongConsistency);
 
 		MenuItem help = new MenuItem(menu, SWT.CASCADE);
 		help.setText(getMessage(Help));
@@ -527,6 +527,10 @@ public class PSpecEditor {
 		case Data_Category_Duplicate:
 		case Data_Category:
 			switchView(entry.location, getDataContainerView((VocabularyModel) entry.location), null);
+			break;
+		case Normal_Consistency:
+		case Approximate_Consistency:
+			switchView(entry.location, getRuleView((PolicyModel) entry.location), null);
 			break;
 		default:
 			RuleModel model = (RuleModel) entry.model;
