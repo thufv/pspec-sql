@@ -463,6 +463,9 @@ public class DataContainerView extends EditorView<VocabularyModel, DataCategory>
 						dataViewer.refresh(parent);
 					} else {
 						if (data.getChildren() != null) {
+							for (DataCategory child : data.getChildren()) {
+								child.setParent(null);
+							}
 							dataContainer.getRoot().addAll(data.getChildren());
 						}
 						dataViewer.refresh();

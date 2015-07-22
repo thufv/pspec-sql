@@ -39,6 +39,7 @@ public class MessagesUtil {
 	public static final String Exit = "exit";
 	public static final String Edit = "edit";
 	public static final String Help = "help";
+	public static final String Help_Content = "help.content";
 	public static final String About = "about";
 	public static final String OK = "ok";
 	public static final String Cancel = "cancel";

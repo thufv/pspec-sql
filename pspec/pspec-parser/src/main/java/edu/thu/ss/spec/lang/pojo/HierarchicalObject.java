@@ -32,6 +32,11 @@ public class HierarchicalObject<T extends HierarchicalObject<T>> extends Describ
 
 	public void setParent(T parent) {
 		this.parent = parent;
+		if(parent == null){
+			this.parentId = "";
+		}else{
+			this.parentId = parent.id;
+		}
 	}
 
 	public void setChildren(List<T> children) {

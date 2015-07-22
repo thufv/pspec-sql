@@ -323,7 +323,7 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 				}
 				String target = rules.get(j).getRuleId();
 				if (analyzer.containsEdge(source, target)) {
-					graph.addEdge(i, j);
+					graph.addEdge(j, i);
 				}
 			}
 		}

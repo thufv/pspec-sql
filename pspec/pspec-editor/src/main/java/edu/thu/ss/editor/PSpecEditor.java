@@ -2,9 +2,14 @@ package edu.thu.ss.editor;
 
 import static edu.thu.ss.editor.util.MessagesUtil.*;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.help.HelpBroker;
+import javax.help.HelpSet;
+import javax.help.HelpSetException;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -149,7 +154,7 @@ public class PSpecEditor {
 		shell.setImage(SWTResourceManager.getImage(EditorUtil.Image_Logo));
 		int defaultWidth = 1024;
 		int defaultHeight = 768;
-		shell.setMinimumSize(defaultWidth, defaultHeight);
+		shell.setMinimumSize(800, 600);
 		shell.setSize(defaultWidth, defaultHeight);
 		EditorUtil.centerLocation(shell);
 		shell.setText(MessagesUtil.getMessage(MessagesUtil.Editor_Name));
@@ -280,6 +285,10 @@ public class PSpecEditor {
 		Menu helpMenu = new Menu(help);
 		help.setMenu(helpMenu);
 
+		MenuItem helpContent = new MenuItem(helpMenu, SWT.NONE);
+		helpContent.setText(getMessage(Help_Content));
+		menus.put(Help_Content, helpContent);
+
 		MenuItem about = new MenuItem(helpMenu, SWT.NONE);
 		about.setText(getMessage(About));
 		menus.put(About, about);
@@ -390,6 +399,23 @@ public class PSpecEditor {
 				analyzeEnhancedStrongConsistency(model);
 			}
 		});
+
+		helpContent.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				URL url = HelpSet.findHelpSet(Test.class.getClassLoader(), EditorUtil.Help_URL);
+				HelpSet helpSet;
+				try {
+					helpSet = new HelpSet(null, url);
+					HelpBroker helpBroker = helpSet.createHelpBroker(getMessage(Editor_Name));
+					helpBroker.setDisplayed(true);
+				} catch (HelpSetException e1) {
+					e1.printStackTrace();
+				}
+
+			}
+
+		});
 	}
 
 	private void initializeToolbar() {
@@ -452,8 +478,8 @@ public class PSpecEditor {
 		policyItems = EditorUtil.newTreeItem(editorTree, getMessage(Policy));
 		policyItems.setImage(SWTResourceManager.getImage(EditorUtil.Image_Policy_Item));
 
-		metadataItems = EditorUtil.newTreeItem(editorTree, getMessage(Metadata));
-		metadataItems.setImage(SWTResourceManager.getImage(EditorUtil.Image_Policy_Item));
+	//	metadataItems = EditorUtil.newTreeItem(editorTree, getMessage(Metadata));
+	//metadataItems.setImage(SWTResourceManager.getImage(EditorUtil.Image_Policy_Item));
 
 		EditorUtil.processTree(editorTree);
 
@@ -771,6 +797,9 @@ public class PSpecEditor {
 	}
 
 	private void closeModel() {
+		if (editingModel == null) {
+			return;
+		}
 		if (editingModel instanceof VocabularyModel) {
 			for (TreeItem item : vocabularyItems.getItems()) {
 				if (item.getData() == editingModel) {
@@ -785,6 +814,10 @@ public class PSpecEditor {
 					break;
 				}
 			}
+		}
+
+		if (editingModel.hasOutput()) {
+			outputView.refresh();
 		}
 
 		editingModel = null;

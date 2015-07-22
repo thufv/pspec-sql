@@ -62,6 +62,8 @@ public class VocabularyParser extends BaseParser implements ParserConstant {
 			registerVocabularies();
 		}
 		return vocabulary;
+			
+		
 	}
 
 	private void registerVocabularies() {

@@ -84,8 +84,14 @@ public class RuleResolver extends BaseRuleAnalyzer {
 
 		for (int i = 0; i < refs.size(); i++) {
 			DataRef ref1 = refs.get(i);
+			if (ref1.isError()) {
+				continue;
+			}
 			for (int j = i + 1; j < refs.size(); j++) {
 				DataRef ref2 = refs.get(j);
+				if (ref2.isError()) {
+					continue;
+				}
 				if (PSpecUtil.bottom(ref1.getAction(), ref2.getAction()) != null
 						&& PSpecUtil.intersects(ref1.getMaterialized(), ref2.getMaterialized())) {
 					logger.error(

@@ -1,0 +1,240 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<style>
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote {
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;
+    font-size: 13px;
+    line-height: 18px;
+    color: #737373;
+    background-color: white;
+    margin: 10px 13px 10px 13px;
+}
+table {
+	margin: 10px 0 15px 0;
+	border-collapse: collapse;
+}
+td,th {	
+	border: 1px solid #ddd;
+	padding: 3px 10px;
+}
+th {
+	padding: 5px 10px;	
+}
+
+a {
+    color: #0069d6;
+}
+a:hover {
+    color: #0050a3;
+    text-decoration: none;
+}
+a img {
+    border: none;
+}
+p {
+    margin-bottom: 9px;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #404040;
+    line-height: 36px;
+}
+h1 {
+    margin-bottom: 18px;
+    font-size: 30px;
+}
+h2 {
+    font-size: 24px;
+}
+h3 {
+    font-size: 18px;
+}
+h4 {
+    font-size: 16px;
+}
+h5 {
+    font-size: 14px;
+}
+h6 {
+    font-size: 13px;
+}
+hr {
+    margin: 0 0 19px;
+    border: 0;
+    border-bottom: 1px solid #ccc;
+}
+blockquote {
+    padding: 13px 13px 21px 15px;
+    margin-bottom: 18px;
+    font-family:georgia,serif;
+    font-style: italic;
+}
+blockquote:before {
+    content:"\201C";
+    font-size:40px;
+    margin-left:-10px;
+    font-family:georgia,serif;
+    color:#eee;
+}
+blockquote p {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 18px;
+    margin-bottom: 0;
+    font-style: italic;
+}
+code, pre {
+    font-family: Monaco, Andale Mono, Courier New, monospace;
+}
+code {
+    background-color: #fee9cc;
+    color: rgba(0, 0, 0, 0.75);
+    padding: 1px 3px;
+    font-size: 12px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+pre {
+    display: block;
+    padding: 14px;
+    margin: 0 0 18px;
+    line-height: 16px;
+    font-size: 11px;
+    border: 1px solid #d9d9d9;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+pre code {
+    background-color: #fff;
+    color:#737373;
+    font-size: 11px;
+    padding: 0;
+}
+sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+* {
+	-webkit-print-color-adjust: exact;
+}
+@media screen and (min-width: 914px) {
+    body {
+        width: 854px;
+        margin:10px auto;
+    }
+}
+@media print {
+	body,code,pre code,h1,h2,h3,h4,h5,h6 {
+		color: black;
+	}
+	table, pre {
+		page-break-inside: avoid;
+	}
+}
+</style>
+<title>Policy Analysis</title>
+
+</head>
+<body>
+<h1>Policy Analysis</h1>
+
+<p>To facilitate user write and analyze the PSpec rules, we have developed several policy analysis algorithms.
+All of these analysis algorithms can be triggered by switching to the rule view and clicking the menus under "Analysis".
+In this document, we only briefly discuss how to use these analysis algorithms. For the detailed explanation, please refer to our <a href="TODO">technical report</a>.</p>
+
+<h3>Rule Expansion</h3>
+
+<p>For all analysis discussed below (except simplification analysis), the rules are first expanded for the ease of analysis.
+The process of rule expansion is as follows.
+For each rule of which the data reference is single but refers multiple data categories, we create multiple rules each of which only refers one data category, and the id of the expanded rule is the concatenation of the id of the original rule and the name of the data category.</p>
+
+<h2>Rule Simplification</h2>
+
+<p>Since a rule may refer multiple user categories/data categories/restrictions, some of these elements may be redundant.
+For example, if a rule refers two user categories <em>employee</em> and <em>manager</em>, then <em>manager</em> is redundant and the rule simplified.
+Thus, rule simplification tries to find all possible redundant elements <em>within</em> each rule.</p>
+
+<p>To simplify the rules, the policy writer has two options.
+One option is to click "Simplify" menu under "Analysis" menu, and this will simplify all rules in the current selected policy.
+Another option is to right click a rule in the rule view, which would trigger a popup menu, and click "Simplify" menu in the popup menu as show below.
+This will only simplify the rule being selected.</p>
+
+<p><img src="../img/simplify.png" height="414" width="600"/></p>
+
+<p>After the simplification analysis finishes, the policy writer can choose whether or not remove the redundant elements automatically. If not, the redundant elements are shown in the output view as below, and the policy writer can further simplify the rules manually by clicking "Fix" menu.</p>
+
+<p><img src="../img/simplify_output.png" height="100" width="600"/></p>
+
+<h2>Redundancy Analysis</h2>
+
+<p>Different from simplification analysis, which detects redundant elements <em>within</em> each rule, redundant analysis tries to find redundant rules in a policy.
+Since we require a query should satisfy all applicable rules in a policy, it is possible that for any query satisfies some rule <em>r</em>, the query also satisfies another rule <em>r'</em>.
+In this case, <em>r'</em> is redundant as it does not specify any more restrictions than <em>r</em>.
+Redundancy analysis then tries to find all such rules <em>r'</em> which are covered by some other rule <em>r</em>.</p>
+
+<p>To perform redundancy analysis, one can click <em>Redundancy Analysis</em> menu under <em>Analysis Menu</em>. After the analysis finishes, the policy writer can also choose whether or not remove the redundant rules automatically.
+If not, the policy writer can further remove the rules manually by clicking "Fix" menu.</p>
+
+<h2>Consistency Analysis</h2>
+
+<p>Consistency analysis tries to find inconsistent rule sets.
+Intuitively, a set of rules is inconsistent if the rules cannot be satisfied together, which means certain data categories cannot be accessed for certain user category.
+These inconsistent rule sets may represent possible errors among the rules, and should be fixed manually.</p>
+
+<p>We have developed four consistency analysis algorithms, namely <em>Normal Consistency</em>, <em>Approxiamte Consistency</em>, <em>Strong Consistency</em> and <em>Enhanced Strong Consistency</em>.
+These algorithms differ in term of the complexity as well as the conservativeness.</p>
+
+<p>All these algorithms can be triggered by click the corresponding menu item under "Analysis" menu.
+Moreover, since <em>Strong Consistency</em> and <em>Enhanced Strong Consistency</em> require a seed rule, the policy writer can also choose a seed rule manually and run the analysis algorithms by clicking the popup menu as below.</p>
+
+<p><img src="../img/consistency_seed.png" height="403" width="600"/></p>
+
+<p>In the following, we briefly discuss the intuitions and criteria of these consistency analysis algorithms.</p>
+
+<h3>Normal Consistency</h3>
+
+<p>A set of rules (expanded) is said to be normally inconsistent if certain data categories together are not accessible for some user category.</p>
+
+<p>For example, suppose rule <em>r1</em> requires <em>financial</em> must be desensitized with <em>sum</em> operation for all user categories, while rule <em>r2</em> requires <em>analyst</em> that when accessing <em>financial</em> and <em>name</em> together, <em>analyst</em> must desensitize <em>financial</em> with <em>avg</em> operation.
+Thus, <em>analyst</em> cannot access <em>financial</em> and <em>name</em> together since <em>analyst</em> cannot desensitize <em>financial</em> properly to satisfy both the two rules.</p>
+
+<h3>Approximate Consistency</h3>
+
+<p>Approximate consistency analysis is much faster than normal consistency analysis at the price of false positive.
+A set of rules is approximately inconsistent if there exist a combination of restrictions in each rule such that some user category cannot desensitize <em>one</em> data category to satisfy these restrictions.
+However, it is still possible for the user category to satisfy all these rules since one can satisfy other restrictions in a rule.</p>
+
+<h3>Strong Consistency</h3>
+
+<p>Different from previous two consistency analysis, strong consistency takes into consideration the number of data categories accessed together.
+A set of rules is strong inconsistent w.r.t. a seed rule <em>r</em> if certain user category cannot access the data categories referred in <em>r</em> together.
+In other words, the seed rule <em>r</em> must be triggered.
+This avoids the problem incurred by the number of data categories accessed together since the more data categories accessed together, the more information is leaked because of the association among them.</p>
+
+<h3>Enhanced Strong Consistecny</h3>
+
+<p>As the name suggests, enhanced strong consistency analysis is an enhanced version of strong consistency analysis.
+A set of rules is enhanced strong inconsistent w.r.t. a seed rule <em>r</em> if certain user category cannot access any combination of the data categories referred in <em>r</em> together.
+This is more stronger since it implies the user category cannot access the data categories together whenever <em>r</em> is triggered.</p>
+</body>
+</html>

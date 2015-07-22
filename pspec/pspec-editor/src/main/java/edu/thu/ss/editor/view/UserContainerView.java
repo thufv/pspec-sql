@@ -33,6 +33,7 @@ import edu.thu.ss.editor.model.OutputEntry.MessageType;
 import edu.thu.ss.editor.model.OutputEntry.OutputType;
 import edu.thu.ss.editor.model.VocabularyModel;
 import edu.thu.ss.editor.util.EditorUtil;
+import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
 import edu.thu.ss.spec.lang.pojo.UserContainer;
 import edu.thu.ss.spec.util.PSpecUtil;
@@ -421,6 +422,9 @@ public class UserContainerView extends EditorView<VocabularyModel, UserCategory>
 							parent.buildRelation(index, children);
 						}
 					} else if (children != null) {
+						for (UserCategory child : user.getChildren()) {
+							child.setParent(null);
+						}
 						userContainer.getRoot().addAll(children);
 					}
 					refreshViewer(parent);
