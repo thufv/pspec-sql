@@ -207,9 +207,11 @@ public class MessagesUtil {
 
 	public static final String Rule_No_Strong_Inconsistency_Message = "rule.enhanced.strong.inconsistency.message";
 	public static final String Rule_No_Enhanced_Strong_Inconsistency_Message = "rule.enhanced.strong.inconsistency.message";
-
+	
 	public static final String Visualization = "visualization";
 	public static final String ScopeRelation = "scope.relation";
+
+	public static final String Metadata = "metadata";
 	
 	public static final String Forbid = "forbid";
 	public static final String Restriction = "restriction";

@@ -32,6 +32,7 @@ import org.eclipse.wb.swt.SWTResourceManager;
 
 import edu.thu.ss.editor.model.BaseModel;
 import edu.thu.ss.editor.model.EditorModel;
+import edu.thu.ss.editor.model.MetadataModel;
 import edu.thu.ss.editor.model.OutputEntry;
 import edu.thu.ss.editor.model.OutputEntry.FixListener;
 import edu.thu.ss.editor.model.OutputEntry.MessageType;
@@ -45,6 +46,7 @@ import edu.thu.ss.editor.util.MessagesUtil;
 import edu.thu.ss.editor.view.DataContainerView;
 import edu.thu.ss.editor.view.EditorView;
 import edu.thu.ss.editor.view.GraphView;
+import edu.thu.ss.editor.view.MetadataView;
 import edu.thu.ss.editor.view.OutputView;
 import edu.thu.ss.editor.view.PolicyView;
 import edu.thu.ss.editor.view.RuleView;
@@ -88,6 +90,8 @@ public class PSpecEditor {
 	private TreeItem vocabularyItems;
 
 	private TreeItem policyItems;
+
+	private TreeItem metadataItems;
 
 	private Composite contentComposite;
 
@@ -448,6 +452,9 @@ public class PSpecEditor {
 		policyItems = EditorUtil.newTreeItem(editorTree, getMessage(Policy));
 		policyItems.setImage(SWTResourceManager.getImage(EditorUtil.Image_Policy_Item));
 
+		metadataItems = EditorUtil.newTreeItem(editorTree, getMessage(Metadata));
+		metadataItems.setImage(SWTResourceManager.getImage(EditorUtil.Image_Policy_Item));
+
 		EditorUtil.processTree(editorTree);
 
 		editorTree.addSelectionListener(new SelectionAdapter() {
@@ -505,6 +512,9 @@ public class PSpecEditor {
 			EditorUtil.include(view);
 			currentView = view;
 			//	currentView.refresh();
+			if (currentView instanceof GraphView) {
+				currentView.refresh();
+			}
 			contentComposite.layout();
 		}
 		enableMenus();
@@ -602,6 +612,21 @@ public class PSpecEditor {
 		return null;
 	}
 
+	public MetadataView getMetadataView(MetadataModel model) {
+		for (TreeItem metadataItem : metadataItems.getItems()) {
+			if (!metadataItem.getData().equals(model)) {
+				continue;
+			}
+			for (TreeItem item : metadataItem.getItems()) {
+				EditorView<?, ?> view = (EditorView<?, ?>) item.getData(EditorUtil.View);
+				if (view instanceof MetadataView) {
+					return (MetadataView) view;
+				}
+			}
+		}
+		return null;
+	}
+
 	private void addVocabulary(VocabularyModel model) {
 		Vocabulary vocabulary = model.getVocabulary();
 		editorModel.getVocabularies().add(model);
@@ -691,8 +716,8 @@ public class PSpecEditor {
 			PolicyModel policyModel = new PolicyModel(file);
 			ParseResult result = EditorUtil.openPolicy(policyModel, shell, true);
 			if (result.equals(ParseResult.Invalid_Policy)) {
-				EditorUtil
-						.showErrorMessageBox(shell, "", getMessage(Policy_Invalid_Document_Message, file));
+				EditorUtil.showErrorMessageBox(shell, "",
+						getMessage(Policy_Invalid_Document_Message, file));
 				return;
 			}
 			if (result.equals(ParseResult.Invalid_Vocabulary)) {
@@ -846,15 +871,15 @@ public class PSpecEditor {
 		return false;
 	}
 
-	private void analyzeRedundancy(final PolicyModel model) {
+	public void analyzeRedundancy(final PolicyModel model) {
 		Policy policy = model.getPolicy();
 		boolean preOutput = model.hasOutput(OutputType.analysis, MessageType.Redundancy);
 		model.clearOutput(OutputType.analysis, MessageType.Redundancy);
 		RuleExpander expander = new RuleExpander(null);
 		expander.analyze(policy);
 
-		LocalRedundancyAnalyzer analyzer = new LocalRedundancyAnalyzer(EditorUtil.newOutputTable(model,
-				new FixListener() {
+		LocalRedundancyAnalyzer analyzer = new LocalRedundancyAnalyzer(
+				EditorUtil.newOutputTable(model, new FixListener() {
 					@Override
 					public void handleEvent(OutputEntry entry) {
 						ExpandedRule rule = (ExpandedRule) entry.data[0];
@@ -914,15 +939,15 @@ public class PSpecEditor {
 		}
 	}
 
-	private void analyzeNormalConsistency(PolicyModel model) {
+	public void analyzeNormalConsistency(PolicyModel model) {
 		Policy policy = model.getPolicy();
 		boolean preOutput = model.hasOutput(OutputType.analysis, MessageType.Normal_Consistency);
 		model.clearOutput(OutputType.analysis, MessageType.Normal_Consistency);
 		RuleExpander expander = new RuleExpander(null);
 		expander.analyze(policy);
 
-		NormalConsistencyAnalyzer analyzer = new NormalConsistencyAnalyzer(EditorUtil.newOutputTable(
-				model, null));
+		NormalConsistencyAnalyzer analyzer = new NormalConsistencyAnalyzer(
+				EditorUtil.newOutputTable(model, null));
 
 		analyzer.analyze(policy);
 		boolean hasOutput = model.hasOutput(OutputType.analysis, MessageType.Normal_Consistency);
@@ -939,7 +964,7 @@ public class PSpecEditor {
 		}
 	}
 
-	private void analyzeApproximateConsistency(PolicyModel model) {
+	public void analyzeApproximateConsistency(PolicyModel model) {
 		Policy policy = model.getPolicy();
 		boolean preOutput = model.hasOutput(OutputType.analysis, MessageType.Approximate_Consistency);
 		model.clearOutput(OutputType.analysis, MessageType.Approximate_Consistency);
@@ -964,15 +989,15 @@ public class PSpecEditor {
 		}
 	}
 
-	private void analyzeStrongConsistency(PolicyModel model) {
+	public void analyzeStrongConsistency(PolicyModel model) {
 		Policy policy = model.getPolicy();
 		boolean preOutput = model.hasOutput(OutputType.analysis, MessageType.Strong_Consistency);
 		model.clearOutput(OutputType.analysis, MessageType.Strong_Consistency);
 		RuleExpander expander = new RuleExpander(null);
 		expander.analyze(policy);
 
-		StrongConsistencyAnalyzer analyzer = new StrongConsistencyAnalyzer(EditorUtil.newOutputTable(
-				model, null));
+		StrongConsistencyAnalyzer analyzer = new StrongConsistencyAnalyzer(
+				EditorUtil.newOutputTable(model, null));
 
 		analyzer.analyze(policy);
 		boolean hasOutput = model.hasOutput(OutputType.analysis, MessageType.Strong_Consistency);
@@ -989,7 +1014,7 @@ public class PSpecEditor {
 		}
 	}
 
-	private void analyzeEnhancedStrongConsistency(PolicyModel model) {
+	public void analyzeEnhancedStrongConsistency(PolicyModel model) {
 		Policy policy = model.getPolicy();
 		boolean preOutput = model.hasOutput(OutputType.analysis,
 				MessageType.Enhanced_Strong_Consistency);

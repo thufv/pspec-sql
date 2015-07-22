@@ -3,14 +3,16 @@ package edu.thu.ss.editor.view;
 import static edu.thu.ss.editor.util.MessagesUtil.ApproximateConsistency;
 import static edu.thu.ss.editor.util.MessagesUtil.EnhancedStrongConsistency;
 import static edu.thu.ss.editor.util.MessagesUtil.NormalConsistency;
-import static edu.thu.ss.editor.util.MessagesUtil.ScopeRelation;
+import static edu.thu.ss.editor.util.MessagesUtil.Redundancy;
 import static edu.thu.ss.editor.util.MessagesUtil.StrongConsistency;
 import static edu.thu.ss.editor.util.MessagesUtil.getMessage;
 
 import java.awt.Frame;
 import java.awt.Panel;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -28,6 +30,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
+import edu.thu.ss.editor.PSpecEditor;
 import edu.thu.ss.editor.graph.AggregateDragControl;
 import edu.thu.ss.editor.graph.AggregateGraph;
 import edu.thu.ss.editor.graph.AggregateLayout;
@@ -60,6 +63,8 @@ import prefuse.render.LabelRenderer;
 import prefuse.render.PolygonRenderer;
 import prefuse.render.Renderer;
 import prefuse.util.ColorLib;
+import prefuse.util.GraphicsLib;
+import prefuse.util.display.DisplayLib;
 import prefuse.visual.VisualItem;
 
 public class GraphView extends EditorView<PolicyModel, Policy> {
@@ -69,7 +74,7 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 	private prefuse.Display display;
 
 	private Panel panel;
-	private Button scopeRelation;
+	private Button redundancy;
 	private Button normalConsistency;
 	private Button approximateConsistency;
 	private Button strongConsistency;
@@ -106,18 +111,16 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 		panel = new Panel();
 		frame.add(panel);
 		showRulesRelation();
-
 		this.addListener(SWT.Resize, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
 				Rectangle rec = GraphView.this.getClientArea();
 				if (EditorUtil.isWindows() || !initialize) {
-					display.setSize(rec.width, rec.height);
+					display.setSize(rec.width, rec.height * 6 / 7);
 					initialize = true;
 				}
 			}
 		});
-
 	}
 
 	@Override
@@ -125,30 +128,34 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 		panel.removeAll();
 		showRulesRelation();
 		Rectangle rec = GraphView.this.getClientArea();
-		display.setSize(rec.width, rec.height);
+		display.setSize(rec.width, rec.height * 6 / 7);
 	}
 
 	private void initializeGraph(Composite content) {
-		Composite dataComposite = newComposite(content, 5);
-		scopeRelation = EditorUtil.newCheck(dataComposite, getMessage(ScopeRelation));
-		normalConsistency = EditorUtil.newCheck(dataComposite, getMessage(NormalConsistency));
-		approximateConsistency = EditorUtil.newCheck(dataComposite, getMessage(ApproximateConsistency));
-		strongConsistency = EditorUtil.newCheck(dataComposite, getMessage(StrongConsistency));
-		enhancedStrongConsistency = EditorUtil.newCheck(dataComposite,
+		Composite typeComposite = newRadioComposite(content);
+		redundancy = EditorUtil.newRadio(typeComposite, getMessage(Redundancy));
+		normalConsistency = EditorUtil.newRadio(typeComposite, getMessage(NormalConsistency));
+		approximateConsistency = EditorUtil.newRadio(typeComposite, getMessage(ApproximateConsistency));
+		strongConsistency = EditorUtil.newRadio(typeComposite, getMessage(StrongConsistency));
+		enhancedStrongConsistency = EditorUtil.newRadio(typeComposite,
 				getMessage(EnhancedStrongConsistency));
 
-		scopeRelation.setSelection(true);
-
-		scopeRelation.addSelectionListener(new SelectionAdapter() {
+		redundancy.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				scopeRelation.setSelection(true);
+				if (!redundancy.getSelection()) {
+					return;
+				}
+				refresh();
 			}
 		});
 
 		normalConsistency.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				if (!normalConsistency.getSelection()) {
+					return;
+				}
 				refresh();
 			}
 		});
@@ -156,6 +163,9 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 		approximateConsistency.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				if (!approximateConsistency.getSelection()) {
+					return;
+				}
 				refresh();
 			}
 		});
@@ -163,6 +173,9 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 		strongConsistency.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				if (!strongConsistency.getSelection()) {
+					return;
+				}
 				refresh();
 			}
 		});
@@ -170,22 +183,28 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 		enhancedStrongConsistency.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				if (!enhancedStrongConsistency.getSelection()) {
+					return;
+				}
 				refresh();
 			}
 		});
 
 	}
 
-	private Composite newComposite(Composite parent, int column) {
+	private Composite newRadioComposite(Composite parent) {
 		Composite composite = EditorUtil.newComposite(parent);
-		GridLayout layout = EditorUtil.newNoMarginGridLayout(column, false);
-		composite.setLayout(layout);
 		GridData data = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		composite.setLayoutData(data);
+		GridLayout layout = EditorUtil.newNoMarginGridLayout(2, false);
+		composite.setLayout(layout);
 		return composite;
 	}
 
 	private void showRulesRelation() {
+		if (hasErrorOutput()) {
+			return;
+		}
 		Policy policy = model.getPolicy();
 		RuleExpander expander = new RuleExpander(null);
 		expander.analyze(policy);
@@ -201,15 +220,15 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 			prefuse.data.Node node = graph.addNode();
 			node.set("id", i);
 			node.set("name", rules.get(i).getRuleId());
-			node.set("info", rules.get(i).toString().replaceAll("\n\t", " "));
+			node.set("info", "<html>" + rules.get(i).toString().replaceAll("\n\t", "<br>") + "</html>");
 		}
 
 		generateScopeGraph(policy);
-		boolean consistency = generateConsistencyGraph();
+		boolean aggregate = generateAggregateGraph();
 
 		// set renderer
 		LabelRenderer labelRenderer = new LabelRenderer("name");
-		labelRenderer.setRoundedCorner(8, 8);
+		labelRenderer.setRoundedCorner(15, 15);
 		DefaultRendererFactory drf = new DefaultRendererFactory(labelRenderer);
 
 		EdgeRenderer edgeRenderer = new EdgeRenderer(prefuse.Constants.EDGE_TYPE_CURVE,
@@ -217,7 +236,7 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 		edgeRenderer.setArrowHeadSize(8, 8);
 		drf.setDefaultEdgeRenderer(edgeRenderer);
 
-		if (consistency) {
+		if (aggregate) {
 			// draw aggregates as polygons with curved edges
 			Renderer polyR = new PolygonRenderer(Constants.POLY_TYPE_CURVE);
 			((PolygonRenderer) polyR).setCurveSlack(0.15f);
@@ -229,11 +248,9 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 		// set color
 		ActionList color = new ActionList();
 
-		if (consistency) {
+		if (aggregate) {
 			int[] palette = new int[] { ColorLib.rgba(255, 200, 200, 150),
-					ColorLib.rgba(200, 255, 200, 150), ColorLib.rgba(200, 200, 255, 150),
-					ColorLib.rgba(200, 150, 200, 255), ColorLib.rgba(200, 150, 255, 200),
-					ColorLib.rgba(200, 255, 150, 200), ColorLib.rgba(255, 150, 200, 200)};
+					ColorLib.rgba(200, 255, 200, 150), ColorLib.rgba(200, 200, 255, 150) };
 			ColorAction aFill = new DataColorAction("aggregates", "id", Constants.NOMINAL,
 					VisualItem.FILLCOLOR, palette);
 			color.add(aFill);
@@ -252,11 +269,11 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 		color.add(arrows);
 
 		ColorAction nFill = new ColorAction("graph.nodes", VisualItem.FILLCOLOR);
-		nFill.setDefaultColor(ColorLib.gray(255));
+		nFill.setDefaultColor(ColorLib.rgb(136, 206, 250));
 		nFill.add("_hover", ColorLib.gray(200));
 
 		ColorAction nStroke = new ColorAction("graph.nodes", VisualItem.STROKECOLOR);
-		nStroke.setDefaultColor(ColorLib.gray(100));
+		nStroke.setDefaultColor(ColorLib.rgb(135, 206, 235));
 		nStroke.add("_hover", ColorLib.gray(50));
 		color.add(nFill);
 		color.add(nStroke);
@@ -265,8 +282,8 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 		ActionList layout = new ActionList(Activity.INFINITY);
 		layout.add(color);
 		layout.add(new RepaintAction());
-		layout.add(new ForceDirectedLayout("graph"));
-		if (consistency) {
+		layout.add(new ForceDirectedLayout("graph", true, false));
+		if (aggregate) {
 			layout.add(new AggregateLayout("aggregates"));
 		}
 
@@ -277,15 +294,21 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 		display.addControlListener(new ZoomControl()); // zoom with vertical
 		display.addControlListener(new WheelZoomControl());
 		display.addControlListener(new ToolTipControl("info"));
-		if (consistency) {
+		if (aggregate) {
 			display.setHighQuality(true);
 			display.addControlListener(new AggregateDragControl());
 		} else {
 			display.addControlListener(new DragControl()); // drag items around
 		}
-
+		adjustDisplayZoom();
 		panel.add(display);
 		visualization.run("layout");
+	}
+
+	private void adjustDisplayZoom() {
+		Rectangle2D bounds = visualization.getBounds(Visualization.ALL_ITEMS);
+		GraphicsLib.expand(bounds, 50 + (int) (1 / display.getScale()));
+		DisplayLib.fitViewToBounds(display, bounds, (long) 1);
 	}
 
 	private void generateScopeGraph(Policy policy) {
@@ -307,31 +330,21 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 		display = new prefuse.Display(visualization);
 	}
 
-	private boolean generateConsistencyGraph() {
+	private boolean generateAggregateGraph() {
 		AggregateGraph aggregateGraph = new AggregateGraph(visualization);
 		aggregateGraph.setGraph(graph);
-		boolean consistency = false;
 		if (normalConsistency.getSelection()) {
-			if (generateConsistencyGraph(aggregateGraph, MessageType.Normal_Consistency)) {
-				consistency = true;
-			}
+			return generateConsistencyGraph(aggregateGraph, MessageType.Normal_Consistency);
+		} else if (approximateConsistency.getSelection()) {
+			return generateConsistencyGraph(aggregateGraph, MessageType.Approximate_Consistency);
+		} else if (strongConsistency.getSelection()) {
+			return generateConsistencyGraph(aggregateGraph, MessageType.Strong_Consistency);
+		} else if (enhancedStrongConsistency.getSelection()) {
+			return generateConsistencyGraph(aggregateGraph, MessageType.Enhanced_Strong_Consistency);
+		} else if (redundancy.getSelection()) {
+			return generateRedundancyGraph(aggregateGraph);
 		}
-		if (approximateConsistency.getSelection()) {
-			if (generateConsistencyGraph(aggregateGraph, MessageType.Approximate_Consistency)) {
-				consistency = true;
-			}
-		}
-		if (strongConsistency.getSelection()) {
-			if (generateConsistencyGraph(aggregateGraph, MessageType.Strong_Consistency)) {
-				consistency = true;
-			}
-		}
-		if (enhancedStrongConsistency.getSelection()) {
-			if (generateConsistencyGraph(aggregateGraph, MessageType.Enhanced_Strong_Consistency)) {
-				consistency = true;
-			}
-		}
-		return consistency;
+		return false;
 	}
 
 	private boolean generateConsistencyGraph(AggregateGraph aggregateGraph, MessageType messageType) {
@@ -340,10 +353,21 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 		expander.analyze(policy);
 		List<ExpandedRule> erules = policy.getExpandedRules();
 
-		List<OutputEntry> list = new ArrayList<>();
-		model.getOutput(OutputType.analysis, list);
+		List<OutputEntry> list = getAnalysisOutput(messageType);
 		if (list.size() == 0) {
-			return false;
+			if (MessageType.Normal_Consistency.equals(messageType)) {
+				PSpecEditor.getInstance().analyzeNormalConsistency(model);
+			} else if (MessageType.Approximate_Consistency.equals(messageType)) {
+				PSpecEditor.getInstance().analyzeApproximateConsistency(model);
+			} else if (MessageType.Strong_Consistency.equals(messageType)) {
+				PSpecEditor.getInstance().analyzeStrongConsistency(model);
+			} else if (MessageType.Enhanced_Strong_Consistency.equals(messageType)) {
+				PSpecEditor.getInstance().analyzeEnhancedStrongConsistency(model);
+			}
+			list = getAnalysisOutput(messageType);
+			if (list.size() == 0) {
+				return false;
+			}
 		}
 		for (OutputEntry output : list) {
 			if (output.messageType.equals(messageType)) {
@@ -357,10 +381,66 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 						}
 					}
 				}
-				aggregateGraph.addInconsistencyGroups(group);
+				aggregateGraph.addAggregateGroups(group);
 			}
 		}
 		display = aggregateGraph;
+		return true;
+	}
+
+	private boolean hasErrorOutput() {
+		List<OutputEntry> list = new ArrayList<>();
+		model.getOutput(OutputType.error, list);
+		if (list.size() == 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	private List<OutputEntry> getAnalysisOutput(MessageType messageType) {
+		List<OutputEntry> list = new ArrayList<>();
+		model.getOutput(OutputType.analysis, list);
+		Iterator<OutputEntry> it = list.iterator();
+		while (it.hasNext()) {
+			OutputEntry item = it.next();
+			if (!item.messageType.equals(messageType)) {
+				it.remove();
+			}
+		}
+		return list;
+	}
+
+	private boolean generateRedundancyGraph(AggregateGraph aggregateGraph) {
+		Policy policy = model.getPolicy();
+		RuleExpander expander = new RuleExpander(null);
+		expander.analyze(policy);
+		List<ExpandedRule> erules = policy.getExpandedRules();
+
+		MessageType messageType = MessageType.Redundancy;
+		List<OutputEntry> list = getAnalysisOutput(messageType);
+		if (list.size() == 0) {
+			PSpecEditor.getInstance().analyzeRedundancy(model);
+			list = getAnalysisOutput(messageType);
+			if (list.size() == 0) {
+				return false;
+			}
+		}
+		for (OutputEntry output : list) {
+			if (output.messageType.equals(messageType)) {
+				ExpandedRule[] rules = (ExpandedRule[]) output.data;
+				Set<Integer> group = new HashSet<>();
+				for (int i = 0; i < rules.length; i++) {
+					for (int j = 0; j < erules.size(); j++) {
+						if (erules.get(j).getRuleId().equals(rules[i].getRuleId())) {
+							group.add(j);
+							break;
+						}
+					}
+				}
+				aggregateGraph.addAggregateGroups(group);
+			}
+		}
 		return true;
 	}
 }
