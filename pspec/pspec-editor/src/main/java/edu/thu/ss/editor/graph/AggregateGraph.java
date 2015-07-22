@@ -30,7 +30,7 @@ public class AggregateGraph extends Display {
 	private VisualGraph visualGraph;
 	private AggregateTable aggregateTable;
 
-	private Set<Set<Integer>> inconsistentGroups = new HashSet<>();
+	private Set<Set<Integer>> aggregateGroups = new HashSet<>();
 
 	public AggregateGraph(Visualization visualization) {
 		super(visualization);
@@ -51,8 +51,7 @@ public class AggregateGraph extends Display {
 		aggregateTable.addColumn(VisualItem.POLYGON, float[].class);
 		aggregateTable.addColumn("id", int.class);
 		
-		setSize(500, 500);
-		pan(250, 250);
+		
 	}
 
 	public void initDataGroups(List<ExpandedRule> rules) {
@@ -68,13 +67,13 @@ public class AggregateGraph extends Display {
 		}
 	}
 
-	public void addInconsistencyGroups(Set<Integer> group) {
-		if (inconsistentGroups.contains(group)) {
+	public void addAggregateGroups(Set<Integer> group) {
+		if (aggregateGroups.contains(group)) {
 			return;
 		}
 
-		int groupIndex = inconsistentGroups.size();
-		inconsistentGroups.add(group);
+		int groupIndex = aggregateGroups.size();
+		aggregateGroups.add(group);
 		Iterator nodes = visualGraph.nodes();
 
 		AggregateItem aggregateItem = (AggregateItem) aggregateTable.addItem();

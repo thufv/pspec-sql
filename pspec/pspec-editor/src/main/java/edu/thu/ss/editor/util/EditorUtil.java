@@ -334,13 +334,6 @@ public class EditorUtil {
 		return button;
 	}
 
-	public static Button newCheck(Composite parent, String text) {
-		Button button = new Button(parent, SWT.CHECK);
-		setStyle(button);
-		button.setText(text);
-		return button;
-	}
-
 	public static GridLayout newNoMarginGridLayout(int columns, boolean equals) {
 		GridLayout layout = new GridLayout(columns, equals);
 		layout.marginHeight = layout.marginWidth = 0;
@@ -924,7 +917,7 @@ public class EditorUtil {
 					ruleModel = policyModel.getRuleModel(rules[0].getRule());
 					message = getMessage(Rule_Redundancy_Message, rules[0].getRuleId(), rules[1].getRuleId());
 					model.addOutput(OutputEntry.newInstance(message, OutputType.analysis, model, ruleModel,
-							MessageType.Redundancy, listener, rules[0]));
+							MessageType.Redundancy, listener, (Object[]) rules));
 					break;
 				case Normal_Consistency:
 					sb.append(rules[rules.length - 1].getRuleId());

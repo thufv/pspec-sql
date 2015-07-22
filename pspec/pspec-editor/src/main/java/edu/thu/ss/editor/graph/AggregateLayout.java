@@ -15,7 +15,7 @@ import prefuse.visual.VisualItem;
  */
 public class AggregateLayout extends Layout {
 
-	private int m_margin = 5; // convex hull pixel margin
+	private int m_margin = 0; // convex hull pixel margin
 	private double[] m_pts; // buffer for computing convex hulls
 
 	public AggregateLayout(String aggrGroup) {

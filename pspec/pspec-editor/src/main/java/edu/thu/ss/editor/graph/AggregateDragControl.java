@@ -12,7 +12,6 @@ import prefuse.controls.ControlAdapter;
 import prefuse.visual.AggregateItem;
 import prefuse.visual.VisualItem;
 
-
 /**
  * Interactive drag control that is "aggregate-aware"
  */
@@ -141,5 +140,4 @@ public class AggregateDragControl extends ControlAdapter {
 			item.setEndY(y + dy);
 		}
 	}
-
 } // end of class AggregateDragControl
