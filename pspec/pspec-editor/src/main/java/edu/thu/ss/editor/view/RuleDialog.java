@@ -269,6 +269,7 @@ public class RuleDialog extends EditorDialog {
 					ruleModel.getUserRefs().remove((UserRef) item.getData());
 				}
 				userTable.remove(userTable.getSelectionIndices());
+
 				deleteUser.setEnabled(false);
 			}
 
@@ -671,6 +672,7 @@ public class RuleDialog extends EditorDialog {
 
 		final Combo excludeData = EditorUtil.newCombo(dataTable, null);
 		editors.add(newTableEditor(dataTable, excludeData, item, 3));
+
 		if (!ref.getRefid().isEmpty()) {
 			DataCategory data = policyModel.getPolicy().getDataCategory(ref.getRefid());
 			excludeData.setItems(EditorUtil.getChildCategoryItems(data, policyModel.getPolicy()
@@ -853,10 +855,20 @@ public class RuleDialog extends EditorDialog {
 				if (dataAssociationType.getSelection()) {
 					deleteRestriction.setEnabled(true);
 				}
+
+				event.detail = SWT.NONE;
+				event.type = SWT.None;
+				event.doit = false;
+				try {
+					restrictTable.setRedraw(false);
+					restrictTable.deselectAll();
+				} finally {
+					restrictTable.setRedraw(true);
+				}
 			}
 		};
 		restrictTable.addListener(SWT.Selection, listener);
-		restrictTable.addListener(SWT.MouseDown, listener);
+	//	restrictTable.addListener(SWT.MouseDown, listener);
 
 	}
 

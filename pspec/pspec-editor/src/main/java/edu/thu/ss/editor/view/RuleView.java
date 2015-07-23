@@ -139,6 +139,8 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 		if (model.getPolicy().getRules().size() == 0 && ruleBar.getVerticalBar() != null) {
 			ruleBar.getVerticalBar().setVisible(false);
 		}
+		
+		ruleBar.getVerticalBar().setIncrement(10);
 	}
 
 	private void initializeToolbar(Composite parent) {
@@ -195,7 +197,7 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 		item.setImage(SWTResourceManager.getImage(EditorUtil.Image_Rule));
 		item.setData(ruleModel);
 
-		initializeRuleItemContent(item, ruleModel);
+		initializeRuleItemContent(item, ruleModel, false);
 
 	}
 
@@ -256,7 +258,7 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 		item.setImage(SWTResourceManager.getImage(EditorUtil.Image_Rule));
 		item.setData(ruleModel);
 
-		initializeRuleItemContent(item, ruleModel);
+		initializeRuleItemContent(item, ruleModel, true);
 		item.getControl().setBackground(EditorUtil.getSelectedBackground());
 		item.setExpanded(true);
 		selectedItem = item;
@@ -270,14 +272,15 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 		}
 	}
 
-	private void initializeRuleItemContent(final ExpandItem item, RuleModel ruleModel) {
+	private void initializeRuleItemContent(final ExpandItem item, RuleModel ruleModel,
+			boolean selected) {
 		final Composite ruleComposite = newItemComposite(ruleBar, 2);
 		item.setControl(ruleComposite);
 		ruleComposite.setLayout(new GridLayout());
 
-		initializeRuleUser(ruleModel, ruleComposite);
-		initializeRuleData(ruleModel, ruleComposite);
-		initializeRuleRestrictions(ruleModel, ruleComposite);
+		initializeRuleUser(ruleModel, ruleComposite, selected);
+		initializeRuleData(ruleModel, ruleComposite, selected);
+		initializeRuleRestrictions(ruleModel, ruleComposite, selected);
 
 		ruleComposite.addMouseListener(new MouseAdapter() {
 			@Override
@@ -360,10 +363,13 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 		return popMenu;
 	}
 
-	private void initializeRuleUser(RuleModel ruleModel, Composite parent) {
+	private void initializeRuleUser(RuleModel ruleModel, Composite parent, boolean selected) {
 		EditorUtil.newLabel(parent, getMessage(User_Ref));
 
 		Composite userComposite = newRuleComposite(parent, 2);
+		if (selected) {
+			userComposite.setBackground(EditorUtil.getSelectedBackground());
+		}
 
 		for (UserRef ref : ruleModel.getUserRefs()) {
 			newPointLabel(userComposite);
@@ -378,7 +384,7 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 		}
 	}
 
-	private void initializeRuleData(RuleModel ruleModel, Composite parent) {
+	private void initializeRuleData(RuleModel ruleModel, Composite parent, boolean selected) {
 
 		if (ruleModel.getRule().isSingle()) {
 			EditorUtil.newLabel(parent, getMessage(Data_Ref));
@@ -387,6 +393,10 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 		}
 
 		Composite dataComposite = newRuleComposite(parent, 4);
+
+		if (selected) {
+			dataComposite.setBackground(EditorUtil.getSelectedBackground());
+		}
 
 		for (DataRef ref : ruleModel.getDataRefs()) {
 			newPointLabel(dataComposite);
@@ -405,21 +415,26 @@ public class RuleView extends EditorView<PolicyModel, Rule> {
 
 	}
 
-	private void initializeRuleRestrictions(RuleModel ruleModel, Composite parent) {
+	private void initializeRuleRestrictions(RuleModel ruleModel, Composite parent, boolean selected) {
 		if (ruleModel.isForbid()) {
 			Label forbidLabel = EditorUtil.newLabel(parent, getMessage(Forbid), null, false);
 			EditorUtil.setDefaultFont(forbidLabel);
 		} else {
 			for (Restriction res : ruleModel.getRestrictions()) {
-				initializeRestriction(res, ruleModel, parent);
+				initializeRestriction(res, ruleModel, parent, selected);
 			}
 		}
 	}
 
-	private void initializeRestriction(Restriction restriction, RuleModel ruleModel, Composite parent) {
+	private void initializeRestriction(Restriction restriction, RuleModel ruleModel,
+			Composite parent, boolean selected) {
 		EditorUtil.newLabel(parent, getMessage(Restriction));
 
 		Composite restrictionComposite = newRuleComposite(parent, 4);
+		if (selected) {
+			restrictionComposite.setBackground(EditorUtil.getSelectedBackground());
+		}
+
 		boolean restricted = false;
 		for (Desensitization de : restriction.getDesensitizations()) {
 			if (!de.effective()) {

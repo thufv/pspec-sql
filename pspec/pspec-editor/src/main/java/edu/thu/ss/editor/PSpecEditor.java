@@ -403,7 +403,7 @@ public class PSpecEditor {
 		helpContent.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				URL url = HelpSet.findHelpSet(Test.class.getClassLoader(), EditorUtil.Help_URL);
+				URL url = HelpSet.findHelpSet(PSpecEditor.class.getClassLoader(), EditorUtil.Help_URL);
 				HelpSet helpSet;
 				try {
 					helpSet = new HelpSet(null, url);
@@ -412,9 +412,7 @@ public class PSpecEditor {
 				} catch (HelpSetException e1) {
 					e1.printStackTrace();
 				}
-
 			}
-
 		});
 	}
 
@@ -478,8 +476,8 @@ public class PSpecEditor {
 		policyItems = EditorUtil.newTreeItem(editorTree, getMessage(Policy));
 		policyItems.setImage(SWTResourceManager.getImage(EditorUtil.Image_Policy_Item));
 
-	//	metadataItems = EditorUtil.newTreeItem(editorTree, getMessage(Metadata));
-	//metadataItems.setImage(SWTResourceManager.getImage(EditorUtil.Image_Policy_Item));
+		//	metadataItems = EditorUtil.newTreeItem(editorTree, getMessage(Metadata));
+		//metadataItems.setImage(SWTResourceManager.getImage(EditorUtil.Image_Policy_Item));
 
 		EditorUtil.processTree(editorTree);
 
@@ -489,6 +487,23 @@ public class PSpecEditor {
 				TreeItem item = (TreeItem) e.item;
 				BaseModel model = (BaseModel) item.getData();
 				EditorView<?, ?> view = (EditorView<?, ?>) item.getData(EditorUtil.View);
+
+				if (model != null && view == null) {
+					if (item.getText().equals(getMessage(Visualize))) {
+						try {
+							view = new GraphView(shell, contentComposite, (PolicyModel) model, outputView);
+							view.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+							item.setData(EditorUtil.View, view);
+
+						} catch (Exception ex) {
+							ex.printStackTrace();
+							EditorUtil.showErrorMessageBox(shell, "",
+									getMessage(Visualization_Unsupported_Message));
+							return;
+						}
+					}
+				}
+
 				switchView(model, view, null);
 			}
 		});
@@ -522,8 +537,7 @@ public class PSpecEditor {
 	}
 
 	protected void switchView(BaseModel model, EditorView<?, ?> view, Object obj) {
-		editingModel = model;
-		if (editingModel == null) {
+		if (model == null) {
 			//hide views
 			if (currentView != null) {
 				EditorUtil.exclude(currentView);
@@ -531,16 +545,20 @@ public class PSpecEditor {
 				contentComposite.layout();
 			}
 		}
+		editingModel = model;
+
 		if (currentView != view) {
+			//view changed
 			if (currentView != null) {
 				EditorUtil.exclude(currentView);
 			}
 			EditorUtil.include(view);
-			currentView = view;
-			//	currentView.refresh();
-			if (currentView instanceof GraphView) {
-				currentView.refresh();
+
+			if (view instanceof GraphView) {
+				view.refresh();
 			}
+
+			currentView = view;
 			contentComposite.layout();
 		}
 		enableMenus();
@@ -700,10 +718,11 @@ public class PSpecEditor {
 		ruleItem.setData(EditorUtil.View, ruleView);
 
 		TreeItem visualizeItem = EditorUtil.newTreeItem(item, getMessage(Visualize));
-		GraphView graphView = new GraphView(shell, contentComposite, model, outputView);
-		graphView.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		EditorUtil.exclude(graphView);
-		visualizeItem.setData(EditorUtil.View, graphView);
+		visualizeItem.setData(model);
+		//GraphView graphView = new GraphView(shell, contentComposite, model, outputView);
+		//graphView.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		//EditorUtil.exclude(graphView);
+		//visualizeItem.setData(EditorUtil.View, graphView);
 	}
 
 	private void openVocabulary() {
@@ -742,8 +761,8 @@ public class PSpecEditor {
 			PolicyModel policyModel = new PolicyModel(file);
 			ParseResult result = EditorUtil.openPolicy(policyModel, shell, true);
 			if (result.equals(ParseResult.Invalid_Policy)) {
-				EditorUtil.showErrorMessageBox(shell, "",
-						getMessage(Policy_Invalid_Document_Message, file));
+				EditorUtil
+						.showErrorMessageBox(shell, "", getMessage(Policy_Invalid_Document_Message, file));
 				return;
 			}
 			if (result.equals(ParseResult.Invalid_Vocabulary)) {
@@ -911,8 +930,8 @@ public class PSpecEditor {
 		RuleExpander expander = new RuleExpander(null);
 		expander.analyze(policy);
 
-		LocalRedundancyAnalyzer analyzer = new LocalRedundancyAnalyzer(
-				EditorUtil.newOutputTable(model, new FixListener() {
+		LocalRedundancyAnalyzer analyzer = new LocalRedundancyAnalyzer(EditorUtil.newOutputTable(model,
+				new FixListener() {
 					@Override
 					public void handleEvent(OutputEntry entry) {
 						ExpandedRule rule = (ExpandedRule) entry.data[0];
@@ -979,8 +998,8 @@ public class PSpecEditor {
 		RuleExpander expander = new RuleExpander(null);
 		expander.analyze(policy);
 
-		NormalConsistencyAnalyzer analyzer = new NormalConsistencyAnalyzer(
-				EditorUtil.newOutputTable(model, null));
+		NormalConsistencyAnalyzer analyzer = new NormalConsistencyAnalyzer(EditorUtil.newOutputTable(
+				model, null));
 
 		analyzer.analyze(policy);
 		boolean hasOutput = model.hasOutput(OutputType.analysis, MessageType.Normal_Consistency);
@@ -1029,8 +1048,8 @@ public class PSpecEditor {
 		RuleExpander expander = new RuleExpander(null);
 		expander.analyze(policy);
 
-		StrongConsistencyAnalyzer analyzer = new StrongConsistencyAnalyzer(
-				EditorUtil.newOutputTable(model, null));
+		StrongConsistencyAnalyzer analyzer = new StrongConsistencyAnalyzer(EditorUtil.newOutputTable(
+				model, null));
 
 		analyzer.analyze(policy);
 		boolean hasOutput = model.hasOutput(OutputType.analysis, MessageType.Strong_Consistency);

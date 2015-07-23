@@ -212,12 +212,12 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 		sb.append(getRuleId());
 
 		sb.append("\n\t");
-		sb.append("Users: ");
+		sb.append("User Reference: ");
 		sb.append(PSpecUtil.format(users, ","));
 		sb.append("\n\t");
 
 		if (dataRef != null) {
-			sb.append("Datas: ");
+			sb.append("Data Reference: ");
 			if (dataRef.isGlobal()) {
 				sb.append("global\t");
 				sb.append(dataRef.getCategory().getId());
