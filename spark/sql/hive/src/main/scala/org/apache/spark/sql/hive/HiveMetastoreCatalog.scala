@@ -42,7 +42,7 @@ import org.apache.spark.sql.types._
 import org.apache.spark.util.Utils
 import scala.collection.JavaConversions._
 import edu.thu.ss.spec.lang.pojo.Policy
-import edu.thu.ss.spec.global.MetaManager
+import edu.thu.ss.spec.manager.MetaManager
 import edu.thu.ss.spec.meta.MetaRegistry
 import org.apache.spark.sql.catalyst.checker.ConditionalLabel
 import org.apache.spark.sql.catalyst.checker.DataLabel

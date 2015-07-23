@@ -40,7 +40,7 @@ import org.apache.spark.sql.sources.{ DDLParser, DataSourceStrategy }
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.catalyst.checker.SparkChecker
 import org.hsqldb.UserManager
-import edu.thu.ss.spec.global.MetaManager
+import edu.thu.ss.spec.manager.MetaManager
 
 /**
  * An instance of the Spark SQL execution engine that integrates with data stored in Hive.

@@ -41,7 +41,7 @@ import org.apache.spark.util.Utils
 import org.apache.spark.{ Partition, SparkContext }
 import org.apache.spark.sql.catalyst.checker.SparkChecker
 import org.apache.spark.sql.catalyst.checker.util.DPUtil
-import edu.thu.ss.spec.global.MetaManager
+import edu.thu.ss.spec.manager.MetaManager
 
 /**
  * The entry point for working with structured data (rows and columns) in Spark.  Allows the

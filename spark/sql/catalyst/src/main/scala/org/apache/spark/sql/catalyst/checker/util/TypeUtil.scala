@@ -11,7 +11,7 @@ import org.apache.spark.sql.catalyst.checker.Label
 import edu.thu.ss.spec.meta.StructType
 import edu.thu.ss.spec.meta.CompositeType
 import edu.thu.ss.spec.meta.MapType
-import edu.thu.ss.spec.global.MetaManager
+import edu.thu.ss.spec.manager.MetaManager
 import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
 import org.apache.spark.sql.catalyst.checker.ColumnLabel
 import edu.thu.ss.spec.meta.PrimitiveType
