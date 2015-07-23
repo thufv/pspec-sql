@@ -10,7 +10,7 @@ import org.apache.spark.sql.catalyst.expressions.Attribute
 import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
 import org.apache.spark.sql.types
 import org.apache.spark.sql.types.DataType
-import edu.thu.ss.spec.global.MetaManager
+import edu.thu.ss.spec.manager.MetaManager
 import edu.thu.ss.spec.lang.parser.PolicyParser
 import edu.thu.ss.spec.lang.pojo.Policy
 import edu.thu.ss.spec.lang.pojo.UserCategory
@@ -85,7 +85,7 @@ class SparkChecker(catalog: Catalog, conf: SparkConf) extends Logging {
   private def loadPolicy(path: String): Unit = {
     val parser = new PolicyParser;
     try {
-      val policy = parser.parse(path, true, false);
+      val policy = parser.parse(path);
       budgetManager = DPBudgetManager(policy.getPrivacyParams(), user);
       accuracyProb = policy.getPrivacyParams().getProbability();
       accurcayNoise = policy.getPrivacyParams().getNoiseRatio();

@@ -9,7 +9,7 @@ import org.apache.spark.sql.catalyst.checker.PrivacyException
 import org.apache.spark.sql.catalyst.expressions.AttributeReference
 import org.apache.spark.sql.types.DataType
 import org.apache.spark.sql.types.NumericType
-import edu.thu.ss.spec.global.MetaManager
+import edu.thu.ss.spec.manager.MetaManager
 import org.apache.spark.sql.catalyst.checker.dp.TableInfo
 import org.apache.spark.sql.catalyst.expressions.Attribute
 import scala.collection.mutable.ListBuffer

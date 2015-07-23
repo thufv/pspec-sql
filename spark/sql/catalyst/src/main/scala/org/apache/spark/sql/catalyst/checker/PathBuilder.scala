@@ -3,7 +3,7 @@ package org.apache.spark.sql.catalyst.checker
 import edu.thu.ss.spec.lang.pojo.DataCategory
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation
 import edu.thu.ss.spec.lang.pojo.Policy
-import edu.thu.ss.spec.global.MetaManager
+import edu.thu.ss.spec.manager.MetaManager
 import scala.collection.mutable.ListBuffer
 import edu.thu.ss.spec.meta.BaseType
 import edu.thu.ss.spec.meta.ArrayType

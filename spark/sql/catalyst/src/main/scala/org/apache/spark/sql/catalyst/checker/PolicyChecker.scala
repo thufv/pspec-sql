@@ -5,7 +5,7 @@ import scala.collection.mutable.ListBuffer
 import org.apache.spark.Logging
 import org.apache.spark.sql.catalyst.analysis.Catalog
 import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
-import edu.thu.ss.spec.global.MetaManager
+import edu.thu.ss.spec.manager.MetaManager
 import edu.thu.ss.spec.lang.pojo.Action
 import edu.thu.ss.spec.lang.pojo.DataCategory
 import edu.thu.ss.spec.lang.pojo.DataRef
