@@ -4,6 +4,7 @@ import static edu.thu.ss.editor.util.MessagesUtil.ApproximateConsistency;
 import static edu.thu.ss.editor.util.MessagesUtil.EnhancedStrongConsistency;
 import static edu.thu.ss.editor.util.MessagesUtil.NormalConsistency;
 import static edu.thu.ss.editor.util.MessagesUtil.Redundancy;
+import static edu.thu.ss.editor.util.MessagesUtil.ScopeRelation;
 import static edu.thu.ss.editor.util.MessagesUtil.StrongConsistency;
 import static edu.thu.ss.editor.util.MessagesUtil.getMessage;
 
@@ -30,8 +31,33 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
+import prefuse.Constants;
+import prefuse.Display;
+import prefuse.Visualization;
+import prefuse.action.Action;
+import prefuse.action.ActionList;
+import prefuse.action.RepaintAction;
+import prefuse.action.assignment.ColorAction;
+import prefuse.action.assignment.DataColorAction;
+import prefuse.action.layout.graph.ForceDirectedLayout;
+import prefuse.controls.DragControl;
+import prefuse.controls.PanControl;
+import prefuse.controls.ToolTipControl;
+import prefuse.controls.WheelZoomControl;
+import prefuse.controls.ZoomControl;
+import prefuse.data.Graph;
+import prefuse.data.Table;
+import prefuse.render.DefaultRendererFactory;
+import prefuse.render.EdgeRenderer;
+import prefuse.render.LabelRenderer;
+import prefuse.render.PolygonRenderer;
+import prefuse.render.Renderer;
+import prefuse.util.ColorLib;
+import prefuse.util.GraphicsLib;
+import prefuse.util.display.DisplayLib;
+import prefuse.visual.VisualGraph;
+import prefuse.visual.VisualItem;
 import edu.thu.ss.editor.PSpecEditor;
-import edu.thu.ss.editor.graph.AggregateDragControl;
 import edu.thu.ss.editor.graph.AggregateGraph;
 import edu.thu.ss.editor.graph.AggregateLayout;
 import edu.thu.ss.editor.model.OutputEntry;
@@ -43,37 +69,23 @@ import edu.thu.ss.spec.lang.analyzer.RuleExpander;
 import edu.thu.ss.spec.lang.analyzer.redundancy.ScopeAnalyzer;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.Policy;
-import prefuse.Constants;
-import prefuse.Visualization;
-import prefuse.action.ActionList;
-import prefuse.action.RepaintAction;
-import prefuse.action.assignment.ColorAction;
-import prefuse.action.assignment.DataColorAction;
-import prefuse.action.layout.graph.ForceDirectedLayout;
-import prefuse.activity.Activity;
-import prefuse.controls.DragControl;
-import prefuse.controls.PanControl;
-import prefuse.controls.ToolTipControl;
-import prefuse.controls.WheelZoomControl;
-import prefuse.controls.ZoomControl;
-import prefuse.data.Graph;
-import prefuse.render.DefaultRendererFactory;
-import prefuse.render.EdgeRenderer;
-import prefuse.render.LabelRenderer;
-import prefuse.render.PolygonRenderer;
-import prefuse.render.Renderer;
-import prefuse.util.ColorLib;
-import prefuse.util.GraphicsLib;
-import prefuse.util.display.DisplayLib;
-import prefuse.visual.VisualItem;
 
 public class GraphView extends EditorView<PolicyModel, Policy> {
 
-	private Graph graph;
+	public static final String GRAPH = "graph";
+	public static final String NODES = "graph.nodes";
+	public static final String EDGES = "graph.edges";
+	public static final String AGGR = "aggregates";
+	private static final String INIT = "initialize";
+	private static final String LAYOUT = "layout";
+
+	private VisualGraph visualGraph;
 	private Visualization visualization;
-	private prefuse.Display display;
+	private Display display;
+	private AggregateGraph aggregateGraph;
 
 	private Panel panel;
+	private Button scopeRelation;
 	private Button redundancy;
 	private Button normalConsistency;
 	private Button approximateConsistency;
@@ -81,6 +93,8 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 	private Button enhancedStrongConsistency;
 
 	private boolean initialize = false;
+
+	private boolean isPreviousRedundancy = false;
 
 	/**
 	 * Create the composite
@@ -95,7 +109,7 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 
 		this.setBackground(EditorUtil.getDefaultBackground());
 		this.setLayout(new GridLayout(1, false));
-		initializeGraph(this);
+		initializeButton(this);
 
 		SashForm contentForm = new SashForm(this, SWT.NONE);
 		GridData contentData = new GridData();
@@ -106,18 +120,19 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 
 		contentForm.setLayoutData(contentData);
 		Composite composite = new Composite(contentForm, SWT.BORDER | SWT.NO_BACKGROUND | SWT.EMBEDDED);
-
 		Frame frame = SWT_AWT.new_Frame(composite);
 		panel = new Panel();
 		frame.add(panel);
-		showRulesRelation();
+
+		initializeGraph();
+
 		this.addListener(SWT.Resize, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
 				Rectangle rec = GraphView.this.getClientArea();
 				if (EditorUtil.isWindows() || !initialize) {
 					display.setSize(rec.width, rec.height * 6 / 7);
-					initialize = true;
+					aggregateGraph.setSize(rec.width, rec.height * 6 / 7);
 				}
 			}
 		});
@@ -125,20 +140,29 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 
 	@Override
 	public void refresh() {
-		panel.removeAll();
-		showRulesRelation();
-		Rectangle rec = GraphView.this.getClientArea();
-		display.setSize(rec.width, rec.height * 6 / 7);
+		switchGraph();
 	}
 
-	private void initializeGraph(Composite content) {
+	private void initializeButton(Composite content) {
 		Composite typeComposite = newRadioComposite(content);
+		scopeRelation = EditorUtil.newRadio(typeComposite, getMessage(ScopeRelation));
 		redundancy = EditorUtil.newRadio(typeComposite, getMessage(Redundancy));
 		normalConsistency = EditorUtil.newRadio(typeComposite, getMessage(NormalConsistency));
 		approximateConsistency = EditorUtil.newRadio(typeComposite, getMessage(ApproximateConsistency));
 		strongConsistency = EditorUtil.newRadio(typeComposite, getMessage(StrongConsistency));
 		enhancedStrongConsistency = EditorUtil.newRadio(typeComposite,
 				getMessage(EnhancedStrongConsistency));
+		scopeRelation.setSelection(true);
+
+		scopeRelation.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (!scopeRelation.getSelection()) {
+					return;
+				}
+				switchGraph();
+			}
+		});
 
 		redundancy.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -146,7 +170,7 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 				if (!redundancy.getSelection()) {
 					return;
 				}
-				refresh();
+				switchGraph();
 			}
 		});
 
@@ -192,27 +216,22 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 
 	}
 
-	private Composite newRadioComposite(Composite parent) {
-		Composite composite = EditorUtil.newComposite(parent);
-		GridData data = new GridData(SWT.FILL, SWT.CENTER, true, false);
-		composite.setLayoutData(data);
-		GridLayout layout = EditorUtil.newNoMarginGridLayout(2, false);
-		composite.setLayout(layout);
-		return composite;
+	private void initializeGraph() {
+		visualization = new Visualization();
+		setScopeRelationGraph();
+		aggregateGraph = new AggregateGraph(visualization, visualGraph);
+		display = new Display(visualization);
+		showRulesGraph(display);
+		adjustGraphZoom(display);
+		adjustGraphZoom(aggregateGraph);
 	}
 
-	private void showRulesRelation() {
-		if (hasErrorOutput()) {
-			return;
-		}
+	private void initializeData(Graph graph) {
 		Policy policy = model.getPolicy();
 		RuleExpander expander = new RuleExpander(null);
 		expander.analyze(policy);
 		List<ExpandedRule> rules = policy.getExpandedRules();
 
-		//initialize data groups
-		visualization = new Visualization();
-		graph = new Graph(true);
 		graph.addColumn("id", int.class);
 		graph.addColumn("name", java.lang.String.class);
 		graph.addColumn("info", java.lang.String.class);
@@ -222,97 +241,31 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 			node.set("name", rules.get(i).getRuleId());
 			node.set("info", "<html>" + rules.get(i).toString().replaceAll("\n\t", "<br>") + "</html>");
 		}
-
-		generateScopeGraph(policy);
-		boolean aggregate = generateAggregateGraph();
-
-		// set renderer
-		LabelRenderer labelRenderer = new LabelRenderer("name");
-		labelRenderer.setRoundedCorner(15, 15);
-		DefaultRendererFactory drf = new DefaultRendererFactory(labelRenderer);
-
-		EdgeRenderer edgeRenderer = new EdgeRenderer(prefuse.Constants.EDGE_TYPE_CURVE,
-				prefuse.Constants.EDGE_ARROW_FORWARD);
-		edgeRenderer.setArrowHeadSize(8, 8);
-		drf.setDefaultEdgeRenderer(edgeRenderer);
-
-		if (aggregate) {
-			// draw aggregates as polygons with curved edges
-			Renderer polyR = new PolygonRenderer(Constants.POLY_TYPE_CURVE);
-			((PolygonRenderer) polyR).setCurveSlack(0.15f);
-			drf.add("ingroup('aggregates')", polyR);
-		}
-
-		visualization.setRendererFactory(drf);
-
-		// set color
-		ActionList color = new ActionList();
-
-		if (aggregate) {
-			int[] palette = new int[] { ColorLib.rgba(255, 200, 200, 150),
-					ColorLib.rgba(200, 255, 200, 150), ColorLib.rgba(200, 200, 255, 150) };
-			ColorAction aFill = new DataColorAction("aggregates", "id", Constants.NOMINAL,
-					VisualItem.FILLCOLOR, palette);
-			color.add(aFill);
-
-			ColorAction aStroke = new ColorAction("aggregates", VisualItem.STROKECOLOR,
-					ColorLib.gray(200));
-			aStroke.add("_hover", ColorLib.rgb(255, 100, 100));
-			color.add(aStroke);
-		}
-
-		ColorAction text = new ColorAction("graph.nodes", VisualItem.TEXTCOLOR, ColorLib.gray(0));
-		ColorAction edges = new ColorAction("graph.edges", VisualItem.STROKECOLOR, ColorLib.gray(200));
-		ColorAction arrows = new ColorAction("graph.edges", VisualItem.FILLCOLOR, ColorLib.gray(200));
-		color.add(text);
-		color.add(edges);
-		color.add(arrows);
-
-		ColorAction nFill = new ColorAction("graph.nodes", VisualItem.FILLCOLOR);
-		nFill.setDefaultColor(ColorLib.rgb(136, 206, 250));
-		nFill.add("_hover", ColorLib.gray(200));
-
-		ColorAction nStroke = new ColorAction("graph.nodes", VisualItem.STROKECOLOR);
-		nStroke.setDefaultColor(ColorLib.rgb(135, 206, 235));
-		nStroke.add("_hover", ColorLib.gray(50));
-		color.add(nFill);
-		color.add(nStroke);
-
-		// set layout
-		ActionList layout = new ActionList(Activity.INFINITY);
-		layout.add(color);
-		layout.add(new RepaintAction());
-		layout.add(new ForceDirectedLayout("graph", true, false));
-		if (aggregate) {
-			layout.add(new AggregateLayout("aggregates"));
-		}
-
-		visualization.putAction("layout", layout);
-
-		//set control
-		display.addControlListener(new PanControl()); // pan with background
-		display.addControlListener(new ZoomControl()); // zoom with vertical
-		display.addControlListener(new WheelZoomControl());
-		display.addControlListener(new ToolTipControl("info"));
-		if (aggregate) {
-			display.setHighQuality(true);
-			display.addControlListener(new AggregateDragControl());
-		} else {
-			display.addControlListener(new DragControl()); // drag items around
-		}
-		adjustDisplayZoom();
-		panel.add(display);
-		visualization.run("layout");
 	}
 
-	private void adjustDisplayZoom() {
+	private void showRulesGraph(Display display) {
+		if (hasErrorOutput()) {
+			return;
+		}
+		panel.add(display);
+		visualization.run(INIT);
+		visualization.run(LAYOUT);
+	}
+
+	private void adjustGraphZoom(Display display) {
 		Rectangle2D bounds = visualization.getBounds(Visualization.ALL_ITEMS);
 		GraphicsLib.expand(bounds, 50 + (int) (1 / display.getScale()));
 		DisplayLib.fitViewToBounds(display, bounds, (long) 1);
+		setControlListener(display);
 	}
 
-	private void generateScopeGraph(Policy policy) {
+	private void setScopeRelationGraph() {
+		visualization.removeGroup(GRAPH);
+		Graph graph = new Graph(true);
+		initializeData(graph);
+
 		ScopeAnalyzer analyzer = new ScopeAnalyzer();
+		Policy policy = model.getPolicy();
 		analyzer.analyze(policy);
 		List<ExpandedRule> rules = policy.getExpandedRules();
 		for (int i = 0; i < rules.size(); i++) {
@@ -323,31 +276,92 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 				}
 				String target = rules.get(j).getRuleId();
 				if (analyzer.containsEdge(source, target)) {
-					graph.addEdge(j, i);
+					graph.addEdge(i, j);
 				}
 			}
 		}
-		display = new prefuse.Display(visualization);
-	}
 
-	private boolean generateAggregateGraph() {
-		AggregateGraph aggregateGraph = new AggregateGraph(visualization);
-		aggregateGraph.setGraph(graph);
-		if (normalConsistency.getSelection()) {
-			return generateConsistencyGraph(aggregateGraph, MessageType.Normal_Consistency);
-		} else if (approximateConsistency.getSelection()) {
-			return generateConsistencyGraph(aggregateGraph, MessageType.Approximate_Consistency);
-		} else if (strongConsistency.getSelection()) {
-			return generateConsistencyGraph(aggregateGraph, MessageType.Strong_Consistency);
-		} else if (enhancedStrongConsistency.getSelection()) {
-			return generateConsistencyGraph(aggregateGraph, MessageType.Enhanced_Strong_Consistency);
-		} else if (redundancy.getSelection()) {
-			return generateRedundancyGraph(aggregateGraph);
+		visualGraph = visualization.addGraph(GRAPH, graph);
+		if (aggregateGraph != null) {
+			aggregateGraph.setVisualGraph(visualGraph);
 		}
-		return false;
+		setRender(false);
+		setLayout(false);
 	}
 
-	private boolean generateConsistencyGraph(AggregateGraph aggregateGraph, MessageType messageType) {
+	private void setRedundancyGraph() {
+		visualization.removeGroup(GRAPH);
+		Graph graph = new Graph(true);
+		initializeData(graph);
+
+		List<OutputEntry> list = getAnalysisOutput(MessageType.Redundancy);
+		if (list.size() == 0) {
+			PSpecEditor.getInstance().analyzeRedundancy(model);
+			list = getAnalysisOutput(MessageType.Redundancy);
+			if (list.size() == 0) {
+				return;
+			}
+		}
+		for (OutputEntry output : list) {
+			if (output.messageType.equals(MessageType.Redundancy)) {
+				ExpandedRule[] rules = (ExpandedRule[]) output.data;
+				if (rules.length != 2) {
+					return;
+				}
+				Table nodes = graph.getNodeTable();
+				int source = 0;
+				int target = 0;
+				for (int i = 0; i < nodes.getRowCount(); i++) {
+					String name = nodes.getString(i, "name");
+					if (rules[0].getRuleId().equals(name)) {
+						source = i;
+					}
+					if (rules[1].getRuleId().equals(name)) {
+						target = i;
+					}
+				}
+				graph.addEdge(source, target);
+			}
+		}
+		visualization.addGraph(GRAPH, graph);
+		setRender(false);
+		setLayout(false);
+	}
+
+	private void switchGraph() {
+		panel.removeAll();
+		panel.repaint();
+		aggregateGraph.removeAggregateGroups();
+		if (isPreviousRedundancy) {
+			setScopeRelationGraph();
+		} else if (redundancy.getSelection()) {
+			setRedundancyGraph();
+			showRulesGraph(display);
+			isPreviousRedundancy = true;
+			return;
+		}
+		isPreviousRedundancy = false;
+		if (normalConsistency.getSelection()) {
+			setConsistencyGraph(MessageType.Normal_Consistency);
+			showRulesGraph(aggregateGraph);
+			return;
+		} else if (approximateConsistency.getSelection()) {
+			setConsistencyGraph(MessageType.Approximate_Consistency);
+			showRulesGraph(aggregateGraph);
+			return;
+		} else if (strongConsistency.getSelection()) {
+			setConsistencyGraph(MessageType.Strong_Consistency);
+			showRulesGraph(aggregateGraph);
+			return;
+		} else if (enhancedStrongConsistency.getSelection()) {
+			setConsistencyGraph(MessageType.Enhanced_Strong_Consistency);
+			showRulesGraph(aggregateGraph);
+			return;
+		}
+		showRulesGraph(display);
+	}
+
+	private void setConsistencyGraph(MessageType messageType) {
 		Policy policy = model.getPolicy();
 		RuleExpander expander = new RuleExpander(null);
 		expander.analyze(policy);
@@ -366,7 +380,7 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 			}
 			list = getAnalysisOutput(messageType);
 			if (list.size() == 0) {
-				return false;
+				return;
 			}
 		}
 		for (OutputEntry output : list) {
@@ -384,8 +398,103 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 				aggregateGraph.addAggregateGroups(group);
 			}
 		}
-		display = aggregateGraph;
-		return true;
+
+		setRender(true);
+		setLayout(true);
+
+	}
+
+	private Composite newRadioComposite(Composite parent) {
+		Composite composite = EditorUtil.newComposite(parent);
+		GridData data = new GridData(SWT.FILL, SWT.CENTER, true, false);
+		composite.setLayoutData(data);
+		GridLayout layout = EditorUtil.newNoMarginGridLayout(2, false);
+		composite.setLayout(layout);
+		return composite;
+	}
+
+	private ActionList getColorActionList(boolean aggregate) {
+		ActionList colors = new ActionList();
+
+		if (aggregate) {
+			int[] palette = new int[] { ColorLib.rgba(255, 200, 200, 150),
+					ColorLib.rgba(200, 255, 200, 150), ColorLib.rgba(200, 200, 255, 150) };
+			ColorAction aFill = new DataColorAction(AGGR, "id", Constants.NOMINAL, VisualItem.FILLCOLOR,
+					palette);
+			colors.add(aFill);
+
+			ColorAction aStroke = new ColorAction(AGGR, VisualItem.STROKECOLOR, ColorLib.gray(200));
+			aStroke.add("_hover", ColorLib.rgb(255, 100, 100));
+			colors.add(aStroke);
+		}
+
+		ColorAction text = new ColorAction(NODES, VisualItem.TEXTCOLOR, ColorLib.gray(0));
+		ColorAction edges = new ColorAction(EDGES, VisualItem.STROKECOLOR, ColorLib.gray(200));
+		ColorAction arrows = new ColorAction(EDGES, VisualItem.FILLCOLOR, ColorLib.gray(200));
+		colors.add(text);
+		colors.add(edges);
+		colors.add(arrows);
+
+		ColorAction nFill = new ColorAction(NODES, VisualItem.FILLCOLOR);
+		nFill.setDefaultColor(ColorLib.rgb(136, 206, 250));
+		nFill.add("_hover", ColorLib.gray(200));
+
+		ColorAction nStroke = new ColorAction(NODES, VisualItem.STROKECOLOR);
+		nStroke.setDefaultColor(ColorLib.rgb(135, 206, 235));
+		nStroke.add("_hover", ColorLib.gray(50));
+		colors.add(nFill);
+		colors.add(nStroke);
+
+		return colors;
+	}
+
+	private void setControlListener(Display display) {
+		display.setHighQuality(true);
+		display.addControlListener(new PanControl());
+		display.addControlListener(new ZoomControl());
+		display.addControlListener(new WheelZoomControl());
+		display.addControlListener(new ToolTipControl("info"));
+		display.addControlListener(new DragControl()); // drag items around
+
+	}
+
+	private void setRender(boolean aggregate) {
+		LabelRenderer labelRenderer = new LabelRenderer("name");
+		labelRenderer.setRoundedCorner(15, 15);
+		DefaultRendererFactory drf = new DefaultRendererFactory(labelRenderer);
+
+		EdgeRenderer edgeRenderer = new EdgeRenderer(prefuse.Constants.EDGE_TYPE_CURVE,
+				prefuse.Constants.EDGE_ARROW_FORWARD);
+		edgeRenderer.setArrowHeadSize(8, 8);
+		drf.setDefaultEdgeRenderer(edgeRenderer);
+
+		if (aggregate) {
+			// draw aggregates as polygons with curved edges
+			Renderer polyR = new PolygonRenderer(Constants.POLY_TYPE_CURVE);
+			((PolygonRenderer) polyR).setCurveSlack(0.15f);
+			drf.add("ingroup('aggregates')", polyR);
+		}
+		visualization.setRendererFactory(drf);
+	}
+
+	private void setLayout(boolean aggregate) {
+		// set layout
+		ActionList initializeLayout = new ActionList(2000);
+		initializeLayout.add(new ForceDirectedLayout(GRAPH, true, false));
+		visualization.putAction("initialize", initializeLayout);
+
+		ActionList layout = new ActionList(Action.INFINITY);
+		layout.add(getColorActionList(aggregate));
+		layout.add(new RepaintAction());
+		ForceDirectedLayout fdLayout = new ForceDirectedLayout(GRAPH, true, false);
+		fdLayout.getForceSimulator().setSpeedLimit(0);
+		layout.add(fdLayout);
+
+		if (aggregate) {
+			layout.add(new AggregateLayout(AGGR));
+		}
+
+		visualization.putAction(LAYOUT, layout);
 	}
 
 	private boolean hasErrorOutput() {
@@ -409,38 +518,5 @@ public class GraphView extends EditorView<PolicyModel, Policy> {
 			}
 		}
 		return list;
-	}
-
-	private boolean generateRedundancyGraph(AggregateGraph aggregateGraph) {
-		Policy policy = model.getPolicy();
-		RuleExpander expander = new RuleExpander(null);
-		expander.analyze(policy);
-		List<ExpandedRule> erules = policy.getExpandedRules();
-
-		MessageType messageType = MessageType.Redundancy;
-		List<OutputEntry> list = getAnalysisOutput(messageType);
-		if (list.size() == 0) {
-			PSpecEditor.getInstance().analyzeRedundancy(model);
-			list = getAnalysisOutput(messageType);
-			if (list.size() == 0) {
-				return false;
-			}
-		}
-		for (OutputEntry output : list) {
-			if (output.messageType.equals(messageType)) {
-				ExpandedRule[] rules = (ExpandedRule[]) output.data;
-				Set<Integer> group = new HashSet<>();
-				for (int i = 0; i < rules.length; i++) {
-					for (int j = 0; j < erules.size(); j++) {
-						if (erules.get(j).getRuleId().equals(rules[i].getRuleId())) {
-							group.add(j);
-							break;
-						}
-					}
-				}
-				aggregateGraph.addAggregateGroups(group);
-			}
-		}
-		return true;
 	}
 }
