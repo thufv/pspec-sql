@@ -14,7 +14,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import edu.thu.ss.spec.lang.parser.BaseParser;
 import edu.thu.ss.spec.lang.parser.ParseException;
+import edu.thu.ss.spec.lang.parser.PolicyParser;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.Policy;
@@ -35,7 +37,7 @@ import edu.thu.ss.spec.meta.Table;
 import edu.thu.ss.spec.meta.User;
 import edu.thu.ss.spec.util.XMLUtil;
 
-public class XMLMetaRegistryParser implements MetaParserConstant {
+public class XMLMetaRegistryParser extends BaseParser implements MetaParserConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(XMLMetaRegistryParser.class);
 
@@ -58,7 +60,9 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 			Node rootNode = policyDoc.getElementsByTagName(Ele_Root).item(0);
 
 			String policyPath = XMLUtil.getAttrValue(rootNode, Attr_Policy);
-			policy = PolicyManager.getPolicy(XMLUtil.toUri(policyPath));
+			PolicyParser parser = new PolicyParser();
+			policy = parser.parse(policyPath);
+			//policy = PolicyManager.getPolicy(XMLUtil.toUri(policyPath));
 			if (policy == null) {
 				throw new ParseException("Policy: " + policyPath + " has not been loaded yet.");
 			}
@@ -75,6 +79,7 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 				Database database = parseDatabase(node);
 				registry.addDatabase(database);
 			}
+			registry.policyLocation = XMLUtil.toUri(policyPath);
 		} catch (Exception e) {
 			throw new ParseException("Fail to parse meta file at " + path, e);
 		}
@@ -89,6 +94,10 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 		return result;
 	}
 
+	public XMLMetaRegistry getXMLMetaRegistry() {
+		return registry;
+	}
+	
 	private void init() {
 		registry = new XMLMetaRegistry();
 		udfs = new HashMap<>();
@@ -97,7 +106,11 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 	private List<User> parseUserList(Node userListNode) {
 		List<User> userList = new ArrayList<User>();
 		User user;
+		if (userListNode == null) {
+			return userList;
+		}
 		NodeList list = userListNode.getChildNodes();
+		
 		for (int i = 0; i < list.getLength(); i++) {
 			Node node = list.item(i);
 			String name = node.getLocalName();
@@ -217,6 +230,16 @@ public class XMLMetaRegistryParser implements MetaParserConstant {
 
 		BaseType type = parseType(columnNode, columnName);
 		column.setType(type);
+		
+		NodeList list = columnNode.getChildNodes();
+		for (int i = 0; i < list.getLength(); i++) {
+			Node node = list.item(i);
+			String name = node.getLocalName();
+			if (Ele_Composite_Extract.equals(name)) {
+				column.addExtraction(XMLUtil.getAttrValue(node, Attr_Name), XMLUtil.getAttrValue(node, Attr_Data_Category));
+			}
+		}
+		column.addExtraction(XMLUtil.getAttrValue(columnNode, Attr_Name), XMLUtil.getAttrValue(columnNode, Attr_Data_Category));
 		return column;
 
 	}

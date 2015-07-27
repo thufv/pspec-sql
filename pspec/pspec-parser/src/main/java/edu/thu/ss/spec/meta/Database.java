@@ -3,7 +3,13 @@ package edu.thu.ss.spec.meta;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class Database extends DBObject {
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import edu.thu.ss.spec.lang.pojo.Writable;
+import edu.thu.ss.spec.meta.xml.MetaParserConstant;
+
+public class Database extends DBObject implements Writable {
 
 	Map<String, Table> tables = new LinkedHashMap<>();
 
@@ -21,7 +27,7 @@ public class Database extends DBObject {
 	public Map<String, Table> getTables() {
 		return tables;
 	}
-
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -34,6 +40,31 @@ public class Database extends DBObject {
 		}
 		return sb.toString();
 
+	}
+
+	@Override
+	public Element outputType(Document document, String name) {
+		return null;
+	}
+
+	@Override
+	public Element outputElement(Document document) {
+		Element database = document.createElement(MetaParserConstant.Ele_Database);
+		database.setAttribute(MetaParserConstant.Attr_Name, name);
+		boolean isLabel = false;
+		for (String tableName : tables.keySet()) {
+			Element table = tables.get(tableName).outputElement(document);
+			if (table != null) {
+				isLabel = true;
+				database.appendChild(table);
+			}			
+		}
+		if (isLabel) {
+			return database;
+		} else {
+			return null;
+		}
+		
 	}
 
 }

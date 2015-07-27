@@ -20,7 +20,8 @@ public class OutputEntry {
 		Normal_Consistency,
 		Approximate_Consistency,
 		Strong_Consistency,
-		Enhanced_Strong_Consistency
+		Enhanced_Strong_Consistency,
+		Metadata
 	}
 
 	private OutputEntry(String description, OutputType type, BaseModel location, BaseModel model,

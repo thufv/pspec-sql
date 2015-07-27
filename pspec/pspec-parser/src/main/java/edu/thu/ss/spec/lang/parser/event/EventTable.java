@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.thu.ss.spec.lang.parser.event.PSpecListener.AnalysisType;
+import edu.thu.ss.spec.lang.parser.event.PSpecListener.MetadataLabelType;
 import edu.thu.ss.spec.lang.parser.event.PSpecListener.RefErrorType;
 import edu.thu.ss.spec.lang.parser.event.PSpecListener.RestrictionErrorType;
 import edu.thu.ss.spec.lang.parser.event.PSpecListener.VocabularyErrorType;
@@ -61,6 +62,13 @@ public class EventTable {
 			listener.onParseRule(rule);
 		}
 
+	}
+	
+	public void onMetadataLabelError(MetadataLabelType type, String location) {
+		for (PSpecListener listener : listeners) {
+			listener.onMetadataLabelError(type, location);
+		}
+		
 	}
 
 }

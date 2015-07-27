@@ -1,6 +1,17 @@
 package edu.thu.ss.editor.view;
 
-import static edu.thu.ss.editor.util.MessagesUtil.*;
+import static edu.thu.ss.editor.util.MessagesUtil.Analysis;
+import static edu.thu.ss.editor.util.MessagesUtil.Delete;
+import static edu.thu.ss.editor.util.MessagesUtil.Description;
+import static edu.thu.ss.editor.util.MessagesUtil.Fix;
+import static edu.thu.ss.editor.util.MessagesUtil.Goto;
+import static edu.thu.ss.editor.util.MessagesUtil.Location;
+import static edu.thu.ss.editor.util.MessagesUtil.Output_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Policy_Output;
+import static edu.thu.ss.editor.util.MessagesUtil.Type;
+import static edu.thu.ss.editor.util.MessagesUtil.Vocabulary_Output;
+import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Output;
+import static edu.thu.ss.editor.util.MessagesUtil.getMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +51,7 @@ import org.eclipse.wb.swt.SWTResourceManager;
 import edu.thu.ss.editor.PSpecEditor;
 import edu.thu.ss.editor.model.BaseModel;
 import edu.thu.ss.editor.model.EditorModel;
+import edu.thu.ss.editor.model.MetadataModel;
 import edu.thu.ss.editor.model.OutputEntry;
 import edu.thu.ss.editor.model.OutputEntry.OutputType;
 import edu.thu.ss.editor.model.PolicyModel;
@@ -271,7 +283,11 @@ public class OutputView extends Composite {
 					if (model instanceof VocabularyModel) {
 						VocabularyModel vocabularyModel = (VocabularyModel) model;
 						return getMessage(Vocabulary_Output, vocabularyModel.getVocabulary().getInfo().getId());
+					} else if (model instanceof MetadataModel) {
+						MetadataModel metadataModel = (MetadataModel) model;
+						return getMessage(Metadata_Output, metadataModel.getRegistry().getInfo().getId());
 					} else {
+
 						PolicyModel policyModel = (PolicyModel) model;
 						return getMessage(Policy_Output, policyModel.getPolicy().getInfo().getId());
 					}

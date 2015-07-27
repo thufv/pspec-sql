@@ -74,6 +74,8 @@ import edu.thu.ss.spec.lang.pojo.Rule;
 import edu.thu.ss.spec.lang.pojo.Vocabulary;
 import edu.thu.ss.spec.manager.PolicyManager;
 import edu.thu.ss.spec.manager.VocabularyManager;
+import edu.thu.ss.spec.meta.xml.XMLMetaRegistry;
+import edu.thu.ss.spec.meta.xml.XMLMetaRegistryWriter;
 
 public class PSpecEditor {
 
@@ -214,6 +216,10 @@ public class PSpecEditor {
 		newPolicy.setText(getMessage(New_Policy));
 		menus.put(New_Policy, newPolicy);
 
+		MenuItem newMetadata = new MenuItem(newMenu, SWT.NONE);
+		newMetadata.setText(getMessage(New_Metadata));
+		menus.put(New_Metadata, newMetadata);
+
 		MenuItem openItems = new MenuItem(fileMenu, SWT.CASCADE);
 		openItems.setText(getMessage(Open));
 
@@ -227,6 +233,10 @@ public class PSpecEditor {
 		MenuItem openPolicy = new MenuItem(openMenu, SWT.NONE);
 		openPolicy.setText(getMessage(Open_Policy));
 		menus.put(Open_Policy, openPolicy);
+
+		MenuItem openMetadata = new MenuItem(openMenu, SWT.NONE);
+		openMetadata.setText(getMessage(Open_Metadata));
+		menus.put(Open_Metadata, openMetadata);
 
 		MenuItem close = new MenuItem(fileMenu, SWT.NONE);
 		close.setText(getMessage(Close));
@@ -308,6 +318,14 @@ public class PSpecEditor {
 				addPolicy(new PolicyModel(policy, ""));
 			}
 		});
+
+		newMetadata.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				XMLMetaRegistry registry = new XMLMetaRegistry(editorModel.getNewMetadataId());
+				addMetadataModel(new MetadataModel(registry, ""));
+			}
+		});
 		openVocabulary.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -319,6 +337,13 @@ public class PSpecEditor {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				openPolicy();
+			}
+		});
+		
+		openMetadata.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				openMetadata();
 			}
 		});
 
@@ -425,6 +450,9 @@ public class PSpecEditor {
 		ToolItem openPolicy = EditorUtil.newToolItem(toolBar, getMessage(Open_Policy));
 		toolItems.put(Open_Policy, openPolicy);
 
+		ToolItem openMetadata = EditorUtil.newToolItem(toolBar, getMessage(Open_Metadata));
+		toolItems.put(Open_Metadata, openMetadata);
+
 		ToolItem save = EditorUtil.newToolItem(toolBar, getMessage(Save));
 		save.setImage(SWTResourceManager.getImage(EditorUtil.Image_Save));
 		toolItems.put(Save, save);
@@ -447,6 +475,13 @@ public class PSpecEditor {
 			}
 		});
 
+		openMetadata.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				openMetadata();
+			}
+		});
+		
 		save.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -476,8 +511,8 @@ public class PSpecEditor {
 		policyItems = EditorUtil.newTreeItem(editorTree, getMessage(Policy));
 		policyItems.setImage(SWTResourceManager.getImage(EditorUtil.Image_Policy_Item));
 
-		//	metadataItems = EditorUtil.newTreeItem(editorTree, getMessage(Metadata));
-		//metadataItems.setImage(SWTResourceManager.getImage(EditorUtil.Image_Policy_Item));
+		metadataItems = EditorUtil.newTreeItem(editorTree, getMessage(Metadata));
+		metadataItems.setImage(SWTResourceManager.getImage(EditorUtil.Image_Policy_Item));
 
 		EditorUtil.processTree(editorTree);
 
@@ -658,14 +693,8 @@ public class PSpecEditor {
 
 	public MetadataView getMetadataView(MetadataModel model) {
 		for (TreeItem metadataItem : metadataItems.getItems()) {
-			if (!metadataItem.getData().equals(model)) {
-				continue;
-			}
-			for (TreeItem item : metadataItem.getItems()) {
-				EditorView<?, ?> view = (EditorView<?, ?>) item.getData(EditorUtil.View);
-				if (view instanceof MetadataView) {
-					return (MetadataView) view;
-				}
+			if (metadataItem.getData().equals(model)) {
+				return (MetadataView) metadataItem.getData(EditorUtil.View);
 			}
 		}
 		return null;
@@ -725,6 +754,19 @@ public class PSpecEditor {
 		//visualizeItem.setData(EditorUtil.View, graphView);
 	}
 
+	private void addMetadataModel(MetadataModel model) {
+		editorModel.getMetadata().add(model);
+
+		XMLMetaRegistry registry = model.getRegistry();
+		
+		TreeItem item = EditorUtil.newTreeItem(metadataItems, registry.getInfo().getId());
+		item.setData(model);
+		MetadataView metadataView = new MetadataView(shell, contentComposite, model, outputView, item);
+		metadataView.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		EditorUtil.exclude(metadataView);
+		item.setData(EditorUtil.View, metadataView);
+	}
+
 	private void openVocabulary() {
 		FileDialog dlg = EditorUtil.newOpenFileDialog(shell);
 		String file = dlg.open();
@@ -782,6 +824,39 @@ public class PSpecEditor {
 		}
 	}
 
+	private void openMetadata() {
+		FileDialog dlg = EditorUtil.newOpenFileDialog(shell);
+		String file = dlg.open();
+		if (file != null) {
+			if (editorModel.containMetadata(file)) {
+				EditorUtil.showErrorMessageBox(shell, "", getMessage(Metadata_Opened_Message, file));
+				return;
+			}
+			MetadataModel metadataModel = new MetadataModel(file);
+			ParseResult result = EditorUtil.openMetadata(metadataModel, shell, true);
+			metadataModel.getRegistry().getInfo().setId(editorModel.getNewMetadataId());
+			if (result.equals(ParseResult.Invalid_Metadata)) {
+				EditorUtil
+						.showErrorMessageBox(shell, "", getMessage(Metadata_Invalid_Document_Message, file));
+				return;
+			}
+			if (result.equals(ParseResult.Invalid_Vocabulary)) {
+				EditorUtil.showErrorMessageBox(shell, "",
+						getMessage(Metadata_Invalid_Vocabulary_Document_Message, file));
+				return;
+			}
+			if (result.equals(ParseResult.Error)) {
+				EditorUtil.showErrorMessageBox(shell, "", getMessage(Metadata_Parse_Error_Message, file));
+			}
+
+			addMetadataModel(metadataModel);
+
+			if (metadataModel.hasOutput()) {
+				outputView.refresh();
+			}
+		}
+	}
+	
 	private void enableMenus() {
 		boolean enable = editingModel != null;
 
@@ -811,6 +886,8 @@ public class PSpecEditor {
 			return saveVocabulary((VocabularyModel) model, rename);
 		} else if (model instanceof PolicyModel) {
 			return savePolicy((PolicyModel) model, rename);
+		} else if (model instanceof MetadataModel) {
+			return saveMetadata((MetadataModel) model, rename);
 		}
 		return false;
 	}
@@ -854,6 +931,40 @@ public class PSpecEditor {
 		item.dispose();
 	}
 
+	private boolean saveMetadata(MetadataModel model, boolean rename) {
+		if (model.hasOutput(OutputType.error)) {
+			EditorUtil.showErrorMessageBox(shell, "", getMessage(Metadata_Save_Error_Message, model.getRegistry().getInfo().getId()));
+			return true;
+		}
+		getMetadataView(model).saveTableLabeling();
+		String path = model.getPath();
+		String metadataId = model.getRegistry().getInfo().getId();
+		boolean refresh = false;
+		if (path.isEmpty() || rename) {
+			FileDialog dlg = EditorUtil.newSaveFileDialog(shell, metadataId + ".xml");
+			dlg.setText(getMessage(Save_Metadata, metadataId));
+			path = dlg.open();
+			if (path == null) {
+				return false;
+			}
+			refresh = true;
+		}
+		model.setPath(path);
+		XMLMetaRegistryWriter writer = new XMLMetaRegistryWriter();
+		try {
+			writer.output(model.getRegistry(), path);
+		} catch (WritingException e) {
+			e.printStackTrace();
+		}
+		EditorUtil.showInfoMessageBox(shell, "",
+				getMessage(Metadata_Save_Success_Message, metadataId, path));
+		if (refresh) {
+			MetadataView view = getMetadataView(model);
+			view.refreshLocation();
+		}
+		return false;
+	}
+	
 	private boolean saveVocabulary(VocabularyModel model, boolean rename) {
 		if (model.hasOutput(OutputType.error)) {
 			EditorUtil.showErrorMessageBox(shell, "",

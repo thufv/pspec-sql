@@ -7,10 +7,14 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import edu.thu.ss.spec.lang.pojo.Writable;
+import edu.thu.ss.spec.meta.xml.MetaParserConstant;
 import edu.thu.ss.spec.util.PSpecUtil;
 
-public class Table extends DBObject {
+public class Table extends DBObject implements Writable {
 	private static Logger logger = LoggerFactory.getLogger(Table.class);
 
 	Map<String, Column> columns = new LinkedHashMap<>();
@@ -101,6 +105,31 @@ public class Table extends DBObject {
 			sb.append(column.toString(l + 1));
 		}
 		return sb.toString();
+	}
+
+	@Override
+	public Element outputType(Document document, String name) {
+		return null;
+	}
+
+	@Override
+	public Element outputElement(Document document) {
+		Element table = document.createElement(MetaParserConstant.Ele_Table);
+		table.setAttribute(MetaParserConstant.Attr_Name, name);
+		boolean isLabel = false;
+		for (String columnName : columns.keySet()) {
+			Element column = columns.get(columnName).outputElement(document);
+			if (column != null) {
+				isLabel = true;
+				table.appendChild(column);
+			}
+		}
+		if (isLabel) {
+			return table;
+		} else {
+			return null;
+		}
+		
 	}
 
 }

@@ -2,17 +2,17 @@ package edu.thu.ss.editor.graph;
 
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import javax.swing.JFrame;
 
-import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import prefuse.Constants;
 import prefuse.Display;
 import prefuse.Visualization;
-import prefuse.data.Graph;
-import prefuse.data.Node;
+import prefuse.controls.PanControl;
+import prefuse.controls.ToolTipControl;
+import prefuse.controls.WheelZoomControl;
+import prefuse.controls.ZoomControl;
 import prefuse.visual.AggregateItem;
 import prefuse.visual.AggregateTable;
 import prefuse.visual.VisualGraph;
@@ -25,24 +25,14 @@ public class AggregateGraph extends Display {
 	public static final String EDGES = "graph.edges";
 	public static final String AGGR = "aggregates";
 
-	private Visualization visualization;
-	private Graph graph;
 	private VisualGraph visualGraph;
 	private AggregateTable aggregateTable;
 
 	private Set<Set<Integer>> aggregateGroups = new HashSet<>();
 
-	public AggregateGraph(Visualization visualization) {
+	public AggregateGraph(Visualization visualization, VisualGraph visualGraph) {
 		super(visualization);
-		this.visualization = visualization;
-	}
-
-	public void run() {
-	}
-
-	public void setGraph(Graph graph) {
-		this.graph = graph;
-		visualGraph = visualization.addGraph("graph", graph);
+		this.visualGraph = visualGraph;
 
 		visualization.setInteractive(EDGES, null, false);
 		visualization.setValue(NODES, null, VisualItem.SHAPE, new Integer(Constants.SHAPE_ELLIPSE));
@@ -51,22 +41,18 @@ public class AggregateGraph extends Display {
 		aggregateTable.addColumn(VisualItem.POLYGON, float[].class);
 		aggregateTable.addColumn("id", int.class);
 		
-		
+		setHighQuality(true);
+		addControlListener(new PanControl());
+		addControlListener(new ZoomControl());
+		addControlListener(new WheelZoomControl());
+		addControlListener(new ToolTipControl("info"));
+		addControlListener(new AggregateDragControl());
 	}
 
-	public void initDataGroups(List<ExpandedRule> rules) {
-		graph = new Graph();
-		graph.addColumn("id", java.lang.String.class);
-		graph.addColumn("name", java.lang.String.class);
-		graph.addColumn("info", java.lang.String.class);
-		for (int i = 0; i < rules.size(); i++) {
-			Node node = graph.addNode();
-			node.set("id", i);
-			node.set("name", rules.get(i).getRuleId());
-			node.set("info", rules.get(i).toString());
-		}
+	public void setVisualGraph(VisualGraph visualGraph) {
+		this.visualGraph = visualGraph;
 	}
-
+	
 	public void addAggregateGroups(Set<Integer> group) {
 		if (aggregateGroups.contains(group)) {
 			return;
@@ -87,6 +73,14 @@ public class AggregateGraph extends Display {
 			}
 
 		}
+	}
+
+	public void removeAggregateGroups() {
+		if (aggregateTable == null) {
+			return;
+		}
+		aggregateTable.clear();
+		aggregateGroups.clear();
 	}
 
 	public void test() {

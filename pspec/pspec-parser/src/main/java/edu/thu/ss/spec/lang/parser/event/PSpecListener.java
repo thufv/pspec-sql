@@ -52,6 +52,11 @@ public abstract class PSpecListener {
 		Strong_Consistency,
 		Enhanced_Strong_Consistency
 	}
+	
+	public enum MetadataLabelType {
+		Label_Empty,
+		Extraction_Empty
+	}
 
 	public void onParseRule(Rule rule) {
 
@@ -73,4 +78,7 @@ public abstract class PSpecListener {
 
 	}
 
+	public void onMetadataLabelError(MetadataLabelType type, String location) {
+		
+	}
 }

@@ -29,13 +29,17 @@ public class MessagesUtil {
 	public static final String Open = "open";
 	public static final String Open_Vocabulary = "open.vocabulary";
 	public static final String Open_Policy = "open.policy";
-
+	public static final String Open_Metadata = "open.metadata";
+	public static final String Connect = "connect";
+	
 	public static final String New_Vocabulary = "new.vocabulary";
 	public static final String New_Policy = "new.policy";
+	public static final String New_Metadata = "new.metadata";
 	public static final String Save = "save";
 	public static final String Save_As = "save.as";
 	public static final String Save_Vocabulary = "save.vocabulary";
 	public static final String Save_Policy = "save.policy";
+	public static final String Save_Metadata = "save.metadata";
 	public static final String Exit = "exit";
 	public static final String Edit = "edit";
 	public static final String Help = "help";
@@ -59,7 +63,9 @@ public class MessagesUtil {
 	public static final String StrongConsistency = "strong.consistency";
 	public static final String EnhancedStrongConsistency = "enhanced.strong.consistency";
 	public static final String Select_As_Seed = "select.as.seed";
-
+	public static final String Connection = "connection";
+	public static final String Extraction = "extraction";
+	
 	public static final String Base_Vocabulary = "base.vocabulary";
 	public static final String Base_Vocabulary_Contains_Error_Message = "base.vocabulary.contains.error.message";
 	public static final String Vocabulary = "vocabulary";
@@ -141,6 +147,7 @@ public class MessagesUtil {
 	public static final String Policy_ID = "policy.id";
 	public static final String Policy_Info = "policy.info";
 	public static final String Policy_Rules = "policy.rules";
+	public static final String Policy_Location = "policy.location";
 	public static final String Policy_No_Vocabulary_Message = "policy.no.vocabulary.message";
 	public static final String Policy_Opened_Message = "policy.opened.message";
 	public static final String Policy_Save_Success_Message = "policy.save.success.message";
@@ -215,7 +222,35 @@ public class MessagesUtil {
 	public static final String Visualization_Error_Message = "visualization.error.message";
 
 	public static final String Metadata = "metadata";
-
+	public static final String Metadata_Output = "metadata.output";
+  public static final String Metadata_Info = "metadata.info";
+  public static final String Metadata_ID = "metadata.id";
+  public static final String Metadata_Username = "metadata.username";
+  public static final String Metadata_Password = "metadata.password";
+  public static final String Metadata_Host = "metadata.host";
+  public static final String Metadata_Port = "metadata.port";
+  public static final String Metadata_Database = "metadata.database";
+  public static final String Metadata_Table = "metadata.table";
+  public static final String Metadata_Column = "metadata.column";
+  public static final String Metadata_Add_Label = "metadata.add.label";
+  public static final String Metadata_Delete_Label = "metadata.delete.label";
+  public static final String Metadata_Edit_Label = "metadata.edit.label";
+  public static final String Metadata_Opened_Message = "metadata.opened.message";
+  public static final String Metadata_Invalid_Document_Message = "metadata.invalid.document.message";
+  public static final String Metadata_Parse_Error_Message = "metadata.parse.error.message";
+  public static final String Metadata_ID_Not_Empty_Message = "metadata.id.not.empty.message";
+  public static final String Metadata_Host_Not_Empty_Message = "metadata.host.not.empty.message";
+  public static final String Metadata_Port_Not_Empty_Message = "metadata.port.not.empty.message";
+  public static final String Metadata_Username_Not_Empty_Message = "metadata.username.not.empty.message";
+  public static final String Metadata_Password_Not_Empty_Message = "metadata.password.not.empty.message";
+  public static final String MetaData_Extraction_Unique_Message = "metadata.extraction.unique.message";
+  public static final String Metadata_Label_Not_Empty_Message = "metadata.label.not.empty.message";
+  public static final String Metadata_Extraction_Not_Empty_Message = "metadata.extraction.not.empty.message";
+  public static final String Metadata_Database_Table_Not_Exist_Message = "metadata.database.table.not.exist.message";
+  public static final String Metadata_Save_Error_Message = "metadata.save.error.message";
+  public static final String Metadata_Save_Success_Message = "metadata.save.success.message";
+  public static final String Metadata_Invalid_Vocabulary_Document_Message = "metadata.invalid.vocabulary.document.message";
+  
 	public static final String Forbid = "forbid";
 	public static final String Restriction = "restriction";
 	public static final String Restrict = "restrict";
@@ -233,6 +268,8 @@ public class MessagesUtil {
 	public static final String Delete_Data = "delete.data";
 	public static final String Delete_Data_Message = "delete.data.message";
 
+	public static final String Label = "label";
+	
 	public static String getMessage(String key, Object... contents) {
 		try {
 			String msg = bundle.getString(key);

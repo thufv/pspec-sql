@@ -1,5 +1,6 @@
 package edu.thu.ss.spec.meta.xml;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -7,7 +8,9 @@ import java.util.Set;
 
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
+import edu.thu.ss.spec.lang.pojo.Info;
 import edu.thu.ss.spec.lang.pojo.Policy;
+import edu.thu.ss.spec.lang.pojo.Vocabulary;
 import edu.thu.ss.spec.meta.BaseType;
 import edu.thu.ss.spec.meta.Column;
 import edu.thu.ss.spec.meta.ConditionalColumn;
@@ -18,11 +21,24 @@ import edu.thu.ss.spec.meta.Table;
 import edu.thu.ss.spec.meta.User;
 
 public class XMLMetaRegistry implements MetaRegistry {
+	private Info info = new Info();
+	protected URI policyLocation;
 
 	private Map<String, Database> databases = new HashMap<>();
 	private Map<String, User> userList = new HashMap<>();
 	private Policy policy = null;
 	private Map<String, Set<String>> scope = null;
+
+	private URI path;
+
+	public XMLMetaRegistry() {
+
+	}
+
+	public XMLMetaRegistry(String id) {
+		info = new Info();
+		info.setId(id);
+	}
 
 	@Override
 	public boolean applicable(String databaseName, String tableName) {
@@ -30,8 +46,24 @@ public class XMLMetaRegistry implements MetaRegistry {
 		return table != null;
 	}
 
-	void setPolicy(Policy policy) {
+	public void setPolicy(Policy policy) {
 		this.policy = policy;
+	}
+
+	public URI getPath() {
+		return path;
+	}
+
+	public void setPath(URI path) {
+		this.path = path;
+	}
+
+	public URI getPolicyLocation() {
+		return policyLocation;
+	}
+
+	public void setPolicyLocation(URI policyLocation) {
+		this.policyLocation = policyLocation;
 	}
 
 	@Override
@@ -55,10 +87,18 @@ public class XMLMetaRegistry implements MetaRegistry {
 		return policy;
 	}
 
-	void addDatabase(Database database) {
+	public Info getInfo() {
+		return info;
+	}
+
+	public void setInfo(Info info) {
+		this.info = info;
+	}
+
+	public void addDatabase(Database database) {
 		this.databases.put(database.getName(), database);
 	}
-	
+
 	void addUser(User user) {
 		this.userList.put(user.getName(), user);
 	}

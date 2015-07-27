@@ -1,6 +1,39 @@
 package edu.thu.ss.editor.util;
 
-import static edu.thu.ss.editor.util.MessagesUtil.*;
+import static edu.thu.ss.editor.util.MessagesUtil.Data_Category_Duplicate_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Data_Category_Exclude_Invalid_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Data_Category_Exclude_Not_Exist_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Data_Category_ID_Unique_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Data_Category_Not_Exist_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Data_Category_Parent_Cycle_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Data_Category_Parent_Not_Exist_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Extraction_Not_Empty_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Label_Not_Empty_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Rule_Approximate_Inconsistency_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Rule_Data_Association_Not_Overlap_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Rule_Data_Ref_Simplify_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Rule_Enhanced_Strong_Inconsistency_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Rule_Normal_Inconsistency_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Rule_Redundancy_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Rule_Restriction_DataRef_Not_Exist_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Rule_Restriction_Explicit_DataRef_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Rule_Restriction_One_Forbid_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Rule_Restriction_Simplify_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Rule_Restriction_Single_No_DataRef_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Rule_Restriction_Single_One_Desensitize_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Rule_Restriction_Single_One_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Rule_Restriction_Unsupported_Operation_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Rule_Strong_Inconsistency_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Rule_User_Ref_Simplify_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.User_Category_Duplicate_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.User_Category_Exclude_Invalid_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.User_Category_Exclude_Not_Exist_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.User_Category_ID_Unique_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.User_Category_Not_Exist_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.User_Category_Parent_Cycle_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.User_Category_Parent_Not_Exist_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.Vocabulary_Cycle_Reference_Message;
+import static edu.thu.ss.editor.util.MessagesUtil.getMessage;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,6 +77,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import edu.thu.ss.editor.model.BaseModel;
+import edu.thu.ss.editor.model.MetadataModel;
 import edu.thu.ss.editor.model.OutputEntry;
 import edu.thu.ss.editor.model.OutputEntry.FixListener;
 import edu.thu.ss.editor.model.OutputEntry.MessageType;
@@ -56,6 +90,7 @@ import edu.thu.ss.editor.view.RuleView;
 import edu.thu.ss.spec.lang.analyzer.rule.RuleSimplifier.SimplificationLog;
 import edu.thu.ss.spec.lang.parser.InvalidPolicyException;
 import edu.thu.ss.spec.lang.parser.InvalidVocabularyException;
+import edu.thu.ss.spec.lang.parser.ParseException;
 import edu.thu.ss.spec.lang.parser.PolicyParser;
 import edu.thu.ss.spec.lang.parser.VocabularyParser;
 import edu.thu.ss.spec.lang.parser.event.EventTable;
@@ -75,6 +110,8 @@ import edu.thu.ss.spec.lang.pojo.Rule;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
 import edu.thu.ss.spec.lang.pojo.UserRef;
 import edu.thu.ss.spec.lang.pojo.Vocabulary;
+import edu.thu.ss.spec.meta.xml.XMLMetaRegistry;
+import edu.thu.ss.spec.meta.xml.XMLMetaRegistryParser;
 import edu.thu.ss.spec.util.PSpecUtil;
 
 public class EditorUtil {
@@ -197,6 +234,7 @@ public class EditorUtil {
 		Success,
 		Invalid_Vocabulary,
 		Invalid_Policy,
+		Invalid_Metadata,
 		Error
 	}
 
@@ -236,6 +274,31 @@ public class EditorUtil {
 			return ParseResult.Invalid_Policy;
 		} catch (InvalidVocabularyException e) {
 			return ParseResult.Invalid_Vocabulary;
+		}
+		return ParseResult.Success;
+	}
+	
+	public static ParseResult openMetadata(MetadataModel model, Shell shell, boolean output) {
+		XMLMetaRegistry registry = null;
+		try {
+			XMLMetaRegistryParser parser = new XMLMetaRegistryParser();
+			if (output) {
+				parser.setEventTable(EditorUtil.newOutputTable(model, null));
+			}
+			parser.setForceRegister(true);
+			parser.parse(model.getPath());
+			registry = parser.getXMLMetaRegistry();
+			model.init(registry);
+			if (parser.isError()) {
+				return ParseResult.Error;
+			}
+		} catch (InvalidPolicyException e) {
+			return ParseResult.Invalid_Policy;
+		} catch (InvalidVocabularyException e) {
+			return ParseResult.Invalid_Vocabulary;
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return ParseResult.Invalid_Metadata;
 		}
 		return ParseResult.Success;
 	}
@@ -956,8 +1019,24 @@ public class EditorUtil {
 				}
 
 			}
+			
+			@Override
+			public void onMetadataLabelError(MetadataLabelType type, String location) {
+				MetadataModel metadataModel = (MetadataModel) model;
+				switch (type) {
+				case Label_Empty:
+					message = getMessage(Metadata_Label_Not_Empty_Message, location);
+					model.addOutput(OutputEntry.newInstance(message, OutputType.error, model, MessageType.Metadata, location));
+					break;
+				case Extraction_Empty:
+					message = getMessage(Metadata_Extraction_Not_Empty_Message, location);
+					model.addOutput(OutputEntry.newInstance(message, OutputType.error, model, MessageType.Metadata, location));
+					break;
+				default:
+						break;
+				}
+			}
 		});
-
 		return table;
 	}
 

@@ -6,6 +6,7 @@ import java.util.List;
 import edu.thu.ss.editor.model.OutputEntry.OutputType;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Vocabulary;
+import edu.thu.ss.spec.meta.xml.XMLMetaRegistry;
 
 /**
  * 
@@ -16,9 +17,13 @@ public class EditorModel {
 
 	private int nextPolicyId = 1;
 
+	private int nextMetadataId = 1;
+
 	private List<VocabularyModel> vocabularies = new ArrayList<>();
 
 	private List<PolicyModel> policies = new ArrayList<>();
+
+	private List<MetadataModel> metadata = new ArrayList<>();
 
 	public List<VocabularyModel> getVocabularies() {
 		return vocabularies;
@@ -26,6 +31,10 @@ public class EditorModel {
 
 	public List<PolicyModel> getPolicies() {
 		return policies;
+	}
+	
+	public List<MetadataModel> getMetadata() {
+		return metadata;
 	}
 
 	public boolean containVocabulary(String path) {
@@ -46,6 +55,15 @@ public class EditorModel {
 		return false;
 	}
 
+	public boolean containMetadata(String path) {
+		for (MetadataModel model : metadata) {
+			if (model.getPath().equals(path)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public VocabularyModel addVocabulary(Vocabulary vocabulary, String path) {
 		VocabularyModel model = new VocabularyModel(vocabulary, path);
 		vocabularies.add(model);
@@ -58,12 +76,22 @@ public class EditorModel {
 		return model;
 	}
 
+	public MetadataModel  addMetadata(XMLMetaRegistry registry, String path) {
+		MetadataModel model = new MetadataModel(registry, path);
+		metadata.add(model);
+		return model;
+	}
+	
 	public String getNewVocabularyId() {
 		return "Vocabulary" + (nextVocabualryId++);
 	}
 
 	public String getNewPolicyId() {
 		return "Policy" + (nextPolicyId++);
+	}
+
+	public String getNewMetadataId() {
+		return "Metadata" + (nextMetadataId++);
 	}
 
 	public boolean hasOutput(OutputType type) {
@@ -88,6 +116,9 @@ public class EditorModel {
 		for (PolicyModel policyModel : policies) {
 			policyModel.getOutput(type, result);
 		}
+		for (MetadataModel metadataModel : metadata) {
+			metadataModel.getOutput(type, result);
+		}
 		return result;
 	}
 
@@ -98,6 +129,9 @@ public class EditorModel {
 		}
 		for (PolicyModel policyModel : policies) {
 			count += policyModel.countOutput(type);
+		}
+		for (MetadataModel metadataModel : metadata) {
+			count += metadataModel.countOutput(type);
 		}
 		return count;
 	}

@@ -94,7 +94,7 @@ public class PolicyView extends EditorView<PolicyModel, Policy> {
 					policyID.selectAll();
 					return;
 				}
-
+				
 				if (!policy.getInfo().getId().equals(text)) {
 					policy.getInfo().setId(text);
 					editorItem.setText(text);
