@@ -91,6 +91,12 @@ public class Table extends DBObject implements Writable {
 
 		return error;
 	}
+	
+	public void clearLabel() {
+		for (String columnName : columns.keySet()) {
+			columns.get(columnName).clearLabel();
+		}
+	}
 
 	public String toString(int l) {
 		StringBuilder sb = new StringBuilder();

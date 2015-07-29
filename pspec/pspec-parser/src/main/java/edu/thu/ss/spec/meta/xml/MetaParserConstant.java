@@ -53,6 +53,6 @@ public interface MetaParserConstant {
   public static final String Attr_Policy = "policy";
 
   public static final List<String> ComplexTypes = Arrays.asList(Ele_Struct, Ele_Map, Ele_Array,
-      Ele_Composite);
+      Ele_Composite); 
 
 }

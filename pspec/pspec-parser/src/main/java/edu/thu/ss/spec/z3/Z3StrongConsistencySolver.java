@@ -8,24 +8,16 @@ import java.util.Set;
 
 import org.slf4j.LoggerFactory;
 
-import com.microsoft.z3.ApplyResult;
 import com.microsoft.z3.BoolExpr;
-import com.microsoft.z3.Expr;
-import com.microsoft.z3.Goal;
 import com.microsoft.z3.IntExpr;
 import com.microsoft.z3.Sort;
 import com.microsoft.z3.Symbol;
-import com.microsoft.z3.Tactic;
 import com.microsoft.z3.Z3Exception;
 
-import edu.thu.ss.spec.lang.analyzer.consistency.StrongConsistencySearcher.Leaf;
-import edu.thu.ss.spec.lang.analyzer.consistency.StrongConsistencySearcher.LeafAssociation;
-import edu.thu.ss.spec.lang.pojo.DataCategory;
+import edu.thu.ss.spec.lang.analyzer.consistency.ConsistencyAnalyzer.Leaf;
+import edu.thu.ss.spec.lang.analyzer.consistency.ConsistencyAnalyzer.LeafAssociation;
 import edu.thu.ss.spec.lang.pojo.DataRef;
-import edu.thu.ss.spec.lang.pojo.Desensitization;
-import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
-import edu.thu.ss.spec.lang.pojo.Restriction;
 
 public class Z3StrongConsistencySolver extends Z3ConsistencySolver {
 	
@@ -33,7 +25,7 @@ public class Z3StrongConsistencySolver extends Z3ConsistencySolver {
 	private Sort[] types;
 	private Symbol[] symbols;
 	private ExpandedRule seed;
-	private Map<DataCategory, Integer> indexMap = new HashMap<>();
+	private Map<Leaf, Integer> indexMap = new HashMap<>();
 	
 	private static final int Max_Dimension = 20;
 	
@@ -91,15 +83,15 @@ public class Z3StrongConsistencySolver extends Z3ConsistencySolver {
 		}
 		
 		if (seed.isSingle()) {
-			DataCategory category = leafAssoc.leafAssociation[0].category;
-			if (indexMap.get(category) == null) {
+			Leaf leaf = leafAssoc.leafAssociation[0];
+			if (indexMap.get(leaf) == null) {
 				index[0] = indexMap.size();
-				indexMap.put(category, index[0]);
+				indexMap.put(leaf, index[0]);
 			}
 			else {
-				index[0] = indexMap.get(category);
+				index[0] = indexMap.get(leaf);
 			}
-			return buildExpression(index, rule.getRestrictions());
+			return buildExpression(index, rule.getRestrictions(), vars);
 		}
 		else if (seed.isAssociation()) {
 			List<BoolExpr> list = new ArrayList<>();
@@ -112,7 +104,7 @@ public class Z3StrongConsistencySolver extends Z3ConsistencySolver {
 	private void buildExpression(LeafAssociation leafAssoc, ExpandedRule rule,
 			int dim, int depth, int[] index, List<BoolExpr> list) throws Z3Exception {
 		if (dim == depth) {
-			list.add(buildExpression(index, rule.getRestrictions()));
+			list.add(buildExpression(index, rule.getRestrictions(), vars));
 			return;
 		}
 		
@@ -126,79 +118,26 @@ public class Z3StrongConsistencySolver extends Z3ConsistencySolver {
 		for (int i = 0; i < leafAssoc.leafAssociation.length; i++) {
 			Leaf leaf = leafAssoc.leafAssociation[i];
 			if (leaf.belongTo(dataRef)) {
-				if (indexMap.get(leaf.category) == null) {
+				if (indexMap.get(leaf) == null) {
 					index[depth] = indexMap.size();
-					indexMap.put(leaf.category, index[depth]);
+					indexMap.put(leaf, index[depth]);
 				}
 				else {
-					index[depth] = indexMap.get(leaf.category);
+					index[depth] = indexMap.get(leaf);
 				}
 				buildExpression(leafAssoc, rule, dim, depth + 1, index, list);
 				index[depth] = -1;
 			}
 		}
 	}
-	private BoolExpr buildExpression(int[] index, Restriction[] restrictions) throws Z3Exception {
-		BoolExpr[] exprs = new BoolExpr[restrictions.length];
-		for (int i = 0; i < restrictions.length; i++) {
-			exprs[i] = buildExpression(index, restrictions[i]);
-		}
-		return context.mkOr(exprs);
-	}
-
-	private BoolExpr buildExpression(int[] index, Restriction restriction) throws Z3Exception {
-		List<Desensitization> des = restriction.getDesensitizations();
-		BoolExpr[] exprs = new BoolExpr[des.size()];
-		for (int i = 0; i < des.size(); i++) {
-			if (des.get(i) != null) {
-				exprs[i] = buildExpression(index[i], des.get(i));
-			} else {
-				exprs[i] = context.mkTrue();
-			}
-		}
-		return context.mkAnd(exprs);
-	}
-
-	private BoolExpr buildExpression(int index, Desensitization de) throws Z3Exception {
-		if (index == -1) {
-			return context.mkTrue();
-		}
-		BoolExpr[] exprs = new BoolExpr[de.getOperations().size()];
-		int i = 0;
-		for (DesensitizeOperation op : de.getOperations()) {
-			IntExpr var = vars[index];
-			Expr num = context.mkNumeral(op.getId(), context.getIntSort());
-			exprs[i++] = context.mkEq(var, num);
-		}
-		return context.mkOr(exprs);
-	}
 
 	public boolean isSatisfiable(BoolExpr[] exprs) {
 		try{
-			Tactic simplifyTactic = context.mkTactic("ctx-solver-simplify");
 			for (int i = 0; i < exprs.length; i++) {
 				BoolExpr condition = context.mkExists(types, symbols, exprs[i], 0, null, null, null, null);
-				Goal g = context.mkGoal(false, false, false);
-				g.add(condition);
-				ApplyResult a = simplifyTactic.apply(g);
-				Goal[] goals = a.getSubgoals();
-				for (int j = 0; j < goals.length; j++) {
-					if (goals[j].isDecidedUnsat()) {
-						return false;
-					}
-				}
-				/*
-				Solver solver = context.mkSolver();
-				solver.add(condition);
-				Status status = solver.check();
-				if (status.equals(Status.SATISFIABLE)) {
-					solver.dispose();
-				}
-				else {
-					solver.dispose();
+				if (!isSatisfiable(condition)) {
 					return false;
 				}
-				*/
 			}
 			return true;
 		} catch (Z3Exception e) {

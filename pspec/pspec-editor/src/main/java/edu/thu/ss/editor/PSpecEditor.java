@@ -936,7 +936,7 @@ public class PSpecEditor {
 			EditorUtil.showErrorMessageBox(shell, "", getMessage(Metadata_Save_Error_Message, model.getRegistry().getInfo().getId()));
 			return true;
 		}
-		getMetadataView(model).saveTableLabeling();
+		getMetadataView(model).saveTableLabel();
 		String path = model.getPath();
 		String metadataId = model.getRegistry().getInfo().getId();
 		boolean refresh = false;

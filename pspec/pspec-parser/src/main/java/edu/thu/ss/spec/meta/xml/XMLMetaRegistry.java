@@ -107,6 +107,10 @@ public class XMLMetaRegistry implements MetaRegistry {
 	public Map<String, Database> getDatabases() {
 		return databases;
 	}
+	
+	public Database getDatabase(String databaseName) {
+		return databases.get(databaseName);
+	}
 
 	@Override
 	public BaseType lookup(String databaseName, String tableName, String columnName) {

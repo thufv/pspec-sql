@@ -1,9 +1,6 @@
 package edu.thu.ss.editor.model;
 
-import java.util.List;
-
 import edu.thu.ss.editor.hive.HiveConnection;
-import edu.thu.ss.editor.model.OutputEntry.OutputType;
 import edu.thu.ss.spec.meta.Column;
 import edu.thu.ss.spec.meta.Database;
 import edu.thu.ss.spec.meta.Table;
@@ -51,6 +48,10 @@ public class MetadataModel extends BaseModel {
 		}
 		column.addExtraction(extractionName, label);
 		return true;
+	}
+	
+	public void clearTableLabel(String databaseName, String tableName) {
+		registry.getDatabase(databaseName).getTable(tableName).clearLabel();
 	}
 	
 	private Column getColumn(String databaseName, String tableName, String columnName) {

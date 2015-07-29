@@ -7,32 +7,28 @@ import java.util.Map;
 import java.util.Set;
 
 import com.microsoft.z3.BoolExpr;
-import com.microsoft.z3.Expr;
 import com.microsoft.z3.IntExpr;
-import com.microsoft.z3.Solver;
 import com.microsoft.z3.Sort;
-import com.microsoft.z3.Status;
 import com.microsoft.z3.Symbol;
 import com.microsoft.z3.Z3Exception;
 
+import edu.thu.ss.spec.lang.analyzer.consistency.ConsistencyAnalyzer.Leaf;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DataRef;
-import edu.thu.ss.spec.lang.pojo.Desensitization;
-import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.Restriction;
 
 public class Z3NormalConsistencySolver extends Z3ConsistencySolver {
-	
+
 	private IntExpr[] vars;
 	private Sort[] types;
 	private Symbol[] symbols;
-	
-	public Map<DataCategory, Integer> indexMap = new HashMap<>();
+
+	public Map<Leaf, Integer> indexMap = new HashMap<>();
 	public Map<ExpandedRule, BoolExpr> exprMap = new HashMap<>();
-	
+
 	private static final int Max_Dimension = 100;
-	
+
 	public Z3NormalConsistencySolver() {
 		super.init(Max_Dimension);
 		vars = new IntExpr[Max_Dimension];
@@ -50,13 +46,12 @@ public class Z3NormalConsistencySolver extends Z3ConsistencySolver {
 	}
 
 	public BoolExpr buildExpression(ExpandedRule rule) {
-		try{
+		try {
 			BoolExpr expr = null;
 			if (rule.isSingle()) {
 				expr = buildSingleExpression(rule);
 				exprMap.put(rule, expr);
-			}
-			else if (rule.isAssociation()) {
+			} else if (rule.isAssociation()) {
 				expr = buildAssociationExpression(rule);
 				exprMap.put(rule, expr);
 			}
@@ -67,87 +62,49 @@ public class Z3NormalConsistencySolver extends Z3ConsistencySolver {
 		}
 	}
 
-	private BoolExpr buildAssociationExpression(ExpandedRule rule) 
-			throws Z3Exception {
+	private BoolExpr buildAssociationExpression(ExpandedRule rule) throws Z3Exception {
 		int[] index = new int[rule.getDimension()];
 		List<BoolExpr> list = new ArrayList<>();
 		buildAssociationExpression(0, index, rule, list);
 		return context.mkAnd(list.toArray(new BoolExpr[list.size()]));
 	}
-	
-	private void buildAssociationExpression(int depth, int[] index, ExpandedRule rule, List<BoolExpr> list) 
-			throws Z3Exception {
+
+	private void buildAssociationExpression(int depth, int[] index, ExpandedRule rule,
+			List<BoolExpr> list) throws Z3Exception {
 		if (depth == rule.getDimension()) {
-			list.add(buildExpression(index, rule.getRestrictions()));
-		}
-		else {
+			list.add(buildExpression(index, rule.getRestrictions(), vars));
+		} else {
 			List<DataRef> dataRefs = rule.getAssociation().getDataRefs();
 			Set<DataCategory> categories = dataRefs.get(depth).getMaterialized();
 			for (DataCategory category : categories) {
-				if (indexMap.get(category) == null) {
+				Leaf leaf = new Leaf(category, dataRefs.get(depth).getAction());
+				if (indexMap.get(leaf) == null) {
 					index[depth] = indexMap.size();
-					indexMap.put(category, index[depth]);
-				}
-				else {
-					index[depth] = indexMap.get(category);
+					indexMap.put(leaf, index[depth]);
+				} else {
+					index[depth] = indexMap.get(leaf);
 				}
 				buildAssociationExpression(depth + 1, index, rule, list);
 			}
 		}
 	}
 
-	private BoolExpr buildSingleExpression(ExpandedRule rule) 
-			throws Z3Exception {
+	private BoolExpr buildSingleExpression(ExpandedRule rule) throws Z3Exception {
 		Set<DataCategory> categories = rule.getDataRef().getMaterialized();
 		Restriction[] restrictions = rule.getRestrictions();
 		List<BoolExpr> exprs = new ArrayList<>();
 		int[] index = new int[1];
 		for (DataCategory category : categories) {
-			if (indexMap.get(category) == null) {
+			Leaf leaf = new Leaf(category,  rule.getDataRef().getAction());
+			if (indexMap.get(leaf) == null) {
 				index[0] = indexMap.size();
-				indexMap.put(category, index[0]);
+				indexMap.put(leaf, index[0]);
+			} else {
+				index[0] = indexMap.get(leaf);
 			}
-			else {
-				index[0] = indexMap.get(category);
-			}
-			exprs.add(buildExpression(index, restrictions));
+			exprs.add(buildExpression(index, restrictions, vars));
 		}
 		return context.mkAnd(exprs.toArray(new BoolExpr[exprs.size()]));
-	}
-
-	private BoolExpr buildExpression(int[] index, Restriction[] restrictions) 
-			throws Z3Exception {
-		BoolExpr[] exprs = new BoolExpr[restrictions.length];
-		for (int i = 0; i < restrictions.length; i++) {
-			exprs[i] = buildExpression(index, restrictions[i]);
-		}
-		return context.mkOr(exprs);
-	}
-
-	private BoolExpr buildExpression(int[] index, Restriction restriction) 
-			throws Z3Exception {
-		List<Desensitization> des = restriction.getDesensitizations();
-		BoolExpr[] exprs = new BoolExpr[des.size()];
-		for (int i = 0; i < des.size(); i++) {
-			if (des.get(i) != null) {
-				exprs[i] = buildExpression(index[i], des.get(i));
-			} else {
-				exprs[i] = context.mkTrue();
-			}
-		}
-		return context.mkAnd(exprs);
-	}
-
-	private BoolExpr buildExpression(int index, Desensitization de) 
-			throws Z3Exception {
-		BoolExpr[] exprs = new BoolExpr[de.getOperations().size()];
-		int i = 0;
-		for (DesensitizeOperation op : de.getOperations()) {
-			IntExpr var = vars[index];
-			Expr num = context.mkNumeral(op.getId(), context.getIntSort());
-			exprs[i++] = context.mkEq(var, num);
-		}
-		return context.mkOr(exprs);
 	}
 
 	public boolean isSatisfiable(ExpandedRule[] rules) {
@@ -161,14 +118,11 @@ public class Z3NormalConsistencySolver extends Z3ConsistencySolver {
 			}
 			exprs[i] = expr;
 		}
-		
-		try{
+
+		try {
 			BoolExpr expr = context.mkAnd(exprs);
 			BoolExpr condition = context.mkExists(types, symbols, expr, 0, null, null, null, null);
-			Solver solver = context.mkSolver();
-			solver.add(condition);
-			Status status = solver.check();
-			return status.equals(Status.SATISFIABLE);
+			return isSatisfiable(condition);
 		} catch (Z3Exception e) {
 			logger.error("", e);
 			return false;

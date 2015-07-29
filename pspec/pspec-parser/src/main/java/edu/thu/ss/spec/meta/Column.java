@@ -52,6 +52,10 @@ public class Column extends DBObject implements Writable {
   public Map<String, String> getExtraction() {
   	return extraction;
   }
+  
+  public void clearLabel() {
+  	extraction.clear();
+  }
 
   public String toString(int l) {
     StringBuilder sb = new StringBuilder();
