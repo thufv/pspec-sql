@@ -12,6 +12,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>javax.help</groupId>
+			<artifactId>javahelp</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>edu.thu.ss.privacy</groupId>
 			<artifactId>pspec-parser</artifactId>
 			<version>${project.version}</version>
@@ -29,6 +34,8 @@
 			<groupId>org.prefuse</groupId>
 			<artifactId>prefuse</artifactId>
 		</dependency>
+
+	
 	</dependencies>
 
 </project>

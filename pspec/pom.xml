@@ -18,6 +18,10 @@
 
 	<repositories>
 		<repository>
+			<id>clojars.org</id>
+			<url>http://clojars.org/repo</url>
+		</repository>
+		<repository>
 			<id>jabylon</id>
 			<url>http://www.jabylon.org/maven</url>
 		</repository>
@@ -25,6 +29,11 @@
 
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>javax.help</groupId>
+				<artifactId>javahelp</artifactId>
+				<version>2.0.05</version>
+			</dependency>
 			<dependency>
 				<groupId>org.jgrapht</groupId>
 				<artifactId>jgrapht-core</artifactId>
@@ -75,11 +84,7 @@
 				<artifactId>prefuse</artifactId>
 				<version>beta-20071021</version>
 			</dependency>
-			<dependency>
-				<groupId>net.sf.jung</groupId>
-				<artifactId>jung-visualization</artifactId>
-				<version>2.0.1</version>
-			</dependency>
+		
 		</dependencies>
 
 
