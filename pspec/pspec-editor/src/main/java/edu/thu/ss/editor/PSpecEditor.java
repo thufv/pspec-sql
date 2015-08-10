@@ -339,7 +339,7 @@ public class PSpecEditor {
 				openPolicy();
 			}
 		});
-		
+
 		openMetadata.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -481,7 +481,7 @@ public class PSpecEditor {
 				openMetadata();
 			}
 		});
-		
+
 		save.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -621,6 +621,9 @@ public class PSpecEditor {
 		case Approximate_Consistency:
 			switchView(entry.location, getRuleView((PolicyModel) entry.location), null);
 			break;
+		case Metadata:
+			switchView(entry.location, getMetadataView((MetadataModel) entry.location), null);
+			break;
 		default:
 			RuleModel model = (RuleModel) entry.model;
 			switchView(entry.location, getRuleView((PolicyModel) entry.location), model.getRule());
@@ -758,7 +761,7 @@ public class PSpecEditor {
 		editorModel.getMetadata().add(model);
 
 		XMLMetaRegistry registry = model.getRegistry();
-		
+
 		TreeItem item = EditorUtil.newTreeItem(metadataItems, registry.getInfo().getId());
 		item.setData(model);
 		MetadataView metadataView = new MetadataView(shell, contentComposite, model, outputView, item);
@@ -836,8 +839,8 @@ public class PSpecEditor {
 			ParseResult result = EditorUtil.openMetadata(metadataModel, shell, true);
 			metadataModel.getRegistry().getInfo().setId(editorModel.getNewMetadataId());
 			if (result.equals(ParseResult.Invalid_Metadata)) {
-				EditorUtil
-						.showErrorMessageBox(shell, "", getMessage(Metadata_Invalid_Document_Message, file));
+				EditorUtil.showErrorMessageBox(shell, "",
+						getMessage(Metadata_Invalid_Document_Message, file));
 				return;
 			}
 			if (result.equals(ParseResult.Invalid_Vocabulary)) {
@@ -856,7 +859,7 @@ public class PSpecEditor {
 			}
 		}
 	}
-	
+
 	private void enableMenus() {
 		boolean enable = editingModel != null;
 
@@ -933,10 +936,10 @@ public class PSpecEditor {
 
 	private boolean saveMetadata(MetadataModel model, boolean rename) {
 		if (model.hasOutput(OutputType.error)) {
-			EditorUtil.showErrorMessageBox(shell, "", getMessage(Metadata_Save_Error_Message, model.getRegistry().getInfo().getId()));
+			EditorUtil.showErrorMessageBox(shell, "",
+					getMessage(Metadata_Save_Error_Message, model.getRegistry().getInfo().getId()));
 			return true;
 		}
-		getMetadataView(model).saveTableLabel();
 		String path = model.getPath();
 		String metadataId = model.getRegistry().getInfo().getId();
 		boolean refresh = false;
@@ -964,7 +967,7 @@ public class PSpecEditor {
 		}
 		return false;
 	}
-	
+
 	private boolean saveVocabulary(VocabularyModel model, boolean rename) {
 		if (model.hasOutput(OutputType.error)) {
 			EditorUtil.showErrorMessageBox(shell, "",

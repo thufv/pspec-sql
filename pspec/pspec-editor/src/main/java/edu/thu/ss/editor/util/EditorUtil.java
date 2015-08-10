@@ -45,6 +45,7 @@ import java.util.Set;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
+import org.eclipse.swt.custom.TreeEditor;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionEvent;
@@ -67,6 +68,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
@@ -142,6 +144,9 @@ public class EditorUtil {
 	public static final String Image_Warning = "img/warning.gif";
 
 	public static final String Table_Editor = "table.editor";
+	public static final String Tree_Editor = "tree.editor";
+	public static final String Extraction = "extraction";
+
 	public static final String View = "view";
 
 	public static final String Help_URL = "help/pspec.hs";
@@ -277,7 +282,7 @@ public class EditorUtil {
 		}
 		return ParseResult.Success;
 	}
-	
+
 	public static ParseResult openMetadata(MetadataModel model, Shell shell, boolean output) {
 		XMLMetaRegistry registry = null;
 		try {
@@ -325,6 +330,13 @@ public class EditorUtil {
 
 	public static Text newText(Composite parent, GridData data) {
 		Text text = new Text(parent, SWT.BORDER);
+		setStyle(text);
+		text.setLayoutData(data);
+		return text;
+	}
+
+	public static Text newPassword(Composite parent, GridData data) {
+		Text text = new Text(parent, SWT.BORDER | SWT.PASSWORD);
 		setStyle(text);
 		text.setLayoutData(data);
 		return text;
@@ -614,6 +626,20 @@ public class EditorUtil {
 		}
 	}
 
+	public static void dispose(TreeItem item) {
+		Object data = item.getData(Tree_Editor);
+
+		if (data == null || !(data instanceof List<?>)) {
+			return;
+		}
+		@SuppressWarnings("unchecked")
+		List<TreeEditor> list = (List<TreeEditor>) data;
+		for (TreeEditor editor : list) {
+			editor.getEditor().dispose();
+			editor.dispose();
+		}
+	}
+
 	public static String[] getActionItems() {
 		String[] items = new String[] { Action.Action_All, Action.Action_Projection,
 				Action.Action_Condition };
@@ -649,6 +675,20 @@ public class EditorUtil {
 			return toArrayString(operations, true);
 		}
 
+	}
+
+	public static TableEditor newTableEditor(Table table, Control control, TableItem item, int column) {
+		TableEditor editor = new TableEditor(table);
+		editor.grabHorizontal = true;
+		editor.setEditor(control, item, column);
+		return editor;
+	}
+
+	public static TreeEditor newTreeEditor(Tree tree, Control control, TreeItem item, int column) {
+		TreeEditor editor = new TreeEditor(tree);
+		editor.grabHorizontal = true;
+		editor.setEditor(control, item, column);
+		return editor;
 	}
 
 	public static String[] toArrayString(Collection<?> col, boolean spacing) {
@@ -1019,21 +1059,23 @@ public class EditorUtil {
 				}
 
 			}
-			
+
 			@Override
 			public void onMetadataLabelError(MetadataLabelType type, String location) {
 				MetadataModel metadataModel = (MetadataModel) model;
 				switch (type) {
 				case Label_Empty:
 					message = getMessage(Metadata_Label_Not_Empty_Message, location);
-					model.addOutput(OutputEntry.newInstance(message, OutputType.error, model, MessageType.Metadata, location));
+					model.addOutput(OutputEntry.newInstance(message, OutputType.error, model,
+							MessageType.Metadata, location));
 					break;
 				case Extraction_Empty:
 					message = getMessage(Metadata_Extraction_Not_Empty_Message, location);
-					model.addOutput(OutputEntry.newInstance(message, OutputType.error, model, MessageType.Metadata, location));
+					model.addOutput(OutputEntry.newInstance(message, OutputType.error, model,
+							MessageType.Metadata, location));
 					break;
 				default:
-						break;
+					break;
 				}
 			}
 		});

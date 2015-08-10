@@ -64,8 +64,9 @@ public class Table extends DBObject implements Writable {
 		}
 		BaseType type = condColumn.getType(join);
 		if (type != null) {
-			logger.error("Column: {} should not be mapped to multiple types under the same join condition: {}", column.name,
-					join);
+			logger.error(
+					"Column: {} should not be mapped to multiple types under the same join condition: {}",
+					column.name, join);
 			return true;
 		}
 		condColumn.addType(join, column.type);
@@ -84,18 +85,14 @@ public class Table extends DBObject implements Writable {
 		boolean error = false;
 		for (String column : columns.keySet()) {
 			if (condColumns.containsKey(column)) {
-				logger.error("Column: {} should not mapped to both data category and conditional data category.", column);
+				logger.error(
+						"Column: {} should not mapped to both data category and conditional data category.",
+						column);
 				error = true;
 			}
 		}
 
 		return error;
-	}
-	
-	public void clearLabel() {
-		for (String columnName : columns.keySet()) {
-			columns.get(columnName).clearLabel();
-		}
 	}
 
 	public String toString(int l) {
@@ -135,7 +132,7 @@ public class Table extends DBObject implements Writable {
 		} else {
 			return null;
 		}
-		
+
 	}
 
 }

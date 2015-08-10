@@ -1,40 +1,15 @@
 package edu.thu.ss.editor.view;
 
-import static edu.thu.ss.editor.util.MessagesUtil.Basic_Info;
-import static edu.thu.ss.editor.util.MessagesUtil.Connect;
-import static edu.thu.ss.editor.util.MessagesUtil.Connection;
-import static edu.thu.ss.editor.util.MessagesUtil.Extraction;
-import static edu.thu.ss.editor.util.MessagesUtil.Label;
-import static edu.thu.ss.editor.util.MessagesUtil.Location;
-import static edu.thu.ss.editor.util.MessagesUtil.MetaData_Extraction_Unique_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Add_Label;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Column;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Database;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Delete_Label;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Host;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Host_Not_Empty_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_ID;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_ID_Not_Empty_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Info;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Password;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Password_Not_Empty_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Port;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Port_Not_Empty_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Table;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Username;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Username_Not_Empty_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Open;
-import static edu.thu.ss.editor.util.MessagesUtil.Policy_Invalid_Document_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Policy_Location;
-import static edu.thu.ss.editor.util.MessagesUtil.Policy_Parse_Error_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Policy_Vocabulary_Contains_Error_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.getMessage;
+import static edu.thu.ss.editor.util.MessagesUtil.*;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
+import org.eclipse.jface.layout.TreeColumnLayout;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.TreeEditor;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -49,6 +24,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Menu;
@@ -60,14 +36,16 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
 import edu.thu.ss.editor.model.MetadataModel;
-import edu.thu.ss.editor.model.OutputEntry.OutputType;
 import edu.thu.ss.editor.model.PolicyModel;
 import edu.thu.ss.editor.util.EditorUtil;
 import edu.thu.ss.editor.util.EditorUtil.ParseResult;
 import edu.thu.ss.spec.lang.parser.event.EventTable;
-import edu.thu.ss.spec.lang.parser.event.PSpecListener.MetadataLabelType;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
+import edu.thu.ss.spec.meta.BaseType;
+import edu.thu.ss.spec.meta.Column;
+import edu.thu.ss.spec.meta.CompositeType;
 import edu.thu.ss.spec.meta.Database;
+import edu.thu.ss.spec.meta.PrimitiveType;
 import edu.thu.ss.spec.meta.Table;
 import edu.thu.ss.spec.meta.xml.XMLMetaRegistry;
 
@@ -110,22 +88,22 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 
 	private void initializeContent(Composite parent) {
 		Group basicGroup = EditorUtil.newInnerGroup(parent, getMessage(Basic_Info));
-		initializeBasic(basicGroup);
+		initializeInfo(basicGroup);
 
 		Group connectGroup = EditorUtil.newInnerGroup(parent, getMessage(Connection));
 		GridLayout layout = new GridLayout(4, true);
 		layout.horizontalSpacing = 20;
 		connectGroup.setLayout(layout);
-		initializeConnect(connectGroup);
+		initializeConnection(connectGroup);
 
 		Group labelGroup = EditorUtil.newInnerGroup(parent, getMessage(Label));
-		labelGroup.setLayout(new GridLayout(1, true));
+		labelGroup.setLayout(new GridLayout(4, true));
 		((GridData) labelGroup.getLayoutData()).grabExcessVerticalSpace = true;
 		((GridData) labelGroup.getLayoutData()).verticalAlignment = SWT.FILL;
 		initializeLabel(labelGroup);
 	}
 
-	private void initializeBasic(Composite parent) {
+	private void initializeInfo(Composite parent) {
 		final XMLMetaRegistry registry = model.getRegistry();
 		EditorUtil.newLabel(parent, getMessage(Metadata_ID), EditorUtil.labelData());
 		metadataID = EditorUtil.newText(parent, EditorUtil.textData());
@@ -208,7 +186,7 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 		});
 	}
 
-	private void initializeConnect(Composite parent) {
+	private void initializeConnection(Composite parent) {
 		EditorUtil.newLabel(parent, getMessage(Metadata_Host), EditorUtil.labelData());
 		host = EditorUtil.newText(parent, EditorUtil.textData());
 		host.setText("127.0.0.1");
@@ -222,8 +200,7 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 		username.setText("root");
 
 		EditorUtil.newLabel(parent, getMessage(Metadata_Password), EditorUtil.labelData());
-		password = EditorUtil.newText(parent, EditorUtil.textData());
-		password.setText("123456");
+		password = EditorUtil.newPassword(parent, EditorUtil.textData());
 
 		Button connect = EditorUtil.newButton(parent, getMessage(Connect));
 		connect.addSelectionListener(new SelectionAdapter() {
@@ -237,54 +214,29 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 					EditorUtil.showErrorMessageBox(shell, "", getMessage(Metadata_Port_Not_Empty_Message));
 					return;
 				}
-				if (username.getText().equals("")) {
-					EditorUtil
-							.showErrorMessageBox(shell, "", getMessage(Metadata_Username_Not_Empty_Message));
-					return;
-				}
-				if (password.getText().equals("")) {
-					EditorUtil
-							.showErrorMessageBox(shell, "", getMessage(Metadata_Password_Not_Empty_Message));
-					return;
-				}
 
+				//connect
 				model.connect(host.getText(), port.getText(), username.getText(), password.getText());
-				initializeLabelCombo();
+
+				Set<String> databaseNames = model.getRegistry().getDatabases().keySet();
+				databaseCombo.setText("");
+				databaseCombo.setItems(databaseNames.toArray(new String[databaseNames.size()]));
+				tableCombo.setText("");
+				tableCombo.setItems(new String[0]);
 			}
 		});
 	}
 
 	private void initializeLabel(Composite parent) {
-		Group comboGroup = EditorUtil.newInnerGroup(parent, "");
-		comboGroup.setLayout(new GridLayout(2, true));
-
-		EditorUtil.newLabel(comboGroup, getMessage(Metadata_Database), EditorUtil.labelData());
-		databaseCombo = EditorUtil.newCombo(comboGroup, null);
-		EditorUtil.newLabel(comboGroup, getMessage(Metadata_Table), EditorUtil.labelData());
-		tableCombo = EditorUtil.newCombo(comboGroup, null);
-
-		SashForm contentForm = new SashForm(parent, SWT.NONE);
-		GridData contentData = new GridData();
-		contentData.horizontalAlignment = SWT.FILL;
-		contentData.verticalAlignment = SWT.FILL;
-		contentData.grabExcessVerticalSpace = true;
-		contentData.grabExcessHorizontalSpace = true;
-		contentForm.setLayoutData(contentData);
-
-		initializeLabelTree(contentForm);
-	}
-
-	private void initializeLabelCombo() {
-		final XMLMetaRegistry registry = model.getRegistry();
-		Set<String> databaseNames = registry.getDatabases().keySet();
-		databaseCombo.setItems(databaseNames.toArray(new String[databaseNames.size()]));
+		EditorUtil.newLabel(parent, getMessage(Metadata_Database), EditorUtil.labelData());
+		databaseCombo = EditorUtil.newCombo(parent, EditorUtil.textData());
+		EditorUtil.newLabel(parent, getMessage(Metadata_Table), EditorUtil.labelData());
+		tableCombo = EditorUtil.newCombo(parent, EditorUtil.textData());
 
 		databaseCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if (!saveTableLabel()) {
-					return;
-				}
+				//TODO: changes should be in effect immediately when user edits
 				String databaseName = databaseCombo.getText().trim();
 
 				if (databaseName.isEmpty()) {
@@ -292,19 +244,15 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 				}
 
 				labelTree.removeAll();
-				Database database = registry.getDatabases().get(databaseName);
+				Database database = model.getRegistry().getDatabases().get(databaseName);
 				Set<String> tableNames = database.getTables().keySet();
 				tableCombo.setItems(tableNames.toArray(new String[tableNames.size()]));
 			}
 		});
-
 		tableCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if (!saveTableLabel()) {
-					tableCombo.setText(currentTable);
-					return;
-				}
+				//TODO: changes should be in effect immediately when user edits
 				String databaseName = databaseCombo.getText().trim();
 				String tableName = tableCombo.getText().trim();
 				if (databaseName.isEmpty() || tableName.isEmpty()) {
@@ -314,36 +262,65 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 				currentTable = tableName;
 
 				labelTree.removeAll();
-				Database database = registry.getDatabases().get(databaseName);
+				Database database = model.getRegistry().getDatabase(databaseName);
 				Table table = database.getTable(tableName);
 				Set<String> columnNames = table.getColumns().keySet();
 				for (String columnName : columnNames) {
-					TreeItem item = new TreeItem(labelTree, SWT.NONE);
-					item.setText(new String[] { columnName, "", "" });
-					Map<String, String> extraction = table.getColumn(columnName).getExtraction();
-					if (!extraction.isEmpty()) {
-						for (String extractionName : extraction.keySet()) {
-							String label = extraction.get(extractionName);
-							TreeItem subItem = new TreeItem(item, SWT.NONE);
-							subItem.setText(new String[] { columnName, label, extractionName });
+					//TODO: load existing labels from registry
+					Column column = table.getColumn(columnName);
+					BaseType type = column.getType();
+					if (type == null) {
+						addLabelRow(column, null, null, true, false);
+						continue;
+					}
+					if (type instanceof PrimitiveType) {
+						//add one simple row
+						addLabelRow(column, ((PrimitiveType) type).getDataCategory(), null, true, false);
+					} else if (type instanceof CompositeType) {
+						//add multiple rows
+						addLabelRow(column, null, null, false, false);
+						CompositeType compositeType = (CompositeType) type;
+
+						for (Entry<String, BaseType> entry : compositeType.getAllTypes().entrySet()) {
+							PrimitiveType subtype = (PrimitiveType) entry.getValue();
+							addLabelRow(column, subtype.getDataCategory(), entry.getKey(), true, true);
 						}
+
+					} else {
+						//currently unsupported, treat as simple type
+						addLabelRow(column, null, null, true, false);
 					}
 				}
 			}
 		});
+
+		initializeLabelTree(parent);
 	}
 
 	private void initializeLabelTree(Composite parent) {
-		labelTree = new Tree(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		TreeColumn column = new TreeColumn(labelTree, SWT.CENTER);
-		column.setText(getMessage(Metadata_Column));
-		TreeColumn label = new TreeColumn(labelTree, SWT.CENTER);
-		label.setText(getMessage(Label));
-		TreeColumn extraction = new TreeColumn(labelTree, SWT.CENTER);
-		extraction.setText(getMessage(Extraction));
-		column.setWidth(200);
-		label.setWidth(200);
-		extraction.setWidth(200);
+		Composite treeComposite = EditorUtil.newComposite(parent);
+		GridData treeData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		treeData.horizontalSpan = 4;
+		treeComposite.setLayoutData(treeData);
+
+		labelTree = new Tree(treeComposite, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+
+		TreeColumnLayout treeLayout = new TreeColumnLayout();
+		treeComposite.setLayout(treeLayout);
+
+		TreeColumn[] columns = new TreeColumn[3];
+		String[] titles = new String[] { getMessage(Metadata_Column), getMessage(Label),
+				getMessage(Extraction) };
+		for (int i = 0; i < columns.length; i++) {
+			columns[i] = new TreeColumn(labelTree, SWT.NONE);
+			columns[i].setText(titles[i]);
+			columns[i].setResizable(false);
+		}
+
+		treeLayout.setColumnData(columns[0], new ColumnWeightData(1, columns[0].getWidth()));
+		treeLayout.setColumnData(columns[1], new ColumnWeightData(1, columns[1].getWidth()));
+		treeLayout.setColumnData(columns[2], new ColumnWeightData(1, columns[2].getWidth()));
+
 		labelTree.setHeaderVisible(true);
 		labelTree.setLinesVisible(true);
 
@@ -373,139 +350,86 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 			addItem.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					TreeItem newItem = new TreeItem(item, SWT.NONE);
-					addLabelRow(newItem);
+					//TODO: add new row, and change current column type to composite type (if necessary)
 				}
 			});
-
 		} else {
 			MenuItem deleteItem = new MenuItem(popMenu, SWT.PUSH);
 			deleteItem.setText(getMessage(Metadata_Delete_Label));
 			deleteItem.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
+					EditorUtil.dispose(item);
 					item.dispose();
+					//TODO: change column column type to primitive type (if necessary)
 				}
 			});
 		}
 		return popMenu;
 	}
 
-	private void addLabelRow(TreeItem item) {
-		item.setText(new String[] { item.getParentItem().getText(0), "", "Default" });
-		for (int i = 1; i < 3; i++) {
-			final int column = i;
-			final TreeEditor editor = new TreeEditor(labelTree);
-			editor.horizontalAlignment = SWT.LEFT;
-			editor.grabHorizontal = true;
-			editor.minimumWidth = 50;
+	private void addLabelRow(Column column, DataCategory dataCategory, String extraction,
+			boolean editData, boolean editExtraction) {
+		final TreeItem item = EditorUtil.newTreeItem(labelTree, "");
+		List<TreeEditor> editors = new ArrayList<>(2);
+		item.setData(column);
+		item.setData(EditorUtil.Tree_Editor, editors);
+		item.setData(EditorUtil.Extraction, extraction);
+		if (!editExtraction) {
+			item.setText(0, column.getName());
+		}
 
-			labelTree.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent event) {
-					Control oldEditor = editor.getEditor();
-					if (oldEditor != null) {
-						oldEditor.dispose();
-					}
-					final TreeItem item = (TreeItem) event.item;
-					if (item == null || item.getParentItem() == null) {
-						return;
-					}
+		XMLMetaRegistry registry = model.getRegistry();
 
-					if (column == 1) {
-						final Combo labelCombo = new Combo(labelTree, SWT.NONE);
-						XMLMetaRegistry registry = model.getRegistry();
-						Object[] dataCategories = registry.getPolicy().getDataContainer().materializeRoots()
-								.toArray();
-						String[] categories = new String[dataCategories.length];
-						for (int i = 0; i < dataCategories.length; i++) {
-							categories[i] = ((DataCategory) dataCategories[i]).getId();
-						}
-						labelCombo.setItems(categories);
-						labelCombo.setText(item.getText(column));
-						
-						labelCombo.addFocusListener(new FocusAdapter() {
-							@Override
-							public void focusLost(FocusEvent e) {
-								item.setText(1, labelCombo.getText());
-							}
-						});
-						labelCombo.addSelectionListener(new SelectionAdapter() {
-							@Override
-							public void widgetSelected(SelectionEvent e) {
-								String text = labelCombo.getText().trim();
-								labelCombo.setText(text);
-								if (!text.isEmpty()) {
-									EditorUtil.setSelectedItem(labelCombo, text);
-								}
-							}
-						});
-						editor.setEditor(labelCombo, item, column);
-					} else if (column == 2) {
-						final Text newEditor = new Text(labelTree, SWT.NONE);
-						newEditor.setText(item.getText(column));
-						newEditor.addFocusListener(new FocusAdapter() {
-							@Override
-							public void focusLost(FocusEvent e) {
-								Text text = (Text) editor.getEditor();
-								TreeItem parent = item.getParentItem();
-								for (TreeItem sibling : parent.getItems()) {
-									if (sibling.equals(item)) {
-										continue;
-									}
-									if (sibling.getText(column).equals(text.getText())) {
-										EditorUtil.showMessage(shell,
-												getMessage(MetaData_Extraction_Unique_Message, text.getText()), newEditor);
-										text.setText("");
-										item.setText(column, "");
-										return;
-									}
-								}
-								item.setText(column, text.getText());
-							}
-						});
-						editor.setEditor(newEditor, item, column);
+		if (editData) {
+			final Combo dataCombo = EditorUtil.newCombo(labelTree, null);
+			dataCombo.setItems(EditorUtil.getCategoryItems(registry.getPolicy().getDataContainer()));
+			if (dataCategory != null) {
+				EditorUtil.setSelectedItem(dataCombo, dataCategory.getId());
+			}
+
+			dataCombo.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					String text = dataCombo.getText().trim();
+					//TODO save data category
+					if (item.getParentItem() == null) {
+						// primitive type
+
+					} else {
+						//composite type
+
 					}
 				}
 			});
+			editors.add(EditorUtil.newTreeEditor(labelTree, dataCombo, item, 1));
 		}
-	}
 
-	public boolean saveTableLabel() {
-		if (currentDatabase == null || currentTable == null) {
-			return true;
-		}
-		TreeItem[] items = labelTree.getItems();
-		boolean error = false;
-		model.clearOutput(OutputType.error);
-		model.clearTableLabel(currentDatabase, currentTable);
-		for (int i = 0; i < items.length; i++) {
-			TreeItem item = items[i];
-			TreeItem[] subItems = item.getItems();
-			for (int j = 0; j < subItems.length; j++) {
-				TreeItem subItem = subItems[j];
-				if (subItem.getText(1).isEmpty()) {
-					table.onMetadataLabelError(MetadataLabelType.Label_Empty, currentDatabase + "."
-							+ currentTable + "." + subItem.getText(0));
-					error = true;
-				} else if (subItem.getText(2).isEmpty()) {
-					table.onMetadataLabelError(MetadataLabelType.Extraction_Empty, currentDatabase + "."
-							+ currentTable + "." + subItem.getText(0));
-					error = true;
-				} else {
-					String columnName = subItem.getText(0);
-					String label = subItem.getText(1);
-					String extractionName = subItem.getText(2);
-					model.addColumnExtraction(currentDatabase, currentTable, columnName, extractionName,
-							label);
+		if (editExtraction) {
+			final Text text = new Text(labelTree, SWT.NONE);
+			text.addFocusListener(new FocusAdapter() {
+				@Override
+				public void focusLost(FocusEvent e) {
+					TreeItem parent = item.getParentItem();
+					for (TreeItem sibling : parent.getItems()) {
+						if (sibling == item) {
+							continue;
+						}
+						if (sibling.getText(2).equals(text.getText())) {
+							EditorUtil.showMessage(shell,
+									getMessage(MetaData_Extraction_Unique_Message, text.getText()), Display
+											.getCurrent().getCursorLocation());
+							//restore to original
+							item.setText(2, (String) item.getData(EditorUtil.Extraction));
+							return;
+						}
+					}
+					//TODO: set new extraction
 				}
-			}
+			});
+			editors.add(EditorUtil.newTreeEditor(labelTree, text, item, 2));
 		}
-		outputView.refresh(OutputType.error);
-		if (error) {
-			EditorUtil.setSelectedItem(databaseCombo, currentDatabase);
-			EditorUtil.setSelectedItem(tableCombo, currentTable);
-		}
-		return !error;
+
 	}
 
 	public void refreshLocation() {

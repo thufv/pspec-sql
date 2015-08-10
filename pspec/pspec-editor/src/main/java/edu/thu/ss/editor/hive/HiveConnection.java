@@ -23,8 +23,8 @@ public class HiveConnection {
 
 	public HiveConnection(String host, String port, String username, String password) {
 		SparkConf conf = new SparkConf().setMaster("local[1]").setAppName("localnode");
-		//conf.set("spark.driver.host", host);
-		//conf.set("spark.driver.port", port);
+		conf.set("spark.driver.host", host);
+		conf.set("spark.driver.port", port);
 		//TODO modify hive-site.xml?
 		context = new HiveContext(new SparkContext(conf));
 	}
@@ -73,12 +73,12 @@ public class HiveConnection {
 			Column col;
 			if (table.getColumns().containsKey(column)) {
 				col = table.getColumn(column);
-			}else {
+			} else {
 				col = new Column();
 				col.setName(column);
 				table.addColumn(col);
 			}
-			
+
 		}
 	}
 }

@@ -9,6 +9,8 @@ public class CompositeType extends ComplexType<String> {
 		MetaManager.addExtractOperation(k);
 		super.add(k, subtype);
 	}
+	
+	
 
 	@Override
 	protected String getSelectorName() {
