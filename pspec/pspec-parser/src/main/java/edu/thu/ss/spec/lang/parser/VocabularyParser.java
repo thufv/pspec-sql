@@ -1,6 +1,7 @@
 package edu.thu.ss.spec.lang.parser;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ import org.w3c.dom.NodeList;
 
 import edu.thu.ss.spec.lang.analyzer.VocabularyAnalyzer;
 import edu.thu.ss.spec.lang.parser.event.PSpecListener.VocabularyErrorType;
+import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DataContainer;
 import edu.thu.ss.spec.lang.pojo.Info;
 import edu.thu.ss.spec.lang.pojo.UserContainer;
@@ -62,8 +64,40 @@ public class VocabularyParser extends BaseParser implements ParserConstant {
 			registerVocabularies();
 		}
 		return vocabulary;
-			
+
+	}
+
+	public Vocabulary parse(String path, String userId, String dataId)
+			throws InvalidVocabularyException {
+
+		uri = XMLUtil.toUri(path);
+		if (VocabularyManager.containsVocab(uri)) {
+			return VocabularyManager.getVocab(uri);
+		}
+
+		loadVocabularies(uri);
+
+		parseContainers(userId, dataId);
+
+		// semantic analysis
+		analyzer = new VocabularyAnalyzer(table);
+		error = analyzer.analyze(vocabulary.getUserContainer(), false) || error;
+		error = analyzer.analyze(vocabulary.getDataContainer(), false) || error;
+
+
+		inheritOperations(vocabulary.getDataContainer());
 		
+		if (forceRegister || !error) {
+			registerVocabularies();
+		}
+		return vocabulary;
+
+	}
+
+	private void inheritOperations(DataContainer container) {
+		for (DataCategory category : container.getRoot()) {
+			category.inheritDesensitizeOperation(container);
+		}
 	}
 
 	private void registerVocabularies() {
@@ -147,6 +181,26 @@ public class VocabularyParser extends BaseParser implements ParserConstant {
 			if (Ele_Vocabulary_Info.equals(name)) {
 				vocabulary.getInfo().parse(node);
 				return;
+			}
+		}
+	}
+
+	private void parseContainers(String userId, String dataId) {
+		for (Vocabulary vocabulary : vocabularies.values()) {
+			if (!vocabulary.isResolved()) {
+				Node root = vocabulary.getRootNode();
+				NodeList list = root.getChildNodes();
+				for (int i = 0; i < list.getLength(); i++) {
+					Node node = list.item(i);
+					String name = node.getLocalName();
+					if (Ele_Vocabulary_User_Category_Container.equals(name)
+							&& XMLUtil.getAttrValue(node, Attr_Id).equals(userId)) {
+						vocabulary.getUserContainer().parse(node);
+					} else if (Ele_Vocabulary_Data_Category_Container.equals(name)
+							&& XMLUtil.getAttrValue(node, Attr_Id).equals(dataId)) {
+						vocabulary.getDataContainer().parse(node);
+					}
+				}
 			}
 		}
 	}

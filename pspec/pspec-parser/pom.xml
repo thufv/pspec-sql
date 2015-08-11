@@ -14,11 +14,11 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<root.basedir>/Users/luochen/Documents/Research/privacy/pspec/pspec-parser</root.basedir>
+		<root.basedir>E:/privacy/pspec/pspec-parser</root.basedir>
 	</properties>
 
 	<dependencies>
-		
+
 
 		<dependency>
 			<groupId>junit</groupId>
@@ -46,6 +46,18 @@
 			<scope>system</scope>
 			<systemPath>${root.basedir}/lib/com.microsoft.z3.jar</systemPath>
 		</dependency>
+
+		<dependency>
+			<groupId>org.jgrapht</groupId>
+			<artifactId>jgrapht-core</artifactId>
+			<version>0.9.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-compiler</artifactId>
+			<version>2.10.5</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

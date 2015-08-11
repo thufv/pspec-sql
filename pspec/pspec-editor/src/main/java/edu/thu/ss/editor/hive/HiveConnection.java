@@ -33,7 +33,80 @@ public class HiveConnection {
 		return context.sql(sqlText);
 	}
 
-	public void resolve(XMLMetaRegistry registry) {
+	private String[] getDatabases() {
+		DataFrame df = context.sql("show databases");
+		Row[] rows = (Row[]) df.collect();
+		String[] databases = new String[rows.length];
+		for (int i = 0; i < rows.length; i++) {
+			databases[i] = rows[i].getString(0);
+		}
+		return databases;
+	}
+	
+	private String[] getTables(String database) {
+		context.sql("use " + database);
+		String[] tables = context.tableNames(database);
+		return tables;
+	}
+	
+	private String[] getColumns(String database, String table) {
+		context.sql("use " + database);
+		DataFrame df = context.table(table);
+		String[] columns = df.columns();
+		return columns;
+	}
+	
+	private boolean contains(String[] strs, String str) {
+		for (String item : strs) {
+			if (item.equals(str)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean match(XMLMetaRegistry registry) {
+		String[] databases = getDatabases();
+		for (String database : registry.getDatabases().keySet()) {
+			if (!contains(databases, database)) {
+				return false;
+			}
+			if (!matchDatabase(registry, database)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private boolean matchDatabase(XMLMetaRegistry registry, String databaseName) {
+		Database database = registry.getDatabase(databaseName);
+		String[] tables = getTables(databaseName);
+		for (String table : database.getTables().keySet()) {
+			if (!contains(tables, table)) {
+				return false;
+			}
+			if (!matchTable(registry, databaseName, table)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private boolean matchTable(XMLMetaRegistry registry, String databaseName, String tableName) {
+		Table table = registry.getDatabase(databaseName).getTable(tableName);
+		String[] columns = getColumns(databaseName, tableName);
+		for (String column : table.getColumns().keySet()) {
+			if (!contains(columns, column)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public boolean resolve(XMLMetaRegistry registry) {
+		if (!match(registry)) {
+			return false;
+		}
 		DataFrame df = context.sql("show databases");
 		Row[] rows = (Row[]) df.collect();
 		for (Row row : rows) {
@@ -48,6 +121,7 @@ public class HiveConnection {
 			}
 			resolveDatabase(registry, database);
 		}
+		return true;
 	}
 
 	private void resolveDatabase(XMLMetaRegistry registry, Database database) {

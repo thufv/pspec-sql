@@ -1,7 +1,6 @@
 package edu.thu.ss.spec.lang.pojo;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -45,6 +44,21 @@ public class DataCategory extends Category<DataCategory> {
 		return set;
 	}
 
+	public void inheritDesensitizeOperation(DataContainer container) {
+		if (parent != null) {
+			for (DesensitizeOperation op : parent.ops) {
+				this.addOperation(op);
+			}
+		}
+		if (children != null) {
+			for (DataCategory data : children) {
+				if (container.contains(data.getId())) {
+					data.inheritDesensitizeOperation(container);
+				}
+			}
+		}
+	}
+	
 	private void getAllOperations(Set<DesensitizeOperation> set) {
 		if (parent != null) {
 			parent.getAllOperations(set);
