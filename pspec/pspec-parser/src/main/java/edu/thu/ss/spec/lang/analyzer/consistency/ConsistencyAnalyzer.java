@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import edu.thu.ss.spec.lang.analyzer.BasePolicyAnalyzer;
+import edu.thu.ss.spec.lang.analyzer.RuleExpander;
 import edu.thu.ss.spec.lang.analyzer.stat.AnalyzerStat;
 import edu.thu.ss.spec.lang.parser.event.EventTable;
 import edu.thu.ss.spec.lang.pojo.Action;
@@ -49,6 +50,13 @@ public abstract class ConsistencyAnalyzer extends BasePolicyAnalyzer {
 			}
 			return false;
 		}
+		
+		@Override
+		public int hashCode() {
+			if (category == null || action == null)
+				return 0;
+			return (category.toString() + action.toString()).hashCode();
+		}
 
 		@Override
 		public boolean equals(Object obj) {
@@ -72,7 +80,7 @@ public abstract class ConsistencyAnalyzer extends BasePolicyAnalyzer {
 
 		@Override
 		public String toString() {
-			return category.getId().toString();
+			return category.getId().toString() + "[" + action.toString() + "]";
 		}
 	}
 
@@ -176,6 +184,12 @@ public abstract class ConsistencyAnalyzer extends BasePolicyAnalyzer {
 		List<ExpandedRule> restrictionRules = new ArrayList<>();
 		List<ExpandedRule> filterRules = new ArrayList<>();
 
+		if (rules == null) {
+			RuleExpander expander = new RuleExpander(null);
+			expander.analyze(policy);
+			rules = policy.getExpandedRules();
+		}
+		
 		for (ExpandedRule rule : rules) {
 			if (rule.isFilter()) {
 				filterRules.add(rule);

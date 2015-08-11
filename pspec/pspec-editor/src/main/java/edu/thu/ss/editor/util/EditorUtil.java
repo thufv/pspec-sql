@@ -146,7 +146,8 @@ public class EditorUtil {
 	public static final String Table_Editor = "table.editor";
 	public static final String Tree_Editor = "tree.editor";
 	public static final String Extraction = "extraction";
-
+	public static final String DataCategory = "datacabegory";
+	
 	public static final String View = "view";
 
 	public static final String Help_URL = "help/pspec.hs";
@@ -408,7 +409,7 @@ public class EditorUtil {
 		button.setText(text);
 		return button;
 	}
-
+	
 	public static Button newRadio(Composite parent, String text) {
 		Button button = new Button(parent, SWT.RADIO);
 		setStyle(button);
@@ -635,6 +636,9 @@ public class EditorUtil {
 		@SuppressWarnings("unchecked")
 		List<TreeEditor> list = (List<TreeEditor>) data;
 		for (TreeEditor editor : list) {
+			if (editor.getEditor() == null) {
+				continue;
+			}
 			editor.getEditor().dispose();
 			editor.dispose();
 		}

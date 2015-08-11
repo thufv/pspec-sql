@@ -1,6 +1,7 @@
 package edu.thu.ss.spec.z3;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,7 @@ public class Z3StrongConsistencySolver extends Z3ConsistencySolver {
 	private ExpandedRule seed;
 	private Map<Leaf, Integer> indexMap = new HashMap<>();
 	
-	private static final int Max_Dimension = 20;
+	private static final int Max_Dimension = 100;
 	
 	public Z3StrongConsistencySolver() {
 		super.init(Max_Dimension);
@@ -49,6 +50,7 @@ public class Z3StrongConsistencySolver extends Z3ConsistencySolver {
 
 	public void setSeedRule(ExpandedRule rule) {
 		seed = rule;
+		indexMap.clear();
 	}
 	
 	public BoolExpr[] buildExpression(Set<LeafAssociation> set, ExpandedRule[] rules) {
@@ -78,9 +80,7 @@ public class Z3StrongConsistencySolver extends Z3ConsistencySolver {
 	private BoolExpr buildExpression(LeafAssociation leafAssoc, ExpandedRule rule) 
 			throws Z3Exception {
 		int[] index = new int[rule.getDimension()];
-		for (int i = 0; i < index.length; i++) {
-			index[i] = -1;
-		}
+		Arrays.fill(index, -1);
 		
 		if (seed.isSingle()) {
 			Leaf leaf = leafAssoc.leafAssociation[0];

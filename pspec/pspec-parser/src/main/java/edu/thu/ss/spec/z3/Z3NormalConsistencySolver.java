@@ -27,7 +27,7 @@ public class Z3NormalConsistencySolver extends Z3ConsistencySolver {
 	public Map<Leaf, Integer> indexMap = new HashMap<>();
 	public Map<ExpandedRule, BoolExpr> exprMap = new HashMap<>();
 
-	private static final int Max_Dimension = 100;
+	private static final int Max_Dimension = 200;
 
 	public Z3NormalConsistencySolver() {
 		super.init(Max_Dimension);

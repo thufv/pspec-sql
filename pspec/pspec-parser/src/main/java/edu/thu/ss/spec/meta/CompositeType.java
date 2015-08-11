@@ -10,7 +10,11 @@ public class CompositeType extends ComplexType<String> {
 		super.add(k, subtype);
 	}
 	
-	
+	@Override
+	public void remove(String k) {
+		k = k.toLowerCase();
+		super.remove(k);
+	}
 
 	@Override
 	protected String getSelectorName() {

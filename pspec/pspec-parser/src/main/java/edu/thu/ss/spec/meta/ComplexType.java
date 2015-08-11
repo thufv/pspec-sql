@@ -38,6 +38,10 @@ public abstract class ComplexType<K> extends BaseType {
 		this.subtypes.put(k, subtype);
 	}
 
+	public void remove(K k) {
+		this.subtypes.remove(k);
+	}
+	
 	@Override
 	public PrimitiveType[] toPrimitives() {
 		if (primitives == null) {

@@ -1,8 +1,11 @@
 package edu.thu.ss.spec.meta;
 
+import java.util.Map.Entry;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.Writable;
 import edu.thu.ss.spec.meta.xml.MetaParserConstant;
 import edu.thu.ss.spec.util.PSpecUtil;
@@ -59,14 +62,32 @@ public class Column extends DBObject implements Writable {
 	@Override
 	public Element outputElement(Document document) {
 		Element column = document.createElement(MetaParserConstant.Ele_Column);
-		boolean isLabel = false;
-		//TODO output should be based on type
 		column.setAttribute(MetaParserConstant.Attr_Name, name);
-		if (isLabel) {
-			return column;
-		} else {
+		//TODO output should be based on type
+		if (type == null) {
 			return null;
+		} else if (type instanceof PrimitiveType) {
+			PrimitiveType primitiveType = (PrimitiveType) type;
+			DataCategory dataCategory = primitiveType.getDataCategory();
+			if (dataCategory == null) {
+				return null;
+			} else {
+				column.setAttribute(MetaParserConstant.Attr_Data_Category, dataCategory.getId());
+				return column;
+			}
+		} else if (type instanceof CompositeType) {
+			Element composite = document.createElement(MetaParserConstant.Ele_Composite);
+			CompositeType compositeType = (CompositeType) type;
+			for (Entry<String, BaseType> entry : compositeType.getAllTypes().entrySet()) {
+				Element extract = document.createElement(MetaParserConstant.Ele_Composite_Extract);
+				PrimitiveType subtype = (PrimitiveType) entry.getValue();
+				extract.setAttribute(MetaParserConstant.Attr_Composite_Extract_Name, entry.getKey());
+				extract.setAttribute(MetaParserConstant.Attr_Data_Category, subtype.getDataCategory().getId());
+				composite.appendChild(extract);
+			}
+			column.appendChild(composite);
+			return column;
 		}
-
+		return null;
 	}
 }
