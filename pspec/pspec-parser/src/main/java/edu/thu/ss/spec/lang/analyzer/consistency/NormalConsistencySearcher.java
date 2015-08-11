@@ -83,8 +83,9 @@ public class NormalConsistencySearcher extends LevelwiseSearcher {
 
 		index = new int[sortedRules.size()];
 		for (int i = 0; i < index.length; i++) {
-			index[i] = sortedRules.indexOf(sortedRules.get(i));
-			z3Util.buildExpression(sortedRules.get(i));
+			ExpandedRule rule = sortedRules.get(i);
+			index[i] = sortedRules.indexOf(rule);
+			z3Util.buildExpression(rule);
 		}
 
 		for (int i = 0; i < sortedRules.size(); i++) {

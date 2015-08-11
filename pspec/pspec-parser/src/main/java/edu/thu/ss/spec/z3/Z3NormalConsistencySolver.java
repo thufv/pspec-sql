@@ -111,6 +111,10 @@ public class Z3NormalConsistencySolver extends Z3ConsistencySolver {
 		BoolExpr[] exprs = new BoolExpr[rules.length];
 		for (int i = 0; i < rules.length; i++) {
 			ExpandedRule rule = rules[i];
+			if (rule.getRestriction().isForbid()) {
+				logger.warn("conflict detected because {} is forbid.", rule.getId());
+				return false;
+			}
 			BoolExpr expr = exprMap.get(rule);
 			if (expr == null) {
 				expr = buildExpression(rule);

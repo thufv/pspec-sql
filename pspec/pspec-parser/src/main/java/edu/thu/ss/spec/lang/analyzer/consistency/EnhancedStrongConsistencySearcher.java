@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -59,11 +60,11 @@ public class EnhancedStrongConsistencySearcher extends LevelwiseSearcher {
 			}
 		}
 		boolean result = z3Util.isSatisfiable(rules);
-		
+
 		if (!result) {
 			conflicts++;
 			logger.warn("Possible conflicts when adding: " + sortedRules.get(key.getLast()).getId());
-			
+
 			ExpandedRule[] newRules = Arrays.copyOf(rules, rules.length + 1);
 			newRules[newRules.length - 1] = seed;
 			table.onAnalysis(AnalysisType.Enhanced_Strong_Consistency, newRules);
@@ -81,6 +82,19 @@ public class EnhancedStrongConsistencySearcher extends LevelwiseSearcher {
 			}
 		});
 
+		Iterator<ExpandedRule> it = sortedRules.iterator();
+		while (it.hasNext()) {
+			ExpandedRule rule = (ExpandedRule) it.next();
+			if (rule.getRestriction().isForbid()) {
+				it.remove();
+				conflicts++;
+				logger.warn("conflict between {} and {} because {} is forbid rule.", rule.getId(),
+						seed.getId(), rule.getId());
+				ExpandedRule[] newRules = new ExpandedRule[] { rule, seed };
+				table.onAnalysis(AnalysisType.Enhanced_Strong_Consistency, newRules);
+			}
+		}
+
 		int[] index = new int[sortedRules.size()];
 		for (int i = 0; i < index.length; i++) {
 			ExpandedRule rule = sortedRules.get(i);
@@ -92,7 +106,7 @@ public class EnhancedStrongConsistencySearcher extends LevelwiseSearcher {
 			} else {
 				conflicts++;
 				logger.warn("conflict between {} and {}", rule.getId(), seed.getId());
-				
+
 				ExpandedRule[] newRules = Arrays.copyOf(rules, rules.length + 1);
 				newRules[newRules.length - 1] = seed;
 				table.onAnalysis(AnalysisType.Enhanced_Strong_Consistency, newRules);

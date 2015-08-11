@@ -107,6 +107,19 @@ public class StrongConsistencySearcher extends LevelwiseSearcher {
 			}
 		});
 
+		Iterator<ExpandedRule> it = sortedRules.iterator();
+		while (it.hasNext()) {
+			ExpandedRule rule = (ExpandedRule) it.next();
+			if (rule.getRestriction().isForbid()) {
+				it.remove();
+				conflicts++;
+				logger.warn("conflict between {} and {} because {} is forbid rule.", rule.getId(),
+						seed.getId(), rule.getId());
+				ExpandedRule[] newRules = new ExpandedRule[] { rule, seed };
+				table.onAnalysis(AnalysisType.Strong_Consistency, newRules);
+			}
+		}
+
 		int[] index = new int[sortedRules.size()];
 		for (int i = 0; i < index.length; i++) {
 			ExpandedRule rule = sortedRules.get(i);
