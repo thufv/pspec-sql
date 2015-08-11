@@ -12,6 +12,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>javax.help</groupId>
+			<artifactId>javahelp</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>edu.thu.ss.privacy</groupId>
 			<artifactId>pspec-parser</artifactId>
 			<version>${project.version}</version>
@@ -29,10 +34,24 @@
 			<groupId>org.prefuse</groupId>
 			<artifactId>prefuse</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>javax.help</groupId>
-			<artifactId>javahelp</artifactId>
-		</dependency>
+
+
 	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>meta</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.apache.spark</groupId>
+					<artifactId>spark-hive_2.10</artifactId>
+				</dependency>
+			</dependencies>
+
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
+	</profiles>
 
 </project>

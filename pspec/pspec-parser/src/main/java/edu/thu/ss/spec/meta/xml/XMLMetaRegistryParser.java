@@ -22,7 +22,6 @@ import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
 import edu.thu.ss.spec.manager.MetaManager;
-import edu.thu.ss.spec.manager.PolicyManager;
 import edu.thu.ss.spec.meta.ArrayType;
 import edu.thu.ss.spec.meta.BaseType;
 import edu.thu.ss.spec.meta.Column;
@@ -97,7 +96,7 @@ public class XMLMetaRegistryParser extends BaseParser implements MetaParserConst
 	public XMLMetaRegistry getXMLMetaRegistry() {
 		return registry;
 	}
-	
+
 	private void init() {
 		registry = new XMLMetaRegistry();
 		udfs = new HashMap<>();
@@ -110,7 +109,7 @@ public class XMLMetaRegistryParser extends BaseParser implements MetaParserConst
 			return userList;
 		}
 		NodeList list = userListNode.getChildNodes();
-		
+
 		for (int i = 0; i < list.getLength(); i++) {
 			Node node = list.item(i);
 			String name = node.getLocalName();
@@ -230,16 +229,7 @@ public class XMLMetaRegistryParser extends BaseParser implements MetaParserConst
 
 		BaseType type = parseType(columnNode, columnName);
 		column.setType(type);
-		
-		NodeList list = columnNode.getChildNodes();
-		for (int i = 0; i < list.getLength(); i++) {
-			Node node = list.item(i);
-			String name = node.getLocalName();
-			if (Ele_Composite_Extract.equals(name)) {
-				column.addExtraction(XMLUtil.getAttrValue(node, Attr_Name), XMLUtil.getAttrValue(node, Attr_Data_Category));
-			}
-		}
-		column.addExtraction(XMLUtil.getAttrValue(columnNode, Attr_Name), XMLUtil.getAttrValue(columnNode, Attr_Data_Category));
+
 		return column;
 
 	}

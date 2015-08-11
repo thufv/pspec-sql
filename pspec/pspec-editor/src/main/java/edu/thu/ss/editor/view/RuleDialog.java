@@ -1,39 +1,6 @@
 package edu.thu.ss.editor.view;
 
-import static edu.thu.ss.editor.util.MessagesUtil.ACTION;
-import static edu.thu.ss.editor.util.MessagesUtil.Add;
-import static edu.thu.ss.editor.util.MessagesUtil.Association;
-import static edu.thu.ss.editor.util.MessagesUtil.Cancel;
-import static edu.thu.ss.editor.util.MessagesUtil.Data_Category;
-import static edu.thu.ss.editor.util.MessagesUtil.Data_Category_Exclude_Unique_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Data_Category_Not_Excluded_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Data_Ref;
-import static edu.thu.ss.editor.util.MessagesUtil.Delete;
-import static edu.thu.ss.editor.util.MessagesUtil.Desensitize_Operation;
-import static edu.thu.ss.editor.util.MessagesUtil.Exclude;
-import static edu.thu.ss.editor.util.MessagesUtil.Forbid;
-import static edu.thu.ss.editor.util.MessagesUtil.Long_Description;
-import static edu.thu.ss.editor.util.MessagesUtil.OK;
-import static edu.thu.ss.editor.util.MessagesUtil.Restrict;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_Data_Ref_Not_Empty_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_Data_Ref_Unique_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_Desensitize_Operation_Not_Exist_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_Desensitize_Operation_Unique_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_ID;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_ID_Not_Empty_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_ID_Unique_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_Restriction_Not_Empty_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_Type;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_User_Ref_Not_Empty_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Rule_User_Ref_Unique_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Short_Description;
-import static edu.thu.ss.editor.util.MessagesUtil.Single;
-import static edu.thu.ss.editor.util.MessagesUtil.User_Category;
-import static edu.thu.ss.editor.util.MessagesUtil.User_Category_Exclude_Unique_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.User_Category_Not_Excluded_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.User_Ref;
-import static edu.thu.ss.editor.util.MessagesUtil.getMessage;
+import static edu.thu.ss.editor.util.MessagesUtil.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +20,6 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
@@ -598,12 +564,12 @@ public class RuleDialog extends EditorDialog {
 		userCombo.setItems(EditorUtil.getCategoryItems(policyModel.getPolicy().getUserContainer()));
 		EditorUtil.setSelectedItem(userCombo, ref.getRefid());
 
-		editors.add(newTableEditor(userTable, userCombo, item, 0));
+		editors.add(EditorUtil.newTableEditor(userTable, userCombo, item, 0));
 
 		item.setText(1, PSpecUtil.format(ref.getExcludeRefs(), Label_Separator));
 
 		final Combo excludeUser = EditorUtil.newCombo(userTable, null);
-		editors.add(newTableEditor(userTable, excludeUser, item, 2));
+		editors.add(EditorUtil.newTableEditor(userTable, excludeUser, item, 2));
 		if (!ref.getRefid().isEmpty()) {
 			UserCategory user = policyModel.getPolicy().getUserCategory(ref.getRefid());
 			excludeUser.setItems(EditorUtil.getChildCategoryItems(user, policyModel.getPolicy()
@@ -611,10 +577,10 @@ public class RuleDialog extends EditorDialog {
 		}
 
 		Button addExclude = EditorUtil.newButton(userTable, "+");
-		editors.add(newTableEditor(userTable, addExclude, item, 3));
+		editors.add(EditorUtil.newTableEditor(userTable, addExclude, item, 3));
 
 		Button deleteExclude = EditorUtil.newButton(userTable, "-");
-		editors.add(newTableEditor(userTable, deleteExclude, item, 4));
+		editors.add(EditorUtil.newTableEditor(userTable, deleteExclude, item, 4));
 
 		userCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -694,17 +660,17 @@ public class RuleDialog extends EditorDialog {
 		final Combo dataCombo = EditorUtil.newCombo(dataTable, null);
 		dataCombo.setItems(EditorUtil.getCategoryItems(policyModel.getPolicy().getDataContainer()));
 		EditorUtil.setSelectedItem(dataCombo, ref.getRefid());
-		editors.add(newTableEditor(dataTable, dataCombo, item, 0));
+		editors.add(EditorUtil.newTableEditor(dataTable, dataCombo, item, 0));
 
 		final Combo actionCombo = EditorUtil.newCombo(dataTable, null);
 		actionCombo.setItems(EditorUtil.getActionItems());
 		actionCombo.setText(ref.getAction().getId());
-		editors.add(newTableEditor(dataTable, actionCombo, item, 1));
+		editors.add(EditorUtil.newTableEditor(dataTable, actionCombo, item, 1));
 
 		item.setText(2, PSpecUtil.format(ref.getExcludeRefs(), Label_Separator));
 
 		final Combo excludeData = EditorUtil.newCombo(dataTable, null);
-		editors.add(newTableEditor(dataTable, excludeData, item, 3));
+		editors.add(EditorUtil.newTableEditor(dataTable, excludeData, item, 3));
 
 		if (!ref.getRefid().isEmpty()) {
 			DataCategory data = policyModel.getPolicy().getDataCategory(ref.getRefid());
@@ -713,10 +679,10 @@ public class RuleDialog extends EditorDialog {
 		}
 
 		Button addExclude = EditorUtil.newButton(dataTable, "+");
-		editors.add(newTableEditor(dataTable, addExclude, item, 4));
+		editors.add(EditorUtil.newTableEditor(dataTable, addExclude, item, 4));
 
 		Button deleteExclude = EditorUtil.newButton(dataTable, "-");
-		editors.add(newTableEditor(dataTable, deleteExclude, item, 5));
+		editors.add(EditorUtil.newTableEditor(dataTable, deleteExclude, item, 5));
 
 		dataCombo.addSelectionListener(new SelectionAdapter() {
 
@@ -901,7 +867,7 @@ public class RuleDialog extends EditorDialog {
 			}
 		};
 		restrictTable.addListener(SWT.Selection, listener);
-	//	restrictTable.addListener(SWT.MouseDown, listener);
+		//	restrictTable.addListener(SWT.MouseDown, listener);
 
 	}
 
@@ -928,13 +894,13 @@ public class RuleDialog extends EditorDialog {
 					.getDataContainer()));
 		}
 
-		editors.add(newTableEditor(table, operation, item, 2));
+		editors.add(EditorUtil.newTableEditor(table, operation, item, 2));
 
 		Button addOperation = EditorUtil.newButton(table, "+");
-		editors.add(newTableEditor(table, addOperation, item, 3));
+		editors.add(EditorUtil.newTableEditor(table, addOperation, item, 3));
 
 		Button deleteOperation = EditorUtil.newButton(table, "-");
-		editors.add(newTableEditor(table, deleteOperation, item, 4));
+		editors.add(EditorUtil.newTableEditor(table, deleteOperation, item, 4));
 
 		addOperation.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -1021,13 +987,6 @@ public class RuleDialog extends EditorDialog {
 		GridLayout layout = EditorUtil.newNoMarginGridLayout(2, false);
 		composite.setLayout(layout);
 		return composite;
-	}
-
-	private TableEditor newTableEditor(Table table, Control control, TableItem item, int column) {
-		TableEditor editor = new TableEditor(table);
-		editor.grabHorizontal = true;
-		editor.setEditor(control, item, column);
-		return editor;
 	}
 
 	private Restriction newRestriction() {
