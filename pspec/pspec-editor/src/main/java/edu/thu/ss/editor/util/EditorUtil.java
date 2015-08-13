@@ -547,22 +547,22 @@ public class EditorUtil {
 
 	private static <T extends Category<T>> void buildCategoryItems(T category, int depth,
 			List<String> result, CategoryContainer<T> container) {
-		StringBuilder id = new StringBuilder(depth + category.getId().length());
-		for (int i = 0; i < depth; i++) {
-			id.append(' ');
-		}
-		id.append(category.getId());
-		result.add(id.toString());
-
-		List<T> children = category.getChildren();
-		if (children != null) {
+		if (category.getChildren() == null) {
+			StringBuilder id = new StringBuilder(depth + category.getId().length());
+			for (int i = 0; i < depth; i++) {
+				id.append(' ');
+			}
+			id.append(category.getId());
+			result.add(id.toString());
+			return;
+		} else {
+			List<T> children = category.getChildren();
 			for (T child : children) {
 				if (container.contains(child.getId())) {
 					buildCategoryItems(child, depth + 1, result, container);
 				}
 			}
 		}
-
 	}
 
 	public static void updateItem(Combo combo, String oldItem, String newItem) {

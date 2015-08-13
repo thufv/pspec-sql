@@ -29,6 +29,10 @@ public class HiveConnection {
 		context = new HiveContext(new SparkContext(conf));
 	}
 
+	public void disconnect() {
+		context.sql("quit");
+	}
+	
 	public DataFrame sql(String sqlText) {
 		return context.sql(sqlText);
 	}

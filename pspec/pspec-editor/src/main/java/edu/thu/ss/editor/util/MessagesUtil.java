@@ -241,6 +241,7 @@ public class MessagesUtil {
   public static final String Metadata_ID_Not_Empty_Message = "metadata.id.not.empty.message";
   public static final String Metadata_Host_Not_Empty_Message = "metadata.host.not.empty.message";
   public static final String Metadata_Port_Not_Empty_Message = "metadata.port.not.empty.message";
+  public static final String Metadata_Policy_Not_Empty_Message = "metadata.policy.not.empty.message";
   public static final String Metadata_Username_Not_Empty_Message = "metadata.username.not.empty.message";
   public static final String Metadata_Password_Not_Empty_Message = "metadata.password.not.empty.message";
   public static final String MetaData_Extraction_Unique_Message = "metadata.extraction.unique.message";
@@ -250,6 +251,7 @@ public class MessagesUtil {
   public static final String Metadata_Save_Error_Message = "metadata.save.error.message";
   public static final String Metadata_Save_Success_Message = "metadata.save.success.message";
   public static final String Metadata_Invalid_Vocabulary_Document_Message = "metadata.invalid.vocabulary.document.message";
+  public static final String Metadata_Connect_Success_Message = "metadata.connect.success.message";
   
 	public static final String Forbid = "forbid";
 	public static final String Restriction = "restriction";

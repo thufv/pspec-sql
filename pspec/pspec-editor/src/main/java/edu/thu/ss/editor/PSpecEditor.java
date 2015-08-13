@@ -630,6 +630,10 @@ public class PSpecEditor {
 			break;
 		}
 	}
+	
+	public Display getDisplay() {
+		return display;
+	}
 
 	public PolicyView getPolicyView(PolicyModel model) {
 		for (TreeItem policyItem : policyItems.getItems()) {

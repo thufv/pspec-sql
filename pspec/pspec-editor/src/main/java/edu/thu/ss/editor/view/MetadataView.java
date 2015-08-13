@@ -9,6 +9,7 @@ import static edu.thu.ss.editor.util.MessagesUtil.Location;
 import static edu.thu.ss.editor.util.MessagesUtil.MetaData_Extraction_Unique_Message;
 import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Add_Label;
 import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Column;
+import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Connect_Success_Message;
 import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Database;
 import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Delete_Label;
 import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Extraction_Not_Empty_Message;
@@ -19,6 +20,7 @@ import static edu.thu.ss.editor.util.MessagesUtil.Metadata_ID_Not_Empty_Message;
 import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Info;
 import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Label_Not_Empty_Message;
 import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Password;
+import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Policy_Not_Empty_Message;
 import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Port;
 import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Port_Not_Empty_Message;
 import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Table;
@@ -57,6 +59,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ProgressBar;
@@ -96,6 +99,8 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 
 	private Combo databaseCombo;
 	private Combo tableCombo;
+	private ProgressBar pb;
+	private Label connectLable;
 
 	private String currentDatabase;
 	private String currentTable;
@@ -233,7 +238,13 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 		EditorUtil.newLabel(parent, getMessage(Metadata_Password), EditorUtil.labelData());
 		password = EditorUtil.newPassword(parent, EditorUtil.textData());
 
-		ProgressBar pb = new ProgressBar(parent, SWT.INDETERMINATE);
+		pb = new ProgressBar(parent, SWT.INDETERMINATE);
+		pb.setVisible(false);
+		
+		connectLable = new Label(parent, SWT.NONE);
+		connectLable.setText("connecting...");
+		connectLable.setVisible(false);
+		new Label(parent, SWT.NONE).setText("");
 
 		Button connect = EditorUtil.newButton(parent, getMessage(Connect));
 		connect.addSelectionListener(new SelectionAdapter() {
@@ -247,15 +258,15 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 					EditorUtil.showErrorMessageBox(shell, "", getMessage(Metadata_Port_Not_Empty_Message));
 					return;
 				}
-
+				if (model.getRegistry().getPolicy() == null) {
+					EditorUtil.showErrorMessageBox(shell, "", getMessage(Metadata_Policy_Not_Empty_Message));
+					return;
+				}
+				
 				//connect
+				pb.setVisible(true);
+				connectLable.setVisible(true);
 				model.connect(host.getText(), port.getText(), username.getText(), password.getText());
-
-				Set<String> databaseNames = model.getRegistry().getDatabases().keySet();
-				databaseCombo.setText("");
-				databaseCombo.setItems(databaseNames.toArray(new String[databaseNames.size()]));
-				tableCombo.setText("");
-				tableCombo.setItems(new String[0]);
 			}
 		});
 	}
@@ -372,7 +383,6 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 				}
 			}
 		});
-
 	}
 
 	private Menu createLabelPopup(Control control, final TreeItem item) {
@@ -388,7 +398,7 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 					Column column = (Column) item.getData();
 					@SuppressWarnings("unchecked")
 					List<TreeEditor> editors = (List<TreeEditor>) item.getData(EditorUtil.Tree_Editor);
-					editors.get(0).getEditor().setEnabled(false);
+					editors.get(0).getEditor().dispose();
 					BaseType type = column.getType();
 					if (type == null || type instanceof PrimitiveType) {
 						column.setType(new CompositeType());
@@ -408,9 +418,25 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 						@SuppressWarnings("unchecked")
 						List<TreeEditor> editors = (List<TreeEditor>) parentItem
 								.getData(EditorUtil.Tree_Editor);
-						editors.get(0).getEditor().setEnabled(true);
-						Column column = (Column) item.getData();
+						Column column = (Column) parentItem.getData();
 						column.setType(new PrimitiveType());
+
+						final Combo dataCombo = EditorUtil.newCombo(labelTree, null);
+						final XMLMetaRegistry registry = model.getRegistry();
+						final BaseType type = column.getType();
+
+						dataCombo.setItems(EditorUtil.getCategoryItems(registry.getPolicy().getDataContainer()));
+						dataCombo.addSelectionListener(new SelectionAdapter() {
+							@Override
+							public void widgetSelected(SelectionEvent e) {
+								String text = dataCombo.getText().trim();
+								//TODO save data category
+								PrimitiveType primitiveType = (PrimitiveType) type;
+								primitiveType.setDataCategory(registry.getPolicy().getDataCategory(text));
+							}
+						});
+						editors.clear();
+						editors.add(EditorUtil.newTreeEditor(labelTree, dataCombo, parentItem, 1));
 					}
 					EditorUtil.dispose(item);
 					item.dispose();
@@ -440,19 +466,14 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				String text = dataCombo.getText().trim();
-				//TODO save data category
-				if (item.getParentItem() == null) {
-					PrimitiveType primitiveType = (PrimitiveType) type;
-					primitiveType.setDataCategory(registry.getPolicy().getDataCategory(text));
-				} else {
-					//composite type
-				}
+				PrimitiveType primitiveType = (PrimitiveType) type;
+				primitiveType.setDataCategory(registry.getPolicy().getDataCategory(text));
 			}
 		});
 		editors.add(EditorUtil.newTreeEditor(labelTree, dataCombo, item, 1));
 
 		if (extraction) {
-			dataCombo.setEnabled(false);
+			dataCombo.dispose();
 		}
 
 		item.addDisposeListener(new DisposeListener() {
@@ -520,11 +541,19 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 						continue;
 					}
 					if (sibling.getText(2).equals(text.getText())) {
-						EditorUtil.showMessage(shell,
-								getMessage(MetaData_Extraction_Unique_Message, text.getText()), Display
-										.getCurrent().getCursorLocation());
+						if (text.getText().isEmpty()) {
+							EditorUtil.showMessage(shell,
+									getMessage(Metadata_Extraction_Not_Empty_Message, item.getText(0)), Display
+											.getCurrent().getCursorLocation());
+						} else {
+							EditorUtil.showMessage(shell,
+									getMessage(MetaData_Extraction_Unique_Message, item.getText(0)), Display
+											.getCurrent().getCursorLocation());
+						}
 						//restore to original
-						item.setText(2, (String) item.getData(EditorUtil.Extraction));
+						if (item.getData(EditorUtil.Extraction) != null) {
+							item.setText(2, (String) item.getData(EditorUtil.Extraction));
+						}
 						return;
 					}
 				}
@@ -556,6 +585,18 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 		});
 
 		return item;
+	}
+
+	public void updataSchemaInfo() {
+		pb.setVisible(false);
+		connectLable.setVisible(false);
+		EditorUtil.showInfoMessageBox(shell, "", getMessage(Metadata_Connect_Success_Message));
+		Set<String> databaseNames = model.getRegistry().getDatabases().keySet();
+		databaseCombo.setText("");
+		databaseCombo.setItems(databaseNames.toArray(new String[databaseNames.size()]));
+		tableCombo.setText("");
+		tableCombo.setItems(new String[0]);
+
 	}
 
 	public void refreshLocation() {
