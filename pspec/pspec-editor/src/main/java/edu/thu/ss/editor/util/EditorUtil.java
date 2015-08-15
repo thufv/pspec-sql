@@ -67,6 +67,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
@@ -343,6 +344,11 @@ public class EditorUtil {
 		return text;
 	}
 
+	public static ProgressBar newProgressBar(Composite parent, int style) {
+		ProgressBar pb = new ProgressBar(parent, style);
+		return pb;
+	}
+	
 	public static Combo newCombo(Composite parent, GridData data) {
 		Combo combo = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
 		// setStyle(combo);
@@ -451,6 +457,10 @@ public class EditorUtil {
 
 	public static void showMessage(Shell parent, String text, Control control) {
 		showMessage(parent, text, control.toDisplay(control.getLocation()));
+	}
+	
+	public static void showMessage(Shell parent, String text, Control control, TreeItem item) {
+		showMessage(parent, text, control.toDisplay(item.getBounds().width, item.getBounds().height));
 	}
 
 	public static void showMessage(Shell parent, String text, Point point) {

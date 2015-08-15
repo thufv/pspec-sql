@@ -45,6 +45,8 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -56,13 +58,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
@@ -99,11 +99,11 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 
 	private Combo databaseCombo;
 	private Combo tableCombo;
-	private ProgressBar pb;
-	private Label connectLable;
 
 	private String currentDatabase;
 	private String currentTable;
+
+	private ConnectionDialog connectDialog;
 
 	public MetadataView(Shell shell, Composite parent, MetadataModel model, OutputView outputView,
 			TreeItem editorItem) {
@@ -238,12 +238,8 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 		EditorUtil.newLabel(parent, getMessage(Metadata_Password), EditorUtil.labelData());
 		password = EditorUtil.newPassword(parent, EditorUtil.textData());
 
-		pb = new ProgressBar(parent, SWT.INDETERMINATE);
-		pb.setVisible(false);
-		
-		connectLable = new Label(parent, SWT.NONE);
-		connectLable.setText("connecting...");
-		connectLable.setVisible(false);
+		new Label(parent, SWT.NONE).setText("");
+		new Label(parent, SWT.NONE).setText("");
 		new Label(parent, SWT.NONE).setText("");
 
 		Button connect = EditorUtil.newButton(parent, getMessage(Connect));
@@ -262,11 +258,12 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 					EditorUtil.showErrorMessageBox(shell, "", getMessage(Metadata_Policy_Not_Empty_Message));
 					return;
 				}
-				
+
 				//connect
-				pb.setVisible(true);
-				connectLable.setVisible(true);
-				model.connect(host.getText(), port.getText(), username.getText(), password.getText());
+				labelTree.removeAll();
+				connectDialog = new ConnectionDialog(shell, model, username.getText(), password.getText(),
+						host.getText(), port.getText());
+				connectDialog.open();
 			}
 		});
 	}
@@ -325,6 +322,7 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 						//add multiple rows
 						CompositeType compositeType = (CompositeType) type;
 						if (((CompositeType) type).getAllTypes().size() == 0) {
+							column.setType(new PrimitiveType());
 							addLabelRow(column, null, false);
 						} else {
 							TreeItem item = addLabelRow(column, null, true);
@@ -366,7 +364,6 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 		treeLayout.setColumnData(columns[0], new ColumnWeightData(1, columns[0].getWidth()));
 		treeLayout.setColumnData(columns[1], new ColumnWeightData(1, columns[1].getWidth()));
 		treeLayout.setColumnData(columns[2], new ColumnWeightData(1, columns[2].getWidth()));
-
 		labelTree.setHeaderVisible(true);
 		labelTree.setLinesVisible(true);
 		labelTree.addMouseListener(new MouseAdapter() {
@@ -396,9 +393,7 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 				public void widgetSelected(SelectionEvent e) {
 					//TODO: add new row, and change current column type to composite type (if necessary)
 					Column column = (Column) item.getData();
-					@SuppressWarnings("unchecked")
-					List<TreeEditor> editors = (List<TreeEditor>) item.getData(EditorUtil.Tree_Editor);
-					editors.get(0).getEditor().dispose();
+					EditorUtil.dispose(item);
 					BaseType type = column.getType();
 					if (type == null || type instanceof PrimitiveType) {
 						column.setType(new CompositeType());
@@ -414,31 +409,23 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 				public void widgetSelected(SelectionEvent e) {
 					//TODO: change column column type to primitive type (if necessary)
 					TreeItem parentItem = item.getParentItem();
+					Column column = (Column) parentItem.getData();
 					if (parentItem.getItemCount() == 1) {
 						@SuppressWarnings("unchecked")
 						List<TreeEditor> editors = (List<TreeEditor>) parentItem
 								.getData(EditorUtil.Tree_Editor);
-						Column column = (Column) parentItem.getData();
 						column.setType(new PrimitiveType());
 
-						final Combo dataCombo = EditorUtil.newCombo(labelTree, null);
-						final XMLMetaRegistry registry = model.getRegistry();
-						final BaseType type = column.getType();
-
-						dataCombo.setItems(EditorUtil.getCategoryItems(registry.getPolicy().getDataContainer()));
-						dataCombo.addSelectionListener(new SelectionAdapter() {
-							@Override
-							public void widgetSelected(SelectionEvent e) {
-								String text = dataCombo.getText().trim();
-								//TODO save data category
-								PrimitiveType primitiveType = (PrimitiveType) type;
-								primitiveType.setDataCategory(registry.getPolicy().getDataCategory(text));
-							}
-						});
+						final Combo dataCombo = newDataCombo(column, null, parentItem);
 						editors.clear();
 						editors.add(EditorUtil.newTreeEditor(labelTree, dataCombo, parentItem, 1));
+					} else if (parentItem.getItemCount() > 1) {
+						CompositeType compositeType = (CompositeType) column.getType();
+						String extraction = (String) item.getData(EditorUtil.Extraction);
+						if (extraction != null) {
+							compositeType.remove(extraction);
+						}
 					}
-					EditorUtil.dispose(item);
 					item.dispose();
 				}
 			});
@@ -453,10 +440,145 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 		item.setData(EditorUtil.Tree_Editor, editors);
 		item.setText(0, column.getName());
 
+		if (!extraction) {
+			final Combo dataCombo = newDataCombo(column, dataCategory, item);
+			editors.add(EditorUtil.newTreeEditor(labelTree, dataCombo, item, 1));
+		}
+
+		item.addDisposeListener(new DisposeListener() {
+			public void widgetDisposed(DisposeEvent e) {
+				EditorUtil.dispose(item);
+			}
+		});
+
+		return item;
+	}
+
+	private TreeItem addExtractionRow(final Column column, DataCategory dataCategory,
+			String extraction, TreeItem treeItem) {
+		final TreeItem item = EditorUtil.newTreeItem(treeItem, "");
+		List<TreeEditor> editors = new ArrayList<>(2);
+		item.setData(column);
+		item.setData(EditorUtil.Tree_Editor, editors);
+		item.setData(EditorUtil.DataCategory, dataCategory);
+		item.setData(EditorUtil.Extraction, extraction);
+		item.setText(0, column.getName());
+		item.addDisposeListener(new DisposeListener() {
+			public void widgetDisposed(DisposeEvent e) {
+				EditorUtil.dispose(item);
+			}
+		});
+
+		final XMLMetaRegistry registry = model.getRegistry();
+		final CompositeType type = (CompositeType) column.getType();
+		final Combo dataCombo = EditorUtil.newCombo(labelTree, null);
+
+		dataCombo.setItems(EditorUtil.getCategoryItems(registry.getPolicy().getDataContainer()));
+		if (dataCategory != null) {
+			EditorUtil.setSelectedItem(dataCombo, dataCategory.getId());
+		}
+
+		dataCombo.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				String dataCategoryId = dataCombo.getText().trim();
+				if (dataCategoryId != null) {
+					DataCategory dataCategory = registry.getPolicy().getDataCategory(dataCategoryId);
+					item.setData(EditorUtil.DataCategory, dataCategory);
+				}
+			}
+		});
+
+		dataCombo.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				String text = dataCombo.getText().trim();
+				if (text.isEmpty()) {
+					EditorUtil.showMessage(shell,
+							getMessage(Metadata_Label_Not_Empty_Message, column.getName()), dataCombo, item);
+					return;
+				}
+
+				String extraction = (String) item.getData(EditorUtil.Extraction);
+				if (extraction != null && !extraction.isEmpty()) {
+					PrimitiveType primitiveType = new PrimitiveType();
+					primitiveType.setDataCategory((DataCategory) item.getData(EditorUtil.DataCategory));
+					type.add(extraction, primitiveType);
+				}
+			}
+		});
+		editors.add(EditorUtil.newTreeEditor(labelTree, dataCombo, item, 1));
+
+		final Text text = EditorUtil.newText(labelTree, null);
+		text.setText(extraction == null ? "" : extraction);
+		text.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				if (text.getText().isEmpty()) {
+					return;
+				}
+
+				TreeItem parent = item.getParentItem();
+				for (TreeItem sibling : parent.getItems()) {
+					if (sibling == item) {
+						continue;
+					}
+					String siblingExtract = (String) sibling.getData(EditorUtil.Extraction);
+					if (siblingExtract == null) {
+						continue;
+					}
+					if (siblingExtract.equals(text.getText())) {
+						EditorUtil.showMessage(shell,
+								getMessage(MetaData_Extraction_Unique_Message, siblingExtract), text, item);
+						String previousExtract = (String) item.getData(EditorUtil.Extraction);
+						text.setText(previousExtract == null ? "" : previousExtract);
+						return;
+					}
+				}
+
+				item.setData(EditorUtil.Extraction, text.getText());
+			}
+		});
+
+		text.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				String extraction = (String) item.getData(EditorUtil.Extraction);
+				if (extraction != null) {
+					type.remove(extraction);
+				}
+			}
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				if (text.getText().isEmpty()) {
+					item.setData(EditorUtil.Extraction, null);
+					EditorUtil.showMessage(shell,
+							getMessage(Metadata_Extraction_Not_Empty_Message, column.getName()), text, item);
+					return;
+				}
+				//TODO: set new extraction
+				String extraction = text.getText();
+				item.setData(EditorUtil.Extraction, extraction);
+				DataCategory dataCategory = (DataCategory) item.getData(EditorUtil.DataCategory);
+
+				if (dataCategory != null) {
+					type.remove(extraction);
+					PrimitiveType extractType = new PrimitiveType();
+					extractType.setDataCategory(dataCategory);
+					type.add(extraction, extractType);
+				}
+			}
+		});
+		editors.add(EditorUtil.newTreeEditor(labelTree, text, item, 2));
+		return item;
+	}
+
+	private Combo newDataCombo(final Column column, DataCategory dataCategory, final TreeItem item) {
+		final Combo dataCombo = EditorUtil.newCombo(labelTree, null);
 		final XMLMetaRegistry registry = model.getRegistry();
 		final BaseType type = column.getType();
 
-		final Combo dataCombo = EditorUtil.newCombo(labelTree, null);
 		dataCombo.setItems(EditorUtil.getCategoryItems(registry.getPolicy().getDataContainer()));
 		if (dataCategory != null) {
 			EditorUtil.setSelectedItem(dataCombo, dataCategory.getId());
@@ -470,133 +592,28 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 				primitiveType.setDataCategory(registry.getPolicy().getDataCategory(text));
 			}
 		});
-		editors.add(EditorUtil.newTreeEditor(labelTree, dataCombo, item, 1));
 
-		if (extraction) {
-			dataCombo.dispose();
-		}
-
-		item.addDisposeListener(new DisposeListener() {
-			public void widgetDisposed(DisposeEvent e) {
-				EditorUtil.dispose(item);
-			}
-		});
-		return item;
-	}
-
-	private TreeItem addExtractionRow(final Column column, DataCategory dataCategory,
-			String extraction, TreeItem treeItem) {
-		final TreeItem item = EditorUtil.newTreeItem(treeItem, "");
-		List<TreeEditor> editors = new ArrayList<>(2);
-		item.setData(column);
-		item.setData(EditorUtil.Tree_Editor, editors);
-		item.setData(EditorUtil.DataCategory, dataCategory);
-		item.setData(EditorUtil.Extraction, extraction);
-		item.setText(0, column.getName());
-
-		final XMLMetaRegistry registry = model.getRegistry();
-		final BaseType type = column.getType();
-
-		final Combo dataCombo = EditorUtil.newCombo(labelTree, null);
-		dataCombo.setItems(EditorUtil.getCategoryItems(registry.getPolicy().getDataContainer()));
-		if (dataCategory != null) {
-			EditorUtil.setSelectedItem(dataCombo, dataCategory.getId());
-		}
-
-		dataCombo.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				String dataCategoryId = dataCombo.getText().trim();
-				//TODO save data category
-				if (dataCategoryId != null) {
-					DataCategory dataCategory = registry.getPolicy().getDataCategory(dataCategoryId);
-					item.setData(EditorUtil.DataCategory, dataCategory);
-
-					String extraction = (String) item.getData(EditorUtil.Extraction);
-					if (extraction != null) {
-						PrimitiveType extractType = new PrimitiveType();
-						extractType.setDataCategory(dataCategory);
-						CompositeType compositeType = (CompositeType) type;
-						compositeType.add(extraction, extractType);
-					} else {
-						EditorUtil.showMessage(shell,
-								getMessage(Metadata_Extraction_Not_Empty_Message, item.getText(0)), Display
-										.getCurrent().getCursorLocation());
-					}
-				}
-			}
-		});
-		editors.add(EditorUtil.newTreeEditor(labelTree, dataCombo, item, 1));
-
-		final Text text = new Text(labelTree, SWT.NONE);
-		if (extraction != null) {
-			text.setText(extraction);
-		}
-		text.addFocusListener(new FocusAdapter() {
+		dataCombo.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent e) {
-				TreeItem parent = item.getParentItem();
-				for (TreeItem sibling : parent.getItems()) {
-					if (sibling == item) {
-						continue;
-					}
-					if (sibling.getText(2).equals(text.getText())) {
-						if (text.getText().isEmpty()) {
-							EditorUtil.showMessage(shell,
-									getMessage(Metadata_Extraction_Not_Empty_Message, item.getText(0)), Display
-											.getCurrent().getCursorLocation());
-						} else {
-							EditorUtil.showMessage(shell,
-									getMessage(MetaData_Extraction_Unique_Message, item.getText(0)), Display
-											.getCurrent().getCursorLocation());
-						}
-						//restore to original
-						if (item.getData(EditorUtil.Extraction) != null) {
-							item.setText(2, (String) item.getData(EditorUtil.Extraction));
-						}
-						return;
-					}
-				}
-				//TODO: set new extraction
-				String extraction = text.getText();
-				item.setText(2, extraction);
-				item.setData(EditorUtil.Extraction, extraction);
-				DataCategory dataCategory = (DataCategory) item.getData(EditorUtil.DataCategory);
-
-				if (dataCategory != null) {
-					CompositeType compositeType = (CompositeType) type;
-					compositeType.remove(extraction);
-					PrimitiveType extractType = new PrimitiveType();
-					extractType.setDataCategory(dataCategory);
-					compositeType.add(extraction, extractType);
-				} else {
+				String text = dataCombo.getText().trim();
+				if (text.isEmpty()) {
 					EditorUtil.showMessage(shell,
-							getMessage(Metadata_Label_Not_Empty_Message, item.getText(0)), Display.getCurrent()
-									.getCursorLocation());
+							getMessage(Metadata_Label_Not_Empty_Message, column.getName()), dataCombo, item);
 				}
 			}
 		});
-		editors.add(EditorUtil.newTreeEditor(labelTree, text, item, 2));
-
-		item.addDisposeListener(new DisposeListener() {
-			public void widgetDisposed(DisposeEvent e) {
-				EditorUtil.dispose(item);
-			}
-		});
-
-		return item;
+		return dataCombo;
 	}
 
 	public void updataSchemaInfo() {
-		pb.setVisible(false);
-		connectLable.setVisible(false);
+		connectDialog.close();
 		EditorUtil.showInfoMessageBox(shell, "", getMessage(Metadata_Connect_Success_Message));
 		Set<String> databaseNames = model.getRegistry().getDatabases().keySet();
 		databaseCombo.setText("");
 		databaseCombo.setItems(databaseNames.toArray(new String[databaseNames.size()]));
 		tableCombo.setText("");
 		tableCombo.setItems(new String[0]);
-
 	}
 
 	public void refreshLocation() {

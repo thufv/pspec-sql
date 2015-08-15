@@ -20,8 +20,14 @@ public class MetadataModel extends BaseModel {
 
 		public void run() {
 			if (connection != null) {
+				PSpecEditor.getInstance().getDisplay().syncExec(new Runnable() {
+					@Override
+					public void run() {
+						MetadataView view = PSpecEditor.getInstance().getMetadataView(model);
+						view.updataSchemaInfo();
+					}
+				});
 				return;
-				//connection.disconnect();
 			}
 			connection = new HiveConnection();
 			connection.resolve(registry);

@@ -570,6 +570,7 @@ public class PSpecEditor {
 		rightForm.setWeights(new int[] { 5, 1 });
 
 	}
+	
 
 	protected void switchView(BaseModel model, EditorView<?, ?> view, Object obj) {
 		if (model == null) {

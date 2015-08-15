@@ -78,6 +78,9 @@ public class Column extends DBObject implements Writable {
 		} else if (type instanceof CompositeType) {
 			Element composite = document.createElement(MetaParserConstant.Ele_Composite);
 			CompositeType compositeType = (CompositeType) type;
+			if (compositeType.getAllTypes().entrySet().size() == 0) {
+				return null;
+			}
 			for (Entry<String, BaseType> entry : compositeType.getAllTypes().entrySet()) {
 				Element extract = document.createElement(MetaParserConstant.Ele_Composite_Extract);
 				PrimitiveType subtype = (PrimitiveType) entry.getValue();

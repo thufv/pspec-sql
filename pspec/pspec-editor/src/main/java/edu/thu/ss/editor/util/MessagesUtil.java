@@ -236,6 +236,7 @@ public class MessagesUtil {
   public static final String Metadata_Delete_Label = "metadata.delete.label";
   public static final String Metadata_Edit_Label = "metadata.edit.label";
   public static final String Metadata_Opened_Message = "metadata.opened.message";
+  public static final String Metadata_Connect_Database = "metadata.connect.database";
   public static final String Metadata_Invalid_Document_Message = "metadata.invalid.document.message";
   public static final String Metadata_Parse_Error_Message = "metadata.parse.error.message";
   public static final String Metadata_ID_Not_Empty_Message = "metadata.id.not.empty.message";
