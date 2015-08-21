@@ -277,7 +277,6 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 		databaseCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				//TODO: changes should be in effect immediately when user edits
 				String databaseName = databaseCombo.getText().trim();
 
 				if (databaseName.isEmpty()) {
@@ -293,7 +292,6 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 		tableCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				//TODO: changes should be in effect immediately when user edits
 				String databaseName = databaseCombo.getText().trim();
 				String tableName = tableCombo.getText().trim();
 				if (databaseName.isEmpty() || tableName.isEmpty()) {
@@ -307,7 +305,6 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 				Table table = database.getTable(tableName);
 				Set<String> columnNames = table.getColumns().keySet();
 				for (String columnName : columnNames) {
-					//TODO: load existing labels from registry
 					Column column = table.getColumn(columnName);
 					BaseType type = column.getType();
 					if (type == null) {
@@ -391,7 +388,6 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 			addItem.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					//TODO: add new row, and change current column type to composite type (if necessary)
 					Column column = (Column) item.getData();
 					EditorUtil.dispose(item);
 					BaseType type = column.getType();
@@ -407,7 +403,6 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 			deleteItem.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					//TODO: change column column type to primitive type (if necessary)
 					TreeItem parentItem = item.getParentItem();
 					Column column = (Column) parentItem.getData();
 					if (parentItem.getItemCount() == 1) {
@@ -486,6 +481,12 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 					DataCategory dataCategory = registry.getPolicy().getDataCategory(dataCategoryId);
 					item.setData(EditorUtil.DataCategory, dataCategory);
 				}
+
+				String text = dataCombo.getText().trim();
+				if (text.isEmpty()) {
+					EditorUtil.showMessage(shell,
+							getMessage(Metadata_Label_Not_Empty_Message, column.getName()), dataCombo, item);
+				}
 			}
 		});
 
@@ -494,8 +495,6 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 			public void focusLost(FocusEvent e) {
 				String text = dataCombo.getText().trim();
 				if (text.isEmpty()) {
-					EditorUtil.showMessage(shell,
-							getMessage(Metadata_Label_Not_Empty_Message, column.getName()), dataCombo, item);
 					return;
 				}
 
@@ -515,6 +514,9 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 			@Override
 			public void modifyText(ModifyEvent e) {
 				if (text.getText().isEmpty()) {
+					item.setData(EditorUtil.Extraction, null);
+					EditorUtil.showMessage(shell,
+							getMessage(Metadata_Extraction_Not_Empty_Message, column.getName()), text, item);
 					return;
 				}
 
@@ -530,8 +532,6 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 					if (siblingExtract.equals(text.getText())) {
 						EditorUtil.showMessage(shell,
 								getMessage(MetaData_Extraction_Unique_Message, siblingExtract), text, item);
-						String previousExtract = (String) item.getData(EditorUtil.Extraction);
-						text.setText(previousExtract == null ? "" : previousExtract);
 						return;
 					}
 				}
@@ -552,12 +552,10 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 			@Override
 			public void focusLost(FocusEvent e) {
 				if (text.getText().isEmpty()) {
-					item.setData(EditorUtil.Extraction, null);
 					EditorUtil.showMessage(shell,
 							getMessage(Metadata_Extraction_Not_Empty_Message, column.getName()), text, item);
 					return;
 				}
-				//TODO: set new extraction
 				String extraction = text.getText();
 				item.setData(EditorUtil.Extraction, extraction);
 				DataCategory dataCategory = (DataCategory) item.getData(EditorUtil.DataCategory);
@@ -588,19 +586,13 @@ public class MetadataView extends EditorView<MetadataModel, XMLMetaRegistry> {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				String text = dataCombo.getText().trim();
-				PrimitiveType primitiveType = (PrimitiveType) type;
-				primitiveType.setDataCategory(registry.getPolicy().getDataCategory(text));
-			}
-		});
-
-		dataCombo.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusLost(FocusEvent e) {
-				String text = dataCombo.getText().trim();
 				if (text.isEmpty()) {
 					EditorUtil.showMessage(shell,
 							getMessage(Metadata_Label_Not_Empty_Message, column.getName()), dataCombo, item);
+					return;
 				}
+				PrimitiveType primitiveType = (PrimitiveType) type;
+				primitiveType.setDataCategory(registry.getPolicy().getDataCategory(text));
 			}
 		});
 		return dataCombo;

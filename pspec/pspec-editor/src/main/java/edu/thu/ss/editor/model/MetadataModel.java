@@ -66,7 +66,6 @@ public class MetadataModel extends BaseModel {
 	}
 
 	public XMLMetaRegistry getRegistry() {
-		// TODO Auto-generated method stub
 		return registry;
 	}
 

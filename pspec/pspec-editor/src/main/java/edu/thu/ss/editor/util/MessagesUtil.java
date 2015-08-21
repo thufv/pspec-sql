@@ -31,6 +31,7 @@ public class MessagesUtil {
 	public static final String Open_Policy = "open.policy";
 	public static final String Open_Metadata = "open.metadata";
 	public static final String Connect = "connect";
+	public static final String Connecting = "connecting";
 	
 	public static final String New_Vocabulary = "new.vocabulary";
 	public static final String New_Policy = "new.policy";

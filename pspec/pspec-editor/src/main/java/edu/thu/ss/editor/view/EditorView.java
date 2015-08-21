@@ -19,7 +19,7 @@ public abstract class EditorView<T extends BaseModel, E> extends Composite {
 	}
 
 	public void refresh() {
-		//TODO
+		
 	}
 
 	public void select(E object) {

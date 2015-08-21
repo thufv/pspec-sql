@@ -22,10 +22,10 @@ public class HiveConnection {
 	}
 
 	public HiveConnection(String host, String port, String username, String password) {
+		//TODO need to be modified in cluster mode
 		SparkConf conf = new SparkConf().setMaster("local[1]").setAppName("localnode");
 		conf.set("spark.driver.host", host);
 		conf.set("spark.driver.port", port);
-		//TODO modify hive-site.xml?
 		context = new HiveContext(new SparkContext(conf));
 	}
 

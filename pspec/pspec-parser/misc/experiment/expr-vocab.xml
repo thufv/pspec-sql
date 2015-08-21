@@ -60,6 +60,33 @@
 		<user-category id="analyst18" parent="analyst1" />
 		<user-category id="analyst19" parent="analyst2" />
 	</user-category-container>
+	<user-category-container id="expr-user-25">
+		<user-category id="analyst0" />
+		<user-category id="analyst1" parent="analyst0" />
+		<user-category id="analyst2" parent="analyst0" />
+		<user-category id="analyst3" parent="analyst0" />
+		<user-category id="analyst4" parent="analyst2" />
+		<user-category id="analyst5" parent="analyst3" />
+		<user-category id="analyst6" parent="analyst1" />
+		<user-category id="analyst7" parent="analyst2" />
+		<user-category id="analyst8" parent="analyst3" />
+		<user-category id="analyst9" parent="analyst1" />
+		<user-category id="analyst10" parent="analyst2" />
+		<user-category id="analyst11" parent="analyst3" />
+		<user-category id="analyst12" parent="analyst1" />
+		<user-category id="analyst13" parent="analyst2" />
+		<user-category id="analyst14" parent="analyst3" />
+		<user-category id="analyst15" parent="analyst1" />
+		<user-category id="analyst16" parent="analyst2" />
+		<user-category id="analyst17" parent="analyst3" />
+		<user-category id="analyst18" parent="analyst1" />
+		<user-category id="analyst19" parent="analyst2" />
+		<user-category id="analyst20" parent="analyst3" />
+		<user-category id="analyst21" parent="analyst1" />
+		<user-category id="analyst22" parent="analyst2" />
+		<user-category id="analyst23" parent="analyst3" />
+		<user-category id="analyst24" parent="analyst1" />
+	</user-category-container>
 	<user-category-container id="expr-user-10">
 		<user-category id="analyst0" />
 		<user-category id="analyst1" parent="analyst0" />

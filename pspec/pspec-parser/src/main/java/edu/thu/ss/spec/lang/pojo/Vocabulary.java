@@ -1,8 +1,6 @@
 package edu.thu.ss.spec.lang.pojo;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.w3c.dom.Node;
 

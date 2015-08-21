@@ -10,7 +10,6 @@ import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.Info;
 import edu.thu.ss.spec.lang.pojo.Policy;
-import edu.thu.ss.spec.lang.pojo.Vocabulary;
 import edu.thu.ss.spec.meta.BaseType;
 import edu.thu.ss.spec.meta.Column;
 import edu.thu.ss.spec.meta.ConditionalColumn;
@@ -107,7 +106,7 @@ public class XMLMetaRegistry implements MetaRegistry {
 	public Map<String, Database> getDatabases() {
 		return databases;
 	}
-	
+
 	public Database getDatabase(String databaseName) {
 		return databases.get(databaseName);
 	}

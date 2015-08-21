@@ -63,7 +63,6 @@ public class Column extends DBObject implements Writable {
 	public Element outputElement(Document document) {
 		Element column = document.createElement(MetaParserConstant.Ele_Column);
 		column.setAttribute(MetaParserConstant.Attr_Name, name);
-		//TODO output should be based on type
 		if (type == null) {
 			return null;
 		} else if (type instanceof PrimitiveType) {

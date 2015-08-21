@@ -7,27 +7,25 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import edu.thu.ss.spec.lang.expression.And;
+import edu.thu.ss.spec.lang.expression.Comparison;
 import edu.thu.ss.spec.lang.expression.Expression;
-import edu.thu.ss.spec.lang.expression.BinaryComparison;
-import edu.thu.ss.spec.lang.expression.BinaryPredicate;
-import edu.thu.ss.spec.lang.expression.BinaryPredicate.binaryPredicateTypes;
+import edu.thu.ss.spec.lang.expression.Not;
+import edu.thu.ss.spec.lang.expression.Or;
 import edu.thu.ss.spec.lang.parser.ParserConstant;
-import edu.thu.ss.spec.util.XMLUtil;
 
 public class Condition implements Parsable, Writable {
-//TODO
 	private Expression<DataCategory> expression;
 	private boolean preserveNull = false;
 
-	
 	public Set<DataCategory> getDataCategories() {
 		return expression.getDataSet();
 	}
-	
+
 	public Expression<DataCategory> getExpression() {
 		return expression;
 	}
-	
+
 	@Override
 	public Element outputType(Document document, String name) {
 		throw new UnsupportedOperationException();
@@ -55,33 +53,29 @@ public class Condition implements Parsable, Writable {
 				continue;
 			}
 			if (ParserConstant.Ele_Policy_Rule_And.equals(name)) {
-				expr = new BinaryPredicate(binaryPredicateTypes.and);
+				expr = new And();
 				expr.parse(node);
 				expression = expr;
 				break;
-			}
-			else if (ParserConstant.Ele_Policy_Rule_Or.equals(name)) {
-				expr = new BinaryPredicate(binaryPredicateTypes.or);
+			} else if (ParserConstant.Ele_Policy_Rule_Or.equals(name)) {
+				expr = new Or();
 				expr.parse(node);
 				expression = expr;
 				break;
-			}
-			else if (ParserConstant.Ele_Policy_Rule_Not.equals(name)) {
-				expr = new BinaryPredicate(binaryPredicateTypes.not);
+			} else if (ParserConstant.Ele_Policy_Rule_Not.equals(name)) {
+				expr = new Not();
 				expr.parse(node);
 				expression = expr;
 				break;
-			}
-			else if (ParserConstant.Ele_Policy_Rule_Comparison.equals(name)) {
-				expr = new BinaryComparison();
+			} else if (ParserConstant.Ele_Policy_Rule_Comparison.equals(name)) {
+				expr = Comparison.parseComparison(node);
 				expr.parse(node);
 				expression = expr;
 				break;
 			}
 		}
 	}
-	
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -91,7 +85,7 @@ public class Condition implements Parsable, Writable {
 			sb.append(expression);
 			sb.append("} ");
 		}
-
-		return sb.toString();
+		
+		return sb.toString() /* + "\r\n\t\t" + expression.split().toString() */;
 	}
 }

@@ -1,6 +1,6 @@
 package edu.thu.ss.editor.view;
 
-import static edu.thu.ss.editor.util.MessagesUtil.Connect;
+import static edu.thu.ss.editor.util.MessagesUtil.Connecting;
 import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Connect_Database;
 import static edu.thu.ss.editor.util.MessagesUtil.getMessage;
 
@@ -33,7 +33,7 @@ public class ConnectionDialog extends EditorDialog {
 		this.port = port;
 
 		dialog = new Shell(getParent(), SWT.TITLE | SWT.APPLICATION_MODAL);
-		dialog.setText(getMessage(Connect));
+		dialog.setText(getMessage(Connecting));
 		GridLayout layout = new GridLayout(1, true);
 		layout.verticalSpacing = 10;
 		layout.marginHeight = 20;

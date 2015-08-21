@@ -1028,7 +1028,6 @@ public class PSpecEditor {
 		model.setPath(path);
 		PolicyWriter writer = new PolicyWriter();
 		try {
-			//TODO
 			writer.output(model.getPolicy(), path);
 		} catch (WritingException e) {
 			e.printStackTrace();

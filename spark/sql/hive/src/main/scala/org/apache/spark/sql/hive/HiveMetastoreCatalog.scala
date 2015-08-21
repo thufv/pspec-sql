@@ -792,6 +792,8 @@ private[hive] case class MetastoreRelation(databaseName: String, tableName: Stri
       meta.getPolicy;
     }
   }
+  
+  override def getAttributeMap() : AttributeMap[AttributeReference] = attributeMap
 }
 
 private[hive] object HiveMetastoreTypes {

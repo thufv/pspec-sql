@@ -58,6 +58,8 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
     TypeUtil.concatComplexLabel(label.get, list.tail);
   }
 
+  def getAttributeMap() : AttributeMap[AttributeReference] = { throw new UnsupportedOperationException };
+  	
   /**
    * Computes [[Statistics]] for this plan. The default implementation assumes the output
    * cardinality is the product of of all child plan's cardinality, i.e. applies in the case

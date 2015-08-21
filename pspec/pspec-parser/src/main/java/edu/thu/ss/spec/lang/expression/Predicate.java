@@ -2,7 +2,6 @@ package edu.thu.ss.spec.lang.expression;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -12,44 +11,36 @@ import org.w3c.dom.NodeList;
 import edu.thu.ss.spec.lang.parser.ParserConstant;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 
-public class BinaryPredicate extends Expression<DataCategory> {
-	public enum binaryPredicateTypes {
-		and, or, not
-	}
+public abstract class Predicate extends Expression<DataCategory> {
 	
-	private binaryPredicateTypes binaryPredicateType;
-	private List<Expression<DataCategory>> expressions = new ArrayList<>();
+	protected List<Expression<DataCategory>> expressions = new ArrayList<>();
+	protected Expression<DataCategory> expression;
+	protected String symbol;
 	
-	public BinaryPredicate(binaryPredicateTypes type) {
-		super.ExpressionType = ExpressionTypes.binaryPredicate;
-		binaryPredicateType = type;
+	public Predicate() {
 	}
 
-	public binaryPredicateTypes getPredicateType() {
-		return binaryPredicateType;
+	public void addExpression(Expression<DataCategory> expression) {
+		this.expressions.add(expression);
+	}
+
+	public void setExpression(Expression<DataCategory> expression) {
+		this.expression = expression;
+	}
+
+	public void setExpressions(List<Expression<DataCategory>> expressions) {
+		this.expressions = expressions;
 	}
 	
-	public List<Expression<DataCategory>> getExpressionList() {
+	public List<Expression<DataCategory>> getExpressions() {
 		return expressions;
 	}
-	
-	@Override
-	public Set<DataCategory> getDataSet() {
-		if (dataSet != null) {
-			return dataSet;
-		}
-		Set<DataCategory> dataSet = null;
-		for (Expression<DataCategory> expr : expressions) {
-			Set<DataCategory> set = expr.getDataSet();
-			if (dataSet == null) {
-				dataSet = set;
-			}
-			else {
-				dataSet.addAll(set);
-			}
-		}
-		return dataSet;
+
+	public Expression<DataCategory> getExpression() {
+		return expression;
 	}
+
+	public abstract boolean isBinary();
 
 	@Override
 	public void parse(Node pNode) {
@@ -60,25 +51,22 @@ public class BinaryPredicate extends Expression<DataCategory> {
 			if (name == null) {
 				continue;
 			}
-			
+
 			Expression<DataCategory> expr = null;
 			if (ParserConstant.Ele_Policy_Rule_And.equals(name)) {
-				expr = new BinaryPredicate(binaryPredicateTypes.and);
+				expr = new And();
 				expr.parse(node);
 				expressions.add(expr);
-			}
-			else if (ParserConstant.Ele_Policy_Rule_Or.equals(name)) {
-				expr = new BinaryPredicate(binaryPredicateTypes.or);
+			} else if (ParserConstant.Ele_Policy_Rule_Or.equals(name)) {
+				expr = new Or();
 				expr.parse(node);
 				expressions.add(expr);
-			}
-			else if (ParserConstant.Ele_Policy_Rule_Not.equals(name)) {
-				expr = new BinaryPredicate(binaryPredicateTypes.not);
+			} else if (ParserConstant.Ele_Policy_Rule_Not.equals(name)) {
+				expr = new Not();
 				expr.parse(node);
 				expressions.add(expr);
-			}
-			else if (ParserConstant.Ele_Policy_Rule_Comparison.equals(name)) {
-				expr = new BinaryComparison();
+			} else if (ParserConstant.Ele_Policy_Rule_Comparison.equals(name)) {
+				expr = Comparison.parseComparison(node);
 				expr.parse(node);
 				expressions.add(expr);
 			}
@@ -92,25 +80,32 @@ public class BinaryPredicate extends Expression<DataCategory> {
 
 	@Override
 	public Element outputElement(Document document) {
-		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		if (expressions == null) {
 			sb.append("Predicate Error");
-		}
-		else {
+		} else {
 			sb.append("(");
 			sb.append(expressions.get(0));
 			for (Expression<DataCategory> expr : expressions.subList(1, expressions.size())) {
-				sb.append(" " + binaryPredicateType + " ");
+				sb.append(" " + symbol + " ");
 				sb.append(expr);
 			}
 			sb.append(")");
 		}
 		return sb.toString();
+	}
+	
+	@Override
+	public List<Expression<DataCategory>> split() {
+		List<Expression<DataCategory>> list = new ArrayList<>();
+		for (Expression<DataCategory> expr : expressions) {
+			list.addAll(expr.split());
+		}
+		return list;
 	}
 }

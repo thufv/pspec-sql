@@ -26,8 +26,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import edu.thu.ss.spec.lang.parser.InvalidPolicyException;
-
 /**
  * a utility class for xml related functionalities
  * @author luochen

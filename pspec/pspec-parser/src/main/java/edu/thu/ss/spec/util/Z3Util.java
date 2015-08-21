@@ -1,14 +1,13 @@
 package edu.thu.ss.spec.util;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.microsoft.z3.ArithExpr;
 import com.microsoft.z3.BoolExpr;
 import com.microsoft.z3.Context;
 import com.microsoft.z3.Expr;
@@ -20,15 +19,6 @@ import com.microsoft.z3.Symbol;
 import com.microsoft.z3.Z3Exception;
 
 import edu.thu.ss.spec.lang.analyzer.redundancy.BaseRedundancyAnalyzer;
-import edu.thu.ss.spec.lang.expression.BinaryComparison;
-import edu.thu.ss.spec.lang.expression.BinaryPredicate;
-import edu.thu.ss.spec.lang.expression.Expression;
-import edu.thu.ss.spec.lang.expression.Function;
-import edu.thu.ss.spec.lang.expression.Term;
-import edu.thu.ss.spec.lang.expression.BinaryPredicate.binaryPredicateTypes;
-import edu.thu.ss.spec.lang.expression.Expression.ExpressionTypes;
-import edu.thu.ss.spec.lang.expression.Term.TermTypes;
-import edu.thu.ss.spec.lang.pojo.Condition;
 import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.Desensitization;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
@@ -46,7 +36,7 @@ public class Z3Util {
 	private static boolean initialized = false;
 
 	private static Map<DataCategory, Integer> refIndex = new HashMap<>();
-	
+
 	private static void init(int size) {
 		try {
 			context = new Context();
@@ -200,7 +190,8 @@ public class Z3Util {
 		}
 		return context.mkOr(exprs);
 	}
-	
+
+	/*
 	public static boolean implies(Condition condition1, Condition condition2) {
 		int dim = condition1.getDataCategories().size();
 		if (dim > BaseRedundancyAnalyzer.Max_Dimension) {
@@ -247,22 +238,23 @@ public class Z3Util {
 
 	}
 	
+	
 	private static BoolExpr buildExpression(Expression<DataCategory> expression, IntExpr[] vars) throws Z3Exception {
 		ExpressionTypes type = expression.getExpressionType();
 		if (Expression.ExpressionTypes.binaryComparison.equals(type)) {
 			return buildExpression((BinaryComparison) expression, vars);
 		}
 		else if (Expression.ExpressionTypes.binaryPredicate.equals(type)) {
-			return buildExpression((BinaryPredicate) expression, vars);
+			return buildExpression((Predicate) expression, vars);
 		}
 		return null;
 	}
 	
-	private static BoolExpr buildExpression(BinaryPredicate expression, IntExpr[] vars) throws Z3Exception {
+	private static BoolExpr buildExpression(Predicate expression, IntExpr[] vars) throws Z3Exception {
 		List<Expression<DataCategory>> expressions = expression.getExpressionList();
 		binaryPredicateTypes type = expression.getPredicateType();
 		
-		if (BinaryPredicate.binaryPredicateTypes.not.equals(type)) {
+		if (Predicate.binaryPredicateTypes.not.equals(type)) {
 			return context.mkNot(buildExpression(expressions.get(0), vars));
 		}
 		
@@ -270,10 +262,10 @@ public class Z3Util {
 		for (Expression<DataCategory> expr : expressions) {
 			exprs.add(buildExpression(expr, vars));
 		}
-		if (BinaryPredicate.binaryPredicateTypes.and.equals(type)) {
+		if (Predicate.binaryPredicateTypes.and.equals(type)) {
 			return context.mkAnd(exprs.toArray(new BoolExpr[exprs.size()]));
 		}
-		else if (BinaryPredicate.binaryPredicateTypes.or.equals(type)) {
+		else if (Predicate.binaryPredicateTypes.or.equals(type)) {
 			return context.mkOr(exprs.toArray(new BoolExpr[exprs.size()]));
 		}
 		return null;
@@ -361,4 +353,5 @@ public class Z3Util {
 		}
 		return expr;
 	}
+	*/
 }
