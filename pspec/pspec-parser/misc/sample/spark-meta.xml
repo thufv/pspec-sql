@@ -180,6 +180,7 @@
 				<column name="i_manufact" data-category="item"></column>
 				<column name="i_product_name" data-category="item"></column>
 			</condition>
+			
 		</table>
 
 	</database>

@@ -1,36 +1,6 @@
 package edu.thu.ss.editor.view;
 
-import static edu.thu.ss.editor.util.MessagesUtil.Basic_Info;
-import static edu.thu.ss.editor.util.MessagesUtil.Connect;
-import static edu.thu.ss.editor.util.MessagesUtil.Connection;
-import static edu.thu.ss.editor.util.MessagesUtil.Extraction;
-import static edu.thu.ss.editor.util.MessagesUtil.Label;
-import static edu.thu.ss.editor.util.MessagesUtil.Location;
-import static edu.thu.ss.editor.util.MessagesUtil.MetaData_Extraction_Unique_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Add_Label;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Column;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Connect_Success_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Database;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Delete_Label;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Extraction_Not_Empty_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Host;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Host_Not_Empty_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_ID;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_ID_Not_Empty_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Info;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Label_Not_Empty_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Password;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Policy_Not_Empty_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Port;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Port_Not_Empty_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Table;
-import static edu.thu.ss.editor.util.MessagesUtil.Metadata_Username;
-import static edu.thu.ss.editor.util.MessagesUtil.Open;
-import static edu.thu.ss.editor.util.MessagesUtil.Policy_Invalid_Document_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Policy_Location;
-import static edu.thu.ss.editor.util.MessagesUtil.Policy_Parse_Error_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.Policy_Vocabulary_Contains_Error_Message;
-import static edu.thu.ss.editor.util.MessagesUtil.getMessage;
+import static edu.thu.ss.editor.util.MessagesUtil.*;
 
 import java.util.ArrayList;
 import java.util.List;

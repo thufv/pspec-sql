@@ -10,13 +10,13 @@
 			<country>China</country>
 		</issuer>
 	</vocabulary-information>
-	<user-category-container id="default-users">
+	<user-category-container>
 		<user-category id="employee" />
 		<user-category id="manager" parent="employee" />
 		<user-category id="ceo" parent="manager" />
 	</user-category-container>
 
-	<data-category-container id="default-data">
+	<data-category-container>
 
 	</data-category-container>
 </vocabulary>

@@ -13,7 +13,7 @@
 		</issuer>
 	</vocabulary-information>
 
-	<data-category-container id="store-data">
+	<data-category-container>
 		<data-category id="email" parent="id"></data-category>
 		<data-category id="loginid" parent="id"></data-category>
 

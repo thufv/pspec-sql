@@ -11,7 +11,7 @@
 		</issuer>
 	</vocabulary-information>
 
-	<user-category-container id="example-user">
+	<user-category-container>
 		<user-category id="Employee" />
 		<user-category id="Report Analyst" parent="Employee" />
 		<user-category id="Marketing Analyst" parent="Employee" />
@@ -19,7 +19,7 @@
 	</user-category-container>
 
 
-	<data-category-container id="example-data">
+	<data-category-container>
 		<data-category id="All">
 			<desensitize-operations>
 				<operation>count</operation>

@@ -33,7 +33,6 @@ import edu.thu.ss.editor.model.OutputEntry.MessageType;
 import edu.thu.ss.editor.model.OutputEntry.OutputType;
 import edu.thu.ss.editor.model.VocabularyModel;
 import edu.thu.ss.editor.util.EditorUtil;
-import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
 import edu.thu.ss.spec.lang.pojo.UserContainer;
 import edu.thu.ss.spec.util.PSpecUtil;
@@ -42,7 +41,6 @@ public class UserContainerView extends EditorView<VocabularyModel, UserCategory>
 
 	private TreeViewer userViewer;
 
-	private Text containerId;
 	private Text shortDescription;
 	private Text longDescription;
 
@@ -122,23 +120,6 @@ public class UserContainerView extends EditorView<VocabularyModel, UserCategory>
 
 	private void initializeInfo(Composite parent) {
 		parent.setLayout(new GridLayout(2, false));
-		EditorUtil.newLabel(parent, getMessage(User_Container_ID), EditorUtil.labelData());
-		containerId = EditorUtil.newText(parent, EditorUtil.textData());
-		containerId.setText(userContainer.getId());
-		containerId.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusLost(FocusEvent e) {
-				String text = containerId.getText().trim();
-				if (text.isEmpty()) {
-					EditorUtil.showMessage(shell, getMessage(User_Container_ID_Not_Empty_Message),
-							containerId);
-					containerId.setText(userContainer.getId());
-					containerId.selectAll();
-					return;
-				}
-				userContainer.setId(containerId.getText().trim());
-			}
-		});
 
 		EditorUtil.newLabel(parent, getMessage(Short_Description), EditorUtil.labelData());
 		shortDescription = EditorUtil.newText(parent, EditorUtil.textData());

@@ -20,7 +20,7 @@ public abstract class Function extends Expression<DataCategory> {
 	public Expression<DataCategory> getRightExpression() {
 		return right;
 	}
-	
+
 	public static Function parseFunction(Node fNode) {
 		String symbol = XMLUtil.getAttrValue(fNode, ParserConstant.Attr_Function_Name);
 		switch (symbol) {

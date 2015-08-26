@@ -12,13 +12,13 @@
 		</issuer>
 	</vocabulary-information>
 
-	<user-category-container id="social-users">
+	<user-category-container>
 		<user-category id="student" parent="employee" />
 		<user-category id="teacher" parent="employee" />
 	</user-category-container>
 
 
-	<data-category-container id="social-data">
+	<data-category-container>
 		<data-category id="all">
 			<desensitize-operations>
 				<operation>op1</operation>

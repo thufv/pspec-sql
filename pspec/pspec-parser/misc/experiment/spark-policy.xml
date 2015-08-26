@@ -18,7 +18,11 @@
 	<rules>
 		<rule id="rule123">
 			<user-category-ref refid="analyst"></user-category-ref>
-			<data-category-ref refid="ka" action="all"></data-category-ref>
+			<data-category-ref refid="ka" action="all">
+				<exclude>
+					<data-category-ref refid="sk"></data-category-ref>
+				</exclude>
+			</data-category-ref>
 			<data-category-ref refid="name" action="projection"></data-category-ref>
 			<data-category-ref refid="street" action="projection"></data-category-ref>
 			<restriction>
@@ -72,8 +76,6 @@
 				<forbid></forbid>
 			</restriction>
 		</rule>
-
-
 
 		<rule id="rule9">
 			<user-category-ref refid="analyst"></user-category-ref>

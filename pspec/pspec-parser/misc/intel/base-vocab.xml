@@ -11,11 +11,11 @@
 			<country>China</country>
 		</issuer>
 	</vocabulary-information>
-	<user-category-container id="default-user">
+	<user-category-container>
 		<user-category id="app" />
 	</user-category-container>
 
-	<data-category-container id="default-data">
+	<data-category-container>
 		<data-category id="ka"></data-category>
 		<data-category id="qi"></data-category>
 		<data-category id="sa"></data-category>

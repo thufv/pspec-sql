@@ -124,7 +124,7 @@
 								<value>male</value>
 							</term>
 						</comparison>
-					</or>	
+					</or>
 					<not>
 						<comparison>
 							<operator>eq</operator>
@@ -144,6 +144,6 @@
 				</and>
 			</filter>
 		</rule>
-		
+
 	</rules>
 </privacy-policy>

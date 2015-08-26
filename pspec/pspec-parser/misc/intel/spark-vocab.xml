@@ -13,7 +13,7 @@
 		</issuer>
 	</vocabulary-information>
 
-	<data-category-container id="tpcds-data">
+	<data-category-container>
 		<data-category id="email" parent="ka"></data-category>
 		<data-category id="login" parent="ka"></data-category>
 

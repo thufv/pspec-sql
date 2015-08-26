@@ -40,7 +40,6 @@ public class PolicyParserTest {
 		}
 	}
 
-	@Test
 	public void testRedundancy() {
 		try {
 			PolicyParser parser = new PolicyParser();
@@ -61,10 +60,11 @@ public class PolicyParserTest {
 		}
 	}
 
+	@Test
 	public void testIntel() {
 		try {
 			PolicyParser parser = new PolicyParser();
-			Policy policy = parser.parse("intel/spark-policy.xml");
+			Policy policy = parser.parse("misc/intel/spark-policy.xml");
 			System.out.println(policy);
 		} catch (Exception e) {
 			e.printStackTrace();

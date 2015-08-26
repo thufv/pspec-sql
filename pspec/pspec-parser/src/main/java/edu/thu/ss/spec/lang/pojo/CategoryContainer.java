@@ -18,6 +18,8 @@ import org.w3c.dom.Node;
  */
 public abstract class CategoryContainer<T extends Category<T>> extends DescribedObject {
 
+	protected static int nextId = 0;
+
 	/**
 	 * container id for base container
 	 */
@@ -33,6 +35,10 @@ public abstract class CategoryContainer<T extends Category<T>> extends Described
 	protected boolean resolved = false;
 
 	protected boolean leaf = true;
+
+	public CategoryContainer() {
+		this.id = String.valueOf(nextId++);
+	}
 
 	public void add(T t) {
 		categories.put(t.id, t);
@@ -174,7 +180,9 @@ public abstract class CategoryContainer<T extends Category<T>> extends Described
 
 	@Override
 	public void parse(Node categoryNode) {
+		String oldId = id;
 		super.parse(categoryNode);
+		this.id = oldId;
 	}
 
 	public void remove(T t) {

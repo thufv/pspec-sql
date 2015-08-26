@@ -61,7 +61,6 @@ public class DataContainerView extends EditorView<VocabularyModel, DataCategory>
 
 	private TreeViewer dataViewer;
 
-	private Text containerId;
 	private Text shortDescription;
 	private Text longDescription;
 
@@ -120,25 +119,6 @@ public class DataContainerView extends EditorView<VocabularyModel, DataCategory>
 
 	private void initializeInfo(Composite parent) {
 		parent.setLayout(new GridLayout(2, false));
-		EditorUtil.newLabel(parent, getMessage(Data_Container_ID), EditorUtil.labelData());
-		containerId = EditorUtil.newText(parent, EditorUtil.textData());
-		containerId.setText(dataContainer.getId());
-
-		containerId.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusLost(FocusEvent e) {
-				String text = containerId.getText().trim();
-				if (text.isEmpty()) {
-					EditorUtil.showMessage(shell, getMessage(Data_Container_ID_Not_Empty_Message),
-							containerId);
-					containerId.setText(dataContainer.getId());
-					containerId.selectAll();
-					return;
-				}
-				dataContainer.setId(containerId.getText().trim());
-
-			}
-		});
 
 		EditorUtil.newLabel(parent, getMessage(Short_Description), EditorUtil.labelData());
 		shortDescription = EditorUtil.newText(parent, EditorUtil.textData());
