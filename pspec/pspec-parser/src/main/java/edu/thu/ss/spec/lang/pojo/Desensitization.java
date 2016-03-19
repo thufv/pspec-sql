@@ -23,11 +23,6 @@ public class Desensitization implements Writable {
 	protected DataRef dataRef;
 
 	/**
-	 * materialized data categories referred in {@link #dataRef}
-	 */
-	protected Set<DataCategory> datas;
-
-	/**
 	 * required {@link DesensitizeOperation}s must be supported by all {@link DataCategory} in {@link #datas} 
 	 */
 	protected Set<DesensitizeOperation> operations = new LinkedHashSet<>();
@@ -48,9 +43,6 @@ public class Desensitization implements Writable {
 		Desensitization de = new Desensitization();
 		de.dataRefId = dataRefId;
 		de.dataRef = dataRef;
-		if (this.datas != null) {
-			de.datas = new HashSet<>(this.datas);
-		}
 		de.operations = new LinkedHashSet<>(this.operations);
 		return de;
 	}
@@ -105,19 +97,6 @@ public class Desensitization implements Writable {
 
 	public Set<DesensitizeOperation> getOperations() {
 		return operations;
-	}
-
-	public Set<DataCategory> getDatas() {
-		return datas;
-	}
-
-	public void materialize() {
-		this.datas = new HashSet<>();
-		this.datas.addAll(dataRef.getMaterialized());
-	}
-
-	public void materialize(Set<DataCategory> datas) {
-		this.datas = datas;
 	}
 
 	@Override

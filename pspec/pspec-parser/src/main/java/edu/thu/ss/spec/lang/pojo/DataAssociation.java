@@ -10,6 +10,7 @@ import org.w3c.dom.NodeList;
 
 import edu.thu.ss.spec.lang.parser.ParserConstant;
 import edu.thu.ss.spec.util.PSpecUtil;
+import edu.thu.ss.spec.util.Profiling;
 
 /**
  * class for data association
@@ -19,6 +20,11 @@ import edu.thu.ss.spec.util.PSpecUtil;
 public class DataAssociation implements Parsable, Writable {
 
 	protected List<DataRef> dataRefs = new ArrayList<>();
+
+	protected AssociatedDataAccess[] adas = null;
+
+	//only used for building adas
+	protected int adasIndex = 0;
 
 	public List<DataRef> getDataRefs() {
 		return dataRefs;
@@ -91,4 +97,44 @@ public class DataAssociation implements Parsable, Writable {
 		}
 		return null;
 	}
+
+	public AssociatedDataAccess[] getAssociatedDataAccesses() {
+		buildAssociatedDataAccesses();
+		return adas;
+	}
+
+	private void buildAssociatedDataAccesses() {
+		//init
+		adasIndex = 0;
+
+		int totalNum = 1;
+		for (DataRef ref : dataRefs) {
+			totalNum = totalNum * ref.daNum();
+		}
+		adas = new AssociatedDataAccess[totalNum];
+
+		buildAssociatedDataAccesses(new DataAccess[dataRefs.size()], 0);
+
+	}
+
+	private void buildAssociatedDataAccesses(DataAccess[] tmpAdas, int refIndex) {
+		if (refIndex == dataRefs.size()) {
+			DataAccess[] array = new DataAccess[tmpAdas.length];
+			System.arraycopy(tmpAdas, 0, array, 0, tmpAdas.length);
+			adas[adasIndex++] = new AssociatedDataAccess(array);
+		} else {
+			DataRef ref = dataRefs.get(refIndex);
+			for (DataCategory data : ref.materialized) {
+				if (ref.action.ancestorOf(Action.Output)) {
+					tmpAdas[refIndex] = new DataAccess(Action.Output, data);
+					buildAssociatedDataAccesses(tmpAdas, refIndex + 1);
+				}
+				if (ref.action.ancestorOf(Action.Condition)) {
+					tmpAdas[refIndex] = new DataAccess(Action.Condition, data);
+					buildAssociatedDataAccesses(tmpAdas, refIndex + 1);
+				}
+			}
+		}
+	}
+
 }

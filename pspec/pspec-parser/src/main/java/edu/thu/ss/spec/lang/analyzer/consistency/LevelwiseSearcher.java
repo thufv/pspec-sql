@@ -7,6 +7,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.microsoft.z3.Z3Exception;
+
 /**
  * an algorithm framework for level-wise search, providing basic level generation functionanlity.
  * 
@@ -139,22 +141,26 @@ public abstract class LevelwiseSearcher {
 	 * 
 	 * @param key a combination of rules
 	 * @return  whether key should be kept.
+	 * @throws Z3Exception 
 	 */
-	protected abstract boolean process(SearchKey key);
+	protected abstract boolean process(SearchKey key) throws Z3Exception;
 
 	/**
 	 * initialize first level
 	 * @param currentLevel
 	 */
-	protected abstract void initLevel(Set<SearchKey> currentLevel);
+	protected abstract void initLevel(Set<SearchKey> currentLevel) throws Exception;
 
 	public int conflicts = 0;
-	
-	public void search() {
-		int level = 1;
+
+	public int level = 1;
+
+	public void search() throws Exception {
+		level = 1;
 		Set<SearchKey> currentLevel = new LinkedHashSet<>();
 		initLevel(currentLevel);
-		logger.warn("Finish generating level 1 with {} elements.", currentLevel.size());
+
+		//		logger.warn("Finish generating level 1 with {} elements.", currentLevel.size());
 
 		while (currentLevel.size() > 0 && level < maxLevel) {
 			beginLevel(level + 1);
@@ -164,7 +170,7 @@ public abstract class LevelwiseSearcher {
 			currentLevel = nextLevel;
 			endLevel(level);
 
-			logger.warn("Finish generating level {} with {} elements.", level, currentLevel.size());
+			// 	logger.warn("Finish generating level {} with {} elements.", level, currentLevel.size());
 		}
 	}
 
@@ -172,8 +178,10 @@ public abstract class LevelwiseSearcher {
 	 * generate next level
 	 * @param currentLevel
 	 * @param nextLevel
+	 * @throws Z3Exception 
 	 */
-	private void generateNextLevel(Set<SearchKey> currentLevel, Set<SearchKey> nextLevel) {
+	private void generateNextLevel(Set<SearchKey> currentLevel, Set<SearchKey> nextLevel)
+			throws Z3Exception {
 		int size = currentLevel.size();
 		keys = currentLevel.toArray(keys);
 

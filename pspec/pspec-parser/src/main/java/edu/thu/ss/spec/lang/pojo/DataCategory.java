@@ -58,7 +58,7 @@ public class DataCategory extends Category<DataCategory> {
 			}
 		}
 	}
-	
+
 	private void getAllOperations(Set<DesensitizeOperation> set) {
 		if (parent != null) {
 			parent.getAllOperations(set);

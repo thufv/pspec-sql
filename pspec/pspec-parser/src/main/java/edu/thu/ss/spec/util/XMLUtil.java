@@ -52,7 +52,7 @@ public class XMLUtil {
 		File file = new File(path);
 		if (!file.exists()) {
 			File parent = file.getParentFile();
-			if (!parent.exists()) {
+			if (parent != null && !parent.exists()) {
 				parent.mkdirs();
 			}
 		}

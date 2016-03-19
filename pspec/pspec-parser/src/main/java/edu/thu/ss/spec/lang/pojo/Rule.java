@@ -1,7 +1,9 @@
 package edu.thu.ss.spec.lang.pojo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -17,47 +19,35 @@ import edu.thu.ss.spec.lang.parser.ParserConstant;
  */
 public class Rule extends DescribedObject {
 
-	protected List<UserRef> userRefs = new ArrayList<>();
-	protected List<DataRef> dataRefs = new ArrayList<>();
+	protected UserRef userRef = null;
 	protected DataAssociation association = null;
 
 	protected List<Restriction> restrictions = new ArrayList<>();
-	protected Condition condition = null;
 
-	public List<UserRef> getUserRefs() {
-		return userRefs;
+	protected Map<String, Object> storage = new HashMap<>();
+
+	public Object get(String key) {
+		return storage.get(key);
 	}
 
-	public void setUserRefs(List<UserRef> userRefs) {
-		this.userRefs = userRefs;
+	public void put(String key, Object value) {
+		storage.put(key, value);
 	}
 
-	public void setDataRefs(List<DataRef> dataRefs) {
-		this.dataRefs = dataRefs;
+	public int getDimension() {
+		return association.getDimension();
 	}
 
-	public void setAssociation(DataAssociation association) {
-		this.association = association;
+	public UserRef getUserRef() {
+		return userRef;
 	}
 
-	public List<DataRef> getDataRefs() {
-		if (isSingle()) {
-			return dataRefs;
-		} else {
-			return association.dataRefs;
-		}
+	public void setUserRef(UserRef userRef) {
+		this.userRef = userRef;
 	}
 
-	public List<DataRef> getRawDataRefs() {
-		return dataRefs;
-	}
-
-	public boolean isSingle() {
-		return association == null;
-	}
-
-	public boolean isFilter() {
-		return condition != null;
+	public DataAssociation getDataAssociation() {
+		return association;
 	}
 
 	public void setRestrictions(List<Restriction> restrictions) {
@@ -66,10 +56,6 @@ public class Rule extends DescribedObject {
 
 	public List<Restriction> getRestrictions() {
 		return restrictions;
-	}
-
-	public DataAssociation getAssociation() {
-		return association;
 	}
 
 	public Restriction getRestriction() {
@@ -87,13 +73,8 @@ public class Rule extends DescribedObject {
 			Node node = list.item(i);
 			name = node.getLocalName();
 			if (ParserConstant.Ele_Policy_Rule_UserRef.equals(name)) {
-				UserRef obj = new UserRef();
-				obj.parse(node);
-				userRefs.add(obj);
-			} else if (ParserConstant.Ele_Policy_Rule_DataRef.equals(name)) {
-				DataRef obj = new DataRef();
-				obj.parse(node);
-				dataRefs.add(obj);
+				userRef = new UserRef();
+				userRef.parse(node);
 			} else if (ParserConstant.Ele_Policy_Rule_DataAsscoation.equals(name)) {
 				association = new DataAssociation();
 				association.parse(node);
@@ -101,10 +82,6 @@ public class Rule extends DescribedObject {
 				Restriction restriction = new Restriction();
 				restriction.parse(node);
 				this.restrictions.add(restriction);
-			} else if (ParserConstant.Ele_Policy_Rule_Filter.equals(name)) {
-				Condition condition = new Condition();
-				condition.parse(node);
-				this.condition = condition;
 			}
 		}
 	}
@@ -116,31 +93,19 @@ public class Rule extends DescribedObject {
 		sb.append(id);
 		sb.append("\n");
 
-		for (UserRef user : userRefs) {
-			sb.append('\t');
-			sb.append(user);
-			sb.append("\n");
-		}
+		sb.append('\t');
+		sb.append(userRef);
+		sb.append("\n");
 
-		for (DataRef data : dataRefs) {
-			sb.append('\t');
-			sb.append(data);
-			sb.append("\n");
-		}
-		if (association != null) {
-			sb.append('\t');
-			sb.append(association);
-			sb.append("\n");
-		}
+		sb.append('\t');
+		sb.append(association);
+		sb.append("\n");
 
 		for (Restriction res : restrictions) {
 			sb.append('\t');
 			sb.append(res);
 		}
 
-		if (isFilter()) {
-			sb.append(condition);
-		}
 		return sb.toString();
 	}
 
@@ -153,26 +118,32 @@ public class Rule extends DescribedObject {
 		Element element = super.outputType(document, ParserConstant.Ele_Policy_Rule);
 		element.setAttribute(ParserConstant.Attr_Id, id);
 
-		for (UserRef ref : userRefs) {
-			Element refEle = ref.outputElement(document);
-			element.appendChild(refEle);
-		}
+		Element refEle = userRef.outputElement(document);
+		element.appendChild(refEle);
 
-		if (this.isSingle()) {
-			for (DataRef ref : dataRefs) {
-				Element refEle = ref.outputElement(document);
-				element.appendChild(refEle);
-			}
+		Element assocEle = association.outputElement(document);
+		element.appendChild(assocEle);
+
+		if (restrictions.isEmpty()) {
+			Element forbidEle = document.createElement(ParserConstant.Ele_Policy_Rule_Forbid);
+			element.appendChild(forbidEle);
 		} else {
-			Element assocEle = association.outputElement(document);
-			element.appendChild(assocEle);
+			for (Restriction res : restrictions) {
+				Element resEle = res.outputElement(document);
+				element.appendChild(resEle);
+			}
 		}
 
-		for (Restriction res : restrictions) {
-			Element resEle = res.outputElement(document);
-			element.appendChild(resEle);
-		}
 		return element;
 
+	}
+
+	public void setDataAssociation(DataAssociation association) {
+		this.association = association;
+
+	}
+
+	public boolean isForbid() {
+		return restrictions.size() == 0;
 	}
 }

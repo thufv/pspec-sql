@@ -4,209 +4,140 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.thu.ss.spec.lang.analyzer.BasePolicyAnalyzer;
-import edu.thu.ss.spec.lang.analyzer.RuleExpander;
-import edu.thu.ss.spec.lang.analyzer.stat.AnalyzerStat;
+import edu.thu.ss.spec.lang.analyzer.stat.ConsistencyStat;
 import edu.thu.ss.spec.lang.parser.event.EventTable;
-import edu.thu.ss.spec.lang.pojo.Action;
-import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DataRef;
-import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.Policy;
+import edu.thu.ss.spec.lang.pojo.Rule;
+import edu.thu.ss.spec.lang.pojo.UserCategory;
+import edu.thu.ss.spec.util.Conf;
+import edu.thu.ss.spec.util.PSpecUtil;
+import edu.thu.ss.spec.util.PSpecUtil.SetRelation;
 
-public abstract class ConsistencyAnalyzer extends BasePolicyAnalyzer {
-	
-	static public class Leaf {
-		public Action action;
-		public DataCategory category;
+public class ConsistencyAnalyzer extends BasePolicyAnalyzer<ConsistencyStat> {
 
-		public Leaf(DataCategory category, Action action) {
-			this.action = action;
-			this.category = category;
-		}
+	private static Logger logger = LoggerFactory.getLogger(ConsistencyAnalyzer.class);
 
-		public boolean belongTo(ExpandedRule rule) {
-			if (rule.isSingle()) {
-				return belongTo(rule.getDataRef());
-			} else if (rule.isAssociation()) {
-				List<DataRef> dataRefs = rule.getAssociation().getDataRefs();
-				for (DataRef dataRef : dataRefs) {
-					if (belongTo(dataRef)) {
-						return true;
-					}
-				}
-			}
-			return false;
-		}
+	private boolean[] occupied = new boolean[Conf.Max_Dimension];
 
-		public boolean belongTo(DataRef dataRef) {
-			if (!action.ancestorOf(dataRef.getAction()) && !dataRef.getAction().ancestorOf(action)) {
-				return false;
-			}
+	private int[][] matched = new int[Conf.Max_Dimension][Conf.Max_Dimension];
 
-			Set<DataCategory> categories = dataRef.getMaterialized();
-			if (categories.contains(category)) {
-				return true;
-			}
-			return false;
-		}
-		
-		@Override
-		public int hashCode() {
-			if (category == null || action == null)
-				return 0;
-			return (category.toString() + action.toString()).hashCode();
-		}
+	private static final int Unknown = 0;
+	private static final int Match = 1;
+	private static final int Unmatch = 2;
 
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			Leaf other = (Leaf) obj;
-
-			if (this.category != other.category) {
-				return false;
-			}
-
-			if (this.action != other.action) {
-				return false;
-			}
-			return true;
-		}
-
-		@Override
-		public String toString() {
-			return category.getId().toString() + "[" + action.toString() + "]";
-		}
-	}
-
-	static public class LeafAssociation {
-
-		public int length = 0;
-
-		public Leaf[] leafAssociation;
-
-		public LeafAssociation(int dim) {
-			leafAssociation = new Leaf[dim];
-		}
-
-		public void addLeaf(Leaf leaf) {
-			leafAssociation[length++] = leaf;
-		}
-
-		public boolean belongTo(ExpandedRule rule) {
-			if (rule.isSingle()) {
-				DataRef dataRef = rule.getDataRef();
-				for (Leaf leaf : leafAssociation) {
-					if (leaf.belongTo(dataRef)) {
-						return true;
-					}
-				}
-				return false;
-			} else if (rule.isAssociation()) {
-				List<DataRef> dataRefs = rule.getAssociation().getDataRefs();
-				boolean[] matches = new boolean[leafAssociation.length];
-				for (int i = 0; i < matches.length; i++) {
-					matches[i] = false;
-				}
-				for (DataRef dataRef : dataRefs) {
-					boolean match = false;
-					for (int i = 0; i < leafAssociation.length; i++) {
-						Leaf leaf = leafAssociation[i];
-						if (!matches[i] && leaf.belongTo(dataRef)) {
-							matches[i] = true;
-							match = true;
-							break;
-						}
-					}
-					if (!match) {
-						return false;
-					}
-				}
-				return true;
-			}
-			return false;
-		}
-
-		@Override
-		public String toString() {
-			StringBuilder sb = new StringBuilder();
-			sb.append("LeafAssociation:");
-			for (Leaf leaf : leafAssociation) {
-				sb.append(" " + leaf + " ");
-			}
-			return sb.toString();
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			LeafAssociation other = (LeafAssociation) obj;
-
-			if (this.leafAssociation.length != other.leafAssociation.length) {
-				return false;
-			}
-
-			for (int i = 0; i < this.leafAssociation.length; i++) {
-				if (this.leafAssociation[i] != other.leafAssociation[i]) {
-					return false;
-				}
-			}
-			return true;
-		}
-
-		public LeafAssociation clone() {
-			LeafAssociation copy = new LeafAssociation(this.leafAssociation.length);
-			copy.length = this.length;
-			copy.leafAssociation = this.leafAssociation.clone();
-			return copy;
-		}
-	}
-	
 	public ConsistencyAnalyzer(EventTable table) {
 		super(table);
 	}
 
-	public abstract boolean analyze(List<ExpandedRule> rules);
-
 	@Override
-	public boolean analyze(Policy policy) {
-		List<ExpandedRule> rules = policy.getExpandedRules();
-		List<ExpandedRule> restrictionRules = new ArrayList<>();
-		List<ExpandedRule> filterRules = new ArrayList<>();
+	public boolean analyze(Policy policy) throws Exception {
+		List<Rule> rules = policy.getRules();
+		int conflicts = 0;
+		for (Rule seed : rules) {
+			if (!seed.getRestrictions().isEmpty()) {
+				//non-forbidden rule
+				List<Rule> candidates = getCandidateRules(seed, rules);
+				logger.error("Find {} candidates for seed: {}.", candidates.size(), seed.getId());
 
-		if (rules == null) {
-			RuleExpander expander = new RuleExpander(null);
-			expander.analyze(policy);
-			rules = policy.getExpandedRules();
-		}
-		
-		for (ExpandedRule rule : rules) {
-			if (rule.isFilter()) {
-				filterRules.add(rule);
-			} else if (!rule.getRestriction().isForbid()) {
-				restrictionRules.add(rule);
+				ConsistencySearcher searcher = new ConsistencySearcher(seed, candidates);
+				searcher.search();
+				conflicts += searcher.conflicts;
+				if (stat != null) {
+					stat.count++;
+					stat.levels += searcher.level;
+					stat.candidates += candidates.size();
+				}
+				if (searcher.conflicts != 0) {
+					logger.error("Find {} conflicts for seed: {}.", searcher.conflicts, seed.getId());
+				}
 			}
 		}
-
-		analyze(restrictionRules);
-		//analyze(filterRules);
+		logger.error("Find {} conflicts.", conflicts);
+		if (stat != null) {
+			stat.conflicts = conflicts;
+		}
 		return false;
 	}
-	
 
-	
-	@Override
-	public boolean analyze(Policy policy, AnalyzerStat stat, int n) {
-		return analyze(policy);
+	private List<Rule> getCandidateRules(Rule seed, List<Rule> rules) {
+		List<Rule> candidates = new ArrayList<>();
+		for (Rule rule : rules) {
+			if (rule == seed) {
+				continue;
+			}
+			if (isCandidate(seed, rule)) {
+				candidates.add(rule);
+			}
+		}
+		return candidates;
 	}
+
+	private boolean isCandidate(Rule seed, Rule rule) {
+		if (seed.getDimension() < rule.getDimension()) {
+			return false;
+		}
+
+		Set<UserCategory> seedUsers = seed.getUserRef().getMaterialized();
+		Set<UserCategory> ruleUsers = rule.getUserRef().getMaterialized();
+		if (PSpecUtil.relation(seedUsers, ruleUsers).equals(SetRelation.disjoint)) {
+			return false;
+		}
+		List<DataRef> seedRefs = seed.getDataAssociation().getDataRefs();
+		List<DataRef> ruleRefs = rule.getDataAssociation().getDataRefs();
+
+		int ruleLength = ruleRefs.size();
+		int seedLength = seedRefs.size();
+		for (int i = 0; i < ruleLength; i++) {
+			for (int j = 0; j < seedLength; j++) {
+				matched[i][j] = Unknown;
+			}
+			occupied[i] = false;
+		}
+
+		return checkCandidateData(0, ruleRefs, seedRefs);
+
+	}
+
+	private boolean checkCandidateData(int index, List<DataRef> ruleRefs, List<DataRef> seedRefs) {
+		if (index == ruleRefs.size()) {
+			return true;
+		}
+		DataRef ruleRef = ruleRefs.get(index);
+
+		int seedLength = seedRefs.size();
+		for (int i = 0; i < seedLength; i++) {
+			if (occupied[i]) {
+				continue;
+			}
+			if (matched[index][i] == Unknown) {
+				DataRef seedRef = seedRefs.get(i);
+				if (ruleRef.getAction().ancestorOf(seedRef.getAction())
+						|| seedRef.getAction().ancestorOf(ruleRef.getAction())) {
+					if (!PSpecUtil.relation(seedRef.getMaterialized(), ruleRef.getMaterialized())
+							.equals(SetRelation.disjoint)) {
+						matched[index][i] = Match;
+					} else {
+						matched[index][i] = Unmatch;
+					}
+				} else {
+					matched[index][i] = Unmatch;
+				}
+			}
+			if (matched[index][i] == Match) {
+				occupied[i] = true;
+				if (checkCandidateData(index + 1, ruleRefs, seedRefs)) {
+					return true;
+				} else {
+					occupied[i] = false;
+				}
+			}
+		}
+		return false;
+	}
+
 }

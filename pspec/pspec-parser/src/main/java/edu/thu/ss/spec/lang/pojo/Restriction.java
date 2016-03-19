@@ -21,22 +21,9 @@ import edu.thu.ss.spec.util.XMLUtil;
  */
 public class Restriction implements Parsable, Writable {
 
-	/**
-	 * used by first parsing
-	 */
 	private List<Desensitization> desensitizationList = new ArrayList<>();
 
-	private boolean forbid = false;
-
 	public Restriction() {
-	}
-
-	public void setForbid(boolean forbid) {
-		this.forbid = forbid;
-	}
-
-	public boolean isForbid() {
-		return forbid;
 	}
 
 	public List<Desensitization> getDesensitizations() {
@@ -63,7 +50,6 @@ public class Restriction implements Parsable, Writable {
 	@Override
 	public Restriction clone() {
 		Restriction res = new Restriction();
-		res.forbid = this.forbid;
 		for (Desensitization de : desensitizationList) {
 			res.desensitizationList.add(de.clone());
 		}
@@ -79,8 +65,6 @@ public class Restriction implements Parsable, Writable {
 			String name = node.getLocalName();
 			if (ParserConstant.Ele_Policy_Rule_Desensitize.equals(name)) {
 				parseDesensitization(node);
-			} else if (ParserConstant.Ele_Policy_Rule_Forbid.equals(name)) {
-				forbid = true;
 			}
 		}
 	}
@@ -118,14 +102,9 @@ public class Restriction implements Parsable, Writable {
 	public Element outputElement(Document document) {
 		Element element = document.createElement(ParserConstant.Ele_Policy_Rule_Restriction);
 
-		if (this.forbid) {
-			Element forbidEle = document.createElement(ParserConstant.Ele_Policy_Rule_Forbid);
-			element.appendChild(forbidEle);
-		} else {
-			for (Desensitization de : desensitizationList) {
-				if (de.effective()) {
-					element.appendChild(de.outputElement(document));
-				}
+		for (Desensitization de : desensitizationList) {
+			if (de.effective()) {
+				element.appendChild(de.outputElement(document));
 			}
 		}
 		return element;
@@ -140,14 +119,10 @@ public class Restriction implements Parsable, Writable {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Restriction: ");
-		if (forbid) {
-			sb.append("forbid");
-		} else {
-			for (Desensitization de : desensitizationList) {
-				sb.append("{");
-				sb.append(de);
-				sb.append("} ");
-			}
+		for (Desensitization de : desensitizationList) {
+			sb.append("{");
+			sb.append(de);
+			sb.append("} ");
 		}
 		return sb.toString();
 	}

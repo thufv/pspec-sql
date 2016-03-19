@@ -34,7 +34,7 @@
 		<value>root</value>
 		<description>password to use against metastore database</description>
 	</property>
-
+ 
 	<property>
 		<name>hive.log4j.file</name>
 		<value>spark-log4j.properties</value>

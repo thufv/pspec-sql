@@ -2,14 +2,15 @@ package edu.thu.ss.spec.lang.analyzer.stat;
 
 public class ConsistencyStat extends AnalyzerStat {
 
-	public int levels[];
+	public int count;
 
-	public int conflicts[];
+	public int levels;
 
-	public ConsistencyStat(int n) {
-		super(n);
-		this.levels = new int[n];
-		this.conflicts = new int[n];
+	public int conflicts;
+
+	public int candidates;
+
+	public ConsistencyStat() {
 	}
 
 	@Override
@@ -17,25 +18,20 @@ public class ConsistencyStat extends AnalyzerStat {
 		StringBuffer sb = new StringBuffer();
 		sb.append(super.toString());
 
-		sb.append("\nLevel: ");
-		int totalLevel = 0;
-		for (int l : levels) {
-			sb.append(l);
-			sb.append('\t');
-			totalLevel += l;
-		}
-		sb.append("\nTotal Level: ");
-		sb.append(totalLevel / levels.length);
+		sb.append("\nLevels: ");
+		sb.append(levels);
+		sb.append("\nAverage Levels:");
+		sb.append((double) levels / count);
+
+		sb.append("\nCandidates: ");
+		sb.append(candidates);
+		sb.append("\nAverage Candidates:");
+		sb.append((double) candidates / count);
 
 		sb.append("\nConflicts: ");
-		int totalConflicts = 0;
-		for (int c : conflicts) {
-			sb.append(c);
-			sb.append('\t');
-			totalConflicts += c;
-		}
-		sb.append("\nTotal Conflicts: ");
-		sb.append(totalConflicts / conflicts.length);
+		sb.append(conflicts);
+		sb.append("\nAverage Conflicts:");
+		sb.append((double) conflicts / count);
 
 		return sb.toString();
 

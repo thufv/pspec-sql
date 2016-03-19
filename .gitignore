@@ -3,7 +3,8 @@ bin/
 lib_managed/
 dist/
 src_managed/
-
+workspace/
+metastore_db/
 
 scalastyle-output.xml
 *.class
@@ -13,5 +14,7 @@ scalastyle-output.xml
 *.cache
 hs_err_pid*
 
+
+.log
 .classpath
 .project

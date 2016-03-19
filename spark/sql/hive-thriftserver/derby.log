@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Tue Nov 17 15:10:11 CST 2015:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.1.1 - (1458268): instance a816c00e-0151-1447-882c-00000db67510 
+on database directory /Users/luochen/Documents/Research/privacy/spark/sql/hive-thriftserver/metastore_db with class loader sun.misc.Launcher$AppClassLoader@28c5119e 
+Loaded from file:/Users/luochen/Documents/Research/privacy/spark/lib_managed/jars/derby-10.10.1.1.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.7.0_80-b15
+user.dir=/Users/luochen/Documents/Research/privacy/spark/sql/hive-thriftserver
+os.name=Mac OS X
+os.arch=x86_64
+os.version=10.11.1
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''

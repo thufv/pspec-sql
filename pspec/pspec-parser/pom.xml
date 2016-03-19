@@ -38,7 +38,7 @@
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 		</dependency>
-    
+
 		<dependency>
 			<groupId>com.microsoft</groupId>
 			<artifactId>z3</artifactId>
@@ -46,11 +46,6 @@
 			<scope>system</scope>
 			<systemPath>${root.basedir}/lib/com.microsoft.z3.jar</systemPath>
 		</dependency>
-		
-		  <dependency>
-        <groupId>org.jgrapht</groupId>
-        <artifactId>jgrapht-core</artifactId>
-      </dependency>
 	</dependencies>
 
 	<build>

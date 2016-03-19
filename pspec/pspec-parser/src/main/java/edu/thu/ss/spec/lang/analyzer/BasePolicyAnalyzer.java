@@ -10,12 +10,13 @@ import edu.thu.ss.spec.lang.pojo.Policy;
  * @author luochen
  * 
  */
-public abstract class BasePolicyAnalyzer implements IPolicyAnalyzer {
+public abstract class BasePolicyAnalyzer<T extends AnalyzerStat> implements IPolicyAnalyzer<T> {
 
 	protected EventTable table;
+	protected T stat;
 
 	public BasePolicyAnalyzer() {
-		this.table = EventTable.getDummy();
+		this(EventTable.getDummy());
 	}
 
 	public BasePolicyAnalyzer(EventTable table) {
@@ -23,8 +24,9 @@ public abstract class BasePolicyAnalyzer implements IPolicyAnalyzer {
 	}
 
 	@Override
-	public boolean analyze(Policy policy, AnalyzerStat stat, int n) {
-		return analyze(policy, null, 0);
+	public boolean analyze(Policy policy, T stat) throws Exception {
+		this.stat = stat;
+		return analyze(policy);
 	}
 
 	@Override

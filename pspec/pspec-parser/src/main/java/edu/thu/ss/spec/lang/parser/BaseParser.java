@@ -10,8 +10,6 @@ public abstract class BaseParser {
 
 	protected boolean forceRegister = false;
 
-	protected boolean global = false;
-
 	protected EventTable table = EventTable.getDummy();
 
 	protected URI uri;
@@ -22,10 +20,6 @@ public abstract class BaseParser {
 
 	public void setForceRegister(boolean forceRegister) {
 		this.forceRegister = forceRegister;
-	}
-
-	public void setGlobal(boolean global) {
-		this.global = global;
 	}
 
 	public void setEventTable(EventTable table) {

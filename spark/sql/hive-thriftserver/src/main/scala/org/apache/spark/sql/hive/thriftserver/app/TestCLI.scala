@@ -8,7 +8,8 @@ import scala.math.BigDecimal
  */
 object TestCLI extends App {
   System.setProperty("spark.privacy.refine", "false");
-  System.setProperty("spark.privacy.tracking.index", "true");
+    System.setProperty("spark.privacy.tracking", "false");
+  System.setProperty("spark.privacy.tracking.index", "false");
   System.setProperty("spark.master", "local");
   SparkSQLCLIDriver.main(args);
 }

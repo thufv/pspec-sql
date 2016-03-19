@@ -14,21 +14,21 @@
 
 	<vocabulary-ref location="src/test/res/example-vocabulary.xml" />
 	<rules>
-		<!--<rule id="forbid"> <user-category-ref refid="employee"/> <user-category-ref 
-			refid="ceo"/> <data-category-ref refid="pii" action="all"/> <restriction> 
-			<forbid/> </restriction> </rule>! -->
 		<rule id="rule1">
 			<user-category-ref refid="employee"></user-category-ref>
-			<data-category-ref refid="pii" action="projection"></data-category-ref>
-			<restriction>
-				<forbid></forbid>
-			</restriction>
+			<data-association>
+				<data-category-ref refid="pii" action="output"></data-category-ref>
+			</data-association>
+			<forbid></forbid>
 		</rule>
 		<rule id="rule2">
 			<user-category-ref refid="employee"></user-category-ref>
-			<data-category-ref refid="ssn"></data-category-ref>
+			<data-association>
+				<data-category-ref refid="ssn"></data-category-ref>
+			</data-association>
 			<restriction>
 				<desensitize>
+					<data-category-ref refid="ssn"></data-category-ref>
 					<operation>op1</operation>
 					<operation>op2</operation>
 				</desensitize>

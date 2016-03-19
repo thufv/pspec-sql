@@ -12,7 +12,6 @@ import org.w3c.dom.NodeList;
 
 import edu.thu.ss.spec.lang.analyzer.VocabularyAnalyzer;
 import edu.thu.ss.spec.lang.parser.event.PSpecListener.VocabularyErrorType;
-import edu.thu.ss.spec.lang.pojo.DataCategory;
 import edu.thu.ss.spec.lang.pojo.DataContainer;
 import edu.thu.ss.spec.lang.pojo.Info;
 import edu.thu.ss.spec.lang.pojo.UserContainer;

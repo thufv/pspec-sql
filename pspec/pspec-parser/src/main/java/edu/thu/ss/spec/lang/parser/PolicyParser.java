@@ -11,13 +11,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.thu.ss.spec.lang.analyzer.IPolicyAnalyzer;
-import edu.thu.ss.spec.lang.analyzer.RuleExpander;
-import edu.thu.ss.spec.lang.analyzer.budget.BudgetResolver;
-import edu.thu.ss.spec.lang.analyzer.budget.FineBudgetAllocator;
-import edu.thu.ss.spec.lang.analyzer.budget.GlobalBudgetAllocator;
 import edu.thu.ss.spec.lang.analyzer.rule.RuleResolver;
+import edu.thu.ss.spec.lang.analyzer.stat.AnalyzerStat;
 import edu.thu.ss.spec.lang.pojo.Policy;
-import edu.thu.ss.spec.lang.pojo.PrivacyParams;
 import edu.thu.ss.spec.lang.pojo.Rule;
 import edu.thu.ss.spec.lang.pojo.Vocabulary;
 import edu.thu.ss.spec.manager.PolicyManager;
@@ -37,15 +33,11 @@ public class PolicyParser extends BaseParser implements ParserConstant {
 	/**
 	 * a list of {@link IPolicyAnalyzer}, executed sequentially
 	 */
-	private List<IPolicyAnalyzer> analyzers;
+	private List<IPolicyAnalyzer<? extends AnalyzerStat>> analyzers = new ArrayList<>();
 
-	protected void init(boolean global) {
-		analyzers = new ArrayList<>();
+	public PolicyParser() {
 		analyzers.add(new RuleResolver(table));
-		analyzers.add(new BudgetResolver(table));
-		analyzers.add(new GlobalBudgetAllocator());
-		analyzers.add(new FineBudgetAllocator());
-		analyzers.add(new RuleExpander(table));
+
 	}
 
 	/**
@@ -56,13 +48,13 @@ public class PolicyParser extends BaseParser implements ParserConstant {
 	 * @throws Exception
 	 */
 	public Policy parse(String path) throws InvalidPolicyException, InvalidVocabularyException {
+
 		uri = XMLUtil.toUri(path);
 		policy = PolicyManager.getPolicy(uri);
 		if (policy != null) {
 			logger.error("Policy: {} has already been parsed.", uri);
 			return policy;
 		}
-		init(global);
 		policy = new Policy();
 		policy.setPath(uri);
 		Document policyDoc = null;
@@ -88,8 +80,6 @@ public class PolicyParser extends BaseParser implements ParserConstant {
 			} else if (Ele_Policy_Vocabulary_Ref.equals(name)) {
 				//parse referred vocabulary first
 				parseVocabularyRef(node, policy, forceRegister);
-			} else if (Ele_Policy_Privacy_Params.equals(name)) {
-				parsePrivacyBudget(node, policy);
 			} else if (Ele_Policy_Rules.equals(name)) {
 				parseRules(node, policy);
 			}
@@ -104,7 +94,7 @@ public class PolicyParser extends BaseParser implements ParserConstant {
 		return policy;
 	}
 
-	public void addAnalyzer(IPolicyAnalyzer analyzer) {
+	public void addAnalyzer(IPolicyAnalyzer<? extends AnalyzerStat> analyzer) {
 		analyzers.add(analyzer);
 	}
 
@@ -128,12 +118,6 @@ public class PolicyParser extends BaseParser implements ParserConstant {
 
 	}
 
-	private void parsePrivacyBudget(Node budgetNode, Policy policy) {
-		PrivacyParams budget = new PrivacyParams();
-		budget.parse(budgetNode);
-		policy.setPrivacyBudget(budget);
-	}
-
 	private void parseRules(Node rulesNode, Policy policy) {
 		List<Rule> rules = policy.getRules();
 		NodeList list = rulesNode.getChildNodes();
@@ -151,13 +135,19 @@ public class PolicyParser extends BaseParser implements ParserConstant {
 
 	private boolean analyzePolicy(Policy policy) {
 		boolean error = false;
-		for (IPolicyAnalyzer analyzer : analyzers) {
-			if (analyzer.analyze(policy)) {
-				error = true;
-				if (analyzer.stopOnError()) {
-					return error;
+		for (IPolicyAnalyzer<? extends AnalyzerStat> analyzer : analyzers) {
+			try {
+				if (analyzer.analyze(policy)) {
+					error = true;
+					if (analyzer.stopOnError()) {
+						return error;
+					}
 				}
+			} catch (Exception e) {
+				logger.error("", e);
+				error = true;
 			}
+
 		}
 		return error;
 	}

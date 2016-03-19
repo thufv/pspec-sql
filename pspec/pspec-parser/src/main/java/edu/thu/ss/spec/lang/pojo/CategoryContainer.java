@@ -174,7 +174,7 @@ public abstract class CategoryContainer<T extends Category<T>> extends Described
 
 	@Override
 	public Element outputType(Document document, String name) {
-		Element element = super.outputType(document, name);
+		Element element = document.createElement(name);
 		return element;
 	}
 

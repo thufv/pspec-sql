@@ -1,6 +1,7 @@
 package edu.thu.ss.spec.lang.analyzer.rule;
 
 import edu.thu.ss.spec.lang.analyzer.BasePolicyAnalyzer;
+import edu.thu.ss.spec.lang.analyzer.stat.AnalyzerStat;
 import edu.thu.ss.spec.lang.parser.event.EventTable;
 import edu.thu.ss.spec.lang.pojo.DataContainer;
 import edu.thu.ss.spec.lang.pojo.Policy;
@@ -13,7 +14,7 @@ import edu.thu.ss.spec.lang.pojo.UserContainer;
  * @author luochen
  *
  */
-public abstract class BaseRuleAnalyzer extends BasePolicyAnalyzer {
+public abstract class BaseRuleAnalyzer extends BasePolicyAnalyzer<AnalyzerStat> {
 
 	protected Policy policy;
 

@@ -64,23 +64,21 @@ public class RuleResolver extends BaseRuleAnalyzer {
 		table.add(listener);
 
 		boolean error = false;
-		for (UserRef ref : rule.getUserRefs()) {
-			error = PSpecUtil.resolveCategoryRef(ref, userContainer, rule, false, table) || error;
-		}
-		for (DataRef ref : rule.getDataRefs()) {
+		error = PSpecUtil.resolveCategoryRef(rule.getUserRef(), userContainer, rule, false, table)
+				|| error;
+		for (DataRef ref : rule.getDataAssociation().getDataRefs()) {
 			error = PSpecUtil.resolveCategoryRef(ref, dataContainer, rule, false, table) || error;
 		}
-		if (!rule.isSingle()) {
-			error = checkAssociation(rule) || error;
-		}
+		error = checkAssociation(rule) || error;
 		error = resolveRestrictions(rule) || error;
+
 		table.remove(listener);
 		return error;
 	}
 
 	private boolean checkAssociation(Rule rule) {
 		boolean error = false;
-		List<DataRef> refs = rule.getDataRefs();
+		List<DataRef> refs = rule.getDataAssociation().getDataRefs();
 
 		for (int i = 0; i < refs.size(); i++) {
 			DataRef ref1 = refs.get(i);
@@ -109,106 +107,26 @@ public class RuleResolver extends BaseRuleAnalyzer {
 
 	private boolean resolveRestrictions(Rule rule) {
 		boolean error = false;
-		if (rule.isSingle() && rule.getRestrictions().size() > 1) {
-			error = true;
-			logger.error("Only one restriction element is allowed in rule:{} when rule is single",
-					rule.getId());
-
-			table.onRestrictionError(RestrictionErrorType.Single_One_Restriction, rule,
-					rule.getRestriction(), null);
-			//fix
-			Restriction res = rule.getRestriction();
-			rule.getRestrictions().clear();
-			rule.getRestrictions().add(res);
-		}
-
-		//check forbid
-		for (Restriction restriction : rule.getRestrictions()) {
-			if (restriction.isForbid() && rule.getRestrictions().size() > 1) {
-				error = true;
-				logger.error("Only one restriction element is allowed in rule:{} when forbidden",
-						rule.getId());
-				table.onRestrictionError(RestrictionErrorType.One_Forbid, rule, restriction, null);
-				//fix
-				rule.getRestrictions().clear();
-				rule.getRestrictions().add(restriction);
-				return error;
-			}
-		}
 
 		for (Restriction restriction : rule.getRestrictions()) {
-			if (restriction.isForbid()) {
-				continue;
-			}
-			if (rule.isSingle()) {
-				error = resolveSingleRestriction(restriction, rule) || error;
-			} else {
-				error = resolveAssociateRestriction(restriction, rule) || error;
-			}
+			error = resolveRestriction(restriction, rule) || error;
 		}
 		return error;
 	}
 
-	private boolean resolveSingleRestriction(Restriction res, Rule rule) {
-		boolean error = false;
-		if (res.getDesensitizations().size() > 1) {
-			logger.error("Only one desensitization is allowed for non-associated rule: {}", rule.getId());
-			table.onRestrictionError(RestrictionErrorType.Single_Restriction_One_Desensitize, rule, res,
-					null);
-			//fix
-			Desensitization de = res.getDesensitization(0);
-			res.getDesensitizations().clear();
-			res.getDesensitizations().add(de);
-		}
-		Desensitization de = res.getDesensitization(0);
-		if (!de.getDataRefId().isEmpty()) {
-			logger
-					.error("No data-category-ref element should appear in desensitize element when only data category is referenced in rule: "
-							+ rule.getId());
-			table.onRestrictionError(RestrictionErrorType.Single_Restriction_No_DataRef, rule, res,
-					de.getDataRefId());
-
-			//fix
-			de.setDataRefId("");
-			error = true;
-		}
-		boolean inclusionError = false;
-		for (DataRef ref : rule.getDataRefs()) {
-			if (checkInclusion(ref.getData(), de.getOperations(), rule)) {
-				inclusionError = true;
-				error = true;
-			}
-		}
-		if (inclusionError) {
-			table.onRestrictionError(RestrictionErrorType.Unsupported_Operation, rule, res, null);
-
-		}
-		return error;
-	}
-
-	private boolean resolveAssociateRestriction(Restriction res, Rule rule) {
+	private boolean resolveRestriction(Restriction res, Rule rule) {
 		boolean error = false;
 		boolean inclusionError = false;
-		DataAssociation association = rule.getAssociation();
+		DataAssociation association = rule.getDataAssociation();
 		for (Desensitization de : res.getDesensitizations()) {
-			if (de.getDataRefId().isEmpty()) {
-				logger
-						.error("Restricted data category must be specified explicitly when data association is referenced by rule: "
-								+ rule.getId());
-				table.onRestrictionError(RestrictionErrorType.Associate_Restriction_Explicit_DataRef, rule,
-						res, null);
-				error = true;
-				continue;
-			}
 			String refid = de.getDataRefId();
 			DataRef ref = association.get(refid);
 			if (ref == null) {
-				logger
-						.error(
-								"Restricted data category: {} must be contained in referenced data association in rule: {}",
-								refid, rule.getId());
-				table.onRestrictionError(RestrictionErrorType.Associate_Restriction_DataRef_Not_Exist,
-						rule, res, refid);
+				logger.error(
+						"Restricted data category: {} must be contained in referenced data association in rule: {}",
+						refid, rule.getId());
+				table.onRestrictionError(RestrictionErrorType.Associate_Restriction_DataRef_Not_Exist, rule,
+						res, refid);
 				error = true;
 				continue;
 			}
@@ -220,18 +138,16 @@ public class RuleResolver extends BaseRuleAnalyzer {
 		}
 		if (inclusionError) {
 			table.onRestrictionError(RestrictionErrorType.Unsupported_Operation, rule, res, null);
-
 		}
 
 		//adjust desensitization
-		List<Desensitization> list = new ArrayList<>(rule.getAssociation().getDimension());
+		List<Desensitization> list = new ArrayList<>(rule.getDataAssociation().getDimension());
 		for (DataRef ref : association.getDataRefs()) {
 			Desensitization de = res.getDesensitization(ref.getRefid());
 			if (de == null) {
 				de = new Desensitization();
 			}
 			de.setDataRef(ref);
-			de.materialize();
 			list.add(de);
 		}
 
@@ -240,7 +156,8 @@ public class RuleResolver extends BaseRuleAnalyzer {
 		return error;
 	}
 
-	private boolean checkInclusion(DataCategory data, Set<DesensitizeOperation> operations, Rule rule) {
+	private boolean checkInclusion(DataCategory data, Set<DesensitizeOperation> operations,
+			Rule rule) {
 		if (operations == null || operations.isEmpty()) {
 			return false;
 		}

@@ -14,27 +14,30 @@
 
 	<vocabulary-ref location="src/test/res/example-vocabulary.xml" />
 	<rules>
-		<!-- <rule id="rule1"> <user-category-ref refid="teacher" /> <data-category-ref 
-			refid="phone"> </data-category-ref> <restriction> <forbid></forbid> </restriction> 
-			</rule> -->
 		<rule id="rule2">
 			<user-category-ref refid="teacher" />
-			<data-category-ref refid="contact">
-				<exclude>
-					<data-category-ref refid="email" />
-				</exclude>
-			</data-category-ref>
+			<data-association>
+				<data-category-ref refid="contact">
+					<exclude>
+						<data-category-ref refid="email" />
+					</exclude>
+				</data-category-ref>
+			</data-association>
 			<restriction>
 				<desensitize>
+					<data-category-ref refid="contact"></data-category-ref>
 					<operation>op1</operation>
 				</desensitize>
 			</restriction>
 		</rule>
 		<rule id="rule3">
 			<user-category-ref refid="teacher" />
-			<data-category-ref refid="phone" />
+			<data-association>
+				<data-category-ref refid="phone" />
+			</data-association>
 			<restriction>
 				<desensitize>
+					<data-category-ref refid="phone" />
 					<operation>op2</operation>
 					<operation>op3</operation>
 				</desensitize>

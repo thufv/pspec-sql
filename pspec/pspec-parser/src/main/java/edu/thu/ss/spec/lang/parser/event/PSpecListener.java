@@ -2,7 +2,6 @@ package edu.thu.ss.spec.lang.parser.event;
 
 import edu.thu.ss.spec.lang.pojo.Category;
 import edu.thu.ss.spec.lang.pojo.CategoryRef;
-import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.Restriction;
 import edu.thu.ss.spec.lang.pojo.Rule;
 
@@ -74,7 +73,7 @@ public abstract class PSpecListener {
 
 	}
 
-	public void onAnalysis(AnalysisType type, ExpandedRule... rules) {
+	public void onAnalysis(AnalysisType type, Rule... rules) {
 
 	}
 

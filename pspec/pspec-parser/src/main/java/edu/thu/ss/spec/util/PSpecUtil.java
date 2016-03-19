@@ -14,7 +14,6 @@ import edu.thu.ss.spec.lang.parser.event.PSpecListener.RefErrorType;
 import edu.thu.ss.spec.lang.pojo.Category;
 import edu.thu.ss.spec.lang.pojo.CategoryContainer;
 import edu.thu.ss.spec.lang.pojo.CategoryRef;
-import edu.thu.ss.spec.lang.pojo.ExpandedRule;
 import edu.thu.ss.spec.lang.pojo.HierarchicalObject;
 import edu.thu.ss.spec.lang.pojo.ObjectRef;
 import edu.thu.ss.spec.lang.pojo.Rule;
@@ -137,10 +136,10 @@ public class PSpecUtil {
 		list1.add(ops2);
 	}
 
-	public static String toString(int[] index, List<? extends ExpandedRule> rules) {
+	public static String toString(int[] index, List<? extends Rule> rules) {
 		StringBuilder sb = new StringBuilder();
 		for (int i : index) {
-			sb.append(rules.get(i).getRuleId());
+			sb.append(rules.get(i).getId());
 			sb.append(' ');
 		}
 		return sb.toString();

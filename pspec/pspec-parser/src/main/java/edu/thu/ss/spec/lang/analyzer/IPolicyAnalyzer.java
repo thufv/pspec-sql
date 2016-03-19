@@ -10,15 +10,15 @@ import edu.thu.ss.spec.lang.pojo.Policy;
  * @author luochen
  * 
  */
-public interface IPolicyAnalyzer {
+public interface IPolicyAnalyzer<T extends AnalyzerStat> {
 
 	/**
 	 * @param policy
 	 * @return whether error occurred during analysis.
 	 */
-	public boolean analyze(Policy policy);
+	public boolean analyze(Policy policy) throws Exception;
 
-	public boolean analyze(Policy policy, AnalyzerStat stat, int n);
+	public boolean analyze(Policy policy, T stat) throws Exception;
 
 	/**
 	 * whether stop policy parser when error occurred.

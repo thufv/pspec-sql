@@ -18,26 +18,21 @@ import edu.thu.ss.spec.util.XMLUtil;
  */
 public class DataRef extends CategoryRef<DataCategory> {
 	/**
-	 * all(default), projection and condition
+	 * all(default), output and condition
 	 */
 	protected Action action = Action.All;
-
-	protected boolean global = false;
 
 	public DataRef() {
 	}
 
-	public DataRef(Action action, Set<DataCategory> datas) {
-		this.action = action;
-		this.materialized = datas;
+	public boolean subsumes(DataRef another) {
+		return this.action.ancestorOf(another.action) && super.subsumes(another);
+
 	}
 
-	public void setGlobal(boolean global) {
-		this.global = global;
-	}
-
-	public boolean isGlobal() {
-		return global;
+	public int daNum() {
+		int actionNum = action == Action.All ? 2 : 1;
+		return actionNum * materialized.size();
 	}
 
 	public void setData(DataCategory data) {
@@ -56,33 +51,10 @@ public class DataRef extends CategoryRef<DataCategory> {
 		return action;
 	}
 
-	/**
-	 * for global {@link DataRef}, {@link #contains(DataCategory)} must be checked on data category hierarchy
-	 */
-	@Override
-	public boolean contains(DataCategory t) {
-		if (!global) {
-			return super.contains(t);
-		} else {
-			if (!category.ancestorOf(t)) {
-				return false;
-			}
-			for (DataCategory exclude : excludes) {
-				if (exclude.ancestorOf(t)) {
-					return false;
-				}
-			}
-			return true;
-		}
-	}
-
 	@Override
 	public void parse(Node refNode) {
 		super.parse(refNode);
-		String globalValue = XMLUtil.getAttrValue(refNode, ParserConstant.Attr_Policy_Global);
-		if (globalValue != null) {
-			global = Boolean.valueOf(globalValue);
-		}
+
 		String actionValue = XMLUtil.getAttrValue(refNode, ParserConstant.Attr_Policy_Action);
 		if (!actionValue.isEmpty()) {
 			this.action = Action.get(actionValue);
@@ -107,9 +79,6 @@ public class DataRef extends CategoryRef<DataCategory> {
 	public Element outputElement(Document document) {
 		Element element = super.outputType(document, ParserConstant.Ele_Policy_Rule_DataRef);
 
-		if (this.global) {
-			element.setAttribute(ParserConstant.Attr_Policy_Global, String.valueOf(this.global));
-		}
 		if (this.action != null) {
 			element.setAttribute(ParserConstant.Attr_Policy_Action, this.action.id);
 		}
@@ -132,7 +101,6 @@ public class DataRef extends CategoryRef<DataCategory> {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("Data Category: ");
-		sb.append(isGlobal() ? "global " : "local ");
 		sb.append(refid);
 		sb.append('(');
 		sb.append(action);
@@ -172,7 +140,6 @@ public class DataRef extends CategoryRef<DataCategory> {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + ((action == null) ? 0 : action.hashCode());
-		result = prime * result + (global ? 1231 : 1237);
 		return result;
 	}
 
@@ -189,8 +156,6 @@ public class DataRef extends CategoryRef<DataCategory> {
 			if (other.action != null)
 				return false;
 		} else if (!action.equals(other.action))
-			return false;
-		if (global != other.global)
 			return false;
 		return true;
 	}

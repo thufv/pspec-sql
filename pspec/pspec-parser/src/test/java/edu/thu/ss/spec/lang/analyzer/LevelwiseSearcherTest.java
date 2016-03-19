@@ -34,7 +34,7 @@ public class LevelwiseSearcherTest {
 	}
 
 	@Test
-	public void testAnalyzer() {
+	public void testAnalyzer() throws Exception {
 		PrintSearcher print = new PrintSearcher(5, Integer.MAX_VALUE);
 		print.search();
 	}

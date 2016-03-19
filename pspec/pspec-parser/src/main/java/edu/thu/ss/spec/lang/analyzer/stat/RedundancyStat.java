@@ -2,11 +2,9 @@ package edu.thu.ss.spec.lang.analyzer.stat;
 
 public class RedundancyStat extends AnalyzerStat {
 
-	public int rules[];
+	public int rules;
 
-	public RedundancyStat(int n) {
-		super(n);
-		this.rules = new int[n];
+	public RedundancyStat() {
 	}
 
 	@Override
@@ -14,15 +12,7 @@ public class RedundancyStat extends AnalyzerStat {
 		StringBuilder sb = new StringBuilder(super.toString());
 		sb.append("\nRedundant rules: ");
 
-		int totalRule = 0;
-		for (int rule : rules) {
-			sb.append(rule);
-			sb.append('\t');
-			totalRule += rule;
-		}
-
-		sb.append("\nAverage Redundant Rules: ");
-		sb.append(totalRule / rules.length);
+		sb.append(rules);
 
 		return sb.toString();
 	}

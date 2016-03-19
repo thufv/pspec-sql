@@ -28,10 +28,6 @@ public class Policy {
 
 	protected List<Rule> rules = new ArrayList<>();
 
-	protected List<ExpandedRule> expandedRules;
-
-	protected PrivacyParams privacyParams;
-
 	protected URI path;
 
 	public Policy(String id) {
@@ -50,28 +46,12 @@ public class Policy {
 		return path;
 	}
 
-	public void setExpandedRules(List<ExpandedRule> expandedRule) {
-		this.expandedRules = expandedRule;
-	}
-
-	public List<ExpandedRule> getExpandedRules() {
-		return expandedRules;
-	}
-
 	public URI getVocabularyLocation() {
 		return vocabularyLocation;
 	}
 
 	public void setVocabularyLocation(URI vocabularyLocation) {
 		this.vocabularyLocation = vocabularyLocation;
-	}
-
-	public PrivacyParams getPrivacyParams() {
-		return privacyParams;
-	}
-
-	public void setPrivacyBudget(PrivacyParams privacyBudget) {
-		this.privacyParams = privacyBudget;
 	}
 
 	public Info getInfo() {
@@ -151,12 +131,8 @@ public class Policy {
 		sb.append(dataContainer.toString());
 		sb.append("\n");
 
-		sb.append("Privacy Params:\n");
-		sb.append(privacyParams);
-		sb.append("\n");
-
-		sb.append("Expanded Rules:\n");
-		for (ExpandedRule rule : expandedRules) {
+		sb.append("Rules:\n");
+		for (Rule rule : rules) {
 			sb.append(rule);
 			sb.append("\n");
 		}

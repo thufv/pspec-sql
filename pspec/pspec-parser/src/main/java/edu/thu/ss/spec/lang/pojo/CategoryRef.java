@@ -43,49 +43,8 @@ public abstract class CategoryRef<T extends Category<T>> extends ObjectRef {
 		return materialized.contains(t);
 	}
 
-	public Set<ObjectRef> getExcludeRefs() {
-		return excludeRefs;
-	}
-
-	public Set<T> getExcludes() {
-		return excludes;
-	}
-
-	public T getCategory() {
-		return category;
-	}
-
-	public void setCategory(T category) {
-		this.category = category;
-	}
-
-	/**
-	 * adds a excluded data category with simplification
-	 * @param exclude
-	 */
-	public void exclude(T exclude) {
-		if (!category.ancestorOf(exclude)) {
-			throw new IllegalArgumentException("excluded category: " + exclude.getId()
-					+ " must be a descedent of target category: " + category.getId());
-		}
-		Iterator<T> it = excludes.iterator();
-		while (it.hasNext()) {
-			T t = it.next();
-			if (t.ancestorOf(exclude)) {
-				return;
-			} else if (exclude.ancestorOf(t)) {
-				it.remove();
-			}
-		}
-		excludes.add(exclude);
-	}
-
-	public Set<T> getMaterialized() {
-		return materialized;
-	}
-
-	public boolean isError() {
-		return error;
+	public boolean subsumes(CategoryRef<T> another) {
+		return this.materialized.containsAll(another.materialized);
 	}
 
 	/**
@@ -102,8 +61,28 @@ public abstract class CategoryRef<T extends Category<T>> extends ObjectRef {
 		}
 	}
 
-	public void materialize(Set<T> materialized) {
-		this.materialized = materialized;
+	public Set<ObjectRef> getExcludeRefs() {
+		return excludeRefs;
+	}
+
+	public Set<T> getExcludes() {
+		return excludes;
+	}
+
+	public T getCategory() {
+		return category;
+	}
+
+	public void setCategory(T category) {
+		this.category = category;
+	}
+
+	public Set<T> getMaterialized() {
+		return materialized;
+	}
+
+	public boolean isError() {
+		return error;
 	}
 
 	@Override

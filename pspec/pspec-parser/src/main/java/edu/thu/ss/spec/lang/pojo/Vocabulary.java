@@ -102,4 +102,12 @@ public class Vocabulary {
 	public DataContainer getDataContainer() {
 		return dataContainer;
 	}
+
+	public void setUserContainer(UserContainer userContainer) {
+		this.userContainer = userContainer;
+	}
+
+	public void setDataContainer(DataContainer dataContainer) {
+		this.dataContainer = dataContainer;
+	}
 }

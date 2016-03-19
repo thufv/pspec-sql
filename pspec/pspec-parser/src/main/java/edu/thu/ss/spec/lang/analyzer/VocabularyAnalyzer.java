@@ -59,8 +59,8 @@ public class VocabularyAnalyzer {
 				} else {
 					logger.error("Fail to locate parent category: {} for category: {}.", parentId,
 							category.getId());
-					table
-							.onVocabularyError(VocabularyErrorType.Category_Parent_Not_Exist, category, parentId);
+					table.onVocabularyError(VocabularyErrorType.Category_Parent_Not_Exist, category,
+							parentId);
 					error = true;
 					//fix
 					category.setParentId("");
@@ -102,7 +102,8 @@ public class VocabularyAnalyzer {
 		return error;
 	}
 
-	public <T extends Category<T>> boolean checkCategoryCycleReference(CategoryContainer<T> container) {
+	public <T extends Category<T>> boolean checkCategoryCycleReference(
+			CategoryContainer<T> container) {
 		boolean error = false;
 		Set<T> checked = new HashSet<>();
 		CategoryContainer<T> current = container;

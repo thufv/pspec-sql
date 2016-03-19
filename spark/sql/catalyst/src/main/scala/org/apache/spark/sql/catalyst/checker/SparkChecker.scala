@@ -160,7 +160,9 @@ class SparkChecker(catalog: Catalog, conf: SparkConf) extends Logging {
   def commit(user: UserCategory) {
     if (running) {
       val tracker = trackers.getOrElse(user, null);
-      tracker.commit(failedAggregates);
+      if (tracker != null) {
+        tracker.commit(failedAggregates);
+      }
       failedAggregates.clear;
     }
   }
