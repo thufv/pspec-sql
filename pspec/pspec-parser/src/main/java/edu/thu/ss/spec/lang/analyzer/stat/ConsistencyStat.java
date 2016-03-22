@@ -18,21 +18,23 @@ public class ConsistencyStat extends AnalyzerStat {
 		StringBuffer sb = new StringBuffer();
 		sb.append(super.toString());
 
-		sb.append("\nLevels: ");
+		sb.append("\n###levels ");
 		sb.append(levels);
-		sb.append("\nAverage Levels:");
+		sb.append("\n###average_levels ");
 		sb.append((double) levels / count);
 
-		sb.append("\nCandidates: ");
+		sb.append("\n###candidates ");
 		sb.append(candidates);
-		sb.append("\nAverage Candidates:");
+		sb.append("\n###average_candidates ");
 		sb.append((double) candidates / count);
 
-		sb.append("\nConflicts: ");
+		sb.append("\n###conflicts ");
 		sb.append(conflicts);
-		sb.append("\nAverage Conflicts:");
+		sb.append("\n###average_conflicts ");
 		sb.append((double) conflicts / count);
 
+		sb.append("\n###seeds ");
+		sb.append(count);
 		return sb.toString();
 
 	}

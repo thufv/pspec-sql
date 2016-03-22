@@ -22,7 +22,7 @@ public class Profiling {
 
 	public static final String Substitute = "subsitute";
 
-	public static final boolean enable = false;
+	public static final boolean enable = true;
 
 	private static long lastTime = 0L;
 

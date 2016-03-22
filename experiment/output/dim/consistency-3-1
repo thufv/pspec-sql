@@ -1,0 +1,16 @@
+Begin analyze policy.
+Analyzing finish in 7210 ms.
+###time 7210
+###levels 1062
+###average_levels 2.090551181102362
+###candidates 1240
+###average_candidates 2.440944881889764
+###conflicts 255
+###average_conflicts 0.5019685039370079
+###seeds 508
+solving
+count: 7953
+value: 0.7442474537910223
+min: 0.0
+max: 5.0
+

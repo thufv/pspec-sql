@@ -10,9 +10,8 @@ public abstract class AnalyzerStat {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Time: ");
+		sb.append("###time ");
 		sb.append(time);
-		sb.append(" ms");
 
 		return sb.toString();
 

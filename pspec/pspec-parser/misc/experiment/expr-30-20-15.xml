@@ -25,6 +25,21 @@
 <user-category id="analyst12" parent="analyst3"/>
 <user-category id="analyst13" parent="analyst4"/>
 <user-category id="analyst14" parent="analyst5"/>
+<user-category id="analyst15" parent="analyst1"/>
+<user-category id="analyst16" parent="analyst2"/>
+<user-category id="analyst17" parent="analyst3"/>
+<user-category id="analyst18" parent="analyst4"/>
+<user-category id="analyst19" parent="analyst5"/>
+<user-category id="analyst20" parent="analyst1"/>
+<user-category id="analyst21" parent="analyst2"/>
+<user-category id="analyst22" parent="analyst3"/>
+<user-category id="analyst23" parent="analyst4"/>
+<user-category id="analyst24" parent="analyst5"/>
+<user-category id="analyst25" parent="analyst1"/>
+<user-category id="analyst26" parent="analyst2"/>
+<user-category id="analyst27" parent="analyst3"/>
+<user-category id="analyst28" parent="analyst4"/>
+<user-category id="analyst29" parent="analyst5"/>
 </user-category-container>
 <data-category-container>
 <data-category id="data0">
@@ -65,45 +80,5 @@
 <data-category id="data17" parent="data3"/>
 <data-category id="data18" parent="data4"/>
 <data-category id="data19" parent="data5"/>
-<data-category id="data20" parent="data1"/>
-<data-category id="data21" parent="data2"/>
-<data-category id="data22" parent="data3"/>
-<data-category id="data23" parent="data4"/>
-<data-category id="data24" parent="data5"/>
-<data-category id="data25" parent="data1"/>
-<data-category id="data26" parent="data2"/>
-<data-category id="data27" parent="data3"/>
-<data-category id="data28" parent="data4"/>
-<data-category id="data29" parent="data5"/>
-<data-category id="data30" parent="data1"/>
-<data-category id="data31" parent="data2"/>
-<data-category id="data32" parent="data3"/>
-<data-category id="data33" parent="data4"/>
-<data-category id="data34" parent="data5"/>
-<data-category id="data35" parent="data1"/>
-<data-category id="data36" parent="data2"/>
-<data-category id="data37" parent="data3"/>
-<data-category id="data38" parent="data4"/>
-<data-category id="data39" parent="data5"/>
-<data-category id="data40" parent="data1"/>
-<data-category id="data41" parent="data2"/>
-<data-category id="data42" parent="data3"/>
-<data-category id="data43" parent="data4"/>
-<data-category id="data44" parent="data5"/>
-<data-category id="data45" parent="data1"/>
-<data-category id="data46" parent="data2"/>
-<data-category id="data47" parent="data3"/>
-<data-category id="data48" parent="data4"/>
-<data-category id="data49" parent="data5"/>
-<data-category id="data50" parent="data1"/>
-<data-category id="data51" parent="data2"/>
-<data-category id="data52" parent="data3"/>
-<data-category id="data53" parent="data4"/>
-<data-category id="data54" parent="data5"/>
-<data-category id="data55" parent="data1"/>
-<data-category id="data56" parent="data2"/>
-<data-category id="data57" parent="data3"/>
-<data-category id="data58" parent="data4"/>
-<data-category id="data59" parent="data5"/>
 </data-category-container>
 </vocabulary>

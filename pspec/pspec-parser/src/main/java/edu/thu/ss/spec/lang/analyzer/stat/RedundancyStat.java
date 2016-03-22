@@ -10,7 +10,7 @@ public class RedundancyStat extends AnalyzerStat {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder(super.toString());
-		sb.append("\nRedundant rules: ");
+		sb.append("\n###redundants ");
 
 		sb.append(rules);
 

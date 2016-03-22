@@ -119,7 +119,7 @@ public class RuleGenerator {
 	}
 
 	private void generateDataAssociation(Rule rule) {
-		int len = rand.nextInt(maxDim - minDim) + minDim;
+		int len = rand.nextInt(maxDim - minDim + 1) + minDim;
 
 		DataAssociation association = null;
 		while (association == null) {
@@ -169,7 +169,7 @@ public class RuleGenerator {
 
 	private void generateRestrictions(Rule rule) {
 
-		int resNum = rand.nextInt(maxRes - minRes) + minRes;
+		int resNum = rand.nextInt(maxRes - minRes + 1) + minRes;
 		List<Restriction> list = new ArrayList<>(resNum);
 
 		for (int i = 0; i < resNum; i++) {

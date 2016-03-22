@@ -10,5 +10,3 @@ maxD=5
 maxRes=5
 vocab="vocab/expr-30-60-15.xml"
 
-$MAIN "policy" $vocab "output.xml" $rule $maxD $maxRes
-

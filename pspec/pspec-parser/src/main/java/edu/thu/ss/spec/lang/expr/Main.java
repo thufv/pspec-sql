@@ -13,6 +13,7 @@ import edu.thu.ss.spec.lang.parser.VocabularyParser;
 import edu.thu.ss.spec.lang.parser.event.EventTable;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Vocabulary;
+import edu.thu.ss.spec.util.Profiling;
 
 public class Main {
 	public static void main(String[] args) throws Exception {
@@ -37,6 +38,7 @@ public class Main {
 			System.err.println("Invalid argument: " + args[0]);
 			break;
 		}
+
 	}
 
 	private static <T extends AnalyzerStat> void analyze(IPolicyAnalyzer<T> analyzer, T stat,
@@ -51,7 +53,7 @@ public class Main {
 		timingAnalyzer.analyze(policy);
 
 		System.out.println(stat);
-
+		Profiling.print();
 	}
 
 	private static void generatePolicy(String[] args) throws Exception {

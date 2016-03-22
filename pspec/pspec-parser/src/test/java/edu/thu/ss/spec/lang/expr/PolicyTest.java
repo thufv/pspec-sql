@@ -150,6 +150,7 @@ public class PolicyTest {
 		generator.generate(ruleGenerator, 500, outputPath, "misc/experiment/expr-30-60-15.xml");
 	}
 
+	@Test
 	public void testRedundancy() throws Exception {
 		RedundancyStat rstat = new RedundancyStat();
 		PolicyManager.clear();
@@ -162,6 +163,7 @@ public class PolicyTest {
 		System.out.println(rstat);
 	}
 
+	@Test
 	public void testARedundancy() throws Exception {
 		RedundancyStat arstat = new RedundancyStat();
 		PolicyManager.clear();

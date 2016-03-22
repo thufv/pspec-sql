@@ -1,0 +1,20 @@
+Begin analyze policy.
+Analyzing finish in 28080 ms.
+###time 28080
+###levels 1265
+###average_levels 2.680084745762712
+###candidates 1515
+###average_candidates 3.2097457627118646
+###conflicts 345
+###average_conflicts 0.7309322033898306
+###seeds 472
+Begin analyze policy.
+Analyzing finish in 7111 ms.
+###time 7111
+###levels 922
+###average_levels 1.9575371549893843
+###candidates 1135
+###average_candidates 2.4097664543524417
+###conflicts 348
+###average_conflicts 0.7388535031847133
+###seeds 471

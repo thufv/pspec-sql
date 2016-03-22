@@ -1,0 +1,10 @@
+Begin analyze policy.
+Analyzing finish in 780 ms.
+###time 780
+###redundants 175
+solving
+count: 1900
+value: 0.26263157894736844
+min: 0.0
+max: 2.0
+

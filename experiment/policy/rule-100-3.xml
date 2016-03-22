@@ -1,0 +1,3069 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<privacy-policy xmlns="http://www.example.org/privacy">
+<policy-information id="">
+<issuer>
+<name/>
+<organization/>
+<e-mail/>
+<address/>
+<country/>
+</issuer>
+</policy-information>
+<vocabulary-ref location="/Users/luochen/Documents/Research/privacy/experiment/vocab/expr-30-60-15.xml"/>
+<rules>
+<rule id="rule0">
+<user-category-ref refid="analyst4"/>
+<data-association>
+<data-category-ref action="output" refid="data37"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data37"/>
+<operation>op15</operation>
+<operation>op5</operation>
+<operation>op7</operation>
+<operation>op11</operation>
+<operation>op6</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule1">
+<user-category-ref refid="analyst3"/>
+<data-association>
+<data-category-ref action="all" refid="data38"/>
+<data-category-ref action="output" refid="data55"/>
+<data-category-ref action="condition" refid="data14"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data14"/>
+<operation>op15</operation>
+<operation>op12</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data14"/>
+<operation>op15</operation>
+<operation>op3</operation>
+<operation>op4</operation>
+<operation>op11</operation>
+<operation>op9</operation>
+<operation>op13</operation>
+<operation>op8</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule2">
+<user-category-ref refid="analyst11"/>
+<data-association>
+<data-category-ref action="all" refid="data22"/>
+<data-category-ref action="output" refid="data23"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data23"/>
+<operation>op5</operation>
+<operation>op11</operation>
+<operation>op13</operation>
+<operation>op8</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data22"/>
+<operation>op2</operation>
+<operation>op7</operation>
+<operation>op12</operation>
+<operation>op6</operation>
+<operation>op13</operation>
+<operation>op14</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data22"/>
+<operation>op3</operation>
+<operation>op9</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule3">
+<user-category-ref refid="analyst12"/>
+<data-association>
+<data-category-ref action="output" refid="data37"/>
+<data-category-ref action="output" refid="data44"/>
+<data-category-ref action="output" refid="data42"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data42"/>
+<operation>op15</operation>
+<operation>op2</operation>
+<operation>op13</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+<operation>op1</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data44"/>
+<operation>op12</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data37"/>
+<operation>op11</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data44"/>
+<operation>op5</operation>
+<operation>op7</operation>
+<operation>op12</operation>
+<operation>op6</operation>
+<operation>op8</operation>
+<operation>op10</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data42"/>
+<operation>op6</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule4">
+<user-category-ref refid="analyst13"/>
+<data-association>
+<data-category-ref action="condition" refid="data51"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data51"/>
+<operation>op3</operation>
+<operation>op5</operation>
+<operation>op7</operation>
+<operation>op11</operation>
+<operation>op13</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data51"/>
+<operation>op15</operation>
+<operation>op5</operation>
+<operation>op12</operation>
+<operation>op13</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data51"/>
+<operation>op15</operation>
+<operation>op7</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule5">
+<user-category-ref refid="analyst5"/>
+<data-association>
+<data-category-ref action="condition" refid="data20"/>
+<data-category-ref action="output" refid="data39"/>
+<data-category-ref action="output" refid="data41"/>
+<data-category-ref action="all" refid="data10"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data10"/>
+<operation>op15</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data39"/>
+<operation>op3</operation>
+<operation>op12</operation>
+<operation>op10</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule6">
+<user-category-ref refid="analyst5"/>
+<data-association>
+<data-category-ref action="all" refid="data51"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data51"/>
+<operation>op4</operation>
+<operation>op12</operation>
+<operation>op6</operation>
+<operation>op14</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data51"/>
+<operation>op5</operation>
+<operation>op12</operation>
+<operation>op13</operation>
+<operation>op8</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data51"/>
+<operation>op3</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data51"/>
+<operation>op15</operation>
+<operation>op2</operation>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op6</operation>
+<operation>op12</operation>
+<operation>op13</operation>
+<operation>op14</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule7">
+<user-category-ref refid="analyst12"/>
+<data-association>
+<data-category-ref action="all" refid="data13"/>
+<data-category-ref action="all" refid="data5"/>
+<data-category-ref action="all" refid="data38"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data13"/>
+<operation>op15</operation>
+<operation>op2</operation>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op11</operation>
+<operation>op9</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule8">
+<user-category-ref refid="analyst7"/>
+<data-association>
+<data-category-ref action="all" refid="data43"/>
+<data-category-ref action="condition" refid="data57"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data57"/>
+<operation>op6</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data57"/>
+<operation>op2</operation>
+<operation>op13</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data43"/>
+<operation>op15</operation>
+<operation>op11</operation>
+<operation>op13</operation>
+<operation>op14</operation>
+<operation>op8</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data57"/>
+<operation>op14</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule9">
+<user-category-ref refid="analyst11"/>
+<data-association>
+<data-category-ref action="all" refid="data58"/>
+<data-category-ref action="condition" refid="data5"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data58"/>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data58"/>
+<operation>op3</operation>
+<operation>op4</operation>
+<operation>op6</operation>
+<operation>op8</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data58"/>
+<operation>op15</operation>
+<operation>op5</operation>
+<operation>op12</operation>
+<operation>op9</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data5"/>
+<operation>op4</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule10">
+<user-category-ref refid="analyst12"/>
+<data-association>
+<data-category-ref action="output" refid="data21"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data21"/>
+<operation>op11</operation>
+<operation>op9</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data21"/>
+<operation>op3</operation>
+<operation>op5</operation>
+<operation>op13</operation>
+<operation>op8</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule11">
+<user-category-ref refid="analyst13"/>
+<data-association>
+<data-category-ref action="all" refid="data28"/>
+<data-category-ref action="output" refid="data16"/>
+<data-category-ref action="all" refid="data46"/>
+</data-association>
+<forbid/>
+</rule>
+<rule id="rule12">
+<user-category-ref refid="analyst3"/>
+<data-association>
+<data-category-ref action="condition" refid="data57"/>
+<data-category-ref action="condition" refid="data53"/>
+<data-category-ref action="output" refid="data55"/>
+<data-category-ref action="condition" refid="data19"/>
+</data-association>
+<forbid/>
+</rule>
+<rule id="rule13">
+<user-category-ref refid="analyst1"/>
+<data-association>
+<data-category-ref action="condition" refid="data6"/>
+<data-category-ref action="output" refid="data15"/>
+<data-category-ref action="condition" refid="data46"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data15"/>
+<operation>op3</operation>
+<operation>op4</operation>
+<operation>op7</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data46"/>
+<operation>op2</operation>
+<operation>op7</operation>
+<operation>op8</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule14">
+<user-category-ref refid="analyst1"/>
+<data-association>
+<data-category-ref action="output" refid="data9"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data9"/>
+<operation>op5</operation>
+<operation>op7</operation>
+<operation>op13</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data9"/>
+<operation>op3</operation>
+<operation>op2</operation>
+<operation>op5</operation>
+<operation>op14</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule15">
+<user-category-ref refid="analyst3"/>
+<data-association>
+<data-category-ref action="condition" refid="data55"/>
+<data-category-ref action="all" refid="data13"/>
+<data-category-ref action="all" refid="data8"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data55"/>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op6</operation>
+<operation>op9</operation>
+<operation>op14</operation>
+<operation>op8</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data55"/>
+<operation>op15</operation>
+<operation>op14</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data8"/>
+<operation>op3</operation>
+<operation>op15</operation>
+<operation>op2</operation>
+<operation>op12</operation>
+<operation>op6</operation>
+<operation>op13</operation>
+<operation>op10</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule16">
+<user-category-ref refid="analyst8"/>
+<data-association>
+<data-category-ref action="output" refid="data31"/>
+<data-category-ref action="output" refid="data51"/>
+<data-category-ref action="all" refid="data12"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data31"/>
+<operation>op15</operation>
+<operation>op3</operation>
+<operation>op5</operation>
+<operation>op6</operation>
+<operation>op9</operation>
+<operation>op8</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule17">
+<user-category-ref refid="analyst2"/>
+<data-association>
+<data-category-ref action="condition" refid="data16"/>
+<data-category-ref action="all" refid="data48"/>
+<data-category-ref action="condition" refid="data57"/>
+<data-category-ref action="condition" refid="data17"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data17"/>
+<operation>op3</operation>
+<operation>op2</operation>
+<operation>op5</operation>
+<operation>op7</operation>
+<operation>op10</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data16"/>
+<operation>op4</operation>
+<operation>op13</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data57"/>
+<operation>op15</operation>
+<operation>op5</operation>
+<operation>op8</operation>
+<operation>op10</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data16"/>
+<operation>op2</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data57"/>
+<operation>op2</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data57"/>
+<operation>op3</operation>
+<operation>op2</operation>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op8</operation>
+<operation>op1</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data17"/>
+<operation>op3</operation>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op11</operation>
+<operation>op6</operation>
+<operation>op13</operation>
+<operation>op8</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule18">
+<user-category-ref refid="analyst12"/>
+<data-association>
+<data-category-ref action="all" refid="data44"/>
+<data-category-ref action="condition" refid="data53"/>
+<data-category-ref action="condition" refid="data38"/>
+<data-category-ref action="condition" refid="data28"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data53"/>
+<operation>op7</operation>
+<operation>op13</operation>
+<operation>op8</operation>
+<operation>op1</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data44"/>
+<operation>op3</operation>
+<operation>op7</operation>
+<operation>op13</operation>
+<operation>op9</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data44"/>
+<operation>op15</operation>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op11</operation>
+<operation>op7</operation>
+<operation>op8</operation>
+<operation>op10</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data38"/>
+<operation>op11</operation>
+<operation>op12</operation>
+<operation>op13</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data38"/>
+<operation>op11</operation>
+<operation>op9</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data44"/>
+<operation>op3</operation>
+<operation>op6</operation>
+<operation>op12</operation>
+<operation>op13</operation>
+<operation>op9</operation>
+<operation>op8</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule19">
+<user-category-ref refid="analyst4"/>
+<data-association>
+<data-category-ref action="output" refid="data13"/>
+<data-category-ref action="condition" refid="data45"/>
+<data-category-ref action="condition" refid="data57"/>
+<data-category-ref action="all" refid="data42"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data45"/>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op7</operation>
+<operation>op11</operation>
+<operation>op9</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+<operation>op1</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data57"/>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data45"/>
+<operation>op15</operation>
+<operation>op3</operation>
+<operation>op5</operation>
+<operation>op12</operation>
+<operation>op13</operation>
+<operation>op9</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data45"/>
+<operation>op3</operation>
+<operation>op2</operation>
+<operation>op6</operation>
+<operation>op13</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule20">
+<user-category-ref refid="analyst12"/>
+<data-association>
+<data-category-ref action="all" refid="data55"/>
+<data-category-ref action="condition" refid="data13"/>
+</data-association>
+<forbid/>
+</rule>
+<rule id="rule21">
+<user-category-ref refid="analyst4"/>
+<data-association>
+<data-category-ref action="condition" refid="data26"/>
+<data-category-ref action="output" refid="data45"/>
+<data-category-ref action="condition" refid="data3"/>
+</data-association>
+<forbid/>
+</rule>
+<rule id="rule22">
+<user-category-ref refid="analyst14"/>
+<data-association>
+<data-category-ref action="output" refid="data0"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data0"/>
+<operation>op6</operation>
+<operation>op13</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule23">
+<user-category-ref refid="analyst9"/>
+<data-association>
+<data-category-ref action="condition" refid="data7"/>
+<data-category-ref action="all" refid="data2"/>
+<data-category-ref action="condition" refid="data27"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data2"/>
+<operation>op5</operation>
+<operation>op11</operation>
+<operation>op13</operation>
+<operation>op9</operation>
+<operation>op10</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data7"/>
+<operation>op3</operation>
+<operation>op4</operation>
+<operation>op7</operation>
+<operation>op8</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule24">
+<user-category-ref refid="analyst4"/>
+<data-association>
+<data-category-ref action="all" refid="data21"/>
+<data-category-ref action="output" refid="data25"/>
+<data-category-ref action="all" refid="data42"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data21"/>
+<operation>op1</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data42"/>
+<operation>op9</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data42"/>
+<operation>op3</operation>
+<operation>op2</operation>
+<operation>op4</operation>
+<operation>op7</operation>
+<operation>op13</operation>
+<operation>op9</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule25">
+<user-category-ref refid="analyst3"/>
+<data-association>
+<data-category-ref action="all" refid="data23"/>
+<data-category-ref action="condition" refid="data53"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data23"/>
+<operation>op3</operation>
+<operation>op11</operation>
+<operation>op7</operation>
+<operation>op6</operation>
+<operation>op9</operation>
+<operation>op8</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data53"/>
+<operation>op15</operation>
+<operation>op3</operation>
+<operation>op9</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data23"/>
+<operation>op15</operation>
+<operation>op3</operation>
+<operation>op7</operation>
+<operation>op12</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data23"/>
+<operation>op12</operation>
+<operation>op9</operation>
+<operation>op8</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule26">
+<user-category-ref refid="analyst4"/>
+<data-association>
+<data-category-ref action="output" refid="data4"/>
+<data-category-ref action="output" refid="data1"/>
+<data-category-ref action="output" refid="data31"/>
+<data-category-ref action="all" refid="data54"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data54"/>
+<operation>op3</operation>
+<operation>op6</operation>
+<operation>op13</operation>
+<operation>op8</operation>
+<operation>op1</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data4"/>
+<operation>op2</operation>
+<operation>op8</operation>
+<operation>op14</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data1"/>
+<operation>op4</operation>
+<operation>op8</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data54"/>
+<operation>op13</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data1"/>
+<operation>op3</operation>
+<operation>op15</operation>
+<operation>op4</operation>
+<operation>op12</operation>
+<operation>op14</operation>
+<operation>op8</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule27">
+<user-category-ref refid="analyst1"/>
+<data-association>
+<data-category-ref action="all" refid="data59"/>
+<data-category-ref action="condition" refid="data15"/>
+<data-category-ref action="condition" refid="data57"/>
+</data-association>
+<forbid/>
+</rule>
+<rule id="rule28">
+<user-category-ref refid="analyst7"/>
+<data-association>
+<data-category-ref action="condition" refid="data30"/>
+<data-category-ref action="condition" refid="data55"/>
+<data-category-ref action="all" refid="data7"/>
+<data-category-ref action="all" refid="data14"/>
+</data-association>
+<forbid/>
+</rule>
+<rule id="rule29">
+<user-category-ref refid="analyst5"/>
+<data-association>
+<data-category-ref action="condition" refid="data41"/>
+<data-category-ref action="all" refid="data27"/>
+<data-category-ref action="condition" refid="data56"/>
+<data-category-ref action="all" refid="data36"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data36"/>
+<operation>op4</operation>
+<operation>op12</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule30">
+<user-category-ref refid="analyst14"/>
+<data-association>
+<data-category-ref action="all" refid="data46"/>
+<data-category-ref action="condition" refid="data41"/>
+<data-category-ref action="condition" refid="data15"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data46"/>
+<operation>op15</operation>
+<operation>op3</operation>
+<operation>op2</operation>
+<operation>op11</operation>
+<operation>op12</operation>
+<operation>op9</operation>
+<operation>op14</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule31">
+<user-category-ref refid="analyst10"/>
+<data-association>
+<data-category-ref action="all" refid="data47"/>
+<data-category-ref action="condition" refid="data1"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data47"/>
+<operation>op15</operation>
+<operation>op3</operation>
+<operation>op4</operation>
+<operation>op8</operation>
+<operation>op10</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data47"/>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op7</operation>
+<operation>op12</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data47"/>
+<operation>op2</operation>
+<operation>op4</operation>
+<operation>op6</operation>
+<operation>op9</operation>
+<operation>op14</operation>
+<operation>op8</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule32">
+<user-category-ref refid="analyst5"/>
+<data-association>
+<data-category-ref action="output" refid="data12"/>
+<data-category-ref action="output" refid="data30"/>
+<data-category-ref action="all" refid="data50"/>
+<data-category-ref action="condition" refid="data2"/>
+</data-association>
+<forbid/>
+</rule>
+<rule id="rule33">
+<user-category-ref refid="analyst11"/>
+<data-association>
+<data-category-ref action="condition" refid="data44"/>
+<data-category-ref action="all" refid="data26"/>
+<data-category-ref action="output" refid="data15"/>
+<data-category-ref action="condition" refid="data7"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data44"/>
+<operation>op15</operation>
+<operation>op2</operation>
+<operation>op4</operation>
+<operation>op7</operation>
+<operation>op12</operation>
+<operation>op6</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data44"/>
+<operation>op7</operation>
+<operation>op11</operation>
+<operation>op13</operation>
+<operation>op9</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data15"/>
+<operation>op15</operation>
+<operation>op4</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule34">
+<user-category-ref refid="analyst1"/>
+<data-association>
+<data-category-ref action="all" refid="data34"/>
+<data-category-ref action="output" refid="data12"/>
+<data-category-ref action="all" refid="data46"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data46"/>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op11</operation>
+<operation>op7</operation>
+<operation>op13</operation>
+<operation>op10</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data12"/>
+<operation>op7</operation>
+<operation>op13</operation>
+<operation>op9</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data34"/>
+<operation>op15</operation>
+<operation>op2</operation>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op6</operation>
+<operation>op9</operation>
+<operation>op10</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule35">
+<user-category-ref refid="analyst3"/>
+<data-association>
+<data-category-ref action="output" refid="data24"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data24"/>
+<operation>op8</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data24"/>
+<operation>op3</operation>
+<operation>op15</operation>
+<operation>op2</operation>
+<operation>op4</operation>
+<operation>op11</operation>
+<operation>op8</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data24"/>
+<operation>op3</operation>
+<operation>op15</operation>
+<operation>op4</operation>
+<operation>op11</operation>
+<operation>op13</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule36">
+<user-category-ref refid="analyst2"/>
+<data-association>
+<data-category-ref action="all" refid="data20"/>
+<data-category-ref action="all" refid="data56"/>
+<data-category-ref action="condition" refid="data23"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data56"/>
+<operation>op3</operation>
+<operation>op5</operation>
+<operation>op6</operation>
+<operation>op13</operation>
+<operation>op10</operation>
+<operation>op1</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data20"/>
+<operation>op3</operation>
+<operation>op2</operation>
+<operation>op4</operation>
+<operation>op7</operation>
+<operation>op9</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule37">
+<user-category-ref refid="analyst2"/>
+<data-association>
+<data-category-ref action="output" refid="data6"/>
+<data-category-ref action="condition" refid="data45"/>
+<data-category-ref action="all" refid="data37"/>
+<data-category-ref action="condition" refid="data14"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data45"/>
+<operation>op2</operation>
+<operation>op9</operation>
+<operation>op13</operation>
+<operation>op8</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data14"/>
+<operation>op6</operation>
+<operation>op12</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data45"/>
+<operation>op2</operation>
+<operation>op5</operation>
+<operation>op12</operation>
+<operation>op6</operation>
+<operation>op13</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data14"/>
+<operation>op4</operation>
+<operation>op11</operation>
+<operation>op7</operation>
+<operation>op14</operation>
+<operation>op8</operation>
+<operation>op10</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data45"/>
+<operation>op15</operation>
+<operation>op6</operation>
+<operation>op13</operation>
+<operation>op14</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule38">
+<user-category-ref refid="analyst5"/>
+<data-association>
+<data-category-ref action="output" refid="data5"/>
+<data-category-ref action="all" refid="data46"/>
+<data-category-ref action="output" refid="data57"/>
+<data-category-ref action="output" refid="data40"/>
+</data-association>
+<forbid/>
+</rule>
+<rule id="rule39">
+<user-category-ref refid="analyst7"/>
+<data-association>
+<data-category-ref action="all" refid="data32"/>
+<data-category-ref action="condition" refid="data34"/>
+<data-category-ref action="condition" refid="data11"/>
+<data-category-ref action="all" refid="data27"/>
+</data-association>
+<forbid/>
+</rule>
+<rule id="rule40">
+<user-category-ref refid="analyst4"/>
+<data-association>
+<data-category-ref action="all" refid="data8"/>
+<data-category-ref action="all" refid="data1"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data8"/>
+<operation>op15</operation>
+<operation>op2</operation>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op6</operation>
+<operation>op13</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule41">
+<user-category-ref refid="analyst8"/>
+<data-association>
+<data-category-ref action="all" refid="data53"/>
+<data-category-ref action="output" refid="data27"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data53"/>
+<operation>op3</operation>
+<operation>op15</operation>
+<operation>op2</operation>
+<operation>op4</operation>
+<operation>op7</operation>
+<operation>op11</operation>
+<operation>op6</operation>
+<operation>op8</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule42">
+<user-category-ref refid="analyst13"/>
+<data-association>
+<data-category-ref action="output" refid="data56"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data56"/>
+<operation>op15</operation>
+<operation>op12</operation>
+<operation>op8</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data56"/>
+<operation>op4</operation>
+<operation>op7</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data56"/>
+<operation>op12</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data56"/>
+<operation>op4</operation>
+<operation>op7</operation>
+<operation>op12</operation>
+<operation>op6</operation>
+<operation>op9</operation>
+<operation>op8</operation>
+<operation>op14</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule43">
+<user-category-ref refid="analyst12"/>
+<data-association>
+<data-category-ref action="all" refid="data9"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data9"/>
+<operation>op15</operation>
+<operation>op4</operation>
+<operation>op14</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data9"/>
+<operation>op15</operation>
+<operation>op5</operation>
+<operation>op11</operation>
+<operation>op13</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data9"/>
+<operation>op7</operation>
+<operation>op6</operation>
+<operation>op12</operation>
+<operation>op8</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data9"/>
+<operation>op7</operation>
+<operation>op12</operation>
+<operation>op9</operation>
+<operation>op13</operation>
+<operation>op14</operation>
+<operation>op8</operation>
+<operation>op10</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule44">
+<user-category-ref refid="analyst14"/>
+<data-association>
+<data-category-ref action="condition" refid="data47"/>
+<data-category-ref action="all" refid="data15"/>
+<data-category-ref action="all" refid="data28"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data47"/>
+<operation>op3</operation>
+<operation>op6</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data28"/>
+<operation>op12</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule45">
+<user-category-ref refid="analyst1"/>
+<data-association>
+<data-category-ref action="all" refid="data53"/>
+<data-category-ref action="output" refid="data41"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data53"/>
+<operation>op14</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule46">
+<user-category-ref refid="analyst8"/>
+<data-association>
+<data-category-ref action="output" refid="data0"/>
+</data-association>
+<forbid/>
+</rule>
+<rule id="rule47">
+<user-category-ref refid="analyst10"/>
+<data-association>
+<data-category-ref action="condition" refid="data26"/>
+<data-category-ref action="condition" refid="data42"/>
+<data-category-ref action="all" refid="data44"/>
+<data-category-ref action="condition" refid="data41"/>
+</data-association>
+<forbid/>
+</rule>
+<rule id="rule48">
+<user-category-ref refid="analyst13"/>
+<data-association>
+<data-category-ref action="all" refid="data37"/>
+<data-category-ref action="condition" refid="data57"/>
+<data-category-ref action="output" refid="data12"/>
+<data-category-ref action="condition" refid="data55"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data57"/>
+<operation>op15</operation>
+<operation>op2</operation>
+<operation>op12</operation>
+<operation>op13</operation>
+<operation>op10</operation>
+<operation>op1</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data12"/>
+<operation>op12</operation>
+<operation>op9</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data37"/>
+<operation>op3</operation>
+<operation>op4</operation>
+<operation>op12</operation>
+<operation>op14</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data12"/>
+<operation>op15</operation>
+<operation>op4</operation>
+<operation>op13</operation>
+<operation>op8</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data57"/>
+<operation>op15</operation>
+<operation>op5</operation>
+<operation>op12</operation>
+<operation>op9</operation>
+<operation>op14</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule49">
+<user-category-ref refid="analyst10"/>
+<data-association>
+<data-category-ref action="output" refid="data15"/>
+<data-category-ref action="output" refid="data3"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data15"/>
+<operation>op15</operation>
+<operation>op2</operation>
+<operation>op6</operation>
+<operation>op12</operation>
+<operation>op9</operation>
+<operation>op8</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data3"/>
+<operation>op5</operation>
+<operation>op11</operation>
+<operation>op6</operation>
+<operation>op12</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data15"/>
+<operation>op15</operation>
+<operation>op2</operation>
+<operation>op5</operation>
+<operation>op7</operation>
+<operation>op11</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule50">
+<user-category-ref refid="analyst8"/>
+<data-association>
+<data-category-ref action="condition" refid="data53"/>
+<data-category-ref action="condition" refid="data16"/>
+<data-category-ref action="all" refid="data17"/>
+<data-category-ref action="output" refid="data13"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data53"/>
+<operation>op15</operation>
+<operation>op3</operation>
+<operation>op2</operation>
+<operation>op11</operation>
+<operation>op9</operation>
+<operation>op8</operation>
+<operation>op14</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data13"/>
+<operation>op3</operation>
+<operation>op9</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data13"/>
+<operation>op15</operation>
+<operation>op2</operation>
+<operation>op5</operation>
+<operation>op11</operation>
+<operation>op7</operation>
+<operation>op6</operation>
+<operation>op14</operation>
+<operation>op8</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data53"/>
+<operation>op7</operation>
+<operation>op12</operation>
+<operation>op14</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data17"/>
+<operation>op3</operation>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule51">
+<user-category-ref refid="analyst9"/>
+<data-association>
+<data-category-ref action="all" refid="data8"/>
+<data-category-ref action="condition" refid="data3"/>
+<data-category-ref action="output" refid="data44"/>
+<data-category-ref action="output" refid="data51"/>
+</data-association>
+<forbid/>
+</rule>
+<rule id="rule52">
+<user-category-ref refid="analyst5"/>
+<data-association>
+<data-category-ref action="condition" refid="data9"/>
+<data-category-ref action="condition" refid="data17"/>
+<data-category-ref action="condition" refid="data35"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data9"/>
+<operation>op15</operation>
+<operation>op3</operation>
+<operation>op7</operation>
+<operation>op12</operation>
+<operation>op9</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule53">
+<user-category-ref refid="analyst13"/>
+<data-association>
+<data-category-ref action="output" refid="data49"/>
+<data-category-ref action="output" refid="data48"/>
+<data-category-ref action="output" refid="data33"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data49"/>
+<operation>op15</operation>
+<operation>op12</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data49"/>
+<operation>op2</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule54">
+<user-category-ref refid="analyst2"/>
+<data-association>
+<data-category-ref action="condition" refid="data47"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data47"/>
+<operation>op5</operation>
+<operation>op12</operation>
+<operation>op14</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule55">
+<user-category-ref refid="analyst0"/>
+<data-association>
+<data-category-ref action="all" refid="data46"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data46"/>
+<operation>op15</operation>
+<operation>op2</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data46"/>
+<operation>op3</operation>
+<operation>op2</operation>
+<operation>op7</operation>
+<operation>op6</operation>
+<operation>op12</operation>
+<operation>op13</operation>
+<operation>op8</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule56">
+<user-category-ref refid="analyst10"/>
+<data-association>
+<data-category-ref action="all" refid="data4"/>
+<data-category-ref action="all" refid="data46"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data46"/>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op6</operation>
+<operation>op12</operation>
+<operation>op13</operation>
+<operation>op14</operation>
+<operation>op8</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data46"/>
+<operation>op7</operation>
+<operation>op12</operation>
+<operation>op10</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data4"/>
+<operation>op15</operation>
+<operation>op2</operation>
+<operation>op7</operation>
+<operation>op8</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data4"/>
+<operation>op5</operation>
+<operation>op11</operation>
+<operation>op7</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule57">
+<user-category-ref refid="analyst10"/>
+<data-association>
+<data-category-ref action="output" refid="data4"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data4"/>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op11</operation>
+<operation>op6</operation>
+<operation>op9</operation>
+<operation>op8</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data4"/>
+<operation>op3</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data4"/>
+<operation>op3</operation>
+<operation>op11</operation>
+<operation>op12</operation>
+<operation>op8</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule58">
+<user-category-ref refid="analyst11"/>
+<data-association>
+<data-category-ref action="all" refid="data42"/>
+<data-category-ref action="condition" refid="data51"/>
+<data-category-ref action="all" refid="data39"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data42"/>
+<operation>op3</operation>
+<operation>op7</operation>
+<operation>op6</operation>
+<operation>op13</operation>
+<operation>op14</operation>
+<operation>op1</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data51"/>
+<operation>op15</operation>
+<operation>op5</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data39"/>
+<operation>op5</operation>
+<operation>op6</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data51"/>
+<operation>op15</operation>
+<operation>op2</operation>
+<operation>op4</operation>
+<operation>op7</operation>
+<operation>op12</operation>
+<operation>op6</operation>
+<operation>op13</operation>
+<operation>op10</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data39"/>
+<operation>op15</operation>
+<operation>op2</operation>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op12</operation>
+<operation>op14</operation>
+<operation>op8</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data51"/>
+<operation>op3</operation>
+<operation>op2</operation>
+<operation>op7</operation>
+<operation>op6</operation>
+<operation>op14</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data39"/>
+<operation>op2</operation>
+<operation>op11</operation>
+<operation>op13</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule59">
+<user-category-ref refid="analyst6"/>
+<data-association>
+<data-category-ref action="condition" refid="data1"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data1"/>
+<operation>op2</operation>
+<operation>op12</operation>
+<operation>op6</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data1"/>
+<operation>op15</operation>
+<operation>op3</operation>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op7</operation>
+<operation>op11</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data1"/>
+<operation>op4</operation>
+<operation>op11</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data1"/>
+<operation>op15</operation>
+<operation>op2</operation>
+<operation>op5</operation>
+<operation>op12</operation>
+<operation>op6</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule60">
+<user-category-ref refid="analyst10"/>
+<data-association>
+<data-category-ref action="output" refid="data54"/>
+</data-association>
+<forbid/>
+</rule>
+<rule id="rule61">
+<user-category-ref refid="analyst6"/>
+<data-association>
+<data-category-ref action="output" refid="data9"/>
+<data-category-ref action="all" refid="data30"/>
+<data-category-ref action="all" refid="data22"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data22"/>
+<operation>op3</operation>
+<operation>op6</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data30"/>
+<operation>op15</operation>
+<operation>op2</operation>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op9</operation>
+<operation>op8</operation>
+<operation>op1</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data9"/>
+<operation>op3</operation>
+<operation>op11</operation>
+<operation>op7</operation>
+<operation>op13</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data9"/>
+<operation>op4</operation>
+<operation>op12</operation>
+<operation>op9</operation>
+<operation>op8</operation>
+<operation>op10</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data22"/>
+<operation>op15</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data22"/>
+<operation>op3</operation>
+<operation>op5</operation>
+<operation>op11</operation>
+<operation>op12</operation>
+<operation>op13</operation>
+<operation>op14</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data30"/>
+<operation>op3</operation>
+<operation>op15</operation>
+<operation>op7</operation>
+<operation>op13</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule62">
+<user-category-ref refid="analyst3"/>
+<data-association>
+<data-category-ref action="condition" refid="data48"/>
+<data-category-ref action="all" refid="data50"/>
+<data-category-ref action="all" refid="data6"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data50"/>
+<operation>op15</operation>
+<operation>op5</operation>
+<operation>op7</operation>
+<operation>op11</operation>
+<operation>op12</operation>
+<operation>op9</operation>
+<operation>op13</operation>
+<operation>op10</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data48"/>
+<operation>op2</operation>
+<operation>op5</operation>
+<operation>op11</operation>
+<operation>op12</operation>
+<operation>op6</operation>
+<operation>op8</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data50"/>
+<operation>op2</operation>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op9</operation>
+<operation>op13</operation>
+<operation>op8</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data48"/>
+<operation>op3</operation>
+<operation>op2</operation>
+<operation>op4</operation>
+<operation>op11</operation>
+<operation>op6</operation>
+<operation>op13</operation>
+<operation>op14</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data50"/>
+<operation>op3</operation>
+<operation>op7</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data6"/>
+<operation>op4</operation>
+<operation>op11</operation>
+<operation>op13</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule63">
+<user-category-ref refid="analyst0"/>
+<data-association>
+<data-category-ref action="condition" refid="data7"/>
+<data-category-ref action="output" refid="data1"/>
+<data-category-ref action="output" refid="data4"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data7"/>
+<operation>op15</operation>
+<operation>op2</operation>
+<operation>op11</operation>
+<operation>op12</operation>
+<operation>op6</operation>
+<operation>op13</operation>
+<operation>op14</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data1"/>
+<operation>op5</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule64">
+<user-category-ref refid="analyst1"/>
+<data-association>
+<data-category-ref action="all" refid="data42"/>
+<data-category-ref action="condition" refid="data45"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data45"/>
+<operation>op3</operation>
+<operation>op2</operation>
+<operation>op12</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data45"/>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op6</operation>
+<operation>op12</operation>
+<operation>op13</operation>
+<operation>op8</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data45"/>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op9</operation>
+<operation>op13</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule65">
+<user-category-ref refid="analyst5"/>
+<data-association>
+<data-category-ref action="output" refid="data15"/>
+<data-category-ref action="condition" refid="data33"/>
+<data-category-ref action="condition" refid="data59"/>
+<data-category-ref action="condition" refid="data53"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data15"/>
+<operation>op3</operation>
+<operation>op15</operation>
+<operation>op4</operation>
+<operation>op13</operation>
+<operation>op14</operation>
+<operation>op8</operation>
+<operation>op1</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data53"/>
+<operation>op3</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule66">
+<user-category-ref refid="analyst5"/>
+<data-association>
+<data-category-ref action="condition" refid="data3"/>
+<data-category-ref action="output" refid="data56"/>
+<data-category-ref action="condition" refid="data36"/>
+<data-category-ref action="all" refid="data4"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data36"/>
+<operation>op2</operation>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op11</operation>
+<operation>op6</operation>
+<operation>op12</operation>
+<operation>op13</operation>
+<operation>op8</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data4"/>
+<operation>op5</operation>
+<operation>op11</operation>
+<operation>op6</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data56"/>
+<operation>op7</operation>
+<operation>op6</operation>
+<operation>op8</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data4"/>
+<operation>op5</operation>
+<operation>op7</operation>
+<operation>op11</operation>
+<operation>op12</operation>
+<operation>op9</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+<operation>op1</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data36"/>
+<operation>op3</operation>
+<operation>op13</operation>
+<operation>op8</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data3"/>
+<operation>op3</operation>
+<operation>op4</operation>
+<operation>op7</operation>
+<operation>op13</operation>
+<operation>op9</operation>
+<operation>op8</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule67">
+<user-category-ref refid="analyst8"/>
+<data-association>
+<data-category-ref action="output" refid="data19"/>
+</data-association>
+<forbid/>
+</rule>
+<rule id="rule68">
+<user-category-ref refid="analyst1"/>
+<data-association>
+<data-category-ref action="condition" refid="data48"/>
+<data-category-ref action="condition" refid="data22"/>
+<data-category-ref action="condition" refid="data49"/>
+<data-category-ref action="all" refid="data21"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data48"/>
+<operation>op9</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data21"/>
+<operation>op4</operation>
+<operation>op11</operation>
+<operation>op14</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule69">
+<user-category-ref refid="analyst12"/>
+<data-association>
+<data-category-ref action="condition" refid="data51"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data51"/>
+<operation>op3</operation>
+<operation>op4</operation>
+<operation>op7</operation>
+<operation>op6</operation>
+<operation>op13</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data51"/>
+<operation>op15</operation>
+<operation>op2</operation>
+<operation>op5</operation>
+<operation>op11</operation>
+<operation>op6</operation>
+<operation>op9</operation>
+<operation>op14</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data51"/>
+<operation>op15</operation>
+<operation>op4</operation>
+<operation>op7</operation>
+<operation>op11</operation>
+<operation>op6</operation>
+<operation>op13</operation>
+<operation>op14</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule70">
+<user-category-ref refid="analyst6"/>
+<data-association>
+<data-category-ref action="output" refid="data34"/>
+<data-category-ref action="all" refid="data30"/>
+<data-category-ref action="condition" refid="data45"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data34"/>
+<operation>op3</operation>
+<operation>op15</operation>
+<operation>op2</operation>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op11</operation>
+<operation>op13</operation>
+<operation>op9</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data45"/>
+<operation>op12</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data30"/>
+<operation>op3</operation>
+<operation>op5</operation>
+<operation>op6</operation>
+<operation>op9</operation>
+<operation>op1</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data34"/>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op11</operation>
+<operation>op6</operation>
+<operation>op9</operation>
+<operation>op13</operation>
+<operation>op8</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data30"/>
+<operation>op8</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data34"/>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op7</operation>
+<operation>op11</operation>
+<operation>op12</operation>
+<operation>op13</operation>
+<operation>op9</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule71">
+<user-category-ref refid="analyst11"/>
+<data-association>
+<data-category-ref action="condition" refid="data22"/>
+<data-category-ref action="all" refid="data38"/>
+<data-category-ref action="output" refid="data49"/>
+<data-category-ref action="condition" refid="data24"/>
+</data-association>
+<forbid/>
+</rule>
+<rule id="rule72">
+<user-category-ref refid="analyst11"/>
+<data-association>
+<data-category-ref action="condition" refid="data39"/>
+<data-category-ref action="output" refid="data12"/>
+<data-category-ref action="output" refid="data24"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data24"/>
+<operation>op15</operation>
+<operation>op12</operation>
+<operation>op9</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data12"/>
+<operation>op11</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data12"/>
+<operation>op3</operation>
+<operation>op7</operation>
+<operation>op9</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data24"/>
+<operation>op2</operation>
+<operation>op12</operation>
+<operation>op13</operation>
+<operation>op9</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule73">
+<user-category-ref refid="analyst14"/>
+<data-association>
+<data-category-ref action="output" refid="data45"/>
+<data-category-ref action="condition" refid="data20"/>
+<data-category-ref action="condition" refid="data27"/>
+<data-category-ref action="all" refid="data7"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data45"/>
+<operation>op15</operation>
+<operation>op2</operation>
+<operation>op7</operation>
+<operation>op6</operation>
+<operation>op14</operation>
+<operation>op1</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data7"/>
+<operation>op15</operation>
+<operation>op3</operation>
+<operation>op4</operation>
+<operation>op11</operation>
+<operation>op7</operation>
+<operation>op9</operation>
+<operation>op10</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data45"/>
+<operation>op2</operation>
+<operation>op5</operation>
+<operation>op13</operation>
+<operation>op9</operation>
+<operation>op8</operation>
+<operation>op14</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data20"/>
+<operation>op3</operation>
+<operation>op2</operation>
+<operation>op6</operation>
+<operation>op10</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data7"/>
+<operation>op3</operation>
+<operation>op4</operation>
+<operation>op7</operation>
+<operation>op9</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data7"/>
+<operation>op3</operation>
+<operation>op11</operation>
+<operation>op9</operation>
+<operation>op14</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule74">
+<user-category-ref refid="analyst5"/>
+<data-association>
+<data-category-ref action="condition" refid="data32"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data32"/>
+<operation>op3</operation>
+<operation>op11</operation>
+<operation>op12</operation>
+<operation>op13</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data32"/>
+<operation>op3</operation>
+<operation>op2</operation>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op6</operation>
+<operation>op9</operation>
+<operation>op8</operation>
+<operation>op14</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule75">
+<user-category-ref refid="analyst5"/>
+<data-association>
+<data-category-ref action="all" refid="data5"/>
+<data-category-ref action="condition" refid="data46"/>
+<data-category-ref action="condition" refid="data45"/>
+<data-category-ref action="condition" refid="data18"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data45"/>
+<operation>op13</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data45"/>
+<operation>op12</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data5"/>
+<operation>op5</operation>
+<operation>op13</operation>
+<operation>op8</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+<operation>op1</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data18"/>
+<operation>op2</operation>
+<operation>op14</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data45"/>
+<operation>op4</operation>
+<operation>op14</operation>
+<operation>op1</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data5"/>
+<operation>op5</operation>
+<operation>op9</operation>
+<operation>op13</operation>
+<operation>op14</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule76">
+<user-category-ref refid="analyst4"/>
+<data-association>
+<data-category-ref action="output" refid="data10"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data10"/>
+<operation>op3</operation>
+<operation>op2</operation>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op7</operation>
+<operation>op14</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data10"/>
+<operation>op3</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data10"/>
+<operation>op2</operation>
+<operation>op12</operation>
+<operation>op6</operation>
+<operation>op9</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data10"/>
+<operation>op15</operation>
+<operation>op3</operation>
+<operation>op4</operation>
+<operation>op11</operation>
+<operation>op7</operation>
+<operation>op12</operation>
+<operation>op6</operation>
+<operation>op14</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule77">
+<user-category-ref refid="analyst6"/>
+<data-association>
+<data-category-ref action="output" refid="data55"/>
+<data-category-ref action="all" refid="data54"/>
+<data-category-ref action="all" refid="data2"/>
+</data-association>
+<forbid/>
+</rule>
+<rule id="rule78">
+<user-category-ref refid="analyst0"/>
+<data-association>
+<data-category-ref action="all" refid="data57"/>
+<data-category-ref action="condition" refid="data38"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data38"/>
+<operation>op3</operation>
+<operation>op12</operation>
+<operation>op6</operation>
+<operation>op9</operation>
+<operation>op8</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule79">
+<user-category-ref refid="analyst10"/>
+<data-association>
+<data-category-ref action="all" refid="data27"/>
+<data-category-ref action="all" refid="data43"/>
+<data-category-ref action="all" refid="data1"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data27"/>
+<operation>op2</operation>
+<operation>op4</operation>
+<operation>op7</operation>
+<operation>op6</operation>
+<operation>op13</operation>
+<operation>op9</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data43"/>
+<operation>op3</operation>
+<operation>op4</operation>
+<operation>op13</operation>
+<operation>op8</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data43"/>
+<operation>op14</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule80">
+<user-category-ref refid="analyst13"/>
+<data-association>
+<data-category-ref action="output" refid="data57"/>
+<data-category-ref action="all" refid="data6"/>
+<data-category-ref action="output" refid="data19"/>
+</data-association>
+<forbid/>
+</rule>
+<rule id="rule81">
+<user-category-ref refid="analyst9"/>
+<data-association>
+<data-category-ref action="condition" refid="data19"/>
+<data-category-ref action="output" refid="data28"/>
+<data-category-ref action="condition" refid="data14"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data14"/>
+<operation>op15</operation>
+<operation>op12</operation>
+<operation>op10</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule82">
+<user-category-ref refid="analyst6"/>
+<data-association>
+<data-category-ref action="all" refid="data18"/>
+<data-category-ref action="output" refid="data7"/>
+<data-category-ref action="all" refid="data35"/>
+<data-category-ref action="condition" refid="data51"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data7"/>
+<operation>op15</operation>
+<operation>op11</operation>
+<operation>op13</operation>
+<operation>op10</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule83">
+<user-category-ref refid="analyst4"/>
+<data-association>
+<data-category-ref action="condition" refid="data54"/>
+<data-category-ref action="output" refid="data36"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data36"/>
+<operation>op5</operation>
+<operation>op7</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule84">
+<user-category-ref refid="analyst8"/>
+<data-association>
+<data-category-ref action="all" refid="data58"/>
+<data-category-ref action="all" refid="data16"/>
+<data-category-ref action="output" refid="data15"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data16"/>
+<operation>op15</operation>
+<operation>op5</operation>
+<operation>op7</operation>
+<operation>op11</operation>
+<operation>op12</operation>
+<operation>op13</operation>
+<operation>op9</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data15"/>
+<operation>op3</operation>
+<operation>op5</operation>
+<operation>op6</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data15"/>
+<operation>op15</operation>
+<operation>op11</operation>
+<operation>op8</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule85">
+<user-category-ref refid="analyst8"/>
+<data-association>
+<data-category-ref action="all" refid="data15"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data15"/>
+<operation>op2</operation>
+<operation>op4</operation>
+<operation>op11</operation>
+<operation>op6</operation>
+<operation>op13</operation>
+<operation>op8</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data15"/>
+<operation>op15</operation>
+<operation>op4</operation>
+<operation>op6</operation>
+<operation>op9</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule86">
+<user-category-ref refid="analyst5"/>
+<data-association>
+<data-category-ref action="output" refid="data53"/>
+</data-association>
+<forbid/>
+</rule>
+<rule id="rule87">
+<user-category-ref refid="analyst4"/>
+<data-association>
+<data-category-ref action="all" refid="data41"/>
+<data-category-ref action="condition" refid="data22"/>
+<data-category-ref action="output" refid="data12"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data12"/>
+<operation>op9</operation>
+<operation>op1</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data41"/>
+<operation>op3</operation>
+<operation>op13</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data22"/>
+<operation>op13</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data41"/>
+<operation>op7</operation>
+<operation>op11</operation>
+<operation>op9</operation>
+<operation>op10</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data41"/>
+<operation>op13</operation>
+<operation>op8</operation>
+<operation>op1</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data12"/>
+<operation>op4</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule88">
+<user-category-ref refid="analyst9"/>
+<data-association>
+<data-category-ref action="all" refid="data59"/>
+<data-category-ref action="output" refid="data13"/>
+<data-category-ref action="output" refid="data51"/>
+</data-association>
+<forbid/>
+</rule>
+<rule id="rule89">
+<user-category-ref refid="analyst1"/>
+<data-association>
+<data-category-ref action="condition" refid="data14"/>
+<data-category-ref action="all" refid="data8"/>
+<data-category-ref action="all" refid="data45"/>
+<data-category-ref action="condition" refid="data23"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data45"/>
+<operation>op15</operation>
+<operation>op2</operation>
+<operation>op8</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule90">
+<user-category-ref refid="analyst14"/>
+<data-association>
+<data-category-ref action="condition" refid="data44"/>
+<data-category-ref action="output" refid="data53"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data44"/>
+<operation>op15</operation>
+<operation>op3</operation>
+<operation>op12</operation>
+<operation>op9</operation>
+<operation>op14</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data53"/>
+<operation>op4</operation>
+<operation>op11</operation>
+<operation>op14</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data44"/>
+<operation>op7</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data44"/>
+<operation>op3</operation>
+<operation>op2</operation>
+<operation>op5</operation>
+<operation>op7</operation>
+<operation>op11</operation>
+<operation>op9</operation>
+<operation>op14</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule91">
+<user-category-ref refid="analyst8"/>
+<data-association>
+<data-category-ref action="condition" refid="data12"/>
+<data-category-ref action="all" refid="data38"/>
+<data-category-ref action="output" refid="data52"/>
+<data-category-ref action="all" refid="data6"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data12"/>
+<operation>op4</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data52"/>
+<operation>op15</operation>
+<operation>op2</operation>
+<operation>op11</operation>
+<operation>op7</operation>
+<operation>op12</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data38"/>
+<operation>op15</operation>
+<operation>op2</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule92">
+<user-category-ref refid="analyst1"/>
+<data-association>
+<data-category-ref action="output" refid="data39"/>
+<data-category-ref action="all" refid="data55"/>
+</data-association>
+<forbid/>
+</rule>
+<rule id="rule93">
+<user-category-ref refid="analyst8"/>
+<data-association>
+<data-category-ref action="output" refid="data24"/>
+<data-category-ref action="condition" refid="data16"/>
+</data-association>
+<forbid/>
+</rule>
+<rule id="rule94">
+<user-category-ref refid="analyst1"/>
+<data-association>
+<data-category-ref action="all" refid="data26"/>
+<data-category-ref action="condition" refid="data16"/>
+<data-category-ref action="output" refid="data13"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data13"/>
+<operation>op15</operation>
+<operation>op3</operation>
+<operation>op4</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data16"/>
+<operation>op2</operation>
+<operation>op4</operation>
+<operation>op11</operation>
+<operation>op7</operation>
+<operation>op13</operation>
+<operation>op9</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule95">
+<user-category-ref refid="analyst13"/>
+<data-association>
+<data-category-ref action="condition" refid="data31"/>
+<data-category-ref action="output" refid="data57"/>
+<data-category-ref action="all" refid="data25"/>
+<data-category-ref action="output" refid="data22"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data57"/>
+<operation>op13</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data22"/>
+<operation>op2</operation>
+<operation>op6</operation>
+<operation>op12</operation>
+<operation>op13</operation>
+<operation>op14</operation>
+<operation>op8</operation>
+<operation>op10</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data31"/>
+<operation>op7</operation>
+<operation>op11</operation>
+<operation>op12</operation>
+<operation>op13</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data31"/>
+<operation>op3</operation>
+<operation>op15</operation>
+<operation>op5</operation>
+<operation>op4</operation>
+<operation>op7</operation>
+<operation>op6</operation>
+<operation>op10</operation>
+<operation>op1</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data25"/>
+<operation>op3</operation>
+<operation>op5</operation>
+<operation>op6</operation>
+<operation>op14</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data31"/>
+<operation>op4</operation>
+<operation>op12</operation>
+<operation>op14</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data25"/>
+<operation>op12</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule96">
+<user-category-ref refid="analyst13"/>
+<data-association>
+<data-category-ref action="all" refid="data59"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data59"/>
+<operation>op5</operation>
+<operation>op13</operation>
+<operation>op9</operation>
+<operation>op14</operation>
+<operation>op10</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data59"/>
+<operation>op15</operation>
+<operation>op2</operation>
+<operation>op4</operation>
+<operation>op11</operation>
+<operation>op6</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data59"/>
+<operation>op7</operation>
+<operation>op12</operation>
+<operation>op9</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data59"/>
+<operation>op3</operation>
+<operation>op15</operation>
+<operation>op6</operation>
+<operation>op9</operation>
+<operation>op8</operation>
+<operation>op10</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule97">
+<user-category-ref refid="analyst1"/>
+<data-association>
+<data-category-ref action="output" refid="data33"/>
+<data-category-ref action="output" refid="data12"/>
+</data-association>
+<forbid/>
+</rule>
+<rule id="rule98">
+<user-category-ref refid="analyst11"/>
+<data-association>
+<data-category-ref action="condition" refid="data32"/>
+<data-category-ref action="output" refid="data4"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data4"/>
+<operation>op4</operation>
+<operation>op12</operation>
+<operation>op13</operation>
+<operation>op8</operation>
+<operation>op14</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data32"/>
+<operation>op3</operation>
+<operation>op2</operation>
+<operation>op5</operation>
+<operation>op11</operation>
+<operation>op12</operation>
+<operation>op6</operation>
+<operation>op13</operation>
+<operation>op14</operation>
+</desensitize>
+</restriction>
+</rule>
+<rule id="rule99">
+<user-category-ref refid="analyst7"/>
+<data-association>
+<data-category-ref action="condition" refid="data37"/>
+<data-category-ref action="output" refid="data58"/>
+<data-category-ref action="output" refid="data56"/>
+</data-association>
+<restriction>
+<desensitize>
+<data-category-ref refid="data56"/>
+<operation>op3</operation>
+<operation>op5</operation>
+<operation>op12</operation>
+<operation>op13</operation>
+<operation>op1</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data58"/>
+<operation>op2</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data56"/>
+<operation>op7</operation>
+<operation>op10</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data37"/>
+<operation>op7</operation>
+<operation>op12</operation>
+<operation>op8</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data56"/>
+<operation>op12</operation>
+<operation>op8</operation>
+<operation>op10</operation>
+<operation>op1</operation>
+</desensitize>
+</restriction>
+<restriction>
+<desensitize>
+<data-category-ref refid="data56"/>
+<operation>op7</operation>
+<operation>op12</operation>
+<operation>op6</operation>
+<operation>op13</operation>
+<operation>op10</operation>
+<operation>op1</operation>
+</desensitize>
+<desensitize>
+<data-category-ref refid="data37"/>
+<operation>op3</operation>
+<operation>op15</operation>
+<operation>op14</operation>
+</desensitize>
+</restriction>
+</rule>
+</rules>
+</privacy-policy>

@@ -25,6 +25,11 @@
 <user-category id="analyst12" parent="analyst3"/>
 <user-category id="analyst13" parent="analyst4"/>
 <user-category id="analyst14" parent="analyst5"/>
+<user-category id="analyst15" parent="analyst1"/>
+<user-category id="analyst16" parent="analyst2"/>
+<user-category id="analyst17" parent="analyst3"/>
+<user-category id="analyst18" parent="analyst4"/>
+<user-category id="analyst19" parent="analyst5"/>
 </user-category-container>
 <data-category-container>
 <data-category id="data0">

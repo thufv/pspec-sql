@@ -56,8 +56,8 @@ public class VocabularyGenerator {
 		Vocabulary vocab = new Vocabulary();
 		vocab.setInfo(vocabInfo);
 
-		vocab.setUserContainer(generateUsers("", 15));
-		vocab.setDataContainer(generateDatas("", 60, 15));
+		vocab.setUserContainer(generateUsers("", users));
+		vocab.setDataContainer(generateDatas("", datas, defaultOps));
 
 		VocabularyWriter writer = new VocabularyWriter();
 		File dirFile = new File(dir);
