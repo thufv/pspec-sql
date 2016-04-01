@@ -1,4 +1,4 @@
-# privacy
+# PSpec-SQL
 PSpec-SQL is a privacy-integrated big data analytic system built upon Spark-SQL(1.3.0), and automatically enforces user-provided PSpec policy during query processing.
 
 pspec/ contains language parser and policy analyzer for PSpec, an abstract high-level privacy specification language.
