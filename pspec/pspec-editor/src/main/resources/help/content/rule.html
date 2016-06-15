@@ -1,0 +1,240 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<style>
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote {
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;
+    font-size: 13px;
+    line-height: 18px;
+    color: #737373;
+    background-color: white;
+    margin: 10px 13px 10px 13px;
+}
+table {
+	margin: 10px 0 15px 0;
+	border-collapse: collapse;
+}
+td,th {	
+	border: 1px solid #ddd;
+	padding: 3px 10px;
+}
+th {
+	padding: 5px 10px;	
+}
+
+a {
+    color: #0069d6;
+}
+a:hover {
+    color: #0050a3;
+    text-decoration: none;
+}
+a img {
+    border: none;
+}
+p {
+    margin-bottom: 9px;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #404040;
+    line-height: 36px;
+}
+h1 {
+    margin-bottom: 18px;
+    font-size: 30px;
+}
+h2 {
+    font-size: 24px;
+}
+h3 {
+    font-size: 18px;
+}
+h4 {
+    font-size: 16px;
+}
+h5 {
+    font-size: 14px;
+}
+h6 {
+    font-size: 13px;
+}
+hr {
+    margin: 0 0 19px;
+    border: 0;
+    border-bottom: 1px solid #ccc;
+}
+blockquote {
+    padding: 13px 13px 21px 15px;
+    margin-bottom: 18px;
+    font-family:georgia,serif;
+    font-style: italic;
+}
+blockquote:before {
+    content:"\201C";
+    font-size:40px;
+    margin-left:-10px;
+    font-family:georgia,serif;
+    color:#eee;
+}
+blockquote p {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 18px;
+    margin-bottom: 0;
+    font-style: italic;
+}
+code, pre {
+    font-family: Monaco, Andale Mono, Courier New, monospace;
+}
+code {
+    background-color: #fee9cc;
+    color: rgba(0, 0, 0, 0.75);
+    padding: 1px 3px;
+    font-size: 12px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+pre {
+    display: block;
+    padding: 14px;
+    margin: 0 0 18px;
+    line-height: 16px;
+    font-size: 11px;
+    border: 1px solid #d9d9d9;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+pre code {
+    background-color: #fff;
+    color:#737373;
+    font-size: 11px;
+    padding: 0;
+}
+sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+* {
+	-webkit-print-color-adjust: exact;
+}
+@media screen and (min-width: 914px) {
+    body {
+        width: 854px;
+        margin:10px auto;
+    }
+}
+@media print {
+	body,code,pre code,h1,h2,h3,h4,h5,h6 {
+		color: black;
+	}
+	table, pre {
+		page-break-inside: avoid;
+	}
+}
+</style>
+<title>Rule</title>
+
+</head>
+<body>
+<h1>Rule</h1>
+
+<p>To manage rules in a pspec policy, one should click "Rule" under the id of the policy in the navigational tree. An example of rule view is shown as follows.</p>
+
+<p><img src="../img/rule.png" height="600" width="800"/></p>
+
+<p>The rule view shows all rules in a policy, and a rule can be expanded or shrinked by simply clicking the bar of it.
+When a rule is expanded, the brief summary, including the targeted user/data categories and restrictions, is shown.
+In the following, we discuss how to manage the rules, i.e., adding, editing and deleting rules.</p>
+
+<h2>Add a Rule</h2>
+
+<p>To add a rule, one can simply click the button "+" at the top of the rule view. And a dialog is then shown as follows.</p>
+
+<p><img src="../img/add_rule.png" height="457" width="600"/></p>
+
+<p>The policy writer should then fill the fields in the dialog to create a new rule.
+First, the policy writer should set of basic information of a rule, including ID (uinque among the policy), and Short/Long Description.</p>
+
+<p>We then discuss how to set the user references, data references and restrictions respectively as follows.</p>
+
+<h3>User Reference</h3>
+
+<p>The user reference of a rule indicates what user categories the rule applies to. If a user category is referred by a rule, then the rule is implicitly applicable to all the descedant user categories as well.
+To refine the applicable user category, one can explictly exclude certain descedant user categories.
+The policy writer also can refer multiple user categories in a rule, which means the rule is applicable to all these user categories.
+An example user reference is shown as follows.</p>
+
+<p><img src="../img/user_reference.png" height="103" width="600"/></p>
+
+<p>The example user reference states the rule is applicable to <em>manager</em> (but not <em>senior manager</em>) and <em>analyst</em>.
+And to add or delete a user category, one can simply click the "Add" or "Delete" button above the user reference table respectively.</p>
+
+<h3>Data Reference</h3>
+
+<p>The data reference of a rule indicates what data categories the rule applies to. However, compared with user reference, data reference is slightly complicated.</p>
+
+<p>First, for each referred data category, the policy writer should also specify how the data category is accessed with "Action" column.
+A data category can be directly projected ("projection"), or used in the control flow ("condition"), or the both ("all").
+Similar to user reference, the rule is also applicable to the descedant data categories of a referred data category, and the policy writer can explicitly exclude certain descedant data categories to refine the scope.</p>
+
+<p>Second, data reference can be either "Single" or "Association".
+A single data reference means the rule is applicable to any referred data category accessed by a query. However, an associated data reference means the rule is triggered only when a query accesses all data categories together specified in the data reference.
+And the data categories referred in an associated data reference must be <em>disjoint</em>, that is, no data category is the parent of another.
+Thus, a single data reference with multiple data categories is equivalent to multiple associated data references, each of which only refers one data category.
+The policy writer must distinguish between the two to write the right rules.</p>
+
+<p><img src="../img/data_reference.png" height="91" width="700"/></p>
+
+<p>For example, the data reference above states the rule is triggered when <em>name</em> is projected or <em>customer_address</em> (exclude <em>customer_zip</em>) is accessed since the data reference is single.
+However, if the data reference is associated, the rule is triggered only when both <em>name</em> is projected and <em>customer_address</em> (exclude <em>customer_zip</em>) is accessed in a single query.</p>
+
+<h3>Rule Type</h3>
+
+<p>When a rule is triggered (some user category accesses some data categories), it can perform two actions.
+The rule can directly forbid the query ("Forbid" type), or require the query to desensitize the accessed data categories ("Restrict" type).</p>
+
+<p>Note that the restrictions are slightly different between single data reference and associated data reference.
+For single data reference, the rule only contains exactly one restriction, which specifies all the data categories should be desensitized with one of the specified operations.
+And the operations should be supported by all the data categories in the data reference.
+An example is shown as follows, which requires all the data categories should be performed with <em>avg</em> or <em>sum</em> operations.</p>
+
+<p><img src="../img/single_restriction.png" width="600" height="96"></p>
+
+<p>While for associated data reference, the rule can only multiple restrictions, and each restriction specifies how each referred data category should be desensitized separately with one of the specified restrictions.
+A query should satisfy one of these restrictions, but to satisfy a restriction, all the data categories should be desensitized accordingly.
+Note that if no desensitize operation is specified for a data category, then the data category does not needs to be desensitized.</p>
+
+<p><img src="../img/associated_restriction.png" width="600" height="97"></p>
+
+<p>For example, the above restriction requires <em>financial</em> should be desensitized with <em>sum</em> or <em>avg</em> operation, but <em>name</em> is not required.</p>
+
+<h3>Edit a Rule</h3>
+
+<p>To edit a rule, one can simply double click the expanded rule in the rule view and a rule dialog shows up.
+The policy writer can then simply edit the fields in the rule dialog and click "OK" button to edit the rule.</p>
+
+<h3>Delete a Rule</h3>
+
+<p>To delete a rule, one should first select the rule to be deleted in the rule view, then click the "X" button in the top of the rule view.</p>
+</body>
+</html>

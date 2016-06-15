@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vocabulary base="res/base-vocab.xml" xmlns="http://www.example.org/privacy"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.example.org/privacy ../res/privacy.xsd">
+
+	<vocabulary-information id="vocab-info">
+		<issuer>
+			<name>luochen</name>
+			<organization>Tsinghua</organization>
+			<e-mail>luochen01@vip.qq.com</e-mail>
+			<address>Tsinghua</address>
+			<country>China</country>
+		</issuer>
+	</vocabulary-information>
+
+	<data-category-container>
+		<data-category id="email" parent="id"></data-category>
+		<data-category id="loginid" parent="id"></data-category>
+
+		<data-category id="name" parent="qi"></data-category>
+		<data-category id="birth" parent="qi"></data-category>
+		<data-category id="gender" parent="qi"></data-category>
+		<data-category id="status" parent="qi"></data-category>
+
+		<data-category id="customer_address" parent="qi"></data-category>
+		<data-category id="customer_street" parent="customer_address"></data-category>
+		<data-category id="customer_suite" parent="customer_address">
+			<desensitize-operations>
+				<operation>substr</operation>
+			</desensitize-operations>
+		</data-category>
+		<data-category id="customer_region" parent="customer_address"></data-category>
+		<data-category id="customer_zip" parent="customer_address">
+			<desensitize-operations>
+				<operation>truncate</operation>
+			</desensitize-operations>
+		</data-category>
+		<data-category id="customer_location_type" parent="customer_address"></data-category>
+
+
+		<data-category id="customer_sa" parent="sa"></data-category>
+		<data-category id="business_sa" parent="sa"></data-category>
+
+		<data-category id="financial" parent="customer_sa">
+			<desensitize-operations>
+				<operation>sum</operation>
+				<operation>avg</operation>
+			</desensitize-operations>
+		</data-category>
+		<data-category id="dep" parent="customer_sa"></data-category>
+		<data-category id="vehicle" parent="customer_sa"></data-category>
+
+		<data-category id="sale_item" parent="business_sa"></data-category>
+		<data-category id="sale_price" parent="business_sa"></data-category>
+		<data-category id="sale_date" parent="business_sa"></data-category>
+
+		<data-category id="return_item" parent="business_sa"></data-category>
+		<data-category id="return_cost" parent="business_sa"></data-category>
+	</data-category-container>
+</vocabulary>

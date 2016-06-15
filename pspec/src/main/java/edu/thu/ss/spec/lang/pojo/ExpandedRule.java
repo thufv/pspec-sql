@@ -69,7 +69,7 @@ public class ExpandedRule extends DescribedObject implements Comparable<Expanded
 		this.dataRef = ref;
 		this.restrictions = new Restriction[1];
 		this.restrictions[0] = rule.getRestriction().clone();
-		if (!this.restrictions[0].isForbid()) {
+		if (!this.restrictions[0].isForbid() && !this.restrictions[0].isFilter()) {
 			Desensitization de = this.restrictions[0].getDesensitization();
 			de.setDataRef(ref);
 			de.materialize(ref.getMaterialized());

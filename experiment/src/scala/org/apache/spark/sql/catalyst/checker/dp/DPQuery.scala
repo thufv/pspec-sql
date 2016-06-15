@@ -7,7 +7,6 @@ import org.apache.spark.sql.catalyst.plans.logical.Aggregate
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.HashSet
 import com.microsoft.z3.Context
-import edu.thu.ss.spec.lang.pojo.DataCategory
 import org.apache.spark.sql.catalyst.checker.util.CheckerUtil._
 import org.apache.spark.sql.catalyst.checker.util.TypeUtil._
 import scala.collection.mutable.Buffer
@@ -22,10 +21,8 @@ object DPQuery {
   }
 }
 
-class DPQuery(val constraint: BoolExpr, val columns: Set[String], var aggregate: AggregateExpression, var plan: Aggregate, var ranges: Map[String, Range]) extends Equals {
+class DPQuery(val constraint: BoolExpr, val columns: Set[String], var plan: Aggregate, var ranges: Map[String, Range]) extends Equals {
   val queryId = DPQuery.getId;
-
-  aggregate.dpId = queryId;
 
   def canEqual(other: Any) = {
     other.isInstanceOf[org.apache.spark.sql.catalyst.checker.dp.DPQuery]
@@ -45,7 +42,6 @@ class DPQuery(val constraint: BoolExpr, val columns: Set[String], var aggregate:
 
   def clear() {
     //for gc
-    aggregate = null;
     ranges = null;
     plan = null;
   }
@@ -132,7 +128,7 @@ abstract class DPPartition(val context: Context, val budget: DPBudgetManager) ex
 
   def disjoint(query: DPQuery): Boolean = {
     val cond = context.mkAnd(constraint, query.constraint);
-    return !satisfiable(cond, context);
+    return !satisfiable(cond);
   }
 
   def updateBudget(query: DPQuery);
@@ -160,10 +156,21 @@ private[dp] class GlobalPartition(context: Context, budget: DPBudgetManager) ext
   private var maximum = 0.0;
 
   def updateBudget(query: DPQuery) {
-    if (query.aggregate.epsilon > maximum) {
-      budget.consume(null, query.aggregate.epsilon - maximum);
-      maximum = query.aggregate.epsilon;
+    var epsilon = 0.0;
+    query.plan.aggregateExpressions.foreach(agg => agg.foreach(expr => {
+      expr match {
+        case a: AggregateExpression => {
+          epsilon = a.epsilon;
+        }
+        case _ =>
+      }
+    }));
+
+    if (epsilon > maximum) {
+      budget.consume(epsilon - maximum);
+      maximum = epsilon;
     }
+
   }
 }
 

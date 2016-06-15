@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<map version="2.0">
+	<mapID target="overview" url="content/overview.html" />
+	<mapID target="vocabulary" url="content/vocabulary.html" />
+	<mapID target="user_container" url="content/user_container.html" />
+	<mapID target="data_container" url="content/data_container.html" />
+	<mapID target="policy" url="content/policy.html" />
+	<mapID target="rule" url="content/rule.html" />
+	<mapID target="analysis" url="content/analysis.html" />
+	<mapID target="output" url="content/output.html" />
+	<mapID target="visualize" url="content/visualize.html" />
+
+</map>

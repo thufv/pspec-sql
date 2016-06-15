@@ -64,7 +64,7 @@ import org.apache.spark.sql.catalyst.checker.util.CheckerUtil
 
 case class AttributeObject(val column: String, val attribute: String, val variable: Expr);
 
-case class ObjectIndex {
+class ObjectIndex() {
 
   private val attributeIndex = new HashMap[String, AttributeObject];
 
@@ -143,12 +143,12 @@ private class SMTBuilder(val context: Context) extends Logging {
   def buildSMT(plan: Aggregate, activated: Set[String]): BoolExpr = {
     val constraint = resolvePlan(plan.child);
     collectColumns(constraint, activated);
-    return constraint;
+    return constraint.simplify().asInstanceOf[BoolExpr];
   }
 
   private def collectColumns(expr: Expr, columns: Set[String]) {
     expr match {
-      case v if (v.isConst()) => {
+      case v if (v.isConst() && !(v.isTrue() || v.isFalse())) => {
         columns.add(v.getSExpr());
       }
       case leaf if (leaf.getNumArgs() == 0) =>

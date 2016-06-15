@@ -1,0 +1,227 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<style>
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote {
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;
+    font-size: 13px;
+    line-height: 18px;
+    color: #737373;
+    background-color: white;
+    margin: 10px 13px 10px 13px;
+}
+table {
+	margin: 10px 0 15px 0;
+	border-collapse: collapse;
+}
+td,th {	
+	border: 1px solid #ddd;
+	padding: 3px 10px;
+}
+th {
+	padding: 5px 10px;	
+}
+
+a {
+    color: #0069d6;
+}
+a:hover {
+    color: #0050a3;
+    text-decoration: none;
+}
+a img {
+    border: none;
+}
+p {
+    margin-bottom: 9px;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #404040;
+    line-height: 36px;
+}
+h1 {
+    margin-bottom: 18px;
+    font-size: 30px;
+}
+h2 {
+    font-size: 24px;
+}
+h3 {
+    font-size: 18px;
+}
+h4 {
+    font-size: 16px;
+}
+h5 {
+    font-size: 14px;
+}
+h6 {
+    font-size: 13px;
+}
+hr {
+    margin: 0 0 19px;
+    border: 0;
+    border-bottom: 1px solid #ccc;
+}
+blockquote {
+    padding: 13px 13px 21px 15px;
+    margin-bottom: 18px;
+    font-family:georgia,serif;
+    font-style: italic;
+}
+blockquote:before {
+    content:"\201C";
+    font-size:40px;
+    margin-left:-10px;
+    font-family:georgia,serif;
+    color:#eee;
+}
+blockquote p {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 18px;
+    margin-bottom: 0;
+    font-style: italic;
+}
+code, pre {
+    font-family: Monaco, Andale Mono, Courier New, monospace;
+}
+code {
+    background-color: #fee9cc;
+    color: rgba(0, 0, 0, 0.75);
+    padding: 1px 3px;
+    font-size: 12px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+pre {
+    display: block;
+    padding: 14px;
+    margin: 0 0 18px;
+    line-height: 16px;
+    font-size: 11px;
+    border: 1px solid #d9d9d9;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+pre code {
+    background-color: #fff;
+    color:#737373;
+    font-size: 11px;
+    padding: 0;
+}
+sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+* {
+	-webkit-print-color-adjust: exact;
+}
+@media screen and (min-width: 914px) {
+    body {
+        width: 854px;
+        margin:10px auto;
+    }
+}
+@media print {
+	body,code,pre code,h1,h2,h3,h4,h5,h6 {
+		color: black;
+	}
+	table, pre {
+		page-break-inside: avoid;
+	}
+}
+</style>
+<title>Data Container</title>
+
+</head>
+<body>
+<h1>Data Container</h1>
+
+<p>As mentioned, a data container in a vocabulary defines a set of data categories to be regulated. The data categories are further organized into hierarhical structures.</p>
+
+<p>An example data container view is as follows (appears when clicking "Data Container" under the id of the vocabulary in the navigational tree).</p>
+
+<p><img src="../img/data_container.png" width="800" height="600"></p>
+
+<p>In the upper part of the data container view, the policy writer can edit the basic information of the data container, including its ID, Short Description and Long Description. In the lower part of the view, there is a tree showing all data categories defined in the container. When some data category in the tree is selected, the information of the data category is shown in the right part correspondingly.</p>
+
+<h2>Data Category</h2>
+
+<p>All data categories in a data container is shown in the data category tree. In the following, we will show how to manage data categories, i.e., add/edit/delete a data category respectively.</p>
+
+<h3>Add a Data Category</h3>
+
+<p>To add a data category, one can right click the data category tree and a popup menu will show up as follows.</p>
+
+<p><img src="../img/add_data_category.png" width="400" height="356"></p>
+
+<p>Here the policy writer has two options to add a data category:</p>
+
+<ul>
+<li>Add: the new data category is added as the sibling (in the same level) of the selected data category.</li>
+<li>Add Child: the new data category is added as the child of the selected data category.</li>
+</ul>
+
+
+<p>Note that in both cases, the id of the new data category should be unique, i.e., a data container cannot have two data categories with the same id (including the <a href="#inherit">inherited data categories</a>).</p>
+
+<h3>Edit a Data Category</h3>
+
+<p>To edit a data category, one can simply click the target data category in the data category tree, and the information of the selected data category is shown in the right panel as follows.</p>
+
+<p><img src="../img/edit_data_category.png" width="800" height="359"></p>
+
+<p>In the right panel, the policy writer can change the ID, parent ID, Desensitize Operation, Short Description and Long Description of the selected data category.
+Here the Desensitize Operation is the operation which can desensitize the data category, i.e., make the data category safe to access. For example, for data category <em>name</em>, one desensitize operation can be <em>truncate</em> which only retains the last name.
+The policy writer should specify all supported desensitize operations for a data category.
+The desensitize operations for a data category must be unique, and a data category implicitly inherits all the data sensitize operations defined for its parent categories.</p>
+
+<p>And remember, the ID must be unique, and the referenced parent data category cannot be a cycle.</p>
+
+<h3>Delete a Data Category</h3>
+
+<p>To delete a data category, one can simplify click Delete on the popup menu. But note that there are two options to deal with the children data categories:</p>
+
+<ul>
+<li>Cascade: all children categories of the deleted data category will also be deleted.</li>
+<li>Non-cascade: the children categories of the deleted data category remain, and their parents are set as the parent of the deleted data category.</li>
+</ul>
+
+
+<p>For example, suppose <em>ka</em> (short for <em>key attribute</em>) is deleted. In Cascade mode, <em>email</em> and <em>loginid</em> are deleted as well. While in Non-cascade mode, <em>email</em> and <em>loginid</em> are not deleted and their parents are set as <em>employee</em>.</p>
+
+<h2><span id="inherit">Inherited Data Category</span></h2>
+
+<p>For a vocabulary, if the base vocabulary is set, then the data categories defined in the base vocabulary is also shown in the data category tree. An example is shown as follows.</p>
+
+<p><img src="../img/inherited_data_category.png" width="800" height="600"></p>
+
+<p>Here data categories <em>ka</em>, <em>qi</em>, <em>sa</em> are defined in the base vocabulary.
+Note that the data categories defined in the base vocabulary are read-only, i.e., they cannot be edited in current vocabulary.
+To edit them, one should open the base vocabularly separately, edit then save it, and reload the current vocabulary.</p>
+
+<p>Also remember that the data categories should be unique among the vocabulary and all the base vocabularies.
+For example, one cannot define data category <em>ka</em> in current vocabulary again since it has already been defiend in the base vocabulary.</p>
+</body>
+</html>

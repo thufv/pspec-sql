@@ -66,7 +66,7 @@ class DPEnforcer(val tableInfo: TableInfo, val queryTracker: QueryTracker, val e
     private val tableSizes = new HashMap[String, Int];
     private val tableMapping = new HashMap[String, Int];
 
-    def addTable(table: String, attrs: collection.Set[Attribute], tableSize: Option[Int] = None) {
+    def addTable(table: String, attrs: Seq[Attribute], tableSize: Option[Int] = None) {
       val count = tableMapping.get(table);
       var name: String = null;
       //renaming table with unique id
@@ -107,7 +107,7 @@ class DPEnforcer(val tableInfo: TableInfo, val queryTracker: QueryTracker, val e
       }
 
     }
-    
+
     def updateEdge(attr1: Attribute, attr2: Attribute, weight: Double) {
       val table1 = lookupTable(attr1);
       val table2 = lookupTable(attr2);
@@ -245,21 +245,21 @@ class DPEnforcer(val tableInfo: TableInfo, val queryTracker: QueryTracker, val e
         enforce(aggregate, true);
         //treat aggregate as a new table
         if (aggregate.groupingExpressions.size == 0) {
-          graph.addTable(s"aggregate", aggregate.projectLabels.keySet, Some(1));
+          graph.addTable(s"aggregate", aggregate.output, Some(1));
         } else {
-          graph.addTable(s"aggregate", aggregate.projectLabels.keySet);
+          graph.addTable(s"aggregate", aggregate.output);
         }
       }
 
       case binary: BinaryNode => {
         enforceBinary(binary, true);
-        graph.addTable(s"${binary.nodeName}", binary.projectLabels.keySet);
+        graph.addTable(s"${binary.nodeName}", binary.output);
       }
 
       case leaf: LeafNode => {
         //must be table
         val label = leaf.projectLabels.valuesIterator.next.asInstanceOf[ColumnLabel];
-        graph.addTable(label.table, leaf.projectLabels.keySet);
+        graph.addTable(label.table, leaf.output);
       }
       //TODO: luochen relax the restrictions on join
       case _ => throw new PrivacyException("only direct join on tables are supported");

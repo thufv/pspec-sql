@@ -3,14 +3,21 @@ bin/
 lib_managed/
 dist/
 src_managed/
-
+workspace/
+.settings/
+metastore_db/
+result/
 
 scalastyle-output.xml
 *.class
 *.DS_Store
 *.war
 *.ear
-*.cache
+*.cache*
+*.lock
+*.dat
+
+*.index
 hs_err_pid*
 
 .classpath

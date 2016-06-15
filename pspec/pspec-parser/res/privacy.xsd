@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/privacy"
+	xmlns:tns="http://www.example.org/privacy" elementFormDefault="qualified"
+	attributeFormDefault="unqualified">
+	<!-- Elements which have an identifier should be of this type -->
+	<complexType name="identifiedObjectType">
+		<attribute name="id" use="required" type="string"></attribute>
+	</complexType>
+
+	<!-- Elements which refer to an identifier should be of this type -->
+	<complexType name="objectRefType">
+		<attribute name="refid" use="required" type="string"></attribute>
+	</complexType>
+
+	<!-- Identified Elements which have descriptions should be of this type -->
+	<complexType name="describedObjectType">
+		<complexContent>
+			<extension base="tns:identifiedObjectType">
+				<sequence>
+					<element name="short-description" minOccurs="0" maxOccurs="1"></element>
+					<element name="long-description" minOccurs="0" maxOccurs="1"></element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<!-- Elements which can participate in a hierarchy should have this type -->
+	<complexType name="hierarchicalType">
+		<complexContent>
+			<extension base="tns:describedObjectType">
+				<attribute name="parent" use="optional" type="string"></attribute>
+			</extension>
+		</complexContent>
+	</complexType>
+
+
+
+	<!-- Contact information -->
+	<complexType name="contactInfoType">
+		<sequence>
+			<element name="name" type="string" minOccurs="1" maxOccurs="1"></element>
+			<element name="organization" type="string" minOccurs="1"
+				maxOccurs="1"></element>
+			<element name="e-mail" type="string" minOccurs="1" maxOccurs="1"></element>
+			<element name="address" type="string" minOccurs="1"
+				maxOccurs="1"></element>
+			<element name="country" type="string" minOccurs="1"
+				maxOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+
+	<!-- Information on a policy or a vocabulary -->
+	<complexType name="infoType">
+		<complexContent>
+			<extension base="tns:describedObjectType">
+				<sequence>
+					<element name="issuer" minOccurs="0" maxOccurs="1"
+						type="tns:contactInfoType"></element>
+					<element name="location" minOccurs="0" maxOccurs="1" type="anyURI"></element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="userCategoryContainerType">
+		<sequence>
+			<element name="short-description" minOccurs="0" maxOccurs="1"></element>
+			<element name="long-description" minOccurs="0" maxOccurs="1"></element>
+			<element name="user-category" minOccurs="0" maxOccurs="unbounded"
+				type="tns:hierarchicalType"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="dataCategoryContainerType">
+		<sequence>
+			<element name="short-description" minOccurs="0" maxOccurs="1"></element>
+			<element name="long-description" minOccurs="0" maxOccurs="1"></element>
+			<element name="data-category" minOccurs="0" maxOccurs="unbounded">
+				<complexType>
+					<complexContent>
+						<extension base="tns:hierarchicalType">
+							<sequence>
+								<element name="desensitize-operations" minOccurs="0"
+									maxOccurs="1">
+									<complexType>
+										<sequence>
+											<element name="operation" type="string" minOccurs="1"
+												maxOccurs="unbounded"></element>
+										</sequence>
+									</complexType>
+								</element>
+							</sequence>
+						</extension>
+					</complexContent>
+				</complexType>
+				<unique name="uniqueDesensitizeOperation">
+					<selector xpath="tns:desensitize-operation/tns:operation"></selector>
+					<field xpath="."></field>
+				</unique>
+			</element>
+		</sequence>
+	</complexType>
+
+
+	<complexType name="excludeUserType">
+		<sequence>
+			<element name="user-category-ref" type="tns:objectRefType"
+				maxOccurs="unbounded"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="userCategoryRefType">
+		<complexContent>
+			<extension base="tns:objectRefType">
+				<sequence>
+					<element name="exclude" type="tns:excludeUserType"
+						minOccurs="0">
+						<unique name="uniqueExcludedUser">
+							<selector xpath="tns:user-category-ref" />
+							<field xpath="@refid"></field>
+						</unique>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="excludeDataType">
+		<sequence>
+			<element name="data-category-ref" type="tns:objectRefType"
+				maxOccurs="unbounded"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="dataCategoryRefType">
+		<complexContent>
+			<extension base="tns:objectRefType">
+				<sequence>
+					<element name="exclude" type="tns:excludeDataType"
+						minOccurs="0">
+						<unique name="uniqueExcludedData">
+							<selector xpath="tns:data-category-ref" />
+							<field xpath="@refid"></field>
+						</unique>
+					</element>
+				</sequence>
+				<attribute name="global" type="boolean" default="false"></attribute>
+				<attribute name="action" default="all">
+					<simpleType>
+						<restriction base="string">
+							<enumeration value="all"></enumeration>
+							<enumeration value="projection"></enumeration>
+							<enumeration value="condition"></enumeration>
+						</restriction>
+					</simpleType>
+				</attribute>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="dataAssociationType">
+		<sequence>
+			<element name="data-category-ref" type="tns:dataCategoryRefType"
+				minOccurs="2" maxOccurs="unbounded"></element>
+		</sequence>
+	</complexType>
+
+
+	<complexType name="restrictionType">
+		<choice>
+			<element name="desensitize" minOccurs="1" maxOccurs="unbounded">
+				<complexType>
+					<sequence>
+						<element name="data-category-ref" type="tns:objectRefType"
+							maxOccurs="unbounded" minOccurs="0">
+						</element>
+						<element name="operation" type="string" minOccurs="1"
+							maxOccurs="unbounded"></element>
+					</sequence>
+				</complexType>
+				<unique name="uniqueDesensitizeOp">
+					<selector xpath="tns:operation"></selector>
+					<field xpath="."></field>
+				</unique>
+				<unique name="uniqueDesensitizeData">
+					<selector xpath="tns:data-category-ref"></selector>
+					<field xpath="@refid"></field>
+				</unique>
+			</element>
+			<element name="forbid"></element>
+		</choice>
+	</complexType>
+
+	<complexType name="orType">
+		<sequence>
+			<element name="and" type="tns:andType" minOccurs="0"
+				maxOccurs="unbounded"></element>
+			<element name="comparison" type="tns:compareType" minOccurs="0"
+				maxOccurs="unbounded"></element>
+			<element name="not" type="tns:notType" minOccurs="0"
+				maxOccurs="unbounded"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="andType">
+		<sequence>
+			<element name="or" type="tns:orType" minOccurs="0" maxOccurs="unbounded"></element>
+			<element name="comparison" type="tns:compareType" minOccurs="0"
+				maxOccurs="unbounded"></element>
+			<element name="not" type="tns:notType" minOccurs="0"
+				maxOccurs="unbounded"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="notType">
+		<choice>
+			<element name="and" type="tns:andType" minOccurs="1"
+				maxOccurs="1"></element>
+			<element name="or" type="tns:orType" minOccurs="1" maxOccurs="1"></element>
+			<element name="comparison" type="tns:compareType" minOccurs="1"
+				maxOccurs="1"></element>
+		</choice>
+	</complexType>
+
+	<complexType name="termType">
+		<choice>
+			<element name="value" minOccurs="1" maxOccurs="1"></element>
+			<element name="data-category" minOccurs="1" maxOccurs="1"></element>
+		</choice>
+	</complexType>
+
+	<complexType name="functionType">
+		<sequence>
+			<element name="function" type="tns:functionType" minOccurs="0"
+				maxOccurs="2"></element>
+			<element name="term" type="tns:termType" minOccurs="0"
+				maxOccurs="2"></element>
+		</sequence>
+		<attribute name="name">
+			<simpleType>
+				<restriction base="string">
+					<enumeration value="+"></enumeration>
+					<enumeration value="-"></enumeration>
+					<enumeration value="*"></enumeration>
+					<enumeration value="/"></enumeration>
+					<enumeration value="%"></enumeration>
+				</restriction>
+			</simpleType>
+		</attribute>
+	</complexType>
+
+	<complexType name="filterType">
+		<!-- <attribute name="permitNull" use="required" type="string"></attribute> -->
+		<choice>
+			<element name="and" type="tns:andType" minOccurs="0"
+				maxOccurs="1"></element>
+			<element name="or" type="tns:orType" minOccurs="0" maxOccurs="1"></element>
+			<element name="not" type="tns:notType" minOccurs="0"
+				maxOccurs="1"></element>
+		</choice>
+	</complexType>
+
+	<complexType name="compareType">
+		<sequence>
+			<element name="operator" minOccurs="1" maxOccurs="1">
+				<simpleType>
+					<restriction base="string">
+						<enumeration value="eq"></enumeration>
+						<enumeration value="gt"></enumeration>
+						<enumeration value="lt"></enumeration>
+						<enumeration value="ge"></enumeration>
+						<enumeration value="le"></enumeration>
+					</restriction>
+				</simpleType>
+			</element>
+			<sequence>
+				<element name="function" type="tns:functionType" minOccurs="0"
+					maxOccurs="2"></element>
+				<element name="term" type="tns:termType" minOccurs="0"
+					maxOccurs="2"></element>
+			</sequence>
+		</sequence>
+	</complexType>
+
+	<complexType name="ruleType">
+		<complexContent>
+			<extension base="tns:describedObjectType">
+				<sequence>
+					<element name="user-category-ref" type="tns:userCategoryRefType"
+						minOccurs="1" maxOccurs="unbounded"></element>
+					<choice>
+						<element name="data-category-ref" type="tns:dataCategoryRefType"
+							minOccurs="1" maxOccurs="unbounded"></element>
+						<element name="data-association" type="tns:dataAssociationType"
+							minOccurs="1" maxOccurs="1">
+							<unique name="uniqueDataCategory">
+								<selector xpath="tns:data-category-ref"></selector>
+								<field xpath="@refid"></field>
+							</unique>
+						</element>
+					</choice>
+					<choice>
+						<element name="restriction" type="tns:restrictionType"
+							maxOccurs="unbounded">
+							<unique name="uniqueRestrictedDataCategory">
+								<selector xpath="tns:desensitize/tns:data-category-ref"></selector>
+								<field xpath="@refid"></field>
+							</unique>
+						</element>
+						<element name="filter" type="tns:filterType" maxOccurs="1">
+						</element>
+					</choice>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<element name="vocabulary">
+		<complexType>
+			<sequence>
+				<element name="vocabulary-information" minOccurs="1"
+					maxOccurs="1" type="tns:infoType"></element>
+				<element name="user-category-container" type="tns:userCategoryContainerType"
+					minOccurs="0" maxOccurs="1">
+					<key name="user-category-identifier">
+						<selector xpath="tns:user-category"></selector>
+						<field xpath="@id"></field>
+					</key>
+				</element>
+				<element name="data-category-container" type="tns:dataCategoryContainerType"
+					minOccurs="0" maxOccurs="1">
+					<key name="data-category-identifier">
+						<selector xpath="tns:data-category"></selector>
+						<field xpath="@id"></field>
+					</key>
+				</element>
+			</sequence>
+			<attribute name="base" use="optional" type="anyURI"></attribute>
+		</complexType>
+	</element>
+
+	<simpleType name="budgetType">
+		<restriction base="double">
+			<minInclusive value="0"></minInclusive>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="ratioType">
+		<restriction base="double">
+			<minInclusive value="0"></minInclusive>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="probabilityType">
+		<restriction base="double">
+			<minInclusive value="0"></minInclusive>
+			<maxInclusive value="1"></maxInclusive>
+		</restriction>
+	</simpleType>
+
+	<complexType name="globalBudgetType">
+		<sequence>
+			<element name="user-category-ref" minOccurs="1" maxOccurs="unbounded">
+				<complexType>
+					<complexContent>
+						<extension base="tns:userCategoryRefType">
+							<attribute name="budget" type="tns:budgetType"></attribute>
+						</extension>
+					</complexContent>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="fineBudgetType">
+		<sequence>
+			<element name="budget-allocation" minOccurs="1" maxOccurs="unbounded">
+				<complexType>
+					<sequence>
+						<element name="user-category-ref" type="tns:userCategoryRefType"
+							minOccurs="1" maxOccurs="unbounded"></element>
+						<element name="data-category-ref" minOccurs="1" maxOccurs="unbounded">
+							<complexType>
+								<complexContent>
+									<extension base="tns:dataCategoryRefType">
+										<attribute name="budget" type="tns:budgetType"></attribute>
+									</extension>
+								</complexContent>
+							</complexType>
+						</element>
+					</sequence>
+				</complexType>
+				<unique name="uniqueAllocateUser">
+					<selector xpath="tns:user-category-ref"></selector>
+					<field xpath="@refid"></field>
+				</unique>
+				<unique name="uniqueAllocateData">
+					<selector xpath="tns:data-category-ref"></selector>
+					<field xpath="@refid"></field>
+				</unique>
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="accuracyType">
+		<sequence>
+			<element name="probability" type="tns:probabilityType">
+			</element>
+			<element name="noise-ratio" type="tns:ratioType"></element>
+		</sequence>
+	</complexType>
+
+	<element name="privacy-policy">
+		<complexType>
+			<sequence>
+				<element name="policy-information" minOccurs="1" maxOccurs="1"
+					type="tns:infoType"></element>
+				<element name="vocabulary-ref">
+					<complexType>
+						<attribute name="location" type="anyURI"></attribute>
+					</complexType>
+				</element>
+				<element name="privacy-parameters" minOccurs="0">
+					<complexType>
+						<sequence>
+							<choice>
+								<element name="global-budget" type="tns:globalBudgetType"></element>
+								<element name="fine-budget" type="tns:fineBudgetType"></element>
+							</choice>
+							<element name="accuracy" type="tns:accuracyType"
+								minOccurs="0" maxOccurs="1"></element>
+						</sequence>
+					</complexType>
+				</element>
+
+				<element name="rules">
+					<complexType>
+						<sequence>
+							<element name="rule" type="tns:ruleType" maxOccurs="unbounded"
+								minOccurs="0">
+								<unique name="uniqueRestrictUserCategory">
+									<selector xpath="tns:user-category-ref">
+									</selector>
+									<field xpath="@refid"></field>
+								</unique>
+								<unique name="uniqueRestrictDataCategory">
+									<selector xpath="tns:data-category-ref">
+									</selector>
+									<field xpath="@refid"></field>
+								</unique>
+							</element>
+						</sequence>
+					</complexType>
+				</element>
+			</sequence>
+		</complexType>
+		<!-- Rule id's must be unique within a policy -->
+		<unique name="uniqueRuleId">
+			<selector xpath="tns:rules/tns:rule" />
+			<field xpath="@id" />
+		</unique>
+	</element>
+
+</schema>

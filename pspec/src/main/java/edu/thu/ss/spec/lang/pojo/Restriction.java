@@ -25,16 +25,31 @@ public class Restriction implements Parsable, Writable {
 
 	private Desensitization[] desensitizations;
 
+	private Filter filter;
+	
 	private boolean forbid = false;
-
+	private boolean isfilter = false;
+	
 	public void setForbid(boolean forbid) {
 		this.forbid = forbid;
 	}
 
+	public void setIsFilter(boolean filter) {
+		this.isfilter= filter;
+	}
+	
 	public boolean isForbid() {
 		return forbid;
 	}
 
+	public boolean isFilter() {
+		return isfilter;
+	}
+	
+	public Filter getFilter() {
+		return filter;
+	}
+	
 	public List<Desensitization> getList() {
 		return list;
 	}
@@ -55,6 +70,8 @@ public class Restriction implements Parsable, Writable {
 	public Restriction clone() {
 		Restriction res = new Restriction();
 		res.forbid = this.forbid;
+		res.isfilter = this.isfilter;
+		res.filter = this.filter;
 		if (this.desensitizations != null) {
 			res.desensitizations = new Desensitization[desensitizations.length];
 			for (int i = 0; i < res.desensitizations.length; i++) {
@@ -76,6 +93,10 @@ public class Restriction implements Parsable, Writable {
 				parseDesensitization(node);
 			} else if (ParserConstant.Ele_Policy_Rule_Forbid.equals(name)) {
 				forbid = true;
+			} else if (ParserConstant.Ele_Policy_Rule_Filter.equals(name)) {
+				isfilter = true;
+				filter = new Filter();
+				filter.parse(node);
 			}
 		}
 	}
@@ -117,6 +138,9 @@ public class Restriction implements Parsable, Writable {
 			Element forbidEle = document.createElement(ParserConstant.Ele_Policy_Rule_Forbid);
 			element.appendChild(forbidEle);
 		} else {
+			if (this.isfilter) {
+				element.appendChild(filter.outputElement(document));
+			}
 			for (Desensitization de : desensitizations) {
 				if (de != null) {
 					element.appendChild(de.outputElement(document));
@@ -137,11 +161,17 @@ public class Restriction implements Parsable, Writable {
 		sb.append("Restriction: ");
 		if (forbid) {
 			sb.append("forbid");
-		} else {
-			for (Desensitization de : desensitizations) {
-				sb.append("{");
-				sb.append(de);
-				sb.append("} ");
+		} 
+		else {
+			if (isfilter) {
+				sb.append(filter);
+			}
+			if (desensitizations != null) {
+				for (Desensitization de : desensitizations) {
+					sb.append("{");
+					sb.append(de);
+					sb.append("} ");
+				}
 			}
 		}
 		return sb.toString();

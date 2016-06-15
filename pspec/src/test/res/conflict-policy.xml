@@ -106,5 +106,51 @@
 				</desensitize>
 			</restriction>
 		</rule>
+		<rule id="filter_income_tax">
+			<user-category-ref refid="teacher"></user-category-ref>
+			<data-category-ref refid="income"></data-category-ref>
+			<data-category-ref refid="tax"></data-category-ref>
+			<restriction>
+				<filter>
+					<and>
+						<predicate>
+							<operator>eq</operator>
+							<function name="ret" type="dataref">
+								<data-category-ref refid="income"></data-category-ref>
+							</function>
+							<function name="+" type="func">
+								<function name="ret" type="value">60</function>
+								<function name = "ret" type="dataref">
+									<data-category-ref refid="tax"></data-category-ref>
+								</function>	
+							</function>
+						</predicate>
+					</and>
+				</filter>
+			</restriction>
+		</rule>
+		<rule id="filter_income_tax1">
+			<user-category-ref refid="teacher"></user-category-ref>
+			<data-category-ref refid="income"></data-category-ref>
+			<data-category-ref refid="tax"></data-category-ref>
+			<restriction>
+				<filter>
+					<and>
+						<predicate>
+							<operator>gt</operator>
+							<function name="ret" type="dataref">
+								<data-category-ref refid="income"></data-category-ref>
+							</function>
+							<function name="+" type="func">
+								<function name="ret" type="value">60</function>
+								<function name = "ret" type="dataref">
+									<data-category-ref refid="tax"></data-category-ref>
+								</function>	
+							</function>
+						</predicate>
+					</and>
+				</filter>
+			</restriction>
+		</rule>
 	</rules>
 </privacy-policy>

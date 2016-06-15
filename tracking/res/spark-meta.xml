@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<meta-mapping xmlns="http://www.example.org/privacy"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" policy="res/spark-policy.xml"
+	xsi:schemaLocation="http://www.example.org/privacy res/meta.xsd">
+	<userList>
+		<user user-name="username1" user-category="analyst"></user>
+		<user user-name="username2" user-category="analyst"></user>
+	</userList>
+	<database name="default">
+		<table name="adult">
+			<column name="age" data-category="b_year"></column>
+		</table>
+	</database>
+</meta-mapping>

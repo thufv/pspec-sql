@@ -1085,7 +1085,6 @@ class SQLContext(@transient val sparkContext: SparkContext)
       //added by luochen
       //check logical plan
       val epsilon = getConf(DPUtil.Key_Epsilon, DPUtil.Default_Epsilon).toDouble;
-      //TODO wangjun add user category
       val user = MetaManager.currentUser();
       checker.check(user, optimizedPlan, epsilon);
       SparkPlan.currentContext.set(self)

@@ -1,7 +1,7 @@
 package org.apache.spark.sql.catalyst.checker
 
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation
-import edu.thu.ss.spec.global.MetaManager
+import edu.thu.ss.spec.manager.MetaManager
 
 object LabelConstants extends LabelConstants {
 

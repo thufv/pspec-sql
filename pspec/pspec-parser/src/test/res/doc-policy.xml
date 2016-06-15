@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<privacy-policy xmlns="http://www.example.org/privacy"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.example.org/privacy ../res/privacy.xsd">
+
+	<vocabulary-ref location="src/test/res/example-vocabulary.xml">
+	</vocabulary-ref>
+
+	<policy-information id="store-policy">
+		<issuer>
+			<name>luochen</name>
+			<organization>Tsinghua</organization>
+			<e-mail>luochen01@vip.qq.com</e-mail>
+			<address>Tsinghua</address>
+			<country>China</country>
+		</issuer>
+	</policy-information>
+
+	<rules>
+		<rule id="forbid_project">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-category-ref refid="ka" action="projection"
+				global="true"></data-category-ref>
+			<data-category-ref refid="name" action="projection"></data-category-ref>
+			<data-category-ref refid="customer_suite" action="projection"></data-category-ref>
+			<data-category-ref refid="customer_sa" action="projection"></data-category-ref>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+
+		<rule id="forbid_name_customer_sa">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="name"></data-category-ref>
+				<data-category-ref refid="customer_sa"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+
+		<rule id="forbid_ka_customer_sa">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="ka" global="true"></data-category-ref>
+				<data-category-ref refid="customer_sa"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+
+		<rule id="forbid_ka_qi_project">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="ka"></data-category-ref>
+				<data-category-ref refid="qi" action="projection"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+
+
+		<rule id="truncate_zip">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-category-ref refid="customer_zip"></data-category-ref>
+			<restriction>
+				<desensitize>
+					<operation>truncate</operation>
+				</desensitize>
+			</restriction>
+		</rule>
+
+		<rule id="agg_financial">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-category-ref refid="financial"></data-category-ref>
+			<restriction>
+				<desensitize>
+					<operation>sum</operation>
+					<operation>avg</operation>
+				</desensitize>
+			</restriction>
+		</rule>
+
+		<rule id="forbid_identifier">
+			<user-category-ref refid="Report_Analyst"></user-category-ref>
+			<data-category-ref refid="Identifier">
+				<exclude>
+					<data-category-ref refid="Phone" />
+				</exclude>
+			</data-category-ref>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+
+		<rule id="truncate_phone">
+			<user-category-ref refid="Report_Analyst"></user-category-ref>
+			<data-category-ref refid="Phone" />
+			<restriction>
+				<desensitize>
+					<operation>truncate</operation>
+				</desensitize>
+			</restriction>
+		</rule>
+
+		<rule id="forbid_name">
+			<user-category-ref refid="Report Analyst"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="First Name" action="projection"></data-category-ref>
+				<data-category-ref refid="Last Name" action="projection"></data-category-ref>
+			</data-association>
+			<restriction>
+				<forbid></forbid>
+			</restriction>
+		</rule>
+
+		<rule id="count_sale_item">
+			<user-category-ref refid="Report Analyst"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="Quasi Identifier"></data-category-ref>
+				<data-category-ref refid="Sale Item" action="projection"></data-category-ref>
+			</data-association>
+			<restriction>
+				<desensitize>
+					<data-category-ref refid="Sale_Item" />
+					<operation>count</operation>
+				</desensitize>
+			</restriction>
+		</rule>
+
+		<rule id="agg_sale_price">
+			<user-category-ref refid="Report Analyst"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="Quasi Identifier"></data-category-ref>
+				<data-category-ref refid="Sale Price" action="projection"></data-category-ref>
+			</data-association>
+			<restriction>
+				<desensitize>
+					<data-category-ref refid="Sale Price" />
+					<operation>count</operation>
+					<operation>avg</operation>
+					<operation>min</operation>
+					<operation>max</operation>
+					<operation>sum</operation>
+				</desensitize>
+			</restriction>
+		</rule>
+
+
+		<rule id="birth_year_month">
+			<user-category-ref refid="Report Analyst"></user-category-ref>
+			<data-category-ref refid="Birth"></data-category-ref>
+			<restriction>
+				<desensitize>
+					<operation>getYear</operation>
+					<operation>getMonth</operation>
+				</desensitize>
+			</restriction>
+		</rule>
+
+		<rule id="agg_salary">
+			<user-category-ref refid="Report Analyst"></user-category-ref>
+			<data-association>
+				<data-category-ref refid="Quasi Identifier"></data-category-ref>
+				<data-category-ref refid="Salary"></data-category-ref>
+			</data-association>
+			<restriction>
+				<desensitize>
+					<data-category-ref refid="Salary" />
+					<operation>range</operation>
+					<operation>avg</operation>
+				</desensitize>
+			</restriction>
+		</rule>
+	</rules>
+</privacy-policy>

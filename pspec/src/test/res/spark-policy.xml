@@ -101,7 +101,47 @@
 				</desensitize>
 			</restriction>
 		</rule>
+		
+		<rule id="filter_gender_age">
+			<user-category-ref refid="app"></user-category-ref>
+			<data-category-ref refid="gender"></data-category-ref>
+			<data-category-ref refid="customer_zip"></data-category-ref>
+			<restriction>
+				<filter>
+					<and>
+						<or value="false">
+							<predicate>
+								<operator>eq</operator>
+								<function name="ret" type="dataref">
+									<data-category-ref refid="gender"></data-category-ref>
+								</function>
+								<function name="ret" type="value">female</function>
+							</predicate>
+							<predicate value = "false">
+								<operator>eq</operator>
+								<function name="ret" type="dataref">
+									<data-category-ref refid="gender"></data-category-ref>
+								</function>
+								<function name="ret" type="value">male</function>
+							</predicate>
+						</or>	
+						<predicate>
+							<operator>eq</operator>
+							<function name="ret" type="dataref">
+								<data-category-ref refid="customer_zip"></data-category-ref>
+							</function>
+							<function name="+" type="func">
+								<function name="ret" type="value">60</function>
+								<function name = "ret" type="dataref">
+									<data-category-ref refid="customer_zip"></data-category-ref>
+								</function>	
+							</function>
+						</predicate>
 
+					</and>
+				</filter>
+			</restriction>
+		</rule>
 
 	</rules>
 </privacy-policy>

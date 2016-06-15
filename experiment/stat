@@ -1,0 +1,2 @@
+stat	simple_total_time	simple_partitions	range_total_time	range_partitions	range_hits	range_time	range_smt_time	
+5	25.00	37.50	9.00	24.00	74.00	0.00	37.00	

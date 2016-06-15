@@ -49,7 +49,7 @@ import org.apache.spark.sql.sources.LogicalRDD
  * @groupname Ungrouped Support functions for language integrated queries.
  */
 class SQLContext extends Logging
-  with Serializable {
+    with Serializable {
 
   self =>
 
@@ -94,7 +94,7 @@ class SQLContext extends Logging
   def getAllConfs: immutable.Map[String, String] = conf.getAllConfs
 
   @transient
-  protected[sql] lazy val catalog: Catalog = new SimpleCatalog(true)
+  lazy val catalog: Catalog = new SimpleCatalog(true)
 
   @transient
   protected[sql] lazy val functionRegistry: FunctionRegistry = new SimpleFunctionRegistry(true)

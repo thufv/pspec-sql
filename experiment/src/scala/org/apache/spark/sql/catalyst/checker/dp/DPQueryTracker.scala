@@ -30,7 +30,6 @@ import com.microsoft.z3.RealExpr
 import com.microsoft.z3.Expr
 import com.microsoft.z3.IntExpr
 import com.microsoft.z3.Status
-import edu.thu.ss.spec.lang.pojo.DataCategory
 import org.apache.spark.sql.types.StringType
 import org.apache.spark.sql.types.NumericType
 import org.apache.spark.sql.types.BooleanType
@@ -53,130 +52,116 @@ import org.apache.spark.sql.types.FractionalType
 import com.microsoft.z3.Sort
 import scala.collection.mutable.PriorityQueue
 import scala.collection.mutable.DoubleLinkedList
+import org.apache.spark.sql.catalyst.checker.util.CheckerUtil
+import edu.thu.ss.experiment.ExperimentConf
 
 /**
  * tracking submitted dp-enabled queries for parallel composition theorem
  */
 class DPQueryTracker[T <: DPPartition] private[dp] (budget: DPBudgetManager, limit: Int, partitionBuilder: (Context) => T)
-  extends QueryTracker(budget) with Logging {
+    extends QueryTracker(budget) with Logging {
+
+  val z3TimeOut = System.getProperty("max.solve.time", ExperimentConf.Max_Solve_Time).toInt;
 
   protected val context = new Context;
+
+  CheckerUtil.context = context;
+
   protected val partitions = new ListBuffer[T];
 
   private val EmptyRange = Map.empty[String, Range];
-
-  protected var pi: Iterator[T] = null;
-
-  protected val tmpPartitions = new ArrayBuffer[DPQuery];
-
-  protected var buildingTime = 0L;
-
-  protected val printConstraint = System.getProperty("z3.print", "false").toBoolean;
 
   override def clear() {
     context.dispose();
   }
 
   def track(plan: Aggregate) {
-    val start = System.currentTimeMillis();
     val builder = new SMTBuilder(context);
     val columns = new HashSet[String];
     val constraint = builder.buildSMT(plan, columns);
-    if (printConstraint) {
-      println(constraint.toString());
-    }
-    buildingTime = System.currentTimeMillis() - start;
+
     //check satisfiability
-    if (!satisfiable(constraint, context)) {
-      logWarning("Range constraint unsatisfiable, ignore query");
+    if (!satisfiable(constraint)) {
+      logError("Range constraint unsatisfiable, ignore query");
       return ;
     }
-    collectDPQueries(plan, constraint, columns, resolveRange(plan));
+    stat.queryNum += 1;
+    stat.beginTiming(TrackerStat.Track_Time);
 
-  }
+    val query = new DPQuery(constraint, columns, plan, EmptyRange);
+    locatePartition(query);
 
-  def commit(failed: Set[Int]) {
-    //put queries into partitions
-    beforeCommit;
-
-    currentQueries.foreach(query => {
-      if (!failed.contains(query.queryId)) {
-        stat.onTrackQuery;
-
-        commitByConstraint(query);
-        stat.endConstraintSolving;
-        stat.addConstraintBuilding(buildingTime);
-      }
-    });
-    afterCommit;
-  }
-
-  protected def resolveRange(plan: Aggregate) = EmptyRange;
-
-  protected def beforeCommit() {
-    pi = partitions.iterator;
-
-  }
-
-  protected def afterCommit() {
-    tmpPartitions.foreach(createPartition(_));
-    tmpPartitions.clear;
-    currentQueries.foreach(_.clear);
-    currentQueries.clear;
-    budget.show;
+    stat.endTiming(TrackerStat.Track_Time);
 
     if (stat.queryNum % 100 == 0) {
-      stat.show;
-      partitions.foreach(partition => {
-        val queries = partition.getQueries.map(_.queryId).mkString(" ");
-        println(s"Partition: ${partition.getId}\t Queries: {$queries}");
-      });
+      print();
     }
+  }
+
+  def locatePartition(query: DPQuery) {
+    locatePartitionBySMT(query);
 
   }
 
-  protected def commitByConstraint(query: DPQuery) {
+  protected def locatePartitionBySMT(query: DPQuery) {
+    stat.beginTiming(TrackerStat.SMT_Time);
+
+    val pi = partitions.iterator;
     var checked = 0;
     var found = false;
-    val start = System.currentTimeMillis();
+    var processed = 0;
     while (!found && pi.hasNext && checked < limit) {
       val partition = pi.next;
+      processed += 1;
       if (partition.shareColumns(query)) {
+        checked += 1;
         val checkStart = System.currentTimeMillis();
-        if (partition.disjoint(query)) {
+        val disjoint = partition.disjoint(query)
+        val checkEnd = System.currentTimeMillis();
+        if (checkEnd - checkStart > z3TimeOut) {
+          logError(s"takes too much time ${checkEnd - checkStart}ms for constraint solving, drop the partition ${partition.getId} and query");
+          removePartition(partition);
+          stat.droppedPartition += 1;
+          found = true;
+        } else if (disjoint) {
           found = true;
           updatePartition(partition, query);
         }
-        val checkEnd = System.currentTimeMillis();
-        if (checkEnd - checkStart > System.getProperty("z3.timeout", "5").toInt * 1024) {
-          println(s"takes too much time ${checkEnd - checkStart}ms for constraint solving, drop the partition ${partition.getId} and query");
-          removePartition(partition);
-          stat.onCreatePartition;
-          return ;
-        } else {
-          checked += 1;
-        }
+
       }
     }
-    println(s"checked $checked partitions in ${System.currentTimeMillis() - start} ms");
     if (!found) {
-      tmpPartitions.append(query);
+      createPartition(query);
     }
+
+    stat.profile(TrackerStat.Processed_Partitions, processed);
+    stat.profile(TrackerStat.Checked_Partitions, checked);
+    stat.endTiming(TrackerStat.SMT_Time);
   }
 
+  def print() {
+    stat.show;
+    partitions.foreach(partition => {
+      val queries = partition.getQueries.map(_.queryId).mkString(" ");
+      println(s"Partition: ${partition.getId}\t Queries: {$queries}");
+    });
+  }
+
+  def stop() {
+    print();
+  }
   protected def removePartition(partition: T) {
     partitions -= partition;
   }
 
   protected def createPartition(query: DPQuery): T = {
-    stat.onCreatePartition;
+    stat.partitionNum += 1;
 
     val partition = partitionBuilder(context);
     partition.add(query);
 
     partitions.prepend(partition);
 
-    logWarning("fail to locate a disjoint partition, create a new one");
     return partition;
   }
 

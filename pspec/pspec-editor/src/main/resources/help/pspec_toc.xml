@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<toc version="2.0">
+	<tocitem image="toplevelfolder" text="PSpec Editor">
+		<tocitem target="overview" text="Overview">
+		</tocitem>
+		<tocitem target="vocabulary" text="Vocabulary">
+			<tocitem target="user_container" text="User Container"></tocitem>
+			<tocitem target="data_container" text="Data Container"></tocitem>
+		</tocitem>
+		<tocitem target="policy" text="Policy">
+			<tocitem target="rule" text="Rule"></tocitem>
+			<tocitem target="analysis" text="Analysis"></tocitem>
+			<tocitem target="visualize" text="Visualization"></tocitem>
+		</tocitem>
+		<tocitem target="output" text="Output"></tocitem>
+
+	</tocitem>
+</toc>

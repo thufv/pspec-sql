@@ -46,6 +46,8 @@ import scala.collection.mutable.HashMap
 import org.apache.spark.sql.catalyst.checker.dp.Range
 import scala.collection.mutable.HashSet
 import com.microsoft.z3.Params
+import org.apache.spark.sql.catalyst.checker.dp.TrackerStat
+import edu.thu.ss.experiment.ExperimentConf
 
 object AggregateType extends Enumeration {
   type AggregateType = Value
@@ -53,6 +55,10 @@ object AggregateType extends Enumeration {
 }
 
 object CheckerUtil {
+
+  def format(value: Double, digits: Int): String = {
+    value.formatted(s"%.${digits}f")
+  }
 
   def checkLabelType(label: Label): AggregateType.Value = {
     label match {
@@ -118,20 +124,32 @@ object CheckerUtil {
     }
   }
 
-  def satisfiable(constraint: BoolExpr, context: Context): Boolean = {
-    val solver = context.mkSolver();
-    val params = context.mkParams();
-    val timeout = System.getProperty("z3.timeout", "5").toInt * 1024;
-    params.add("timeout", timeout);
+  var context: Context = null;
+
+  private lazy val params = {
+    val params = context.mkParams;
+    val timeout = System.getProperty("z3.timeout", ExperimentConf.Max_Solve_Time).toInt;
+    params.add("soft_timeout", timeout);
+    params.add("solver2_timeout", timeout);
+    params;
+  }
+
+  private lazy val solver = context.mkSolver();
+
+  def satisfiable(constraint: BoolExpr): Boolean = {
+    TrackerStat.get.beginTiming(TrackerStat.Z3_Time);
+
     solver.setParameters(params);
     solver.add(constraint);
     val result = solver.check();
-    solver.dispose();
-    params.dispose();
     if (result == Status.UNKNOWN) {
       println("warning: z3 solver gives unknown result");
     }
-    return result == Status.SATISFIABLE;
+    val sat = result == Status.SATISFIABLE;
+    solver.reset();
+
+    TrackerStat.get.endTiming(TrackerStat.Z3_Time);
+    return sat;
   }
 
   def intersect[T](set1: Set[T], set2: Set[T]): Boolean = {

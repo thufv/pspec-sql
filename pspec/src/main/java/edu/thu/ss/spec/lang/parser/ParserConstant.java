@@ -12,7 +12,14 @@ public interface ParserConstant {
 	public static final String Attr_Policy_Global = "global";
 	public static final String Attr_Policy_Vocabulary_location = "location";
 	public static final String Attr_Policy_DP_Budget = "budget";
-
+	public static final String Attr_Policy_Filter_Value = "value";
+	
+	public static final String Attr_Function_Name = "name";
+	public static final String Attr_Function_Type = "type";
+	public static final String Attr_Function_Type_Function = "func";
+	public static final String Attr_Function_Type_DataRef = "dataref";
+	public static final String Attr_Function_Type_Value = "value";
+	
 	public static final String Ele_Contact_Address = "address";
 	public static final String Ele_Contact_Country = "country";
 	public static final String Ele_Contact_Email = "e-mail";
@@ -46,7 +53,13 @@ public interface ParserConstant {
 	public static final String Ele_Policy_Rule_Forbid = "forbid";
 	public static final String Ele_Policy_Rule_Desensitize = "desensitize";
 	public static final String Ele_Policy_Rule_Desensitize_Operation = "operation";
-
+	public static final String Ele_Policy_Rule_Filter = "filter";
+	public static final String Ele_Policy_Rule_And = "and";
+	public static final String Ele_Policy_Rule_Or = "or";
+	public static final String Ele_Policy_Rule_Predicate = "predicate";
+	public static final String Ele_Policy_Rule_Operator = "operator";
+	public static final String Ele_Policy_Rule_Function = "function";
+	
 	public static final String Ele_Policy_Vocabulary_User = "user-category-container";
 	public static final String Ele_Policy_Vocabulary_Data = "data-category-container";
 	public static final String Ele_Policy_Refid = "refid";
@@ -64,5 +77,8 @@ public interface ParserConstant {
 
 	public static final String Privacy_Schema_Location = "res/privacy.xsd";
 
+	public static final String Meta_Schema_Location = "res/meta.xsd";
+
+	public static final String XMLNs = "http://www.example.org/privacy";
 
 }

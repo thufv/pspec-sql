@@ -52,7 +52,7 @@ case class Generate(
   outer: Boolean,
   alias: Option[String],
   child: LogicalPlan)
-  extends UnaryNode {
+    extends UnaryNode {
 
   protected def generatorOutput: Seq[Attribute] = {
     val output = alias
@@ -83,10 +83,10 @@ case class Union(left: LogicalPlan, right: LogicalPlan) extends BinaryNode {
 }
 
 case class Join(
-  left: LogicalPlan,
-  right: LogicalPlan,
-  joinType: JoinType,
-  condition: Option[Expression]) extends BinaryNode {
+    left: LogicalPlan,
+    right: LogicalPlan,
+    joinType: JoinType,
+    condition: Option[Expression]) extends BinaryNode {
 
   override def output = {
     joinType match {
@@ -113,7 +113,7 @@ case class InsertIntoTable(
   partition: Map[String, Option[String]],
   child: LogicalPlan,
   overwrite: Boolean)
-  extends LogicalPlan {
+    extends LogicalPlan {
 
   override def children = child :: Nil
   override def output = child.output
@@ -125,18 +125,18 @@ case class InsertIntoTable(
 }
 
 case class CreateTableAsSelect[T](
-  databaseName: Option[String],
-  tableName: String,
-  child: LogicalPlan,
-  allowExisting: Boolean,
-  desc: Option[T] = None) extends UnaryNode {
+    databaseName: Option[String],
+    tableName: String,
+    child: LogicalPlan,
+    allowExisting: Boolean,
+    desc: Option[T] = None) extends UnaryNode {
   override def output = Seq.empty[Attribute]
   override lazy val resolved = databaseName != None && childrenResolved
 }
 
 case class WriteToFile(
-  path: String,
-  child: LogicalPlan) extends UnaryNode {
+    path: String,
+    child: LogicalPlan) extends UnaryNode {
   override def output = child.output
 }
 
@@ -147,9 +147,9 @@ case class WriteToFile(
  * @param child  Child logical plan
  */
 case class Sort(
-  order: Seq[SortOrder],
-  global: Boolean,
-  child: LogicalPlan) extends UnaryNode {
+    order: Seq[SortOrder],
+    global: Boolean,
+    child: LogicalPlan) extends UnaryNode {
   override def output = child.output
 }
 
@@ -157,7 +157,7 @@ case class Aggregate(
   groupingExpressions: Seq[Expression],
   aggregateExpressions: Seq[NamedExpression],
   child: LogicalPlan)
-  extends UnaryNode {
+    extends UnaryNode {
 
   override def output = aggregateExpressions.map(_.toAttribute)
 }
@@ -260,7 +260,7 @@ case class Subquery(alias: String, child: LogicalPlan) extends UnaryNode {
 }
 
 case class Sample(fraction: Double, withReplacement: Boolean, seed: Long, child: LogicalPlan)
-  extends UnaryNode {
+    extends UnaryNode {
 
   override def output = child.output
 }

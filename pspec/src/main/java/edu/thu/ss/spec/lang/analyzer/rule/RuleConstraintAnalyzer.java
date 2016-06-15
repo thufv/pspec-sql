@@ -93,7 +93,7 @@ public class RuleConstraintAnalyzer extends BaseRuleAnalyzer {
 			return;
 		}
 		Restriction restriction = restrictions.get(0);
-		if (restriction.isForbid()) {
+		if (restriction.isForbid() || restriction.isFilter()) {
 			return;
 		}
 

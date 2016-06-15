@@ -5,12 +5,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.microsoft.z3.BoolExpr;
 
 import edu.thu.ss.spec.lang.analyzer.LevelwiseSearcher;
 import edu.thu.ss.spec.lang.analyzer.local.ConsistencyAnalyzer.RuleRelation;
@@ -21,11 +24,13 @@ import edu.thu.ss.spec.lang.pojo.DataRef;
 import edu.thu.ss.spec.lang.pojo.Desensitization;
 import edu.thu.ss.spec.lang.pojo.DesensitizeOperation;
 import edu.thu.ss.spec.lang.pojo.ExpandedRule;
+import edu.thu.ss.spec.lang.pojo.Filter;
 import edu.thu.ss.spec.lang.pojo.Policy;
 import edu.thu.ss.spec.lang.pojo.Restriction;
 import edu.thu.ss.spec.lang.pojo.UserCategory;
 import edu.thu.ss.spec.util.SetUtil;
 import edu.thu.ss.spec.util.SetUtil.SetRelation;
+import edu.thu.ss.spec.util.Z3Util;
 
 /**
  * performs consistency search based on level wise search algorithm
@@ -70,7 +75,11 @@ class ConsistencySearcher extends LevelwiseSearcher {
 	 */
 	protected class RuleObject {
 		Set<UserCategory> users;
+		
+		Filter filter;
+		HashSet<DataRef> dataRefs = new HashSet<>();
 		Triple[] triples;
+		BoolExpr condition;
 
 		public List<Set<DesensitizeOperation>> getList(Set<DataCategory> datas) {
 			for (Triple t : triples) {
@@ -95,7 +104,19 @@ class ConsistencySearcher extends LevelwiseSearcher {
 
 	@Override
 	protected void initLevel(Set<SearchKey> currentLevel) {
-		sortedRules = new ArrayList<>(rules);
+		currentLevel.clear();
+		List<ExpandedRule> newrules = new ArrayList<>();
+		for (int i = 0; i < rules.size(); i++) {
+			ExpandedRule item = rules.get(i);
+			if (isfilter && item.getRestriction().isFilter()) {
+				newrules.add(item);
+			}
+			else if (!isfilter && !item.getRestriction().isFilter()) {
+				newrules.add(item);
+			}
+		}
+		
+		sortedRules = new ArrayList<>(newrules);
 		Collections.sort(sortedRules, new Comparator<ExpandedRule>() {
 			@Override
 			public int compare(ExpandedRule o1, ExpandedRule o2) {
@@ -116,13 +137,20 @@ class ConsistencySearcher extends LevelwiseSearcher {
 		for (int i = 0; i < sortedRules.size(); i++) {
 			currentLevel.add(new SearchKey(i));
 		}
+		
+		if (isfilter) {
+			generateFilterConditions(ruleObjects);
+		}
+		
 	}
 
 	@Override
 	protected boolean process(SearchKey key) {
 		Set<UserCategory> users = null;
+		Set<DataRef> dataRefs = null;
 		for (int i = 0; i < key.index.length; i++) {
 			RuleObject rule = ruleObjects[key.index[i]];
+			
 			if (users == null) {
 				users = new HashSet<>(rule.users);
 			} else {
@@ -132,7 +160,7 @@ class ConsistencySearcher extends LevelwiseSearcher {
 				}
 			}
 		}
-
+		
 		RuleRelation relation = processDatas(key, 0, null, null);
 		return RuleRelation.consistent.equals(relation);
 
@@ -268,6 +296,14 @@ class ConsistencySearcher extends LevelwiseSearcher {
 					obj.triples[i] = new Triple(assoc.get(i), null);
 				}
 			}
+		} else if (rule.getRestriction().isFilter()) {
+			obj.filter = rule.getRestriction().getFilter();
+			if (rule.isSingle()) {
+				obj.dataRefs.add(rule.getDataRef());
+			}
+			else if (rule.isAssociation()) {
+				obj.dataRefs.addAll(rule.getAssociation().getDataRefs());
+			}
 		} else {
 			List<Triple> triples = new ArrayList<>();
 			if (rule.isSingle()) {
@@ -296,5 +332,25 @@ class ConsistencySearcher extends LevelwiseSearcher {
 			obj.triples = triples.toArray(new Triple[triples.size()]);
 		}
 		return obj;
+	}
+	
+	private void generateFilterConditions(RuleObject[] ruleobjects) {
+		if (ruleobjects.length == 0) {
+			return;
+		}
+		
+		LinkedHashSet<DataRef> dataRefSet = new LinkedHashSet<>();
+		for (ExpandedRule rule : this.rules) {
+			if (rule.getRestriction().isFilter()) {
+				dataRefSet.addAll(rule.getRestriction().getFilter().getDataRefs());
+			}
+		}
+		
+		DataRef[] dataRefs = dataRefSet.toArray(new DataRef[dataRefSet.size()]);
+		Z3Util.initFilterConditions(dataRefs);
+		for (int i = 0; i < ruleobjects.length; i++) {
+			ruleobjects[i].condition 
+			= Z3Util.getFilterCondition(ruleobjects[i].filter);
+		}
 	}
 }
